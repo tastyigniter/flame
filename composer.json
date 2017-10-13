@@ -1,0 +1,45 @@
+{
+  "name": "igniter/flame",
+  "description": "TastyIgniter Flame core library of TastyIgniter, add some flame to laravel",
+  "homepage": "http://tastyigniter.com",
+  "keywords": ["tastyigniter", "igniter", "flame", "laravel"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sam Poyigi",
+      "email": "sam@sampoyigi.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.0",
+    "symfony/yaml": "~3.2",
+    "laravel/tinker": "~1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~6.0",
+    "october/rain": "^1.0",
+    "illuminate/database": "5.5.*",
+    "illuminate/filesystem": "5.5.*",
+    "illuminate/queue": "5.5.*",
+    "illuminate/support": "5.5.*",
+    "illuminate/log": "5.5.*",
+    "illuminate/mail": "5.5.*",
+    "illuminate/events": "5.5.*",
+    "illuminate/pagination": "5.5.*",
+    "illuminate/validation": "5.5.*",
+    "swiftmailer/swiftmailer": "~5.1",
+    "barryvdh/laravel-debugbar": "~3.0",
+    "barryvdh/laravel-ide-helper": "^2.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Igniter\\Flame\\": "src/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0-dev"
+    }
+  },
+  "minimum-stability": "dev"
+}
