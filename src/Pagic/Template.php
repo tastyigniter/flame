@@ -1,0 +1,182 @@
+<?php
+
+namespace Igniter\Flame\Pagic;
+
+use Exception;
+use Symfony\Component\Debug\Exception\FatalThrowableError;
+use Throwable;
+
+class Template
+{
+    private $env;
+
+    protected $path;
+
+    protected $page;
+
+    protected $layout;
+
+    protected $theme;
+
+    protected $param;
+
+    protected $controller;
+
+    protected $session;
+
+    /**
+     * This method is for internal use only and should never be called
+     * directly (use Environment::load() instead).
+     * @internal
+     *
+     * @param \Igniter\Flame\Pagic\Environment $env
+     * @param \Igniter\Flame\Pagic\Template $template
+     */
+    public function __construct(Environment $env, $path)
+    {
+        $this->env = $env;
+        $this->path = $path;
+    }
+
+    /**
+     * Renders the template.
+     *
+     * @param array $context An array of parameters to pass to the template
+     *
+     * @return string The rendered template
+     * @throws \Exception
+     * @throws \Throwable
+     */
+    public function render($context = [])
+    {
+        $this->mergeGlobals($context);
+
+        unset($context['this']);
+
+        $obLevel = ob_get_level();
+        ob_start();
+
+        extract($context);
+
+        // We'll evaluate the contents of the view inside a try/catch block so we can
+        // flush out any stray output that might get out before an error occurs or
+        // an exception is thrown. This prevents any partial views from leaking.
+        try {
+            $filePath = $this->path;
+            include $filePath;
+        } catch (Exception $e) {
+            $this->handleException($e, $obLevel);
+        } catch (Throwable $e) {
+            $this->handleException(new FatalThrowableError($e), $obLevel);
+        }
+
+        return ob_get_clean();
+    }
+
+    /**
+     * Displays the template.
+     *
+     * @param array $context An array of parameters to pass to the template
+     */
+    public function display($context = [])
+    {
+        $this->template->display($context);
+    }
+
+    protected function mergeGlobals($context)
+    {
+        if (array_key_exists('this', $context)) {
+            foreach ($context['this'] as $key => $object) {
+                if (property_exists($this, $key))
+                    $this->{$key} = $object;
+            }
+        }
+    }
+
+    protected function handleException($ex, $level)
+    {
+        while (ob_get_level() > $level) {
+            ob_end_clean();
+        }
+
+        throw $ex;
+    }
+//
+//    /**
+//     * Checks if a block is defined.
+//     *
+//     * @param string $name The block name
+//     * @param array $context An array of parameters to pass to the template
+//     *
+//     * @return bool
+//     */
+//    public function hasBlock($name, $context = [])
+//    {
+//        return $this->template->hasBlock($name, $context);
+//    }
+//
+//    /**
+//     * Returns defined block names in the template.
+//     *
+//     * @param array $context An array of parameters to pass to the template
+//     *
+//     * @return string[] An array of defined template block names
+//     */
+//    public function getBlockNames($context = [])
+//    {
+//        return $this->template->getBlockNames($context);
+//    }
+//
+//    /**
+//     * Renders a template block.
+//     *
+//     * @param string $name The block name to render
+//     * @param array $context An array of parameters to pass to the template
+//     *
+//     * @return string The rendered block
+//     * @throws \Exception
+//     * @throws \Throwable
+//     */
+//    public function renderBlock($name, $context = [])
+//    {
+//        $context = $this->env->mergeGlobals($context);
+//        $level = ob_get_level();
+//        ob_start();
+//        try {
+//            $this->template->displayBlock($name, $context);
+//        } catch (Exception $e) {
+//            while (ob_get_level() > $level) {
+//                ob_end_clean();
+//            }
+//
+//            throw $e;
+//        } catch (Throwable $e) {
+//            while (ob_get_level() > $level) {
+//                ob_end_clean();
+//            }
+//
+//            throw $e;
+//        }
+//
+//        return ob_get_clean();
+//    }
+//
+//    /**
+//     * Displays a template block.
+//     *
+//     * @param string $name The block name to render
+//     * @param array $context An array of parameters to pass to the template
+//     */
+//    public function displayBlock($name, $context = [])
+//    {
+//        $this->template->displayBlock($name, $this->env->mergeGlobals($context));
+//    }
+
+    /**
+     * @return Twig_Source
+     */
+//    public function getSourceContext()
+//    {
+//        return $this->template->getSourceContext();
+//    }
+}

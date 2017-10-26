@@ -1,0 +1,36 @@
+<?php
+
+namespace Igniter\Flame\Flash;
+
+use Illuminate\Support\ServiceProvider;
+
+class FlashServiceProvider extends ServiceProvider
+{
+    /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->app->bind(FlashStore::class);
+
+        $this->app->singleton('flash', function () {
+            return $this->app->make(FlashBag::class);
+        });
+    }
+
+    /**
+     * Bootstrap the application events.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+//        $this->loadViewsFrom(__DIR__ . '/../../views', 'flash');
+//
+//        $this->publishes([
+//            __DIR__ . '/../../views' => base_path('resources/views/vendor/flash')
+//        ]);
+    }
+}
