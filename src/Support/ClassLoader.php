@@ -8,7 +8,7 @@ class ClassLoader
 {
     /**
      * The filesystem instance.
-     * @var \October\Rain\Filesystem\Filesystem
+     * @var \Igniter\Flame\Filesystem\Filesystem
      */
     public $files;
 

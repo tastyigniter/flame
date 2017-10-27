@@ -32,16 +32,8 @@ class PagicServiceProvider extends ServiceProvider
      */
     public function register()
     {
-//        $this->mergeConfigFrom(__DIR__.'/config/config.php', 'pagic');
-
         $this->app->singleton('pagic', function ($app) {
             return new SourceResolver;
         });
-//
-//        $this->registerFactory();
-//
-//        $this->registerViewFinder();
-//
-//        $this->registerFrontmatter();
     }
 }

@@ -259,9 +259,7 @@ class FileParser
             $path = array_get($data, 'filePath', $fileCache->getCacheKey($className));
             if (is_file($path)) {
                 if ($className = $this->extractClassFromFile($path)) {
-                    $data['className'] = $className;
-
-                    return $data;
+                    return new $className($page, $layout, $controller);
                 }
 
                 @unlink($path);

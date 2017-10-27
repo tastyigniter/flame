@@ -7,7 +7,7 @@ use Illuminate\Contracts\Foundation\Application;
 class RegisterClassLoader
 {
     /**
-     * Register The October Auto Loader
+     * Register Auto Loader
      *
      * @param  \Illuminate\Contracts\Foundation\Application $app
      *
