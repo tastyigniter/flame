@@ -15,7 +15,7 @@ if (!function_exists('form_open')) {
      *
      * @return    string
      */
-    function form_open($action = '', $attributes = [], $hidden = [])
+    function form_open($action = null, $attributes = [])
     {
         if (is_string($action)) {
             $attributes['url'] = $action;
@@ -24,7 +24,12 @@ if (!function_exists('form_open')) {
             $attributes = $action;
         }
 
-        return app(FormBuilder::class)->open($attributes);
+        $handler = null;
+        if (isset($attributes['handler']))
+            $handler = app(FormBuilder::class)->hidden('_handler', $attributes['handler']);
+
+
+        return app(FormBuilder::class)->open($attributes).$handler;
     }
 }
 
@@ -414,7 +419,7 @@ if (!function_exists('set_value')) {
     {
         $value = app(FormBuilder::class)->getValueAttribute($field, $default);
 
-        return ($escape) ? app(HtmlBuilder::class)->attributes($value) : $value;
+        return ($escape) ? trim(app(HtmlBuilder::class)->attributes($value)) : $value;
     }
 }
 
@@ -567,26 +572,26 @@ if (!function_exists('form_error')) {
 
 // ------------------------------------------------------------------------
 
-if (!function_exists('validation_errors')) {
-    /**
-     * Validation Error String
-     * Returns all the errors associated with a form submission. This is a helper
-     * function for the form validation class.
-     *
-     * @param    string
-     * @param    string
-     *
-     * @return    string
-     */
-    function validation_errors($prefix = '', $suffix = '')
-    {
-//        if (FALSE === ($OBJ =& _get_validation_object())) {
-        return '';
-//        }
-
-//        return $OBJ->error_string($prefix, $suffix);
-    }
-}
+//if (!function_exists('validation_errors')) {
+//    /**
+//     * Validation Error String
+//     * Returns all the errors associated with a form submission. This is a helper
+//     * function for the form validation class.
+//     *
+//     * @param    string
+//     * @param    string
+//     *
+//     * @return    string
+//     */
+//    function validation_errors($prefix = '', $suffix = '')
+//    {
+////        if (FALSE === ($OBJ =& _get_validation_object())) {
+//        return '';
+////        }
+//
+////        return $OBJ->error_string($prefix, $suffix);
+//    }
+//}
 
 // ------------------------------------------------------------------------
 //

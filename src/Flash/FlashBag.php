@@ -70,6 +70,18 @@ class FlashBag
     }
 
     /**
+     * Flash a generic message.
+     *
+     * @param  string|null $message
+     *
+     * @return $this
+     */
+    public function alert($message)
+    {
+        return $this->message($message);
+    }
+
+    /**
      * Flash an information message.
      *
      * @param  string|null $message

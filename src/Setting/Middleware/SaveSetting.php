@@ -28,7 +28,7 @@ class SaveSetting
      */
     public function __construct(Application $app)
     {
-        $this->manager = $app->make(SettingManager::class);
+        $this->manager = $app->make('setting');
     }
 
     public function handle($request, Closure $next)

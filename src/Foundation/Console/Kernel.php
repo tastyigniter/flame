@@ -13,10 +13,9 @@ class Kernel extends BaseKernel
      * @var array
      */
     protected $bootstrappers = [
-//        \Igniter\Flame\Foundation\Bootstrap\RegisterClassLoader::class,
+        \Igniter\Flame\Foundation\Bootstrap\RegisterClassLoader::class,
         \Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables::class,
         \Illuminate\Foundation\Bootstrap\LoadConfiguration::class,
-//        \Igniter\Flame\Foundation\Bootstrap\LoadConfiguration::class,
 //        \Igniter\Flame\Foundation\Bootstrap\LoadTranslation::class,
 //        \Igniter\Flame\Foundation\Bootstrap\ConfigureLogging::class,
         \Illuminate\Foundation\Bootstrap\HandleExceptions::class,

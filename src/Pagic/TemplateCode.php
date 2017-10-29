@@ -111,6 +111,9 @@ class TemplateCode extends Extendable implements ArrayAccess
             return call_user_func_array([$this, $method], $parameters);
         }
 
+        if (method_exists($this->page, $method))
+            return call_user_func_array([$this->page, $method], $parameters);
+
         return call_user_func_array([$this->controller, $method], $parameters);
     }
 

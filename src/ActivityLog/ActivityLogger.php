@@ -3,9 +3,9 @@
 use AdminAuth;
 use App;
 use Igniter\Flame\ActivityLog\Models\Activity;
+use Igniter\Flame\Database\Model;
 use Igniter\Flame\Traits\Singleton;
 use Illuminate\Support\Traits\Macroable;
-use Model;
 
 class ActivityLogger
 {

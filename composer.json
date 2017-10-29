@@ -18,7 +18,8 @@
     "doctrine/dbal": "2.5.*",
     "symfony/yaml": "~3.2",
     "october/rain": "^1.0",
-    "kalnoy/nestedset": "^4.3"
+    "guzzlehttp/guzzle": "6.3.*",
+    "kalnoy/nestedset": "4.3.*"
   },
   "require-dev": {
     "phpunit/phpunit": "~6.0",
