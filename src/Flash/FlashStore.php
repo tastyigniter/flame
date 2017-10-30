@@ -9,14 +9,14 @@ class FlashStore
     /**
      * @var Store
      */
-    private $session;
+    protected $session;
 
     /**
      * Create a new session store instance.
      *
      * @param Store $session
      */
-    function __construct(Store $session)
+    public function __construct(Store $session)
     {
         $this->session = $session;
     }

@@ -8,8 +8,6 @@ use Event;
  * Adds event related features to any class.
  *
  * @package Igniter\Traits
- * @author TastyIgniter Dev Team
- * @link https://docs.tastyigniter.com
  */
 trait EventEmitter
 {

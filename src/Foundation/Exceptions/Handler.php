@@ -2,7 +2,8 @@
 
 namespace Igniter\Flame\Foundation\Exceptions;
 
-use Exception;
+use AjaxException;
+use ApplicationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -13,37 +14,9 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        \Igniter\Flame\Exception\AjaxException::class,
-        \Igniter\Flame\Exception\ValidationException::class,
-        \Igniter\Flame\Exception\ApplicationException::class,
-        \Illuminate\Database\Eloquent\ModelNotFoundException::class,
-        \Symfony\Component\HttpKernel\Exception\HttpException::class,
+        AjaxException::class,
+        ApplicationException::class,
+//        ModelNotFoundException::class,
+//        HttpException::class,
     ];
-
-    /**
-     * Report or log an exception.
-     *
-     * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
-     *
-     * @param  \Exception $exception
-     *
-     * @return void
-     */
-//    public function report(Exception $exception)
-//    {
-//        parent::report($exception);
-//    }
-
-    /**
-     * Render an exception into an HTTP response.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \Exception $exception
-     *
-     * @return \Illuminate\Http\Response
-     */
-//    public function render($request, Exception $exception)
-//    {
-//        return parent::render($request, $exception);
-//    }
 }

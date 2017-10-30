@@ -18,7 +18,7 @@ class CurrencyMiddleware
     public function handle($request, Closure $next)
     {
         // Don't redirect the console
-        if ($this->runningInConsole()) {
+        if (app()->runningInConsole()) {
             return $next($request);
         }
 
@@ -68,16 +68,6 @@ class CurrencyMiddleware
     }
 
     /**
-     * Determine if the application is running in the console.
-     *
-     * @return bool
-     */
-    private function runningInConsole()
-    {
-        return app()->runningInConsole();
-    }
-
-    /**
      * Set the user currency.
      *
      * @param string $currency
@@ -87,10 +77,8 @@ class CurrencyMiddleware
      */
     private function setUserCurrency($currency, $request)
     {
-        $currency = strtoupper($currency);
-
         // Set user selection globally
-        currency()->setUserCurrency($currency);
+        currency()->setUserCurrency($currency = strtoupper($currency));
 
         // Save it for later too!
         $request->getSession()->put(['currency' => $currency]);

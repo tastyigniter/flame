@@ -1,9 +1,9 @@
 <?php
 
-namespace Igniter\Flame\Permalink\Traits;
+namespace Igniter\Flame\Database\Traits;
 
 use Exception;
-use Igniter\Flame\Permalink\PermalinkMaker;
+use Igniter\Flame\Database\PermalinkMaker;
 use Model;
 
 /**
@@ -11,7 +11,7 @@ use Model;
  * Usage:
  **
  * In the model class definition:
- *   use \Igniter\Flame\Permalink\Traits\HasPermalink;
+ *   use \Igniter\Flame\Database\Traits\HasPermalink;
  * You can change the slug field used by declaring:
  *   protected $permalink = ['permalink_slug' => ['source' => 'name']];
  */
@@ -127,7 +127,7 @@ trait HasPermalink
     }
 
     /**
-     * @return \Igniter\Flame\Permalink\PermalinkMaker
+     * @return \Igniter\Flame\Database\PermalinkMaker
      */
     protected function getPermalinkMaker()
     {

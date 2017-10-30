@@ -4,6 +4,7 @@ use AdminAuth;
 use App;
 use Igniter\Flame\ActivityLog\Models\Activity;
 use Igniter\Flame\Database\Model;
+use Igniter\Flame\Foundation\Application;
 use Igniter\Flame\Traits\Singleton;
 use Illuminate\Support\Traits\Macroable;
 
@@ -30,39 +31,20 @@ class ActivityLogger
     /** @var \Illuminate\Support\Collection */
     protected $properties;
 
-    public function __construct()
+    public function __construct(Application $app)
     {
+        if ($app->runningInConsole()) {
+            $this->causedBy = null;
+        } else {
+            $this->causedBy = (!$app->runningInAdmin())
+                ? $app['main.auth']->user()
+                : $app['admin.auth']->user();
+        }
+
+
         $this->properties = collect();
         $this->logName = 'default';
         $this->logEnabled = TRUE;
-    }
-
-    public function setAuth($eventName)
-    {
-        $auth = $this->logAuthDriver();
-        $this->auth = $auth;
-        $this->causedBy = null; // $auth->user();
-        $this->useLog($this->getLogNameToUse($eventName));
-
-        return $this;
-    }
-
-    public function getLogNameToUse($eventName)
-    {
-        return $eventName;
-    }
-
-    /**
-     * @return \Igniter\Flame\Auth\Manager
-     */
-    public function logAuthDriver()
-    {
-        return $this->authDriver;
-    }
-
-    public function setAuthDriver($driver)
-    {
-        $this->authDriver = $driver;
     }
 
     /**
@@ -153,7 +135,7 @@ class ActivityLogger
     /**
      * @return \Igniter\Flame\ActivityLog\Models\Activity
      */
-    protected function getModelInstance()
+    public function getModelInstance()
     {
         return new Activity;
     }

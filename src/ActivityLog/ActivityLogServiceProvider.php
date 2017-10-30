@@ -17,17 +17,9 @@ class ActivityLogServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('activitylog', function ($app) {
-
-            $auth = (!$app->runningInAdmin())
-                ? $app['main.auth']->user()
-                : $app['admin.auth']->user();
-
-            $logger = new ActivityLogger();
-            $logger->setAuthDriver($auth);
-
-            return $logger;
-        });
+        $this->commands([
+            Console\Cleanup::class,
+        ]);
     }
 
     /**

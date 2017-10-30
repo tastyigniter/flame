@@ -29,11 +29,6 @@ class HtmlServiceProvider extends ServiceProvider
 //        include_once __DIR__.'/helpers.php';
     }
 
-    public function boot()
-    {
-
-    }
-
     /**
      * Register the HTML builder instance.
      *

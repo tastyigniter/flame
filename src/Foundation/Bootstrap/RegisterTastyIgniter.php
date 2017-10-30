@@ -1,6 +1,6 @@
 <?php namespace Igniter\Flame\Foundation\Bootstrap;
 
-use Igniter\Flame\Foundation\Application;
+use Illuminate\Contracts\Foundation\Application;
 
 class RegisterTastyIgniter
 {

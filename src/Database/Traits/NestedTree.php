@@ -1,6 +1,6 @@
 <?php
 
-namespace Igniter\Flame\NestedSet;
+namespace Igniter\Flame\Traits\NestedSet;
 
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Kalnoy\Nestedset\NodeTrait;

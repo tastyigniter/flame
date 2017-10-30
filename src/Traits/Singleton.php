@@ -9,7 +9,6 @@ namespace Igniter\Flame\Traits;
  * Usage: myObject::instance()
  *
  * @package Igniter\Traits
- * @author TastyIgniter Dev Team
  */
 trait Singleton
 {

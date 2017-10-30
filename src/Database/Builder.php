@@ -2,8 +2,8 @@
 
 namespace Igniter\Flame\Database;
 
-use Igniter\Flame\Pagination\LengthAwarePaginator;
-use Igniter\Flame\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder as BuilderBase;
 
 /**

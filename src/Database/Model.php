@@ -19,7 +19,6 @@ use InvalidArgumentException;
 /**
  * Model Class
  * @package        Igniter\Flame\Database\Model.php
- * @author         TastyIgniter Dev Team
  */
 class Model extends EloquentModel
 {

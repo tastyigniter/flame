@@ -19,18 +19,4 @@ class FlashServiceProvider extends ServiceProvider
             return $this->app->make(FlashBag::class);
         });
     }
-
-    /**
-     * Bootstrap the application events.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-//        $this->loadViewsFrom(__DIR__ . '/../../views', 'flash');
-//
-//        $this->publishes([
-//            __DIR__ . '/../../views' => base_path('resources/views/vendor/flash')
-//        ]);
-    }
 }

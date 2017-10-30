@@ -291,6 +291,8 @@ class Manager
         $this->user = null;
 
         $this->clearUserDataFromStorage();
+
+        $this->loggedOut = true;
     }
 
     /**
@@ -637,7 +639,7 @@ class Manager
      *
      * @param $credentials
      *
-     * @return bool
+     * @return bool|UserModel
      */
     public function validateResetPassword($credentials)
     {
@@ -681,9 +683,9 @@ class Manager
         return FALSE;
     }
 
-    /*
-     * Impersonation
-     */
+    //
+    // Impersonation
+    //
 
     /**
      * Impersonates the given user and sets properties

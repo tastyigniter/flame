@@ -3,7 +3,10 @@
 namespace Igniter\Flame\Foundation\Providers;
 
 use File;
+use Igniter\Flame\ActivityLog\ActivityLogServiceProvider;
+use Igniter\Flame\Currency\CurrencyServiceProvider;
 use Igniter\Flame\Pagic\PagicServiceProvider;
+use Igniter\Flame\Setting\SettingServiceProvider;
 use Igniter\Flame\Support\HelperServiceProvider;
 use Igniter\Flame\Translation\TranslationServiceProvider;
 use Illuminate\Support\ServiceProvider;
@@ -48,13 +51,12 @@ abstract class AppServiceProvider extends ServiceProvider
                 require $routesFile;
         }
 
-        // Register translation provider here for now since
-        // registering from providers array does nothing
-        $this->app->register(TranslationServiceProvider::class);
-        $this->app->register(ConsoleServiceProvider::class);
+//        $this->app->register(ConsoleServiceProvider::class);
 //        $this->app->register(GeneratorServiceProvider::class);
         $this->app->register(HelperServiceProvider::class);
         $this->app->register(PagicServiceProvider::class);
+        $this->app->register(ActivityLogServiceProvider::class);
+        $this->app->register(CurrencyServiceProvider::class);
     }
 
     public function getModule($args)

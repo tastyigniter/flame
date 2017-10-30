@@ -1,9 +1,9 @@
 <?php
 
-namespace Igniter\Flame\NestedSet;
+namespace Igniter\Flame\Database\NestedSet;
 
-use Igniter\Flame\Pagination\LengthAwarePaginator;
-use Igniter\Flame\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Kalnoy\Nestedset\QueryBuilder as QueryBuilderBase;
 
 class QueryBuilder extends QueryBuilderBase

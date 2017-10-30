@@ -23,7 +23,7 @@ class Cleanup extends Command
     /**
      * Currency instance
      *
-     * @var \Torann\Currency\Currency
+     * @var \Igniter\Flame\Currency\Currency
      */
     protected $currency;
 

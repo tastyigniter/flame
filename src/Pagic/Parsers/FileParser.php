@@ -8,7 +8,6 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * FileParser class.
  */
-//class FileParser implements ArrayAccess, Countable
 class FileParser
 {
     const SOURCE_SEPARATOR = '---';
@@ -43,7 +42,6 @@ class FileParser
      * The 'markup' and 'code' elements contain strings. The 'settings' element contains the
      * parsed Data as array. If the content string does not contain a section, the corresponding
      * result element has null value.
-     * @throws \Igniter\Flame\Pagic\Exceptions\InvalidFormatException
      */
     public static function parse($content)
     {
@@ -92,26 +90,12 @@ class FileParser
     {
         $code = trim(array_get($data, 'code'));
         $markup = trim(array_get($data, 'markup'));
-
-//        $trim = function (&$values) use (&$trim) {
-//            foreach ($values as &$value) {
-//                if (!is_array($value)) {
-//                    $value = trim($value);
-//                }
-//                else {
-//                    $trim($value);
-//                }
-//            }
-//        };
-
         $settings = array_get($data, 'data', []);
-//        $trim($settings);
 
         // Build content
         $content = [];
 
         if ($settings) {
-//            $content[] = $iniParser->render($settings);
             $content[] = $settings;
         }
 

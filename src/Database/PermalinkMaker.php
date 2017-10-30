@@ -1,6 +1,6 @@
 <?php
 
-namespace Igniter\Flame\Permalink;
+namespace Igniter\Flame\Database;
 
 use Igniter\Flame\Traits\Singleton;
 use Illuminate\Support\Collection;

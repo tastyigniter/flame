@@ -1,6 +1,6 @@
 <?php
 
-namespace Igniter\Flame\NestedSet;
+namespace Igniter\Flame\Database\NestedSet;
 
 use Carbon\Carbon;
 use Igniter\Flame\Database\Builder as BuilderBase;

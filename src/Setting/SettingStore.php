@@ -128,7 +128,7 @@ abstract class SettingStore
     /**
      * Make sure data is loaded.
      *
-     * @param $force Force a reload of data. Default false.
+     * @param bool $force Force a reload of data. Default false.
      */
     public function load($force = FALSE)
     {

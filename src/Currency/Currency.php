@@ -257,7 +257,7 @@ class Currency
     /**
      * Get storage driver.
      *
-     * @return \Torann\Currency\Contracts\DriverInterface
+     * @return \Igniter\Flame\Currency\Contracts\DriverInterface
      */
     public function getDriver()
     {
@@ -278,7 +278,7 @@ class Currency
     /**
      * Get formatter driver.
      *
-     * @return \Torann\Currency\Contracts\FormatterInterface
+     * @return \Igniter\Flame\Currency\Contracts\FormatterInterface
      */
     public function getFormatter()
     {

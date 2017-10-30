@@ -4,13 +4,13 @@ namespace Igniter\Flame\Flash;
 
 class FlashBag
 {
-    const SESSION_KEY = '_flash_ti';
+    const SESSION_KEY = '_ti_flash';
 
     /**
      * The session store.
-     * @var SessionStore
+     * @var FlashStore
      */
-    protected $session;
+    protected $store;
 
     /**
      * The messages collection.
@@ -23,16 +23,16 @@ class FlashBag
      * Create a new FlashNotifier instance.
      *
      * @param array $messages
-     * @param FlashStore $session
+     * @param FlashStore $store
      */
-    function __construct(array $messages = [], FlashStore $session)
+    function __construct(array $messages = [], FlashStore $store)
     {
-        $this->session = $session;
+        $this->store = $store;
         $this->messages = collect();
     }
 
     /**
-     * Get first message for every key in the bag.
+     * Gets all the flash messages
      *
      * @param string|null $format
      *
@@ -40,28 +40,11 @@ class FlashBag
      */
     public function all()
     {
-        $messages = $this->session->get(static::SESSION_KEY, $this->messages);
+        $messages = $this->store->get(static::SESSION_KEY, $this->messages);
 
         $this->clear();
 
         return $messages;
-    }
-
-    /**
-     * Gets all the flash messages of a given type.
-     *
-     * @param string $key
-     * @param string|null $format
-     *
-     * @return array
-     */
-    public function get($key, $format = null)
-    {
-        $message = parent::get($key, $format);
-
-        $this->purge();
-
-        return $message;
     }
 
     public function set($level = null, $message = null)
@@ -200,7 +183,7 @@ class FlashBag
     }
 
     /**
-     * Add a "now" flash to the session.
+     * Add a "now" flash to the store.
      * @return $this
      */
     public function now()
@@ -209,7 +192,7 @@ class FlashBag
     }
 
     /**
-     * Add an "important" flash to the session.
+     * Add an "important" flash to the store.
      * @return $this
      */
     public function important()
@@ -223,7 +206,7 @@ class FlashBag
      */
     public function clear()
     {
-        $this->session->forget(static::SESSION_KEY);
+        $this->store->forget(static::SESSION_KEY);
 
         $this->messages = collect();
 
@@ -231,11 +214,11 @@ class FlashBag
     }
 
     /**
-     * Flash all messages to the session.
+     * Flash all messages to the store.
      */
     protected function flash()
     {
-        $this->session->flash(static::SESSION_KEY, $this->messages);
+        $this->store->flash(static::SESSION_KEY, $this->messages);
 
         return $this;
     }

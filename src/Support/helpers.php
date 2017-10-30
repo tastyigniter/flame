@@ -188,7 +188,7 @@ if (!function_exists('currency')) {
      * @param string $to
      * @param bool $format
      *
-     * @return \Torann\Currency\Currency|string
+     * @return \Igniter\Flame\Currency\Currency|string
      */
     function currency($amount = null, $from = null, $to = null, $format = TRUE)
     {
