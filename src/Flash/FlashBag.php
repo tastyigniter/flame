@@ -28,7 +28,7 @@ class FlashBag
     function __construct(array $messages = [], FlashStore $store)
     {
         $this->store = $store;
-        $this->messages = collect();
+        $this->messages = $store->get(static::SESSION_KEY, collect());
     }
 
     /**
@@ -40,7 +40,7 @@ class FlashBag
      */
     public function all()
     {
-        $messages = $this->store->get(static::SESSION_KEY, $this->messages);
+        $messages = $this->messages;
 
         $this->clear();
 

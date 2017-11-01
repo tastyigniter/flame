@@ -9,7 +9,6 @@ use Exception;
 use Igniter\Flame\Auth\Models\User as UserModel;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Exception\ApplicationException;
-use Igniter\Flame\Traits\Singleton;
 use Illuminate\Support\Str;
 use System\Traits\SessionMaker;
 
@@ -21,13 +20,14 @@ use System\Traits\SessionMaker;
  */
 class Manager
 {
-    use Singleton;
     use SessionMaker;
+
+    const AUTH_KEY_NAME = 'auth';
 
     protected $hasher;
 
     /**
-     * @var Model The currently authenticated user.
+     * @var UserModel The currently authenticated user.
      */
     protected $user;
 
@@ -67,7 +67,7 @@ class Manager
 
     /**
      * Gets the hasher.
-     * @return \BcryptHash
+     * @return \Illuminate\Contracts\Hashing\Hasher
      */
     public function getHasher()
     {
@@ -141,6 +141,7 @@ class Manager
         if (is_null($user))
             return FALSE;
 
+//        dd($user, $rememberCookie, $sessionUserId, $this->getSession());
         $this->user = $user;
 
         return TRUE;
@@ -156,6 +157,8 @@ class Manager
 
     /**
      * Get the currently authenticated user.
+     *
+     * @return UserModel
      */
     public function user()
     {
@@ -182,7 +185,7 @@ class Manager
 
     /**
      * Get the currently authenticated user model.
-     * @return Model
+     * @return UserModel
      */
     public function getUser()
     {
@@ -237,8 +240,10 @@ class Manager
     /**
      * Log a user into the application.
      *
-     * @param $userModel
+     * @param UserModel $userModel
      * @param bool $remember
+     *
+     * @throws \Igniter\Flame\Exception\ApplicationException
      */
     public function login($userModel, $remember = FALSE)
     {
@@ -292,19 +297,19 @@ class Manager
 
         $this->clearUserDataFromStorage();
 
-        $this->loggedOut = true;
+        $this->loggedOut = TRUE;
     }
 
     /**
      * @todo: Check whether authenticated user belongs to a group
      *
-     * @param mixed group(s) to check
-     * @param bool user id
-     * @param bool check if all groups is present, or any of the groups
+     * @param mixed $groupToCheck group(s) to check
+     * @param bool $id user id
+     * @param bool $checkAll if all groups is present, or any of the groups
      *
      * @return bool
      **/
-    public function inGroup($check_group, $id = FALSE, $check_all = FALSE)
+    public function inGroup($groupToCheck, $id = FALSE, $checkAll = FALSE)
     {
         // @todo: implement
     }
@@ -390,11 +395,11 @@ class Manager
     protected function createModel()
     {
         if (!isset($this->model))
-            throw new Exception('Required property [model] missing in %s', get_called_class());
+            throw new Exception(sprintf('Required property [model] missing in %s', get_called_class()));
 
         $modelClass = $this->model;
         if (!class_exists($modelClass))
-            return null;
+            throw new Exception(sprintf('Missing model [%s] in %s', $modelClass, get_called_class()));
 
         return new $modelClass();
     }
@@ -419,6 +424,47 @@ class Manager
      * @return void
      */
     public function extendUserQuery($query)
+    {
+    }
+
+    /**
+     * Create a new instance of the group model
+     * if it does not already exist.
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function createGroupModel()
+    {
+        if (!isset($this->groupModel))
+            throw new Exception(sprintf('Required property [groupModel] missing in %s', get_called_class()));
+
+        $modelClass = $this->groupModel;
+        if (!class_exists($modelClass))
+            throw new Exception(sprintf('Missing model [%s] in %s', $modelClass, get_called_class()));
+
+        return new $modelClass();
+    }
+
+    /**
+     * Prepares a query derived from the user group model.
+     */
+    protected function createGroupModelQuery()
+    {
+        $model = $this->createGroupModel();
+        $query = $model->newQuery();
+        $this->extendUserGroupQuery($query);
+
+        return $query;
+    }
+
+    /**
+     * Extend the query used for finding the user group.
+     *
+     * @param \Igniter\Flame\Database\Builder $query
+     *
+     * @return void
+     */
+    public function extendUserGroupQuery($query)
     {
     }
 
@@ -454,24 +500,9 @@ class Manager
      */
     public function getSessionUserId()
     {
-        $sessionArray = $this->getSessionArray();
+        $sessionArray = $this->getSession(static::AUTH_KEY_NAME, []);
 
         return isset($sessionArray['id']) ? $sessionArray['id'] : null;
-    }
-
-    public function getSessionArray()
-    {
-        $sessionData = $this->getSession($this->getSessionName());
-
-        if (is_null($sessionData))
-            return [];
-
-        return unserialize(base64_decode($sessionData));
-    }
-
-    public function getSessionName()
-    {
-        return 'auth';
     }
 
     protected function makeSessionKey()
@@ -484,14 +515,14 @@ class Manager
         $id = $userModel->getAuthIdentifier();
         $identityName = $userModel->getAuthIdentifierName();
 
-        $sessionData = base64_encode(serialize([
+        $sessionData = [
             'id'              => $id,
             $identityName     => $id,
             $this->identifier => $userModel->{$this->identifier},
             'last_check'      => Carbon::now(),
-        ]));
+        ];
 
-        $this->putSession($this->getSessionName(), $sessionData);
+        $this->putSession(static::AUTH_KEY_NAME, $sessionData);
     }
 
     /**
@@ -693,31 +724,28 @@ class Manager
      */
     public function impersonate($userModel)
     {
-        $sessionName = $this->getSessionName();
-        $oldSession = $this->getSession($sessionName);
+        $oldSession = $this->getSession(static::AUTH_KEY_NAME);
 
         $this->login($userModel, FALSE);
 
-        $this->putSession($sessionName.'_impersonate', $oldSession);
+        $this->putSession(static::AUTH_KEY_NAME.'_impersonate', $oldSession);
     }
 
     public function stopImpersonate()
     {
-        $sessionName = $this->getSessionName();
-        $oldSession = $this->getSession($sessionName.'_impersonate');
+        $oldSession = $this->getSession(static::AUTH_KEY_NAME.'_impersonate');
 
-        $this->putSession($sessionName, $oldSession);
+        $this->putSession(static::AUTH_KEY_NAME, $oldSession);
     }
 
     public function isImpersonator()
     {
-        return $this->hasSession($this->getSessionName().'_impersonate');
+        return $this->hasSession(static::AUTH_KEY_NAME.'_impersonate');
     }
 
     public function getImpersonator()
     {
-        $sessionName = $this->getSessionName();
-        $impersonateArray = $this->getSession($sessionName.'_impersonate');
+        $impersonateArray = $this->getSession(static::AUTH_KEY_NAME.'_impersonate');
 
         // Check supplied session/cookie is an array (user id, persist code)
         if (!is_array($impersonateArray) OR count($impersonateArray) !== 2)

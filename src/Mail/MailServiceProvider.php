@@ -19,20 +19,26 @@ class MailServiceProvider extends BaseMailServiceProvider
     protected function mergeMailerConfiguration($app)
     {
         $setting = $app['setting']->driver('config');
-        $config = $app->make('config');
 
-        $overrides = [
-            'driver'   => $setting->get('protocol', $config->get('mail.driver')),
-            'host'     => $setting->get('smtp_host') ?: $config->get('mail.host'),
-            'port'     => $setting->get('smtp_port') ?: $config->get('mail.port'),
-            'from'     => [
-                'address' => $setting->get('sender_email') ?: $config->get('mail.from.address'),
-                'name'    => $setting->get('sender_name') ?: $config->get('mail.from.name'),
-            ],
-            'username' => $config->get('mail.username') ?: $setting->get('smtp_user'),
-            'password' => $config->get('mail.password') ?: $setting->get('smtp_pass'),
-        ];
+        if ($protocol = $setting->get('protocol'))
+            $this->app['config']->set('mail.driver', $protocol);
 
-        $config->set('mail', $overrides);
+        if ($smtpHost = $setting->get('smtp_host'))
+            $this->app['config']->set('mail.host', $smtpHost);
+
+        if ($smtpPort = $setting->get('smtp_port'))
+            $this->app['config']->set('mail.port', $smtpPort);
+
+        if ($senderEmail = $setting->get('sender_email'))
+            $this->app['config']->set('mail.form.address', $senderEmail);
+
+        if ($senderName = $setting->get('sender_name'))
+            $this->app['config']->set('mail.form.name', $senderName);
+
+        if ($username = $setting->get('smtp_user'))
+            $this->app['config']->set('mail.username', $username);
+
+        if ($password = $setting->get('smtp_pass'))
+            $this->app['config']->set('mail.password', $password);
     }
 }

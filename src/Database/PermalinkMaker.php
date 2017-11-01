@@ -4,7 +4,6 @@ namespace Igniter\Flame\Database;
 
 use Igniter\Flame\Traits\Singleton;
 use Illuminate\Support\Collection;
-use Model;
 
 class PermalinkMaker
 {

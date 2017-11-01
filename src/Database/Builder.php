@@ -22,17 +22,7 @@ class Builder extends BuilderBase
      */
     public function lists($column, $key = null)
     {
-        $results = $this->toBase()->pluck($column, $key);
-
-        if ($this->model->hasGetMutator($column)) {
-            foreach ($results as $key => &$value) {
-                $fill = [$column => $value];
-
-                $value = $this->model->newFromBuilder($fill)->$column;
-            }
-        }
-
-        return $results;
+        return $this->pluck($column, $key);
     }
 
     /**

@@ -241,7 +241,6 @@ class Application extends BaseApplication
     {
         try {
             $this['db.connection']->table('settings')->get();
-//            $this['db.connection']->getPdo();
         } catch (Exception $ex) {
             return FALSE;
         }

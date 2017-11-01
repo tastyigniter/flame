@@ -1,7 +1,8 @@
 <?php
 
-namespace Igniter\Flame\Traits\NestedSet;
+namespace Igniter\Flame\Database\Traits;
 
+use Igniter\Flame\Database\NestedSet\QueryBuilder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Kalnoy\Nestedset\NodeTrait;
 
@@ -76,6 +77,5 @@ trait NestedTree
     public function newEloquentBuilder($query)
     {
         return new QueryBuilder($query);
-//        return new Builder($query);
     }
 }

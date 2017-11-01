@@ -102,35 +102,28 @@ class CompleteApplicationSetup
 
     protected function writeEnvWith()
     {
-        if (!File::exists($this->envPath.'/example.env'))
-            return;
+        if ($this->app['config']['app.key'])
+            return false;
 
-        $contents = File::get($this->envPath.'/example.env');
+        $contents = File::get($this->envPath.'/.env');
 
         $search = $this->envReplacementPatterns();
         foreach ($search as $pattern => $replace) {
             $contents = preg_replace($pattern, $replace, $contents);
+            putenv($replace);
         }
 
-        File::put($this->envPath.'/example.env', $contents);
-
-        rename($this->envPath.'/example.env', $this->envPath.'/.env');
+        File::put($this->envPath.'/.env', $contents);
     }
 
     protected function envReplacementPatterns()
     {
         $config = $this->repository->get('settings');
-        $db = $this->repository->get('database');
 
         return [
             '/^APP_NAME=TastyIgniter/m' => 'APP_NAME='.$config['site_name'],
             // Create the encryption key used for authentication and encryption
             '/^APP_KEY=/m'              => 'APP_KEY='.$this->generateRandomKey(),
-            '/^DB_HOST=127.0.0.1/m'     => 'DB_HOST='.$db['host'],
-            '/^DB_DATABASE=database/m'  => 'DB_DATABASE='.$db['database'],
-            '/^DB_USERNAME=username/m'  => 'DB_USERNAME='.$db['username'],
-            '/^DB_PASSWORD=password/m'  => 'DB_PASSWORD='.$db['password'],
-            '/^DB_PREFIX=ti_/m'         => 'DB_PREFIX='.$db['prefix'],
         ];
     }
 
@@ -140,9 +133,6 @@ class CompleteApplicationSetup
      */
     protected function generateRandomKey()
     {
-        if ($this->app['config']['app.key'])
-            return $this->app['config']['app.key'];
-
         return 'base64:'.base64_encode(
                 Encrypter::generateKey($this->app['config']['app.cipher'])
             );

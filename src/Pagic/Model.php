@@ -452,7 +452,6 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
      */
     public function __set($key, $value)
     {
-        var_dump($key);
         $this->setAttribute($key, $value);
     }
 
