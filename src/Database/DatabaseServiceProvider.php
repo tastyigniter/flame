@@ -3,6 +3,7 @@
 namespace Igniter\Flame\Database;
 
 use Illuminate\Database\DatabaseServiceProvider as BaseDatabaseServiceProvider;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseServiceProvider extends BaseDatabaseServiceProvider
 {
@@ -16,6 +17,8 @@ class DatabaseServiceProvider extends BaseDatabaseServiceProvider
         Model::setConnectionResolver($this->app['db']);
 
         Model::setEventDispatcher($this->app['events']);
+
+        Schema::defaultStringLength(128);
     }
 
     /**
