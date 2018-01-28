@@ -10,7 +10,7 @@ use Igniter\Flame\Auth\Models\User as UserModel;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Exception\ApplicationException;
 use Illuminate\Support\Str;
-use System\Traits\SessionMaker;
+use Session;
 
 /**
  * Auth Manager Class
@@ -20,9 +20,9 @@ use System\Traits\SessionMaker;
  */
 class Manager
 {
-    use SessionMaker;
-
     const AUTH_KEY_NAME = 'auth';
+
+    protected $sessionKey;
 
     protected $hasher;
 
@@ -500,14 +500,8 @@ class Manager
      */
     public function getSessionUserId()
     {
-        $sessionArray = $this->getSession(static::AUTH_KEY_NAME, []);
-
-        return isset($sessionArray['id']) ? $sessionArray['id'] : null;
-    }
-
-    protected function makeSessionKey()
-    {
-        return strtolower(basename(str_replace('\\', '/', get_class($this)))).'_info';
+        $sessionData = Session::get($this->sessionKey);
+        return array_get($sessionData, static::AUTH_KEY_NAME.'.id', null);
     }
 
     protected function updateSession(UserModel $userModel)
@@ -515,14 +509,15 @@ class Manager
         $id = $userModel->getAuthIdentifier();
         $identityName = $userModel->getAuthIdentifierName();
 
-        $sessionData = [
+        $sessionData = Session::get($this->sessionKey);
+        $sessionData[static::AUTH_KEY_NAME] = [
             'id'              => $id,
             $identityName     => $id,
             $this->identifier => $userModel->{$this->identifier},
             'last_check'      => Carbon::now(),
         ];
 
-        $this->putSession(static::AUTH_KEY_NAME, $sessionData);
+        Session::put($this->sessionKey, $sessionData);
     }
 
     /**
@@ -603,7 +598,7 @@ class Manager
 
     protected function getRememberCookieName()
     {
-        return 'remember_'.$this->makeSessionKey();
+        return 'remember_'.$this->sessionKey;
     }
 
     /**
@@ -657,7 +652,6 @@ class Manager
 
         // Reset the user password and send email link
         if ($model->resetPassword($identity)) {
-
             return TRUE;
         }
         else {
@@ -712,47 +706,5 @@ class Manager
             return TRUE;
 
         return FALSE;
-    }
-
-    //
-    // Impersonation
-    //
-
-    /**
-     * Impersonates the given user and sets properties
-     * in the session but not the cookie.
-     */
-    public function impersonate($userModel)
-    {
-        $oldSession = $this->getSession(static::AUTH_KEY_NAME);
-
-        $this->login($userModel, FALSE);
-
-        $this->putSession(static::AUTH_KEY_NAME.'_impersonate', $oldSession);
-    }
-
-    public function stopImpersonate()
-    {
-        $oldSession = $this->getSession(static::AUTH_KEY_NAME.'_impersonate');
-
-        $this->putSession(static::AUTH_KEY_NAME, $oldSession);
-    }
-
-    public function isImpersonator()
-    {
-        return $this->hasSession(static::AUTH_KEY_NAME.'_impersonate');
-    }
-
-    public function getImpersonator()
-    {
-        $impersonateArray = $this->getSession(static::AUTH_KEY_NAME.'_impersonate');
-
-        // Check supplied session/cookie is an array (user id, persist code)
-        if (!is_array($impersonateArray) OR count($impersonateArray) !== 2)
-            return FALSE;
-
-        $id = reset($impersonateArray);
-
-        return $this->createModel()->find($id);
     }
 }
