@@ -39,7 +39,7 @@ class CompleteApplicationSetup
     {
         $this->makeRepository();
 
-        // We will only run this if a value setup_config file exists
+        // We will only run this if the setup config file exists and is valid
         if ($this->verifyRepository()) {
 
             // Replace and write example.env contents to .env
@@ -103,7 +103,7 @@ class CompleteApplicationSetup
     protected function writeEnvWith()
     {
         if ($this->app['config']['app.key'])
-            return false;
+            return FALSE;
 
         $contents = File::get($this->envPath.'/.env');
 
@@ -196,7 +196,7 @@ class CompleteApplicationSetup
             $item = $key;
             $value = is_array($value) ? serialize($value) : $value;
 
-            if (in_array($key, ['ti_setup', 'ti_version', 'site_key', 'default_location_id'])) {
+            if (in_array($key, ['ti_setup', 'ti_version', 'sys_hash', 'site_key', 'default_location_id'])) {
                 params()->set($item, $value);
             }
             else {
