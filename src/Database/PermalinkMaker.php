@@ -221,7 +221,7 @@ class PermalinkMaker
         }
 
         // Get the list of all matching slugs
-        return $query->lists($attribute, $this->model->getKeyName());
+        return $query->pluck($attribute, $this->model->getKeyName());
     }
 
     /**

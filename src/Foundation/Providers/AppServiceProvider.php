@@ -6,9 +6,7 @@ use File;
 use Igniter\Flame\ActivityLog\ActivityLogServiceProvider;
 use Igniter\Flame\Currency\CurrencyServiceProvider;
 use Igniter\Flame\Pagic\PagicServiceProvider;
-use Igniter\Flame\Setting\SettingServiceProvider;
 use Igniter\Flame\Support\HelperServiceProvider;
-use Igniter\Flame\Translation\TranslationServiceProvider;
 use Illuminate\Support\ServiceProvider;
 
 abstract class AppServiceProvider extends ServiceProvider

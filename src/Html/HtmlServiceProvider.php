@@ -26,7 +26,6 @@ class HtmlServiceProvider extends ServiceProvider
 
         $this->app->alias('html', HtmlBuilder::class);
         $this->app->alias('form', FormBuilder::class);
-//        include_once __DIR__.'/helpers.php';
     }
 
     /**

@@ -82,7 +82,7 @@ class CompleteApplicationSetup
             return FALSE;
 
         // Make sure all system requirements were met
-        if ($this->repository->get('requirement') != 'success')
+        if ($this->repository->get('requirement') != 'complete')
             return FALSE;
 
         // Make sure core library was installed
