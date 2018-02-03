@@ -37,13 +37,13 @@ class CompleteApplicationSetup
      */
     public function handle($request, Closure $next, $guard = null)
     {
+        if (!$this->app['config']['app.key'])
+            \Artisan::call('key:generate');
+
         $this->makeRepository();
 
         // We will only run this if the setup config file exists and is valid
         if ($this->verifyRepository()) {
-
-            // Replace and write example.env contents to .env
-            $this->writeEnvWith();
 
             // Install the database tables
             \Artisan::call('igniter:up');
