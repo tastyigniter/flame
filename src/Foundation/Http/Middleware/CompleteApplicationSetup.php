@@ -85,12 +85,12 @@ class CompleteApplicationSetup
         if ($this->repository->get('requirement') != 'complete')
             return FALSE;
 
-        // Make sure core library was installed
-        if ($this->repository->get('install') != 'complete')
-            return FALSE;
-
         // Make sure database configuration values was provided
         if (!is_array($this->repository->get('database')))
+            return FALSE;
+
+        // Make sure core library was installed
+        if ($this->repository->get('install') != 'complete')
             return FALSE;
 
         // Make sure application settings exists
@@ -118,10 +118,7 @@ class CompleteApplicationSetup
 
     protected function envReplacementPatterns()
     {
-        $config = $this->repository->get('settings');
-
         return [
-            '/^APP_NAME=TastyIgniter/m' => 'APP_NAME='.$config['site_name'],
             // Create the encryption key used for authentication and encryption
             '/^APP_KEY=/m'              => 'APP_KEY='.$this->generateRandomKey(),
         ];
@@ -179,7 +176,7 @@ class CompleteApplicationSetup
 
         $config = $this->repository->get('settings');
 
-        $version = app()->version();
+        $version = $this->app->version();
         $settings = [
             'site_url'            => root_url(),
             'site_name'           => $config['site_name'],

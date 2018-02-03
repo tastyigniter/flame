@@ -33,7 +33,6 @@ class Kernel extends BaseKernel
      * @var array
      */
     protected $middleware = [
-        \Igniter\Flame\Foundation\Http\Middleware\CheckForApplicationSetup::class,
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \Igniter\Flame\Foundation\Http\Middleware\CompleteApplicationSetup::class,
