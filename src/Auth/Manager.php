@@ -7,8 +7,6 @@ use Carbon\Carbon;
 use Cookie;
 use Exception;
 use Igniter\Flame\Auth\Models\User as UserModel;
-use Igniter\Flame\Database\Model;
-use Igniter\Flame\Exception\ApplicationException;
 use Illuminate\Support\Str;
 use Session;
 
@@ -89,32 +87,6 @@ class Manager
     }
 
     /**
-     * Registers a user by giving the required credentials
-     * and an optional flag for whether to activate the user.
-     *
-     * @param array $credentials
-     * @param bool $activate
-     *
-     * @return Models\User
-     */
-    public function register(array $credentials, $activate = FALSE)
-    {
-        $model = $this->createModel();
-        $model->fill($credentials);
-        $model->save();
-
-        if ($activate) {
-            $model->attemptActivation($model->getActivationCode());
-        }
-
-        // Prevents revalidation of the password field
-        // on subsequent saves to this model object
-        $model->password = null;
-
-        return $this->user = $model;
-    }
-
-    /**
      * Determine if the current user is authenticated.
      */
     public function check()
@@ -141,7 +113,6 @@ class Manager
         if (is_null($user))
             return FALSE;
 
-//        dd($user, $rememberCookie, $sessionUserId, $this->getSession());
         $this->user = $user;
 
         return TRUE;
@@ -210,6 +181,7 @@ class Manager
      * @param bool $login
      *
      * @return bool
+     * @throws \Exception
      */
     public function authenticate(array $credentials = [], $remember = FALSE, $login = TRUE)
     {
@@ -243,13 +215,13 @@ class Manager
      * @param UserModel $userModel
      * @param bool $remember
      *
-     * @throws \Igniter\Flame\Exception\ApplicationException
+     * @throws \Exception
      */
     public function login($userModel, $remember = FALSE)
     {
         // Approval is required, user not approved
         if ($this->requireApproval AND !$userModel->is_activated) {
-            throw new ApplicationException(sprintf(
+            throw new Exception(sprintf(
                 'Cannot login user "%s" until activated.', $userModel->getAuthIdentifier()
             ));
         }
@@ -272,6 +244,7 @@ class Manager
      * @param bool $remember
      *
      * @return mixed
+     * @throws \Exception
      */
     public function loginUsingId($id, $remember = FALSE)
     {
@@ -295,7 +268,7 @@ class Manager
 
         $this->user = null;
 
-        $this->clearUserDataFromStorage();
+        $this->clearUserDataFromStore();
 
         $this->loggedOut = TRUE;
     }
@@ -307,8 +280,8 @@ class Manager
      * @param bool $id user id
      * @param bool $checkAll if all groups is present, or any of the groups
      *
-     * @return bool
-     **/
+     * @return void
+     */
     public function inGroup($groupToCheck, $id = FALSE, $checkAll = FALSE)
     {
         // @todo: implement
@@ -335,6 +308,7 @@ class Manager
      * @param $token
      *
      * @return mixed
+     * @throws \Exception
      */
     public function getByToken($identifier, $token)
     {
@@ -501,6 +475,7 @@ class Manager
     public function getSessionUserId()
     {
         $sessionData = Session::get($this->sessionKey);
+
         return array_get($sessionData, static::AUTH_KEY_NAME.'.id', null);
     }
 
@@ -521,7 +496,8 @@ class Manager
     }
 
     /**
-     * @param $userModel
+     * @param \Igniter\Flame\Auth\Models\User $userModel
+     * @param null $token
      */
     protected function refreshRememberToken(UserModel $userModel, $token = null)
     {
@@ -584,6 +560,7 @@ class Manager
      * @param  string $rememberCookie
      *
      * @return mixed
+     * @throws \Exception
      */
     protected function getUserByRememberCookie($rememberCookie)
     {
@@ -616,9 +593,9 @@ class Manager
      * Remove the user data from the session and cookies.
      * @return void
      */
-    protected function clearUserDataFromStorage()
+    protected function clearUserDataFromStore()
     {
-        $this->resetSession();
+        Session::forget($this->sessionKey);
 
         if (!is_null($this->getRememberCookie())) {
             $rememberCookie = $this->getRememberCookieName();
@@ -630,15 +607,6 @@ class Manager
     // Reset Password
     //
 
-    public function createResetCode()
-    {
-        $model = $this->createModel();
-        $email = $model->getReminderEmail();
-        $value = sha1($email.spl_object_hash($this).microtime(TRUE));
-
-        return hash_hmac('sha1', $value, $this->getHasher()->getHashKey());
-    }
-
     /**
      * Reset password feature
      *
@@ -646,18 +614,18 @@ class Manager
      *
      * @return bool|array
      */
-    public function resetPassword($identity)
-    {
-        $model = $this->createModel();
-
-        // Reset the user password and send email link
-        if ($model->resetPassword($identity)) {
-            return TRUE;
-        }
-        else {
-            return FALSE;
-        }
-    }
+//    public function resetPassword($identity)
+//    {
+//        $userModel = $this->getByCredentials($credentials);
+//
+//        // Reset the user password and send email link
+//        if ($model->resetPassword()) {
+//            return TRUE;
+//        }
+//        else {
+//            return FALSE;
+//        }
+//    }
 
     /**
      * Validate a password reset for the given credentials.
@@ -665,6 +633,7 @@ class Manager
      * @param $credentials
      *
      * @return bool|UserModel
+     * @throws \Exception
      */
     public function validateResetPassword($credentials)
     {
@@ -694,6 +663,7 @@ class Manager
      * @param $credentials
      *
      * @return bool
+     * @throws \Exception
      */
     public function completeResetPassword($credentials)
     {

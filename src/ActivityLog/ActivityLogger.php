@@ -1,11 +1,8 @@
 <?php namespace Igniter\Flame\ActivityLog;
 
-use AdminAuth;
-use App;
 use Igniter\Flame\ActivityLog\Models\Activity;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Foundation\Application;
-use Igniter\Flame\Traits\Singleton;
 use Illuminate\Support\Traits\Macroable;
 
 class ActivityLogger
@@ -35,12 +32,12 @@ class ActivityLogger
     {
         if ($app->runningInConsole()) {
             $this->causedBy = null;
-        } else {
+        }
+        else {
             $this->causedBy = (!$app->runningInAdmin())
                 ? $app['main.auth']->user()
                 : $app['admin.auth']->user();
         }
-
 
         $this->properties = collect();
         $this->logName = 'default';
@@ -126,7 +123,7 @@ class ActivityLogger
 
         $activity->properties = $this->properties;
         $activity->message = $this->replacePlaceholders($message, $activity);
-        $activity->log_name = strlen($this->logName) > 1 ? $this->logName : APPDIR;
+        $activity->log_name = $this->logName;
         $activity->save();
 
         return $activity;

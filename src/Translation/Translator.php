@@ -1,7 +1,7 @@
 <?php namespace Igniter\Flame\Translation;
 
 use Illuminate\Support\Str;
-use \Illuminate\Translation\Translator as BaseTranslator;
+use Illuminate\Translation\Translator as BaseTranslator;
 
 class Translator extends BaseTranslator
 {

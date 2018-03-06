@@ -2,6 +2,7 @@
 
 namespace Igniter\Flame\Mail;
 
+use Igniter\Flame\Setting\SettingManager;
 use Illuminate\Mail\MailServiceProvider as BaseMailServiceProvider;
 use Illuminate\Mail\TransportManager;
 
@@ -10,15 +11,15 @@ class MailServiceProvider extends BaseMailServiceProvider
     public function registerSwiftTransport()
     {
         $this->app->singleton('swift.transport', function ($app) {
-            $this->mergeMailerConfiguration($app);
+            $this->mergeMailerConfiguration();
 
             return new TransportManager($app);
         });
     }
 
-    protected function mergeMailerConfiguration($app)
+    protected function mergeMailerConfiguration()
     {
-        $setting = $app['setting']->driver('config');
+        $setting = $this->app[SettingManager::class]->driver('config');
 
         if ($protocol = $setting->get('protocol'))
             $this->app['config']->set('mail.driver', $protocol);

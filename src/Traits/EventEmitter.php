@@ -63,7 +63,7 @@ trait EventEmitter
      *
      * @param  string $eventName
      *
-     * @return array
+     * @return void
      */
     protected function emitterEventSortEvents($eventName)
     {

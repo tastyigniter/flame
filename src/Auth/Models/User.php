@@ -2,11 +2,28 @@
 
 namespace Igniter\Flame\Auth\Models;
 
+use Carbon\Carbon;
+use Hash;
 use Igniter\Flame\Database\Model;
 
 class User extends Model
 {
     const REMEMBER_TOKEN_NAME = 'remember_token';
+
+    protected static $resetExpiration = 1440;
+
+    public function setPasswordAttribute($value)
+    {
+        if ($this->exists AND empty($value)) {
+            unset($this->attributes['password']);
+        }
+        else {
+            $this->attributes['password'] = Hash::make($value);
+
+            // Password has changed, log out all users
+            $this->attributes['remember_token'] = null;
+        }
+    }
 
     /**
      * Get the name of the unique identifier for the user.
@@ -98,32 +115,75 @@ class User extends Model
     }
 
     /**
+     * Generate a unique hash for this order.
+     * @return string
+     */
+    protected function generateResetCode()
+    {
+        $random = str_random(42);
+        while ($this->newQuery()->where('reset_code', $random)->count() > 0) {
+            $random = str_random(42);
+        }
+    }
+
+    /**
      * Sets the reset password columns to NULL
+     */
+    public function clearResetPasswordCode()
+    {
+        $this->reset_code = null;
+        $this->reset_time = null;
+        $this->save();
+    }
+
+    /**
+     * Sets the new password on user requested reset
      *
-     * @param string $code
+     * @param $code
+     * @param $password
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    public function completeResetPassword($code, $password)
+    {
+        if (!$this->checkResetPasswordCode($code))
+            return FALSE;
+
+        $this->password = Hash::make($password);
+        $this->reset_time = null;
+        $this->reset_code = null;
+
+        return $this->save();
+    }
+
+    /**
+     * Checks if the provided user reset password code is valid without actually resetting the password.
+     *
+     * @param string $resetCode
      *
      * @return bool
      */
-    public function clearResetPasswordCode($code)
+    public function checkResetPasswordCode($resetCode)
     {
-        if (is_null($code))
+        if ($this->reset_code != $resetCode)
             return FALSE;
 
-        $query = $this->newQuery()->where('reset_code', $code);
+        $expiration = self::$resetExpiration;
+        if ($expiration > 0) {
+            if (Carbon::now()->gte($this->reset_time->addMinutes($expiration))) {
+                // Reset password request has expired, so clear code.
+                $this->clearResetPasswordCode();
 
-        if ($row = $query->isEnabled()->first()) {
-            $query->update([
-                'reset_code' => null,
-                'reset_time' => null,
-            ]);
-
-            return TRUE;
+                return FALSE;
+            }
         }
 
-        return FALSE;
+        return TRUE;
     }
 
     public function getReminderEmail()
     {
+        return $this->email;
     }
 }

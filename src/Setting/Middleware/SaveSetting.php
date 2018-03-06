@@ -1,9 +1,7 @@
 <?php namespace Igniter\Flame\Setting\Middleware;
 
 use Closure;
-use Igniter\Flame\Foundation\Application;
 use Igniter\Flame\Setting\SettingManager;
-use Igniter\Flame\Setting\SettingStore;
 
 class SaveSetting
 {
@@ -24,11 +22,11 @@ class SaveSetting
     /**
      * Create a new setting middleware.
      *
-     * @param  \Igniter\Flame\Setting\SettingStore $stores
+     * @param \Igniter\Flame\Setting\SettingManager $manager
      */
-    public function __construct(Application $app)
+    public function __construct(SettingManager $manager)
     {
-        $this->manager = $app->make('setting');
+        $this->manager = $manager;
     }
 
     public function handle($request, Closure $next)

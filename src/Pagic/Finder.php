@@ -534,7 +534,7 @@ class Finder
     /**
      * Get the Closure callback used when caching queries.
      *
-     * @param  string $fileName
+     * @param $columns
      *
      * @return \Closure
      */

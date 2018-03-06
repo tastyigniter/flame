@@ -30,7 +30,7 @@ class Template
      * @internal
      *
      * @param \Igniter\Flame\Pagic\Environment $env
-     * @param \Igniter\Flame\Pagic\Template $template
+     * @param $path
      */
     public function __construct(Environment $env, $path)
     {
@@ -71,16 +71,6 @@ class Template
         }
 
         return ob_get_clean();
-    }
-
-    /**
-     * Displays the template.
-     *
-     * @param array $context An array of parameters to pass to the template
-     */
-    public function display($context = [])
-    {
-        $this->template->display($context);
     }
 
     protected function mergeGlobals($context)

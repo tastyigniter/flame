@@ -26,7 +26,7 @@ class SettingServiceProvider extends ServiceProvider
      */
     protected function registerStorage()
     {
-        $this->app['setting']->extend('config', function ($app) {
+        $this->app[SettingManager::class]->extend('config', function ($app) {
             $connectionName = $app['config']->get('database.default');
             $connection = $app['db']->connection($connectionName);
 
@@ -36,7 +36,7 @@ class SettingServiceProvider extends ServiceProvider
             return $store;
         });
 
-        $this->app['setting']->extend('prefs', function ($app) {
+        $this->app[SettingManager::class]->extend('prefs', function ($app) {
             $connectionName = $app['config']->get('database.default');
             $connection = $app['db']->connection($connectionName);
 
@@ -49,7 +49,7 @@ class SettingServiceProvider extends ServiceProvider
 
     protected function registerManager()
     {
-        $this->app->singleton('setting', function ($app) {
+        $this->app->singleton(SettingManager::class, function ($app) {
             return new SettingManager($app);
         });
     }

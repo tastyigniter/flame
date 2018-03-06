@@ -2,9 +2,9 @@
 
 namespace Igniter\Flame\Database;
 
+use Illuminate\Database\Eloquent\Builder as BuilderBase;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Database\Eloquent\Builder as BuilderBase;
 
 /**
  * TastyIgniter Database Manager Class

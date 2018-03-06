@@ -73,6 +73,7 @@ class FileSource extends AbstractSource implements SourceInterface
      * @param array $options
      *
      * @return array
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function selectAll($dirName, array $options = [])
     {
@@ -141,25 +142,13 @@ class FileSource extends AbstractSource implements SourceInterface
      *
      * @param  string $dirName
      * @param  string $fileName
+     * @param $extension
      * @param  array $content
      *
      * @return bool
      */
     public function insert($dirName, $fileName, $extension, $content)
     {
-        $this->validateDirectoryForSave($dirName, $fileName, $extension);
-
-        $path = $this->makeFilePath($dirName, $fileName, $extension);
-
-        if ($this->files->isFile($path)) {
-            throw (new FileExistsException)->setInvalidPath($path);
-        }
-
-        try {
-            return $this->files->put($path, $content);
-        } catch (Exception $ex) {
-            throw (new CreateFileException)->setInvalidPath($path);
-        }
     }
 
     /**
@@ -167,42 +156,16 @@ class FileSource extends AbstractSource implements SourceInterface
      *
      * @param  string $dirName
      * @param  string $fileName
+     * @param $extension
      * @param  array $content
+     *
+     * @param null $oldFileName
+     * @param null $oldExtension
      *
      * @return int
      */
     public function update($dirName, $fileName, $extension, $content, $oldFileName = null, $oldExtension = null)
     {
-        $this->validateDirectoryForSave($dirName, $fileName, $extension);
-
-        $path = $this->makeFilePath($dirName, $fileName, $extension);
-
-        /*
-         * The same file is safe to rename when the case is changed
-         * eg: FooBar -> foobar
-         */
-        $iFileChanged = ($oldFileName !== null AND strcasecmp($oldFileName, $fileName) !== 0) OR
-        ($oldExtension !== null AND strcasecmp($oldExtension, $extension) !== 0);
-
-        if ($iFileChanged AND $this->files->isFile($path)) {
-            throw (new FileExistsException)->setInvalidPath($path);
-        }
-
-        /*
-         * File to be renamed, as delete and recreate
-         */
-        $fileChanged = ($oldFileName !== null AND strcmp($oldFileName, $fileName) !== 0) OR
-        ($oldExtension !== null AND strcmp($oldExtension, $extension) !== 0);
-
-        if ($fileChanged) {
-            $this->delete($dirName, $oldFileName, $oldExtension);
-        }
-
-        try {
-            return $this->files->put($path, $content);
-        } catch (Exception $ex) {
-            throw (new CreateFileException)->setInvalidPath($path);
-        }
     }
 
     /**
@@ -216,13 +179,6 @@ class FileSource extends AbstractSource implements SourceInterface
      */
     public function delete($dirName, $fileName, $extension)
     {
-        $path = $this->makeFilePath($dirName, $fileName, $extension);
-
-        try {
-            return $this->files->delete($path);
-        } catch (Exception $ex) {
-            throw (new DeleteFileException)->setInvalidPath($path);
-        }
     }
 
     /**
@@ -256,36 +212,16 @@ class FileSource extends AbstractSource implements SourceInterface
      */
     protected function validateDirectoryForSave($dirName, $fileName, $extension)
     {
-        $path = $this->makeFilePath($dirName, $fileName, $extension);
-        $dirPath = $this->basePath.'/'.$dirName;
-
-        /*
-         * Create base directory
-         */
-        if (
-            (!$this->files->exists($dirPath) OR !$this->files->isDirectory($dirPath)) AND
-            !$this->files->makeDirectory($dirPath, 0777, TRUE, TRUE)
-        ) {
-            throw (new CreateDirectoryException)->setInvalidPath($dirPath);
-        }
-
-        /*
-         * Create base file directory
-         */
-        if (($pos = strpos($fileName, '/')) !== FALSE) {
-            $fileDirPath = dirname($path);
-
-            if (
-                !$this->files->isDirectory($fileDirPath) AND
-                !$this->files->makeDirectory($fileDirPath, 0777, TRUE, TRUE)
-            ) {
-                throw (new CreateDirectoryException)->setInvalidPath($fileDirPath);
-            }
-        }
+        // @todo: implement
     }
 
     /**
      * Helper to make file path.
+     *
+     * @param $dirName
+     * @param $fileName
+     * @param $extension
+     *
      * @return string
      */
     protected function makeFilePath($dirName, $fileName, $extension)

@@ -126,6 +126,7 @@ class Model extends EloquentModel
      * @param string $sessionKey
      *
      * @return \Illuminate\Database\Eloquent\Model|static
+     * @throws \Exception
      */
     public static function create(array $attributes = [], $sessionKey = null)
     {
@@ -235,6 +236,8 @@ class Model extends EloquentModel
      * Create a new model instance that is existing.
      *
      * @param  array $attributes
+     *
+     * @param null $connection
      *
      * @return \Illuminate\Database\Eloquent\Model|static
      */
@@ -627,7 +630,7 @@ class Model extends EloquentModel
      * Handle dynamic method calls into the model.
      *
      * @param  string $method
-     * @param  array $parameters
+     * @param $params
      *
      * @return mixed
      */
@@ -898,6 +901,12 @@ class Model extends EloquentModel
 
     /**
      * Validate relation supplied arguments.
+     *
+     * @param $relationName
+     * @param $optional
+     * @param array $required
+     *
+     * @return array
      */
     protected function validateRelationArgs($relationName, $optional, $required = [])
     {
@@ -1027,6 +1036,7 @@ class Model extends EloquentModel
      * @param null $sessionKey
      *
      * @return bool
+     * @throws \Exception
      */
     public function save(array $options = null, $sessionKey = null)
     {
@@ -1040,6 +1050,7 @@ class Model extends EloquentModel
      * @param null $sessionKey
      *
      * @return bool
+     * @throws \Exception
      */
     public function push($options = null, $sessionKey = null)
     {

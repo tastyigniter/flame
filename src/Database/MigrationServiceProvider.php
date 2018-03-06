@@ -4,6 +4,7 @@ namespace Igniter\Flame\Database;
 
 use Igniter\Flame\Database\Migrations\DatabaseMigrationRepository;
 use Igniter\Flame\Database\Migrations\Migrator;
+use Illuminate\Database\Console\Migrations\MigrateCommand;
 use Illuminate\Database\MigrationServiceProvider as BaseServiceProvider;
 
 class MigrationServiceProvider extends BaseServiceProvider

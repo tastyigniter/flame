@@ -71,7 +71,7 @@ class DatabaseSettingStore extends SettingStore
     /**
      * Set the key column name to query from.
      *
-     * @param string $key_column
+     * @param $keyColumn
      */
     public function setKeyColumn($keyColumn)
     {
@@ -81,7 +81,7 @@ class DatabaseSettingStore extends SettingStore
     /**
      * Set the value column name to query from.
      *
-     * @param string $value_column
+     * @param $valueColumn
      */
     public function setValueColumn($valueColumn)
     {
@@ -91,7 +91,7 @@ class DatabaseSettingStore extends SettingStore
     /**
      * Set the query constraint.
      *
-     * @param Closure $callback
+     * @param \Closure $callback
      */
     public function setConstraint(\Closure $callback)
     {

@@ -26,15 +26,7 @@ class SettingManager extends Manager
         $connectionName = $this->app['config']->get('database.default');
         $connection = $this->app['db']->connection($connectionName);
 
-        return new DatabaseSettingStore($connection, 'settings', 'item', 'value', 'sort');
-    }
-
-    public function createPreferenceDriver()
-    {
-        $connectionName = $this->app['config']->get('database.default');
-        $connection = $this->app['db']->connection($connectionName);
-
-        return new DatabaseSettingStore($connection, 'settings', 'item', 'value', 'prefs');
+        return new DatabaseSettingStore($connection, 'settings', 'item', 'value');
     }
 
     public function createMemoryDriver()

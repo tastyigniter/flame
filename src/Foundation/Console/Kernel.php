@@ -17,7 +17,7 @@ class Kernel extends BaseKernel
         \Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables::class,
         \Illuminate\Foundation\Bootstrap\LoadConfiguration::class,
 //        \Igniter\Flame\Foundation\Bootstrap\LoadConfiguration::class,
-//        \Igniter\Flame\Foundation\Bootstrap\LoadTranslation::class,
+        \Igniter\Flame\Foundation\Bootstrap\LoadTranslation::class,
 //        \Igniter\Flame\Foundation\Bootstrap\ConfigureLogging::class,
         \Illuminate\Foundation\Bootstrap\HandleExceptions::class,
         \Illuminate\Foundation\Bootstrap\RegisterFacades::class,

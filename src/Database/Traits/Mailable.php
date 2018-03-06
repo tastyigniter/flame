@@ -2,8 +2,6 @@
 
 namespace Igniter\Flame\Database\Traits;
 
-use Exception;
-
 /**
  * Mailable model trait
  *
@@ -60,21 +58,7 @@ trait Mailable
         return $this->getAttributes();
     }
 
-    /**
-     * @return ActivityLogger
-     */
     public function getMailer()
     {
-        return ActivityLogger::instance();
-    }
-
-    /**
-     * Get the name of the "sort order" column.
-     *
-     * @return string
-     */
-    public static function getSortOrderColumn()
-    {
-        return static::SORT_ORDER;
     }
 }

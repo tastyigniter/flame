@@ -4,6 +4,8 @@ namespace Igniter\Flame\Traits;
 
 use BadMethodCallException;
 use ReflectionClass;
+use ReflectionMethod;
+use SystemException;
 
 /**
  * Extendable Trait
@@ -112,6 +114,7 @@ trait ExtendableTrait
      * @param  string $extensionName
      *
      * @return void|self
+     * @throws \SystemException
      */
     public function extendClassWith($extensionName)
     {
@@ -234,7 +237,6 @@ trait ExtendableTrait
      */
     public function asExtension($shortName)
     {
-        $hints = [];
         foreach ($this->extensionData['extensions'] as $class => $obj) {
             if (
                 preg_match('@\\\\([\w]+)$@', $class, $matches) &&
@@ -406,6 +408,7 @@ trait ExtendableTrait
      * @param  array $params
      *
      * @return mixed
+     * @throws \SystemException
      */
     public static function extendableCallStatic($name, $params = null)
     {
@@ -431,7 +434,7 @@ trait ExtendableTrait
                     $uses = $implement;
                 }
                 else {
-                    throw new Exception(sprintf('Class %s contains an invalid $implement value', $className));
+                    throw new SystemException(sprintf('Class %s contains an invalid $implement value', $className));
                 }
 
                 foreach ($uses as $use) {

@@ -46,6 +46,8 @@ interface DriverInterface
     /**
      * Remove given currency from storage.
      *
+     * @param $code
+     *
      * @return int
      */
     public function delete($code);

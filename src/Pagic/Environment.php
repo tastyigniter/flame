@@ -3,11 +3,8 @@
 namespace Igniter\Flame\Pagic;
 
 use File;
-use Igniter\Flame\Filesystem\Filesystem;
-use Igniter\Flame\Pagic\Parsers\FileParser;
 use LogicException;
 use Main\Contracts\TemplateLoader;
-use Exception;
 
 class Environment
 {
@@ -158,6 +155,8 @@ class Environment
      * @param array $context An array of parameters to pass to the template
      *
      * @return string The rendered template
+     * @throws \Exception
+     * @throws \Throwable
      */
     public function render($name, array $context = [])
     {
@@ -170,6 +169,7 @@ class Environment
      * @param string|Template $name The template name
      *
      * @return Template
+     * @throws \Exception
      */
     public function load($name)
     {
@@ -201,6 +201,7 @@ class Environment
      * @param int $time The last modification time of the cached template
      *
      * @return bool true if the template is fresh, false otherwise
+     * @throws \Exception
      */
     public function isTemplateFresh($name, $time)
     {

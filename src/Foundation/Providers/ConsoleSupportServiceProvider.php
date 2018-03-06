@@ -2,10 +2,10 @@
 
 namespace Igniter\Flame\Foundation\Providers;
 
+use Igniter\Flame\Database\MigrationServiceProvider;
 use Illuminate\Foundation\Providers\ArtisanServiceProvider;
 use Illuminate\Foundation\Providers\ComposerServiceProvider;
 use Illuminate\Foundation\Providers\ConsoleSupportServiceProvider as BaseServiceProvider;
-use Igniter\Flame\Database\MigrationServiceProvider;
 
 class ConsoleSupportServiceProvider extends BaseServiceProvider
 {
@@ -14,7 +14,7 @@ class ConsoleSupportServiceProvider extends BaseServiceProvider
      *
      * @var bool
      */
-    protected $defer = true;
+    protected $defer = TRUE;
 
     /**
      * The provider class names.

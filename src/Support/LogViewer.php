@@ -61,6 +61,8 @@ class LogViewer
 
     /**
      * @param string $file
+     *
+     * @throws \Exception
      */
     public static function setFile($file)
     {

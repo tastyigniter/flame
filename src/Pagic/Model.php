@@ -7,7 +7,6 @@ use BadMethodCallException;
 use Igniter\Flame\Pagic\Source\SourceResolverInterface;
 use Igniter\Flame\Support\Extendable;
 use Igniter\Flame\Traits\EventEmitter;
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
@@ -497,7 +496,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
      * An offset to check for.
      * </p>
      *
-     * @return boolean true on success or false on failure.
+     * @return void true on success or false on failure.
      * </p>
      * <p>
      * The return value will be casted to boolean if non-boolean was returned.
@@ -561,7 +560,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
 
     /**
      * Get the instance as an array.
-     * @return array
+     * @return void
      */
     public function toArray()
     {

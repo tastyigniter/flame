@@ -67,6 +67,9 @@ class TemplateCode extends Extendable implements ArrayAccess
 
     /**
      * ArrayAccess implementation
+     *
+     * @param $offset
+     * @param $value
      */
     public function offsetSet($offset, $value)
     {
@@ -75,6 +78,10 @@ class TemplateCode extends Extendable implements ArrayAccess
 
     /**
      * ArrayAccess implementation
+     *
+     * @param $offset
+     *
+     * @return bool
      */
     public function offsetExists($offset)
     {
@@ -83,6 +90,8 @@ class TemplateCode extends Extendable implements ArrayAccess
 
     /**
      * ArrayAccess implementation
+     *
+     * @param $offset
      */
     public function offsetUnset($offset)
     {
@@ -91,6 +100,10 @@ class TemplateCode extends Extendable implements ArrayAccess
 
     /**
      * ArrayAccess implementation
+     *
+     * @param $offset
+     *
+     * @return null
      */
     public function offsetGet($offset)
     {

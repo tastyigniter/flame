@@ -10,7 +10,6 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Traits\Macroable;
 
@@ -24,7 +23,7 @@ class FormBuilder
     /**
      * The HTML builder instance.
      *
-     * @var \Collective\Html\HtmlBuilder
+     * @var HtmlBuilder
      */
     protected $html;
 
@@ -103,10 +102,11 @@ class FormBuilder
     /**
      * Create a new form builder instance.
      *
-     * @param  \Collective\Html\HtmlBuilder $html
+     * @param \Igniter\Flame\Html\HtmlBuilder $html
      * @param  \Illuminate\Contracts\Routing\UrlGenerator $url
      * @param  \Illuminate\Contracts\View\Factory $view
      * @param  string $csrfToken
+     * @param \Illuminate\Http\Request|null $request
      */
     public function __construct(HtmlBuilder $html, UrlGenerator $url, Factory $view, $csrfToken, Request $request = null)
     {
@@ -633,12 +633,6 @@ class FormBuilder
 
     /**
      * Create a select year field.
-     *
-     * @param  string $name
-     * @param  string $begin
-     * @param  string $end
-     * @param  string $selected
-     * @param  array $options
      *
      * @return mixed
      */

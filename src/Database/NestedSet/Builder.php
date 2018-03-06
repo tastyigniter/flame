@@ -2,15 +2,17 @@
 
 namespace Igniter\Flame\Database\NestedSet;
 
-use Carbon\Carbon;
 use Igniter\Flame\Database\Builder as BuilderBase;
+use Igniter\Flame\Database\Traits\NestedTree;
 use Illuminate\Database\Eloquent\Model as ModelBase;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\Query\Builder as Query;
 use Illuminate\Database\Query\Builder as BaseQueryBuilder;
-use Illuminate\Support\Arr;
-use LogicException;
+use Illuminate\Database\Query\Builder as Query;
 use Illuminate\Database\Query\Expression;
+use Illuminate\Support\Arr;
+use Kalnoy\Nestedset\Collection;
+use Kalnoy\Nestedset\NestedSet;
+use LogicException;
 
 class Builder extends BuilderBase
 {
@@ -136,7 +138,7 @@ class Builder extends BuilderBase
     /**
      * @param $id
      *
-     * @return QueryBuilder
+     * @return \Igniter\Flame\Database\NestedSet\Builder
      */
     public function whereAncestorOrSelf($id)
     {
@@ -236,7 +238,7 @@ class Builder extends BuilderBase
     /**
      * @param mixed $id
      *
-     * @return QueryBuilder
+     * @return \Igniter\Flame\Database\NestedSet\Builder
      */
     public function whereNotDescendantOf($id)
     {
@@ -246,7 +248,7 @@ class Builder extends BuilderBase
     /**
      * @param mixed $id
      *
-     * @return QueryBuilder
+     * @return \Igniter\Flame\Database\NestedSet\Builder
      */
     public function orWhereDescendantOf($id)
     {
@@ -256,7 +258,7 @@ class Builder extends BuilderBase
     /**
      * @param mixed $id
      *
-     * @return QueryBuilder
+     * @return \Igniter\Flame\Database\NestedSet\Builder
      */
     public function orWhereNotDescendantOf($id)
     {
@@ -383,7 +385,7 @@ class Builder extends BuilderBase
     /**
      * @param array $columns
      *
-     * @return Collection
+     * @return \Igniter\Flame\Database\NestedSet\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
     public function leaves(array $columns = ['*'])
     {

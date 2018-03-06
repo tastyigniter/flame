@@ -2,6 +2,7 @@
 
 namespace Igniter\Flame\Pagic\Concerns;
 
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 

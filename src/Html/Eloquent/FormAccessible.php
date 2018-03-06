@@ -2,9 +2,9 @@
 
 namespace Igniter\Flame\Html\Eloquent;
 
+use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionMethod;
-use Illuminate\Support\Str;
 
 trait FormAccessible
 {

@@ -146,15 +146,16 @@ class ClassLoader
      */
     protected function isRealFilePath($path)
     {
-        return is_file(realpath($this->basePath.DIRECTORY_SEPARATOR.$path));
+        return is_file(realpath(strtolower($this->basePath.DIRECTORY_SEPARATOR.$path)));
     }
 
     /**
      * If a file exists, require it from the file system.
      *
+     * @param $class
      * @param string $path The file to require.
      *
-     * @return bool True if the file exists, false if not.
+     * @return void True if the file exists, false if not.
      */
     protected function requireClass($class, $path)
     {

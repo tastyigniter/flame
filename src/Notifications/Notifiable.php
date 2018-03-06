@@ -2,8 +2,8 @@
 
 namespace Igniter\Flame\Notifications;
 
-use Illuminate\Support\Str;
 use Illuminate\Contracts\Notifications\Dispatcher;
+use Illuminate\Support\Str;
 
 trait Notifiable
 {

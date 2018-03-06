@@ -12,6 +12,7 @@ class FileLoader extends FileLoaderBase
      * @param  string $namespace
      *
      * @return array
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function loadNamespaced($locale, $group, $namespace)
     {
@@ -33,11 +34,10 @@ class FileLoader extends FileLoaderBase
      * @param  string $namespace
      *
      * @return array
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function loadNamespaceOverrides(array $lines, $locale, $group, $namespace)
     {
-//        $namespace = str_replace('.', '/', $namespace);
-//        $file = "{$this->path}/{$locale}/{$namespace}/{$group}.php";
         $file = "{$this->path}/vendor/{$namespace}/{$locale}/{$group}.php";
 
         if ($this->files->exists($file)) {
@@ -55,6 +55,7 @@ class FileLoader extends FileLoaderBase
      * @param  string $group
      *
      * @return array
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function loadPath($path, $locale, $group)
     {

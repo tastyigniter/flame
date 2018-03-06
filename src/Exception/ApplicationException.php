@@ -2,10 +2,8 @@
 
 namespace Igniter\Flame\Exception;
 
-/**
- * This class represents an application exception.
- * Application exceptions are not logged in the error log.
- */
-class ApplicationException extends BaseException
+use October\Rain\Exception\ApplicationException as BaseApplicationException;
+
+class ApplicationException extends BaseApplicationException
 {
 }

@@ -2,10 +2,8 @@
 
 use App;
 use Igniter\Flame\ActivityLog\ActivityLogger;
-use Illuminate\Support\Collection;
-use Model;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * LogsActivity model trait

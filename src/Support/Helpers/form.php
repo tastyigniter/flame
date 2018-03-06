@@ -28,7 +28,6 @@ if (!function_exists('form_open')) {
         if (isset($attributes['handler']))
             $handler = app(FormBuilder::class)->hidden('_handler', $attributes['handler']);
 
-
         return app(FormBuilder::class)->open($attributes).$handler;
     }
 }
@@ -46,11 +45,11 @@ if (!function_exists('form_open_multipart')) {
      *
      * @return    string
      */
-    function form_open_multipart($action = '', $attributes = [], $hidden = [])
+    function form_open_multipart($action = '', $attributes = [])
     {
         $attributes['enctype'] = 'multipart/form-data';
 
-        return form_open($action, $attributes, $hidden);
+        return form_open($action, $attributes);
     }
 }
 
@@ -117,9 +116,8 @@ if (!function_exists('form_upload')) {
      * Upload Field
      * Identical to the input function but adds the "file" type
      *
-     * @param    mixed
      * @param    string
-     * @param    mixed
+     * @param array $options
      *
      * @return    string
      */
@@ -154,9 +152,10 @@ if (!function_exists('form_multiselect')) {
      * Multi-select menu
      *
      * @param    string
-     * @param    array
-     * @param    mixed
-     * @param    mixed
+     * @param array $list
+     * @param array $selected
+     * @param array $selectAttributes
+     * @param array $optionAttributes
      *
      * @return    string
      */
@@ -167,12 +166,6 @@ if (!function_exists('form_multiselect')) {
     )
     {
         return app(FormBuilder::class)->select($name, $list, $selected, $selectAttributes, $optionAttributes);
-        $extra = _attributes_to_string($extra);
-        if (stripos($extra, 'multiple') === FALSE) {
-            $extra .= ' multiple="multiple"';
-        }
-
-        return form_dropdown($name, $options, $selected, $extra);
     }
 }
 
@@ -222,10 +215,10 @@ if (!function_exists('form_checkbox')) {
     /**
      * Checkbox Field
      *
-     * @param    mixed
-     * @param    string
-     * @param    bool
-     * @param    mixed
+     * @param $name
+     * @param int $value
+     * @param null $checked
+     * @param array $options
      *
      * @return    string
      */
@@ -260,9 +253,8 @@ if (!function_exists('form_submit')) {
     /**
      * Submit Button
      *
-     * @param    mixed
      * @param    string
-     * @param    mixed
+     * @param array $options
      *
      * @return    string
      */
@@ -278,9 +270,8 @@ if (!function_exists('form_reset')) {
     /**
      * Reset Button
      *
-     * @param    mixed
      * @param    string
-     * @param    mixed
+     * @param array $options
      *
      * @return    string
      */
@@ -296,9 +287,8 @@ if (!function_exists('form_button')) {
     /**
      * Form Button
      *
-     * @param    mixed
      * @param    string
-     * @param    mixed
+     * @param array $options
      *
      * @return    string
      */
@@ -314,9 +304,10 @@ if (!function_exists('form_label')) {
     /**
      * Form Label Tag
      *
-     * @param    string    The text to appear onscreen
-     * @param    string    The id the label applies to
-     * @param    mixed    Additional attributes
+     * @param $name
+     * @param null $value
+     * @param array $options
+     * @param bool $escape_html
      *
      * @return    string
      */
@@ -411,15 +402,12 @@ if (!function_exists('set_value')) {
      *
      * @param    string $field Field name
      * @param    string $default Default value
-     * @param    bool $html_escape Whether to escape HTML special characters or not
      *
      * @return    string
      */
-    function set_value($field, $default = '', $escape = TRUE)
+    function set_value($field, $default = '')
     {
-        $value = app(FormBuilder::class)->getValueAttribute($field, $default);
-
-        return ($escape) ? trim(app(HtmlBuilder::class)->attributes($value)) : $value;
+        return app(FormBuilder::class)->getValueAttribute($field, $default);
     }
 }
 
@@ -439,7 +427,7 @@ if (!function_exists('set_select')) {
      */
     function set_select($field, $value = '', $default = FALSE)
     {
-        if (($input = post($field, FALSE)) === null) {
+        if (($input = set_value($field, FALSE)) === null) {
             return ($default === TRUE) ? ' selected="selected"' : '';
         }
 
@@ -477,7 +465,7 @@ if (!function_exists('set_checkbox')) {
     {
         // Form inputs are always strings ...
         $value = (string)$value;
-        $input = post($field, FALSE);
+        $input = set_value($field, FALSE);
 
         if (is_array($input)) {
             // Note: in_array('', array(0)) returns TRUE, do not use it
@@ -489,9 +477,7 @@ if (!function_exists('set_checkbox')) {
 
             return '';
         }
-
-        // Unchecked checkbox and radio inputs are not even submitted by browsers ...
-        if (Request::method() == 'POST') {
+        else if (is_string($input)) {
             return ($input === $value) ? ' checked="checked"' : '';
         }
 
@@ -517,7 +503,7 @@ if (!function_exists('set_radio')) {
     {
         // Form inputs are always strings ...
         $value = (string)$value;
-        $input = post($field, FALSE);
+        $input = set_value($field, FALSE);
 
         if (is_array($input)) {
             // Note: in_array('', array(0)) returns TRUE, do not use it
@@ -529,9 +515,7 @@ if (!function_exists('set_radio')) {
 
             return '';
         }
-
-        // Unchecked checkbox and radio inputs are not even submitted by browsers ...
-        if (Request::method() == 'POST') {
+        else if (is_string($input)) {
             return ($input === $value) ? ' checked="checked"' : '';
         }
 

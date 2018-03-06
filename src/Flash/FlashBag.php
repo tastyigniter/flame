@@ -34,8 +34,6 @@ class FlashBag
     /**
      * Gets all the flash messages
      *
-     * @param string|null $format
-     *
      * @return array
      */
     public function all()

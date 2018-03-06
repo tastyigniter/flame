@@ -96,6 +96,8 @@ class Message implements \ArrayAccess
      *
      * @param  mixed $offset
      *
+     * @param $value
+     *
      * @return void
      */
     public function offsetSet($offset, $value)

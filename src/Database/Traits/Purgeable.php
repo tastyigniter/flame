@@ -27,6 +27,7 @@ trait Purgeable
     /**
      * Boot the purgeable trait for a model.
      * @return void
+     * @throws \Exception
      */
     public static function bootPurgeable()
     {
@@ -64,7 +65,7 @@ trait Purgeable
     /**
      * Removes purged attributes, used before saving.
      *
-     * @param $attributes mixed Attribute(s) to purge, if null, $purgeable property is used
+     * @param null $attributesToPurge
      *
      * @return array Clean attributes
      */
@@ -109,6 +110,10 @@ trait Purgeable
 
     /**
      * Returns the original value of a single attribute.
+     *
+     * @param $attribute
+     *
+     * @return null
      */
     public function getOriginalPurgeValue($attribute)
     {

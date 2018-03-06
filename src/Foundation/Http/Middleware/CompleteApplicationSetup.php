@@ -120,7 +120,7 @@ class CompleteApplicationSetup
     {
         return [
             // Create the encryption key used for authentication and encryption
-            '/^APP_KEY=/m'              => 'APP_KEY='.$this->generateRandomKey(),
+            '/^APP_KEY=/m' => 'APP_KEY='.$this->generateRandomKey(),
         ];
     }
 

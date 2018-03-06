@@ -22,7 +22,7 @@ class Migrator extends BaseMigrator
         foreach ($paths as $group => $path) {
             $this->getRepository()->setGroup($group);
 
-            $this->rollDown($path);
+            $this->rollDown($path, $options);
         }
     }
 

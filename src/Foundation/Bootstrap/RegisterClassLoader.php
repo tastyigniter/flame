@@ -1,7 +1,7 @@
 <?php namespace Igniter\Flame\Foundation\Bootstrap;
 
-use Igniter\Flame\Support\ClassLoader;
 use Igniter\Flame\Filesystem\Filesystem;
+use Igniter\Flame\Support\ClassLoader;
 use Illuminate\Contracts\Foundation\Application;
 
 class RegisterClassLoader

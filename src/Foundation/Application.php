@@ -3,9 +3,8 @@
 namespace Igniter\Flame\Foundation;
 
 use Exception;
-use Illuminate\Container\Container;
-use Illuminate\Events\EventServiceProvider;
 use Igniter\Flame\Foundation\Providers\LogServiceProvider;
+use Illuminate\Events\EventServiceProvider;
 use Illuminate\Foundation\Application as BaseApplication;
 use Illuminate\Routing\RoutingServiceProvider;
 

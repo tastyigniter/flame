@@ -2,7 +2,6 @@
 
 namespace Igniter\Flame\Pagic;
 
-use Igniter\Flame\Pagic\Model;
 use Igniter\Flame\Pagic\Source\SourceResolver;
 use Illuminate\Support\ServiceProvider;
 
@@ -32,7 +31,7 @@ class PagicServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('pagic', function ($app) {
+        $this->app->singleton('pagic', function () {
             return new SourceResolver;
         });
     }

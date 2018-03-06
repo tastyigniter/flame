@@ -258,6 +258,9 @@ class FileParser
 
     /**
      * Extracts the class name from a cache file
+     *
+     * @param $path
+     *
      * @return string
      */
     protected function extractClassFromFile($path)

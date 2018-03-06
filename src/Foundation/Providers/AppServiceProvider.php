@@ -75,7 +75,7 @@ abstract class AppServiceProvider extends ServiceProvider
     public function registerConsoleCommand($key, $class)
     {
         $key = 'command.'.$key;
-        $this->app->singleton($key, function ($app) use ($class) {
+        $this->app->singleton($key, function () use ($class) {
             return new $class;
         });
 

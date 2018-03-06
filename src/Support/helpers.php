@@ -1,5 +1,6 @@
 <?php
 
+use Igniter\Flame\Setting\SettingManager;
 use Igniter\Flame\Support\StrHelper;
 use Igniter\Flame\Support\StringParser;
 
@@ -12,7 +13,7 @@ if (!function_exists('setting')) {
      */
     function setting($key = null, $default = null)
     {
-        $settingConfig = app('setting')->driver('config');
+        $settingConfig = app()->make(SettingManager::class)->driver('config');
 
         if (is_null($key))
             return $settingConfig;
@@ -30,7 +31,7 @@ if (!function_exists('params')) {
      */
     function params($key = null, $default = null)
     {
-        $settingPrefs = app('setting')->driver('prefs');
+        $settingPrefs = app()->make(SettingManager::class)->driver('prefs');
 
         if (is_null($key))
             return $settingPrefs;

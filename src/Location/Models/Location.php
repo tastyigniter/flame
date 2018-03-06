@@ -3,15 +3,20 @@
 namespace Igniter\Flame\Location\Models;
 
 use Admin\Models\Image_tool_model;
+use DB;
 use Igniter\Flame\Database\Model;
-use Igniter\Flame\Location\GeoLocation;
-use Igniter\Flame\Location\WorkingSchedule;
+use Igniter\Flame\Location\GeoPosition;
+use Igniter\Flame\Location\Traits\HasDeliveryAreas;
+use Igniter\Flame\Location\Traits\HasWorkingHours;
 
 class Location extends Model
 {
-    const CLOSED = 'closed';
+    use HasWorkingHours;
+    use HasDeliveryAreas;
 
-    const OPEN = 'open';
+    const KM_UNIT = 111.13384;
+
+    const M_UNIT = 69.05482;
 
     const OPENING = 'opening';
 
@@ -45,7 +50,7 @@ class Location extends Model
      */
     protected $workingSchedule;
 
-    protected $deliveryAreas;
+    protected $coveredArea;
 
     public function getName()
     {
@@ -96,7 +101,7 @@ class Location extends Model
 
     public function getGallery()
     {
-        return isset($this->options['gallery']) ? $this->options['gallery'] : [];
+        return array_get($this->options, 'gallery', []);
     }
 
     public function getReservationInterval()
@@ -104,17 +109,22 @@ class Location extends Model
         return $this->reservation_time_interval;
     }
 
-    public function deliveryTime()
+    public function getOrderTimeInterval($orderType)
+    {
+        return $orderType == 'delivery' ? $this->deliveryMinutes() : $this->collectionMinutes();
+    }
+
+    public function deliveryMinutes()
     {
         return $this->delivery_time;
     }
 
-    public function collectionTime()
+    public function collectionMinutes()
     {
         return $this->collection_time;
     }
 
-    public function lastOrderTime()
+    public function lastOrderMinutes()
     {
         return $this->last_order_time;
     }
@@ -138,81 +148,34 @@ class Location extends Model
 
     public function hasFutureOrder()
     {
-        return $this->future_orders ? TRUE : FALSE;
+        return (bool)array_get($this->options, 'future_orders', FALSE);
     }
 
     public function futureOrderDays($orderType = null)
     {
         $orderType = $orderType ?: static::DELIVERY;
 
-        return isset($this->future_order_days[$orderType])
-            ? $this->future_order_days[$orderType] : 5;
+        return array_get($this->options, "future_order_days.{$orderType}", 0);
     }
 
-    public function getDeliveryChargeSummary()
+    public function availableOrderTypes()
     {
-        return ''; // $this->area()->getNearestAreaChargeSummary();
+        return [1 => static::DELIVERY, 2 => static::COLLECTION];
     }
 
-//    public function workingSchedule()
-//    {
-//        if (!$this->workingSchedule)
-//            $this->workingSchedule = $this->createWorkingSchedule();
-//
-//        return $this->workingSchedule;
-//    }
-
-    public function deliveryAreas()
+    public function calculateDistance(GeoPosition $position)
     {
-        if (!$this->deliveryAreas)
-            $this->deliveryAreas = $this->delivery_areas()->get();
+        if (!is_float($position->latitude) OR !is_float($position->longitude)
+            OR !is_float($this->location_lat) OR !is_float($this->location_lng))
+            return null;
 
-        return $this->deliveryAreas;
-    }
+        $degrees = sin(deg2rad($position->latitude)) * sin(deg2rad($this->location_lat)) +
+            cos(deg2rad($position->latitude)) * cos(deg2rad($this->location_lat)) *
+            cos(deg2rad($position->longitude - $this->location_lng));
 
-    /**
-     * @return mixed
-     */
-    protected function createWorkingSchedule()
-    {
-        $workingHours = $this->working_hours()->get();
+        $distance = rad2deg(acos($degrees));
 
-        return new WorkingSchedule($this, $workingHours);
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function createDeliveryAreas()
-    {
-        $deliveryAreas = $this->delivery_areas()->get();
-
-        return new WorkingSchedule($this, $deliveryAreas);
-    }
-
-    public function getWorkingHourByDay($day)
-    {
-
-    }
-
-    public function isOpened()
-    {
-        return $this->workingSchedule()->isOpened();
-    }
-
-    public function isClosed()
-    {
-        return $this->workingSchedule()->isClosed();
-    }
-
-    public function checkWorkingStatus()
-    {
-        return false;
-    }
-
-    public function checkDistance()
-    {
-        return false;
+        return $this->getDistanceUnit() == 'km' ? ($distance * static::KM_UNIT) : ($distance * static::M_UNIT);
     }
 
     //
@@ -236,77 +199,5 @@ class Location extends Model
               ->orderBy('distance', 'asc');
 
         return $query;
-    }
-
-    //
-    // Helpers
-    //
-
-    /**
-     * Find a location working hour by day of the week
-     *
-     * @param int $location_id
-     * @param string $day
-     *
-     * @return array
-     */
-    public function getOpeningHourByDay($location_id = null, $day = null)
-    {
-        $weekdays = ['Monday' => 0, 'Tuesday' => 1, 'Wednesday' => 2, 'Thursday' => 3, 'Friday' => 4, 'Saturday' => 5, 'Sunday' => 6];
-        $day = (!isset($weekdays[$day])) ? date('l', strtotime($day)) : $day;
-        $hour = ['open' => '00:00:00', 'close' => '00:00:00', 'status' => '0'];
-
-        $working_hours = Working_hours_model::where('location_id', $location_id)
-                                            ->where('weekday', $weekdays[$day])->first();
-
-        if ($working_hours) {
-            $hour['open'] = $row['opening_time'];
-            $hour['close'] = $row['closing_time'];
-            $hour['status'] = $row['status'];
-        }
-
-        return $hour;
-    }
-
-    /**
-     * Find the nearest location to latitude and longitude
-     *
-     * @param  float $latitude
-     * @param  float $longitude
-     *
-     * @return array|bool an array of the nearest location, or null on failure
-     */
-    public function findNearestByCoordinates($latitude, $longitude)
-    {
-        if (is_null($latitude) OR is_null($longitude))
-            return null;
-
-        $query = $this->newQuery()
-//                       ->with('delivery_areas')
-                      ->select(['location_id', 'location_radius'])
-                      ->selectDistance($lat, $lng)
-                      ->isEnabled()
-//                           ->having('distance', '>', 100)
-                      ->orderBy('distance', 'asc');
-//        if ($result) {
-//            $searchRadius = ($result->location_radius > 0)
-//                ? $result->location_radius : (int)setting('search_radius');
-//
-//            if ($result->distance > $searchRadius) {
-//                dd($result->distance, $result->location_radius, $result->getKey(), $searchRadius);
-//
-//                return null;
-//            }
-//        }
-
-        return $query->first();
-    }
-
-    public function checkDeliveryCoverage(GeoLocation $geoLocation)
-    {
-        return true;
-//        $userPosition = $this->area()->geocode()->geocodePosition($geoLocation);
-//
-//        return $this->area()->setUserPosition($userPosition)->checkCoverage();
     }
 }

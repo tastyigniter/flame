@@ -1,7 +1,7 @@
 <?php namespace Igniter\Flame\Foundation\Providers;
 
-use Illuminate\Log\Writer;
 use Illuminate\Log\LogServiceProvider as BaseLogServiceProvider;
+use Illuminate\Log\Writer;
 
 class LogServiceProvider extends BaseLogServiceProvider
 {
