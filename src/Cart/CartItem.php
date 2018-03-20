@@ -43,6 +43,11 @@ class CartItem implements Arrayable, Jsonable
      */
     public $price;
 
+    /**
+     * The comment of the cart item.
+     *
+     * @var string
+     */
     public $comment;
 
     /**
@@ -57,7 +62,7 @@ class CartItem implements Arrayable, Jsonable
      *
      * @var string|null
      */
-    protected $associatedModel = null;
+    protected $associatedModel;
 
     /**
      * CartItem constructor.
@@ -81,7 +86,7 @@ class CartItem implements Arrayable, Jsonable
 
         $this->id = $id;
         $this->name = $name;
-        $this->price = floatval($price);
+        $this->price = (float)$price;
         $this->options = new CartItemOptions($options);
         $this->rowId = $this->generateRowId($id, $options);
     }

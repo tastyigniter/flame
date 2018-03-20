@@ -2,44 +2,39 @@
 
 namespace Igniter\Flame\Mail;
 
-use Igniter\Flame\Setting\SettingManager;
 use Illuminate\Mail\MailServiceProvider as BaseMailServiceProvider;
-use Illuminate\Mail\TransportManager;
 
 class MailServiceProvider extends BaseMailServiceProvider
 {
-    public function registerSwiftTransport()
+    protected function registerIlluminateMailer()
     {
-        $this->app->singleton('swift.transport', function ($app) {
-            $this->mergeMailerConfiguration();
+        $this->app->singleton('mailer', function ($app) {
 
-            return new TransportManager($app);
+            $this->app['events']->fire('mailer.beforeRegister', [$this]);
+
+            $config = $app->make('config')->get('mail');
+
+            // Once we have create the mailer instance, we will set a container instance
+            // on the mailer. This allows us to resolve mailer classes via containers
+            // for maximum testability on said classes instead of passing Closures.
+            $mailer = new Mailer(
+                $app['view'], $app['swift.mailer'], $app['events']
+            );
+
+            if ($app->bound('queue')) {
+                $mailer->setQueue($app['queue']);
+            }
+
+            // Next we will set all of the global addresses on this mailer, which allows
+            // for easy unification of all "from" addresses as well as easy debugging
+            // of sent messages since they get be sent into a single email address.
+            foreach (['from', 'reply_to', 'to'] as $type) {
+                $this->setGlobalAddress($mailer, $config, $type);
+            }
+
+            $this->app['events']->fire('mailer.register', [$this, $mailer]);
+
+            return $mailer;
         });
-    }
-
-    protected function mergeMailerConfiguration()
-    {
-        $setting = $this->app[SettingManager::class]->driver('config');
-
-        if ($protocol = $setting->get('protocol'))
-            $this->app['config']->set('mail.driver', $protocol);
-
-        if ($smtpHost = $setting->get('smtp_host'))
-            $this->app['config']->set('mail.host', $smtpHost);
-
-        if ($smtpPort = $setting->get('smtp_port'))
-            $this->app['config']->set('mail.port', $smtpPort);
-
-        if ($senderEmail = $setting->get('sender_email'))
-            $this->app['config']->set('mail.form.address', $senderEmail);
-
-        if ($senderName = $setting->get('sender_name'))
-            $this->app['config']->set('mail.form.name', $senderName);
-
-        if ($username = $setting->get('smtp_user'))
-            $this->app['config']->set('mail.username', $username);
-
-        if ($password = $setting->get('smtp_pass'))
-            $this->app['config']->set('mail.password', $password);
     }
 }

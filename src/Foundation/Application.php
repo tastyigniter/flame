@@ -16,13 +16,6 @@ use Illuminate\Routing\RoutingServiceProvider;
 class Application extends BaseApplication
 {
     /**
-     * The TastyIgniter version.
-     *
-     * @var string
-     */
-    const VERSION = '3.0.0-dev';
-
-    /**
      * The base path for extensions.
      *
      * @var string

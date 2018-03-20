@@ -50,6 +50,8 @@ class WorkingHour extends Model
     {
         $this->weekDate = $weekDate;
 
+        $this->weekDate->setTime(0, 0, 0);
+
         return $this;
     }
 
@@ -110,19 +112,19 @@ class WorkingHour extends Model
         return $this->status == 1;
     }
 
-    public function isOpen()
+    public function isOpen($dateTime = null)
     {
-        return $this->checkStatus() == self::OPEN;
+        return $this->checkStatus($dateTime) == self::OPEN;
     }
 
-    public function isOpening()
+    public function isOpening($dateTime = null)
     {
-        return $this->checkStatus() == self::OPENING;
+        return $this->checkStatus($dateTime) == self::OPENING;
     }
 
-    public function isClosed()
+    public function isClosed($dateTime = null)
     {
-        return $this->checkStatus() == self::CLOSED;
+        return $this->checkStatus($dateTime) == self::CLOSED;
     }
 
     public function isOpenAllDay()

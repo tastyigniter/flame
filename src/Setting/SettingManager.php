@@ -7,26 +7,35 @@ use Illuminate\Support\Manager;
 
 class SettingManager extends Manager
 {
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
     /**
      * Get the default driver name.
      * @return string
      */
     public function getDefaultDriver()
     {
-        return $this->app->hasDatabase() ? 'database' : 'memory';
+        return $this->app->hasDatabase() ? 'config' : 'memory';
     }
 
-    public function createDatabaseDriver()
+    public function createConfigDriver()
     {
         $connectionName = $this->app['config']->get('database.default');
         $connection = $this->app['db']->connection($connectionName);
 
-        return new DatabaseSettingStore($connection, 'settings', 'item', 'value');
+        $store = new DatabaseSettingStore($connection, 'settings', 'item', 'value');
+        $store->setExtraColumns(['sort' => 'config']);
+
+        return $store;
+    }
+
+    public function createPrefsDriver()
+    {
+        $connectionName = $this->app['config']->get('database.default');
+        $connection = $this->app['db']->connection($connectionName);
+
+        $store = new DatabaseSettingStore($connection, 'settings', 'item', 'value');
+        $store->setExtraColumns(['sort' => 'prefs']);
+
+        return $store;
     }
 
     public function createMemoryDriver()

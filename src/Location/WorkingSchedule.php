@@ -6,23 +6,34 @@ use Igniter\Flame\Location\Models\WorkingHour;
 
 class WorkingSchedule
 {
-    protected static $types = ['opening', 'delivery', 'collection'];
-
-    protected static $weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
-    protected $date;
-
+    /**
+     * @var Location
+     */
     protected $location;
+
+    /**
+     * @var
+     */
+    protected $type;
+
+    /**
+     * @var Carbon
+     */
+    protected $date;
 
     /**
      * @var WorkingHour
      */
     protected $currentPeriod;
 
-    public function __construct(Location $location, $type)
+    public static function load(Location $location, $type, $today)
     {
-        $this->location = $location;
-        $this->type = $type;
+        $instance = new static;
+        $instance->location = $location;
+        $instance->type = $type;
+        $instance->setDate($today);
+
+        return $instance;
     }
 
     public function setDate(Carbon $date)
@@ -114,11 +125,10 @@ class WorkingSchedule
         return $currentPeriod->checkStatus($dateTime);
     }
 
-    public function getPeriod(Carbon $date, $daysInAdvance = 1)
+    public function getPeriod(Carbon $dateToCheck, $daysInAdvance = 1)
     {
-        $startDate = $date->copy()->subDay();
-        $endDate = $date->copy()->addDay($daysInAdvance);
-
+        $startDate = $dateToCheck->copy()->subDay();
+        $endDate = $dateToCheck->copy()->addDay($daysInAdvance);
         $dateRange = $this->createDateRange($startDate, $endDate);
 
         foreach ($dateRange as $date => $day) {

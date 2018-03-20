@@ -15,36 +15,7 @@ class SettingServiceProvider extends ServiceProvider
     {
         $this->registerManager();
 
-        $this->registerStorage();
-
         $this->app->singleton(SaveSetting::class);
-    }
-
-    /**
-     * Register the setting store.
-     * @return void
-     */
-    protected function registerStorage()
-    {
-        $this->app[SettingManager::class]->extend('config', function ($app) {
-            $connectionName = $app['config']->get('database.default');
-            $connection = $app['db']->connection($connectionName);
-
-            $store = new DatabaseSettingStore($connection, 'settings', 'item', 'value');
-            $store->setExtraColumns(['sort' => 'config']);
-
-            return $store;
-        });
-
-        $this->app[SettingManager::class]->extend('prefs', function ($app) {
-            $connectionName = $app['config']->get('database.default');
-            $connection = $app['db']->connection($connectionName);
-
-            $store = new DatabaseSettingStore($connection, 'settings', 'item', 'value');
-            $store->setExtraColumns(['sort' => 'prefs']);
-
-            return $store;
-        });
     }
 
     protected function registerManager()

@@ -7,6 +7,7 @@ class Translator extends BaseTranslator
 {
     public function get($key, array $replace = [], $locale = null, $fallback = TRUE)
     {
+        // @todo: remove later
         if (Str::startsWith($key, 'lang:'))
             $key = substr($key, 5);
 

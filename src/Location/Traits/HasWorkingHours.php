@@ -5,6 +5,7 @@ namespace Igniter\Flame\Location\Traits;
 use Carbon\Carbon;
 use Exception;
 use Igniter\Flame\Location\WorkingSchedule;
+use InvalidArgumentException;
 
 trait HasWorkingHours
 {
@@ -44,12 +45,30 @@ trait HasWorkingHours
         return $workingHours->groupBy('type')->get($type);
     }
 
-    public function getWorkingHoursByDay($day)
+    public function getWorkingHoursByDay($weekday)
     {
         if (!$workingHours = $this->listWorkingHours())
             return null;
 
-        return $workingHours->groupBy('day')->get($day);
+        return $workingHours->groupBy('weekday')->get($weekday);
+    }
+
+    public function getWorkingHourByDayAndType($weekday, $type)
+    {
+        if (!$workingHours = $this->getWorkingHoursByDay($weekday))
+            return null;
+
+        return $workingHours->groupBy('type')->get($type)->first();
+    }
+
+    public function getWorkingHourByDateAndType($date, $type)
+    {
+        if (!$date instanceof Carbon)
+            $date = make_carbon($date);
+
+        $weekday = $date->format('N') - 1;
+
+        return $this->getWorkingHourByDayAndType($weekday, $type);
     }
 
     public function getWorkingHours()
@@ -61,16 +80,15 @@ trait HasWorkingHours
         return $this->working_hours()->get();
     }
 
-    public function workingScheduleInstance($type = null)
+    public function workingSchedule($type = null, $date = null)
     {
         if (is_null($type) OR !in_array($type, $this->availableWorkingTypes()))
-            throw new Exception("Defined parameter '$type' is not a valid working type.");
+            throw new InvalidArgumentException("Defined parameter '$type' is not a valid working type.");
 
         if (isset($this->workingSchedules[$type]))
             return $this->workingSchedules[$type];
 
-        $workingSchedule = new WorkingSchedule($this, $type);
-        $workingSchedule->setDate(Carbon::today());
+        $workingSchedule = WorkingSchedule::load($this, $type, $date ?: Carbon::today());
 
         $this->workingSchedules[$type] = $workingSchedule;
 

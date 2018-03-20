@@ -176,7 +176,7 @@ class CompleteApplicationSetup
 
         $config = $this->repository->get('settings');
 
-        $version = $this->app->version();
+        $version = params('ti_version');
         $settings = [
             'site_url'            => root_url(),
             'site_name'           => $config['site_name'],

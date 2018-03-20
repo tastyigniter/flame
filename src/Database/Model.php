@@ -363,6 +363,7 @@ class Model extends EloquentModel
             case 'collection':
                 return new EloquentCollection($this->fromJson($value));
             case 'date':
+                return $this->asDate($value);
             case 'datetime':
                 return $this->asDateTime($value);
             case 'timestamp':
@@ -373,6 +374,21 @@ class Model extends EloquentModel
                 return $this->fromSerialized($value);
             default:
                 return $value;
+        }
+    }
+
+    public function getAttribute($key)
+    {
+        if (array_key_exists($key, $this->attributes) || $this->hasGetMutator($key)) {
+            return $this->getAttributeValue($key);
+        }
+
+        if ($this->relationLoaded($key)) {
+            return $this->relations[$key];
+        }
+
+        if ($this->hasRelation($key)) {
+            return $this->getRelationshipFromMethod($key);
         }
     }
 
@@ -467,7 +483,7 @@ class Model extends EloquentModel
         // when checking the field. We will just return the DateTime right away.
         if ($value instanceof DateTimeInterface) {
             return new Carbon(
-                $value->format('Y-m-d H:i:s.u'), $value->getTimezone()
+                $value->format('H:i:s.u'), $value->getTimezone()
             );
         }
 
@@ -505,9 +521,7 @@ class Model extends EloquentModel
 
         $format = $this->getTimeFormat();
 
-        $value = $this->asTime($value);
-
-        return $value->format($format);
+        return $this->asTime($value)->format($format);
     }
 
     /**

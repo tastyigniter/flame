@@ -15,7 +15,6 @@ class Kernel extends BaseKernel
         \Igniter\Flame\Foundation\Bootstrap\RegisterClassLoader::class,
         \Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables::class,
         \Illuminate\Foundation\Bootstrap\LoadConfiguration::class,
-//        \Igniter\Flame\Foundation\Bootstrap\LoadConfiguration::class,
         \Igniter\Flame\Foundation\Bootstrap\LoadTranslation::class,
 //        \Igniter\Flame\Foundation\Bootstrap\ConfigureLogging::class,
         \Illuminate\Foundation\Bootstrap\HandleExceptions::class,
@@ -56,6 +55,7 @@ class Kernel extends BaseKernel
 //             \Illuminate\Session\Middleware\AuthenticateSession::class,
 //            \Igniter\Flame\Foundation\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Igniter\Flame\Translation\Middleware\Localization::class,
         ],
 
         'api' => [

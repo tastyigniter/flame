@@ -49,7 +49,7 @@ class CurrencyMiddleware
         }
 
         // Get currency from session
-        $currency = $request->getSession()->get('currency');
+        $currency = $request->getSession()->get('igniter.flame.currency');
         if ($currency && currency()->isActive($currency) === TRUE) {
             return $currency;
         }
@@ -81,7 +81,7 @@ class CurrencyMiddleware
         currency()->setUserCurrency($currency = strtoupper($currency));
 
         // Save it for later too!
-        $request->getSession()->put(['currency' => $currency]);
+        $request->getSession()->put(['igniter.flame.currency' => $currency]);
 
         return $currency;
     }

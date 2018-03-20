@@ -1,8 +1,174 @@
 <?php
 
+use Igniter\Flame\ActivityLog\ActivityLogger;
 use Igniter\Flame\Setting\SettingManager;
 use Igniter\Flame\Support\StrHelper;
 use Igniter\Flame\Support\StringParser;
+use Illuminate\Routing\UrlGenerator;
+
+if (!function_exists('current_url')) {
+    /**
+     * Current URL
+     * Returns the full URL (including segments and query string) of the page where this
+     * function is placed
+     * @return    string
+     */
+    function current_url()
+    {
+        return app(UrlGenerator::class)->full();
+    }
+}
+
+if (!function_exists('assets_url')) {
+    /**
+     * Assets URL
+     * Returns the full URL (including segments) of the assets directory
+     *
+     * @param string $uri
+     * @param null $secure
+     *
+     * @return string
+     */
+    function assets_url($uri = null, $secure = null)
+    {
+        return app(UrlGenerator::class)->asset(trim(config('system.assetsDir'), '/').'/'.$uri, $secure);
+    }
+}
+
+if (!function_exists('image_url')) {
+    /**
+     * Image Assets URL
+     * Returns the full URL (including segments) of the assets image directory
+     *
+     * @param string $uri
+     * @param null $protocol
+     *
+     * @return string
+     */
+    function image_url($uri = null, $protocol = null)
+    {
+        return app(UrlGenerator::class)->asset('assets/images/'.$uri, $protocol);
+    }
+}
+
+if (!function_exists('image_path')) {
+    /**
+     * Get the path to the assets image folder.
+     *
+     * @param    string $path The path to prepend
+     *
+     * @return    string
+     */
+    function image_path($path = '')
+    {
+        return assets_path('images').($path ? DIRECTORY_SEPARATOR.$path : $path);
+    }
+}
+
+if (!function_exists('theme_url')) {
+    /**
+     * Theme URL
+     * Create a local URL based on your theme path.
+     * Segments can be passed in as a string.
+     *
+     * @param    string $uri
+     * @param    string $secure
+     *
+     * @return    string
+     */
+    function theme_url($uri = '', $secure = null)
+    {
+        return app(UrlGenerator::class)->asset(trim(config('system.themesDir'), '/').'/'.$uri, $secure);
+    }
+}
+
+if (!function_exists('theme_path')) {
+    /**
+     * Theme Path
+     * Create a local URL based on your theme path.
+     * Segments can be passed in as a string.
+     *
+     * @param    string $path
+     *
+     * @return    string
+     */
+    function theme_path($path = '')
+    {
+        return app('path.themes').($path ? DIRECTORY_SEPARATOR.$path : $path);
+    }
+}
+
+if (!function_exists('referrer_url')) {
+    /**
+     * Referrer URL
+     * Returns the full URL (including segments) of the page where this
+     * function is placed
+     * @return    string
+     */
+    function referrer_url()
+    {
+        return app(UrlGenerator::class)->previous();
+    }
+}
+
+if (!function_exists('root_url')) {
+    /**
+     * Root URL
+     * Create a local URL based on your root path.
+     * Segments can be passed in as a string.
+     *
+     * @param    string $uri
+     * @param    array $params
+     *
+     * @return    string
+     */
+    function root_url($uri = '', array $params = [])
+    {
+        return app(UrlGenerator::class)->to($uri, $params);
+    }
+}
+
+if (!function_exists('extension_path')) {
+    /**
+     * Get the path to the extensions folder.
+     *
+     * @param    string $path The path to prepend
+     *
+     * @return    string
+     */
+    function extension_path($path = '')
+    {
+        return app('path.extensions').($path ? DIRECTORY_SEPARATOR.$path : $path);
+    }
+}
+
+if (!function_exists('assets_path')) {
+    /**
+     * Get the path to the assets folder.
+     *
+     * @param    string $path The path to prepend
+     *
+     * @return    string
+     */
+    function assets_path($path = '')
+    {
+        return app('path.assets').($path ? DIRECTORY_SEPARATOR.$path : $path);
+    }
+}
+
+if (!function_exists('temp_path')) {
+    /**
+     * Get the path to the downloads temp folder.
+     *
+     * @param    string $path The path to prepend
+     *
+     * @return    string
+     */
+    function temp_path($path = '')
+    {
+        return app('path.temp').($path ? DIRECTORY_SEPARATOR.$path : $path);
+    }
+}
 
 if (!function_exists('setting')) {
     /**
@@ -13,7 +179,7 @@ if (!function_exists('setting')) {
      */
     function setting($key = null, $default = null)
     {
-        $settingConfig = app()->make(SettingManager::class)->driver('config');
+        $settingConfig = app()->make(SettingManager::class);
 
         if (is_null($key))
             return $settingConfig;
@@ -61,7 +227,7 @@ if (!function_exists('activity')) {
      */
     function activity()
     {
-        return App::make('\Igniter\Flame\ActivityLog\ActivityLogger');
+        return App::make(ActivityLogger::class);
     }
 }
 

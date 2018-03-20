@@ -2,6 +2,7 @@
 
 namespace Igniter\Flame\Currency;
 
+use Igniter\Flame\Currency\Middleware\CurrencyMiddleware;
 use Illuminate\Support\ServiceProvider;
 
 class CurrencyServiceProvider extends ServiceProvider
@@ -18,6 +19,8 @@ class CurrencyServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/config/currency.php', 'currency'
         );
+
+//        $this->app[\Illuminate\Routing\Router::class]->aliasMiddleware('currency', CurrencyMiddleware::class);
 
         $this->registerCurrency();
         $this->registerCurrencyCommands();

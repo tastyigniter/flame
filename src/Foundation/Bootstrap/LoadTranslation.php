@@ -2,7 +2,9 @@
 
 namespace Igniter\Flame\Foundation\Bootstrap;
 
+use Igniter\Flame\Translation\Drivers\Database;
 use Igniter\Flame\Translation\FileLoader;
+use Igniter\Flame\Translation\Localization;
 use Igniter\Flame\Translation\Translator;
 use Illuminate\Contracts\Foundation\Application;
 
@@ -18,7 +20,10 @@ class LoadTranslation
     public function bootstrap(Application $app)
     {
         $app->singleton('translation.loader', function ($app) {
-            return new FileLoader($app['files'], $app['path.lang']);
+            $loader = new FileLoader($app['files'], $app['path.lang']);
+            $loader->addDriver(Database::class);
+
+            return $loader;
         });
 
         $app->singleton('translator', function ($app) {
@@ -34,6 +39,13 @@ class LoadTranslation
             $trans->setFallback($app['config']['app.fallback_locale']);
 
             return $trans;
+        });
+
+        $app->singleton('translator.localization', function ($app) {
+            $locale = $app['config']['app.locale'];
+            $supportedLocales = setting('supported_languages', []);
+
+            return new Localization($locale, $supportedLocales);
         });
     }
 }

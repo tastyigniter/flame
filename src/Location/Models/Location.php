@@ -2,7 +2,7 @@
 
 namespace Igniter\Flame\Location\Models;
 
-use Admin\Models\Image_tool_model;
+use Main\Models\Image_tool_model;
 use DB;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Location\GeoPosition;
@@ -107,6 +107,11 @@ class Location extends Model
     public function getReservationInterval()
     {
         return $this->reservation_time_interval;
+    }
+
+    public function getReservationStayTime()
+    {
+        return $this->reservation_stay_time;
     }
 
     public function getOrderTimeInterval($orderType)
