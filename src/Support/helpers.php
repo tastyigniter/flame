@@ -403,3 +403,14 @@ if (!function_exists('flash')) {
         return $flashBag;
     }
 }
+
+if (!function_exists('array_undot')) {
+    function array_undot($dottedArray)
+    {
+        $array = [];
+        foreach ($dottedArray as $key => $value) {
+            array_set($array, $key, $value);
+        }
+        return $array;
+    }
+}

@@ -85,12 +85,12 @@ class Area extends Model
 
     public function deliveryAmount($cartTotal)
     {
-        return 0;
+        return $this->matchCondition($cartTotal, 'amount');
     }
 
     public function minimumOrderTotal($cartTotal)
     {
-        return 0;
+        return $this->matchCondition($cartTotal, 'total');
     }
 
     public function listConditions()
@@ -123,7 +123,8 @@ class Area extends Model
             return static::VERTEX;
 
         $intersections = 0;
-        for ($i = 1; $i < count($vertices); $i++) {
+        $verticesCount = count($vertices);
+        for ($i = 1; $i < $verticesCount; $i++) {
             $vertex1 = $vertices[$i - 1];
             $vertex2 = $vertices[$i];
 
@@ -198,5 +199,53 @@ class Area extends Model
         return ($vertex1->lat == $vertex2->lat AND $vertex1->lat == $position->latitude
             AND $position->longitude > min($vertex1->lng, $vertex2->lng)
             AND $position->longitude < max($vertex1->lng, $vertex2->lng));
+    }
+
+    protected function matchCondition($cartTotal, $key)
+    {
+        $collection = collect($this->conditions);
+
+        // If a 'all' condition type exist we will return the first one found
+        $condition = $collection
+            ->where('type', 'all')
+            ->sortBy($key)
+            ->first();
+
+        if ($condition)
+            return $condition[$key];
+
+        // Minimum total is 0 when a 'below' condition type exist
+        if ($key == 'total' AND $collection->where('type', 'below')->isNotEmpty())
+            return 0;
+
+        // Find the first matching 'below' condition
+        $condition = $collection
+            ->where('type', 'below')
+            ->sortByDesc('total')
+            ->first(function ($item) use ($cartTotal) {
+                return $cartTotal < $item['total'];
+            });
+
+        if ($condition)
+            return $condition[$key];
+
+        // Find the first matching 'above' condition
+        $collection->where('type', 'above');
+
+        if ($key == 'total') {
+            $condition = $collection->sortBy('total')->first();
+        }
+        else {
+            $condition = $collection
+                ->sortByDesc('total')
+                ->first(function ($item) use ($cartTotal) {
+                    return $cartTotal > $item['total'];
+                });
+        }
+
+        if ($condition)
+            return $condition[$key];
+
+        return null;
     }
 }

@@ -516,9 +516,9 @@ class Model extends EloquentModel
      */
     public function fromTime($value)
     {
-        if ($value == '00:00' OR $value == '00:00:00')
-            return $value;
-
+//        if ($value == '00:00' OR $value == '00:00:00')
+//            return $value;
+//
         $format = $this->getTimeFormat();
 
         return $this->asTime($value)->format($format);
@@ -725,6 +725,23 @@ class Model extends EloquentModel
             if (isset($this->relation[$type][$name])) {
                 return $type;
             }
+        }
+    }
+
+    /**
+     * Get a relationship.
+     *
+     * @param  string  $key
+     * @return mixed
+     */
+    public function getRelationValue($key)
+    {
+        if ($this->relationLoaded($key)) {
+            return $this->relations[$key];
+        }
+
+        if ($this->hasRelation($key)) {
+            return $this->getRelationshipFromMethod($key);
         }
     }
 

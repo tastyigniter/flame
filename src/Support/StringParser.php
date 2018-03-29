@@ -2,8 +2,6 @@
 
 namespace Igniter\Flame\Support;
 
-use RecursiveArrayIterator;
-
 class StringParser
 {
     protected $left;
@@ -22,19 +20,68 @@ class StringParser
 
     /**
      * @param string $template The template string
-     * @param string|array $value The value the template will be rendered with
+     * @param string|array $data The value the template will be rendered with
      *
      * @return string The rendered template
      */
-    public function parse($template, $value)
+    public function parse($template, $data)
     {
-        $result = $template;
-        if (!is_array($value))
-            $value = ['' => $value];
-        foreach (new NestedKeyIterator(new RecursiveArrayIterator($value)) as $key => $value) {
-            $result = str_replace($this->left.$key.$this->right, $value, $result);
+//        dump($template, $data);
+        if (!is_array($data))
+            $data = ['' => $data];
+
+        $replace = [];
+        foreach ($data as $key => $value) {
+            $replace = array_merge(
+                $replace,
+                is_array($value)
+                    ? $this->parsePair($key, $value, $template)
+                    : $this->parseSingle($key, $value, $template)
+            );
         }
 
+        $result = strtr($template, $replace);
+
         return $result;
+    }
+
+    protected function parseSingle($key, $value, $template)
+    {
+        if (!is_scalar($value))
+            $value = '';
+
+        return [$this->left.$key.$this->right => $value];
+    }
+
+    protected function parsePair($key, $data, $template)
+    {
+        $replace = [];
+        preg_match_all(
+            '#'.preg_quote($this->left.$key.$this->right, '/').'(.+?)'.preg_quote($this->left.'/'.$key.$this->right, '/').'#s',
+            $template,
+            $matches,
+            PREG_SET_ORDER
+        );
+
+        foreach ($matches as $match) {
+            $str = '';
+            foreach ($data as $row) {
+                $temp = [];
+                foreach ($row as $key => $val) {
+                    if (is_array($val)) {
+                        $pair = $this->parsePair($val, $key, $match[1]);
+                        if (!empty($pair)) {
+                            $temp = array_merge($temp, $pair);
+                        }
+                        continue;
+                    }
+                    $temp[$this->left.$key.$this->right] = $val;
+                }
+                $str .= strtr($match[1], $temp);
+            }
+            $replace[$match[0]] = $str;
+        }
+
+        return $replace;
     }
 }

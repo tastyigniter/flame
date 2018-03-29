@@ -127,8 +127,12 @@ class WorkingSchedule
 
     public function getPeriod(Carbon $dateToCheck, $daysInAdvance = 1)
     {
-        $startDate = $dateToCheck->copy()->subDay();
+        $startDate = $dateToCheck->isToday()
+            ? $dateToCheck->copy()->subDay()
+            : $dateToCheck->copy();
+
         $endDate = $dateToCheck->copy()->addDay($daysInAdvance);
+
         $dateRange = $this->createDateRange($startDate, $endDate);
 
         foreach ($dateRange as $date => $day) {

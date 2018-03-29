@@ -6,6 +6,7 @@ use App;
 use Carbon\Carbon;
 use Cookie;
 use Exception;
+use Hash;
 use Igniter\Flame\Auth\Models\User as UserModel;
 use Illuminate\Support\Str;
 use Session;
@@ -62,29 +63,6 @@ class Manager
     protected $resetExpiration;
 
     protected $requireApproval = FALSE;
-
-    /**
-     * Gets the hasher.
-     * @return \Illuminate\Contracts\Hashing\Hasher
-     */
-    public function getHasher()
-    {
-        return $this->hasher ?: App::make('hash');
-    }
-
-    /**
-     * Sets the hasher.
-     *
-     * @param  string $hasher
-     *
-     * @return $this
-     */
-    public function setHasher($hasher)
-    {
-        $this->hasher = $hasher;
-
-        return $this;
-    }
 
     /**
      * Determine if the current user is authenticated.
@@ -346,14 +324,12 @@ class Manager
     {
         $plain = $credentials['password'];
 
-        $hasher = $this->getHasher();
-
         // Backward compatibility to turn SHA1 passwords to BCrypt
         if ($userModel->hasShaPassword($plain)) {
-            $userModel->updateHashPassword($hasher->make($plain));
+            $userModel->updateHashPassword($plain);
         }
 
-        return $hasher->check($plain, $userModel->getAuthPassword());
+        return Hash::check($plain, $userModel->getAuthPassword());
     }
 
     //
@@ -601,80 +577,5 @@ class Manager
             $rememberCookie = $this->getRememberCookieName();
             Cookie::forget($rememberCookie);
         }
-    }
-
-    //
-    // Reset Password
-    //
-
-    /**
-     * Reset password feature
-     *
-     * @param string $identity The user email
-     *
-     * @return bool|array
-     */
-//    public function resetPassword($identity)
-//    {
-//        $userModel = $this->getByCredentials($credentials);
-//
-//        // Reset the user password and send email link
-//        if ($model->resetPassword()) {
-//            return TRUE;
-//        }
-//        else {
-//            return FALSE;
-//        }
-//    }
-
-    /**
-     * Validate a password reset for the given credentials.
-     *
-     * @param $credentials
-     *
-     * @return bool|UserModel
-     * @throws \Exception
-     */
-    public function validateResetPassword($credentials)
-    {
-        $userModel = $this->getByCredentials($credentials);
-
-        if (is_null($userModel))
-            return FALSE;
-
-        $token = $credentials['reset_code'];
-
-        $expiration = $this->resetExpiration;
-        if ($expiration > 0) {
-            if ((time() - strtotime($userModel->reset_time)) > $expiration) {
-                // Reset password request has expired, so clear code.
-                $this->createModel()->clearResetPasswordCode($token);
-
-                return FALSE;
-            }
-        }
-
-        return $userModel;
-    }
-
-    /**
-     * Complete a password reset request
-     *
-     * @param $credentials
-     *
-     * @return bool
-     * @throws \Exception
-     */
-    public function completeResetPassword($credentials)
-    {
-        $userModel = $this->validateResetPassword($credentials);
-
-        if (!$userModel)
-            return FALSE;
-
-        if ($this->createModel()->completeResetPassword($userModel->getAuthIdentifier(), $credentials))
-            return TRUE;
-
-        return FALSE;
     }
 }

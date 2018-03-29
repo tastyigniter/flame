@@ -240,10 +240,10 @@ class CartCondition implements Arrayable, Jsonable, Serializable
 
         if ($this->valueIsPercentage($actionValue)) {
             $cleanValue = $this->cleanValue($actionValue);
-            $value = floatval($result * ($cleanValue / 100));
+            $value = (float)($result * ($cleanValue / 100));
         }
         else {
-            $value = $this->cleanValue($actionValue);
+            $value = (float)$this->cleanValue($actionValue);
         }
 
         $this->result += $value;
@@ -268,20 +268,20 @@ class CartCondition implements Arrayable, Jsonable, Serializable
                 $result = $total;
             }
             else if ($this->valueIsToBeSubtracted($actionValue)) {
-                $result = floatval($total - $value);
+                $result = (float)($total - $value);
             }
             else if ($this->valueIsToBeAdded($actionValue)) {
-                $result = floatval($total + $value);
+                $result = (float)($total + $value);
             }
             else if ($this->valueIsToBeMultiplied($actionValue)) {
-                $result = floatval($total * $value);
+                $result = (float)($total * $value);
             }
             else if ($this->valueIsToBeDivided($actionValue)) {
-                $result = floatval($total / $value);
+                $result = (float)($total / $value);
             }
 
             if ($actionMultiplier = array_get($action, 'multiplier'))
-                $result = floatval($total * $this->getContentValue($actionMultiplier));
+                $result = (float)($total * $this->getContentValue($actionMultiplier));
 
             $actionMax = array_get($action, 'max', FALSE);
             if ($this->actionHasReachedMax($actionMax, $result))

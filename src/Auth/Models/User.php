@@ -124,6 +124,8 @@ class User extends Model
         while ($this->newQuery()->where('reset_code', $random)->count() > 0) {
             $random = str_random(42);
         }
+
+        return $random;
     }
 
     /**
@@ -150,7 +152,7 @@ class User extends Model
         if (!$this->checkResetPasswordCode($code))
             return FALSE;
 
-        $this->password = Hash::make($password);
+        $this->password = $password;
         $this->reset_time = null;
         $this->reset_code = null;
 
