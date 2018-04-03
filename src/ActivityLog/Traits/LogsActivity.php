@@ -74,9 +74,7 @@ trait LogsActivity
 
     public function getMessageForEvent($eventName)
     {
-        $replace['event'] = $eventName;
-
-        return parse_values($replace, lang('activity_event_log'));
+        return $eventName;
     }
 
     public function getLogNameToUse($eventName = '')

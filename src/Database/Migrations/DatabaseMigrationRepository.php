@@ -88,8 +88,6 @@ class DatabaseMigrationRepository extends BaseDatabaseMigrationRepository
      */
     protected function table()
     {
-//        dd($this->getConnection()->table($this->table)->useWritePdo());
-
         return $this->getConnection()
                     ->table($this->table)
                     ->where('group', $this->getGroup())
