@@ -21,12 +21,22 @@ trait HasDeliveryAreas
         return $this->deliveryAreas;
     }
 
+    public function findOrNewDeliveryArea($areaId)
+    {
+        if ($area = $this->findDeliveryArea($areaId))
+            return $area;
+
+        $area = Area::make();
+        $area->location_id = $this->getKey();
+        return $area;
+    }
+
     /**
      * @param $areaId
      *
      * @return \Igniter\Flame\Location\Models\Area|null
      */
-    public function getDeliveryArea($areaId)
+    public function findDeliveryArea($areaId)
     {
         if (!is_numeric($areaId))
             return null;
@@ -38,7 +48,7 @@ trait HasDeliveryAreas
         return $areas->get($areaId);
     }
 
-    public function getDeliveryAreas()
+    public function findAllDeliveryAreas()
     {
         if (!$this->hasRelation('delivery_areas'))
             throw new Exception(sprintf("Model '%s' does not contain a definition for 'delivery_areas'.",
@@ -53,9 +63,9 @@ trait HasDeliveryAreas
      * @return \Igniter\Flame\Location\Models\Area|null
      * @throws \Exception
      */
-    public function findDeliveryArea(GeoPosition $position)
+    public function filterDeliveryArea(GeoPosition $position)
     {
-        $areas = $this->getDeliveryAreas();
+        $areas = $this->findAllDeliveryAreas();
 
         $area = $areas->filter(function (Area $model) use ($position) {
             return $model->checkBoundary($position) != 'outside';
@@ -73,7 +83,7 @@ trait HasDeliveryAreas
     public function findOrFirstDeliveryArea(GeoPosition $position)
     {
         if (!$area = $this->findDeliveryArea($position))
-            $area = $this->getDeliveryAreas()->first();
+            $area = $this->findAllDeliveryAreas()->first();
 
         return $area;
     }
@@ -85,7 +95,7 @@ trait HasDeliveryAreas
 
     protected function loadDeliveryAreas()
     {
-        $deliveryAreas = $this->getDeliveryAreas();
+        $deliveryAreas = $this->findAllDeliveryAreas();
 
         $this->deliveryAreas = $deliveryAreas->keyBy('area_id');
     }

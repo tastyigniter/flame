@@ -65,7 +65,7 @@ class Area extends Model
     public function getVerticesAttribute()
     {
         return isset($this->boundaries['vertices']) ?
-            json_decode($this->boundaries['vertices']) : null;
+            json_decode($this->boundaries['vertices']) : [];
     }
 
     public function getCircleAttribute()
@@ -96,6 +96,9 @@ class Area extends Model
     public function listConditions()
     {
         $conditions = [];
+        if (!$this->conditions)
+            return $conditions;
+
         foreach ($this->conditions as $condition) {
             $condition['label'] = $this->getChargeSummaryTrans($condition['type']);
 
@@ -143,6 +146,9 @@ class Area extends Model
 
     public function pointInCircle($position)
     {
+        if (!$this->circle)
+            return static::OUTSIDE;
+
         $distanceUnit = setting('distance_unit');
         $earthRadius = ($distanceUnit === 'km') ? 6371 : 3959;
         $radius = ($distanceUnit === 'km') ? $this->circle->radius / 1000 : $this->circle->radius / 1609.344;

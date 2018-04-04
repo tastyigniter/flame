@@ -34,7 +34,6 @@ class Kernel extends BaseKernel
     protected $middleware = [
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
-        \Igniter\Flame\Foundation\Http\Middleware\CompleteApplicationSetup::class,
 //        \Igniter\Flame\Foundation\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \Igniter\Flame\Foundation\Http\Middleware\TrustProxies::class,
