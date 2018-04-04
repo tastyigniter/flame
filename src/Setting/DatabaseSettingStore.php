@@ -193,13 +193,13 @@ class DatabaseSettingStore extends SettingStore
             foreach ($data as $key => $value) {
                 $dbData[] = array_merge(
                     $this->extraColumns,
-                    [$this->keyColumn => $key, $this->valueColumn => $value]
+                    [$this->keyColumn => $key, $this->valueColumn => $this->parseInsertKeyValue($value)]
                 );
             }
         }
         else {
             foreach ($data as $key => $value) {
-                $dbData[] = [$this->keyColumn => $key, $this->valueColumn => $value];
+                $dbData[] = [$this->keyColumn => $key, $this->valueColumn => $this->parseInsertKeyValue($value)];
             }
         }
 
@@ -303,5 +303,10 @@ class DatabaseSettingStore extends SettingStore
         }
 
         return $_value;
+    }
+
+    protected function parseInsertKeyValue($value)
+    {
+        return is_scalar($value) ? $value : null;
     }
 }
