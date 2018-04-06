@@ -146,7 +146,7 @@ class ClassLoader
      */
     protected function isRealFilePath($path)
     {
-        return is_file(realpath(strtolower($this->basePath.DIRECTORY_SEPARATOR.$path)));
+        return is_file(realpath($this->basePath.DIRECTORY_SEPARATOR.$path));
     }
 
     /**
@@ -159,7 +159,7 @@ class ClassLoader
      */
     protected function requireClass($class, $path)
     {
-        require_once $path;
+        require_once $this->basePath.DIRECTORY_SEPARATOR.$path;
 
         $this->manifest[$class] = $path;
     }

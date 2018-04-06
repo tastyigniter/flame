@@ -2,7 +2,9 @@
 
 namespace Igniter\Flame\Location;
 
-class GeoPosition
+use Illuminate\Contracts\Support\Arrayable;
+
+class GeoPosition implements Arrayable
 {
     public $latitude;
 
@@ -68,5 +70,25 @@ class GeoPosition
     public static function fromArray(array $attributes)
     {
         return new self($attributes);
+    }
+
+    /**
+     * Get the instance as an array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'latitude'         => $this->latitude,
+            'longitude'        => $this->longitude,
+            'formattedAddress' => $this->formattedAddress,
+            'city'             => $this->city,
+            'state'            => $this->state,
+            'stateCode'        => $this->stateCode,
+            'country'          => $this->country,
+            'countryCode'      => $this->countryCode,
+            'postalCode'      => $this->postalCode,
+        ];
     }
 }

@@ -47,6 +47,11 @@ class Manager
         $this->defaultLocation = $defaultLocation;
     }
 
+    public function getDefault()
+    {
+        return $this->getById($this->getDefaultLocation());
+    }
+
     public function current()
     {
         if (!is_null($this->model))

@@ -32,6 +32,11 @@ trait HasWorkingHours
         return $this->workingHours;
     }
 
+    /**
+     * @param null $hourType
+     *
+     * @return mixed 24_7, daily or flexible
+     */
     public function workingHourType($hourType = null)
     {
         return array_get($this->options, "hours.{$hourType}.type");
@@ -88,7 +93,8 @@ trait HasWorkingHours
         if (isset($this->workingSchedules[$type]))
             return $this->workingSchedules[$type];
 
-        $workingSchedule = WorkingSchedule::load($this, $type, $date ?: Carbon::today());
+        $hours = $this->getWorkingHoursByType($type);
+        $workingSchedule = WorkingSchedule::load($hours, $type);
 
         $this->workingSchedules[$type] = $workingSchedule;
 

@@ -50,8 +50,6 @@ class WorkingHour extends Model
     {
         $this->weekDate = $weekDate;
 
-        $this->weekDate->setTime(0, 0, 0);
-
         return $this;
     }
 
@@ -112,27 +110,12 @@ class WorkingHour extends Model
         return $this->status == 1;
     }
 
-    public function isOpen($dateTime = null)
-    {
-        return $this->checkStatus($dateTime) == self::OPEN;
-    }
-
-    public function isOpening($dateTime = null)
-    {
-        return $this->checkStatus($dateTime) == self::OPENING;
-    }
-
-    public function isClosed($dateTime = null)
-    {
-        return $this->checkStatus($dateTime) == self::CLOSED;
-    }
-
     public function isOpenAllDay()
     {
-        if (!$this->opening_time OR !$this->closing_time)
+        if (!$this->open OR !$this->close)
             return null;
 
-        $diffInHours = $this->opening_time->diffInHours($this->close);
+        $diffInHours = $this->open->diffInHours($this->close);
 
         return $diffInHours >= 23 OR $diffInHours == 0;
     }
@@ -145,19 +128,22 @@ class WorkingHour extends Model
         return $this->opening_time->gt($this->closing_time);
     }
 
-    public function checkStatus(Carbon $dateTime = null)
+    public function checkStatus($dateTime = null)
     {
         if (is_null($dateTime))
             $dateTime = Carbon::now();
 
-        if (!$this->status)
+        if (!$this->isEnabled())
             return self::CLOSED;
 
         if ($this->getWeekDate()->isToday() AND $this->isOpenAllDay())
             return self::OPEN;
 
-        if ($this->close->gte($dateTime))
-            return $this->open->lte($dateTime) ? self::OPEN : self::OPENING;
+        if ($dateTime->between($this->open, $this->close))
+            return self::OPEN;
+
+        if ($this->open->gte($dateTime) AND $this->close->gte($dateTime))
+            return self::OPENING;
 
         return self::CLOSED;
     }
