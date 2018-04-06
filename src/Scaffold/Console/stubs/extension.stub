@@ -1,0 +1,74 @@
+<?php namespace {{studly_author}}\{{studly_name}};
+
+use System\Classes\BaseExtension;
+
+/**
+ * {{name}} Extension Information File
+ */
+class Extension extends BaseExtension
+{
+    /**
+     * Returns information about this extension.
+     *
+     * @return array
+     */
+    public function extensionMeta()
+    {
+        return [
+            'name'        => '{{name}}',
+            'author'      => '{{author}}',
+            'description' => 'No description provided yet...',
+            'icon'        => 'fa-plug',
+            'version'     => '1.0.0'
+        ];
+    }
+
+    /**
+     * Register method, called when the extension is first registered.
+     *
+     * @return void
+     */
+    public function register()
+    {
+
+    }
+
+    /**
+     * Initialize method, called right before the request route.
+     *
+     * @return void
+     */
+    public function initialize()
+    {
+
+    }
+
+    /**
+     * Registers any front-end components implemented in this extension.
+     *
+     * @return array
+     */
+    public function registerComponents()
+    {
+        return [
+// Remove this line and uncomment the line below to activate
+//            '{{studly_author}}\{{studly_name}}\Components\MyComponent' => 'myComponent',
+        ];
+    }
+
+    /**
+     * Registers any admin permissions used by this extension.
+     *
+     * @return array
+     */
+    public function registerPermissions()
+    {
+// Remove this line and uncomment block to activate
+        return [
+//            '{{title_author}}.{{title_name}}.SomePermission' => [
+//                'description' => 'Some permission',
+//                'action' => ['access', 'add', 'manage', 'delete'],
+//            ],
+        ];
+    }
+}

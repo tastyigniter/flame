@@ -1,0 +1,13 @@
+<?php
+
+namespace {{studly_author}}\{{studly_extension}}\Components;
+
+use System\Classes\BaseComponent;
+
+class {{studly_name}} extends BaseComponent
+{
+    public function defineProperties()
+    {
+        return [];
+    }
+}

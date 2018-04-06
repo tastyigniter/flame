@@ -1,0 +1,56 @@
+<?php
+
+namespace {{studly_author}}\{{studly_extension}}\Controllers;
+
+use AdminMenu;
+
+/**
+ * {{title_name}} Admin Controller
+ */
+class {{studly_name}} extends \Admin\Classes\AdminController
+{
+    public $implement = [
+        'Admin\Actions\FormController',
+        'Admin\Actions\ListController'
+    ];
+
+    public $listConfig = [
+        'list' => [
+            'model'        => '{{studly_author}}\{{studly_extension}}\Models\{{studly_name}}',
+            'title'        => 'lang:admin::{{lower_name}}.text_title',
+            'emptyMessage' => 'lang:admin::{{lower_name}}.text_empty',
+            'defaultSort'  => ['order_id', 'DESC'],
+            'configFile'   => '{{lower_name}}',
+        ],
+    ];
+
+    public $formConfig = [
+        'name'       => 'lang:admin::{{lower_name}}.text_form_name',
+        'model'      => '{{studly_author}}\{{studly_extension}}\Models\{{studly_name}}',
+        'create'     => [
+            'title'         => 'lang:admin::default.form.create_title',
+            'redirect'      => '{{lower_name}}/edit/{id}',
+            'redirectClose' => '{{lower_name}}',
+        ],
+        'edit'       => [
+            'title'         => 'lang:admin::default.form.edit_title',
+            'redirect'      => '{{lower_name}}/edit/{id}',
+            'redirectClose' => '{{lower_name}}',
+        ],
+        'preview'    => [
+            'title'    => 'lang:admin::default.form.preview_title',
+            'redirect' => '{{lower_name}}',
+        ],
+        'delete'     => [
+            'redirect' => '{{lower_name}}',
+        ],
+        'configFile' => '{{lower_name}}',
+    ];
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        AdminMenu::setContext('{{lower_name}}', '{{studly_extension}}');
+    }
+}

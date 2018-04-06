@@ -1,0 +1,18 @@
+<?php
+
+return []; // Remove this line to activate config below
+
+return [
+    'list' => [
+        'filter' => [],
+        'toolbar' => [],
+        'columns' => [],
+    ],
+    'form' => [
+        'toolbar' => [],
+        'fields' => [],
+        'tabs' => [
+            'fields' => []
+        ]
+    ],
+];
