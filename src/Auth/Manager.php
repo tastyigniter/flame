@@ -2,7 +2,6 @@
 
 namespace Igniter\Flame\Auth;
 
-use App;
 use Carbon\Carbon;
 use Cookie;
 use Exception;
@@ -69,29 +68,29 @@ class Manager
      */
     public function check()
     {
-        $user = $this->user;
-        if (!is_null($user) AND ($this->requireApproval AND !$user->is_activated))
-            return $user;
+        if (is_null($this->user)) {
 
-        $user = null;
+            $sessionUserId = $this->getSessionUserId();
+            $rememberCookie = $this->getRememberCookie();
 
-        $sessionUserId = $this->getSessionUserId();
-        $rememberCookie = $this->getRememberCookie();
+            // Load the user using session identifier
+            if ($sessionUserId) {
+                $user = $this->getById($sessionUserId);
+            }
+            // If no user is found in session,
+            // load the user using cookie token
+            else if ($rememberCookie AND $user = $this->getUserByRememberCookie($rememberCookie)) {
+                $this->updateSession($user);
+            }
 
-        // Load the user using session identifier
-        if ($sessionUserId) {
-            $user = $this->getById($sessionUserId);
+            if (is_null($user))
+                return FALSE;
+
+            $this->user = $user;
         }
-        // If no user is found in session,
-        // load the user using cookie token
-        else if ($rememberCookie AND $user = $this->getUserByRememberCookie($rememberCookie)) {
-            $this->updateSession($user);
-        }
 
-        if (is_null($user))
+        if (!($user = $this->getUser()) OR ($this->requireApproval AND !$user->is_activated))
             return FALSE;
-
-        $this->user = $user;
 
         return TRUE;
     }

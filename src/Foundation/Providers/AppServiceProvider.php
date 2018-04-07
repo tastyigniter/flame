@@ -49,8 +49,6 @@ abstract class AppServiceProvider extends ServiceProvider
                 require $routesFile;
         }
 
-//        $this->app->register(ConsoleServiceProvider::class);
-//        $this->app->register(GeneratorServiceProvider::class);
         $this->app->register(HelperServiceProvider::class);
         $this->app->register(PagicServiceProvider::class);
         $this->app->register(ActivityLogServiceProvider::class);

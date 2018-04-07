@@ -4,9 +4,9 @@ namespace Igniter\Flame\Foundation;
 
 use Exception;
 use Igniter\Flame\Foundation\Providers\LogServiceProvider;
+use Igniter\Flame\Router\RoutingServiceProvider;
 use Illuminate\Events\EventServiceProvider;
 use Illuminate\Foundation\Application as BaseApplication;
-use Illuminate\Routing\RoutingServiceProvider;
 
 /**
  * Igniter Application Class
@@ -49,6 +49,14 @@ class Application extends BaseApplication
      * @var string
      */
     protected $appContext;
+
+    /**
+     * Indicates if the application has a valid database
+     * connection and "settings" table.
+     *
+     * @var string
+     */
+    protected $hasDatabase;
 
     /**
      * Get the path to the public directory.
@@ -204,6 +212,30 @@ class Application extends BaseApplication
     }
 
     /**
+     * Register a "before" application filter.
+     *
+     * @param  \Closure|string $callback
+     *
+     * @return void
+     */
+    public function before($callback)
+    {
+        return $this['router']->before($callback);
+    }
+
+    /**
+     * Register an "after" application filter.
+     *
+     * @param  \Closure|string $callback
+     *
+     * @return void
+     */
+    public function after($callback)
+    {
+        return $this['router']->after($callback);
+    }
+
+    /**
      * Gets the execution context
      *
      * @return string
@@ -232,7 +264,8 @@ class Application extends BaseApplication
     public function hasDatabase()
     {
         try {
-            $this['db.connection']->table('settings')->get();
+            if (!$this->hasDatabase)
+                $this->hasDatabase = $this['db.connection']->getSchemaBuilder()->hasTable('settings');
         } catch (Exception $ex) {
             return FALSE;
         }
