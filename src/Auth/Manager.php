@@ -69,7 +69,7 @@ class Manager
     public function check()
     {
         if (is_null($this->user)) {
-
+            $user = null;
             $sessionUserId = $this->getSessionUserId();
             $rememberCookie = $this->getRememberCookie();
 
@@ -196,6 +196,8 @@ class Manager
      */
     public function login($userModel, $remember = FALSE)
     {
+        $userModel->beforeLogin();
+
         // Approval is required, user not approved
         if ($this->requireApproval AND !$userModel->is_activated) {
             throw new Exception(sprintf(
@@ -212,6 +214,8 @@ class Manager
         }
 
         $this->updateSession($userModel);
+
+        $userModel->afterLogin();
     }
 
     /**

@@ -12,6 +12,16 @@ class User extends Model
 
     protected static $resetExpiration = 1440;
 
+    public function beforeLogin()
+    {
+
+    }
+
+    public function afterLogin()
+    {
+
+    }
+
     public function setPasswordAttribute($value)
     {
         if ($this->exists AND empty($value)) {

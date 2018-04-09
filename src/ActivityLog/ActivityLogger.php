@@ -35,7 +35,7 @@ class ActivityLogger
         }
         else {
             $this->causedBy = (!$app->runningInAdmin())
-                ? $app['main.auth']->user()
+                ? $app['auth']->user()
                 : $app['admin.auth']->user();
         }
 
