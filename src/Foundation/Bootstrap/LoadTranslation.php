@@ -41,7 +41,7 @@ class LoadTranslation
             $locale = $app['config']['app.locale'];
             $supportedLocales = setting('supported_languages', []);
 
-            return new Localization($locale, $supportedLocales);
+            return new Localization($app['request'], $locale, $supportedLocales);
         });
     }
 }
