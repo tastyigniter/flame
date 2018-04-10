@@ -15,8 +15,8 @@
     "fideloper/proxy": "~3.3",
     "filp/whoops": "~2.0",
     "doctrine/instantiator": "1.0.*",
-    "doctrine/dbal": "2.5.*",
     "symfony/yaml": "~3.2",
+    "symfony/translation": "3.4.*",
     "october/rain": "1.0.*",
     "guzzlehttp/guzzle": "6.3.*",
     "kalnoy/nestedset": "4.3.*"
