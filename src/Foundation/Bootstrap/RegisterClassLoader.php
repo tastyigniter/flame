@@ -29,5 +29,9 @@ class RegisterClassLoader
             'app',
             'extensions',
         ]);
+
+        $app->after(function() use ($loader) {
+            $loader->store();
+        });
     }
 }

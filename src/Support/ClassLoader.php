@@ -2,6 +2,7 @@
 
 namespace Igniter\Flame\Support;
 
+use Exception;
 use Igniter\Flame\Filesystem\Filesystem;
 
 class ClassLoader
@@ -42,6 +43,8 @@ class ClassLoader
      */
     protected $registered = FALSE;
 
+    protected $manifestIsDirty = FALSE;
+
     public function __construct(Filesystem $files, $basePath, $manifestPath)
     {
         $this->files = $files;
@@ -59,7 +62,23 @@ class ClassLoader
             return;
         }
 
+        $this->loadManifest();
+
         $this->registered = spl_autoload_register([$this, 'loadClass']);
+    }
+
+    /**
+     * Store the manifest array by writing it to filesystem.
+     *
+     * @return void
+     */
+    public function store()
+    {
+        if (!$this->manifestIsDirty) {
+            return;
+        }
+
+        $this->write($this->manifest);
     }
 
     /**
@@ -72,10 +91,17 @@ class ClassLoader
      */
     public function loadClass($class)
     {
-        $classPath = $this->normalizeClass($class);
+        if (
+            isset($this->manifest[$class]) &&
+            $this->isRealFilePath($path = $this->manifest[$class])
+        ) {
+            require_once $this->basePath.DIRECTORY_SEPARATOR.$path;
+
+            return TRUE;
+        }
 
         // Try to load a mapped file for the prefix and relative class
-        if ($mappedFile = $this->loadMappedClass($class, $classPath)) {
+        if ($mappedFile = $this->loadMappedClass($class)) {
             return $mappedFile;
         }
 
@@ -84,84 +110,13 @@ class ClassLoader
     }
 
     /**
-     * Get the normal file name for a class.
+     * Gets all the directories registered with the loader.
      *
-     * @param  string $class
-     *
-     * @return string
+     * @return array
      */
-    protected function normalizeClass($class)
+    public function getDirectories()
     {
-        // Strip first slash
-        $class = ltrim($class, '\\');
-
-        // Work backwards through the namespace names of the fully-qualified
-        // class name to find a mapped file name
-        $pos = strrpos($class, '\\');
-
-        // Retain the trailing namespace separator in the prefix
-        $directory = substr($class, 0, $pos + 1);
-
-        // The rest is the relative class name
-        $relativeClass = substr($class, $pos + 1);
-        $directory = str_replace(['\\', '.'], DIRECTORY_SEPARATOR, $directory);
-
-        $directory = trim($directory, DIRECTORY_SEPARATOR);
-
-        return $directory.DIRECTORY_SEPARATOR.$relativeClass;
-    }
-
-    /**
-     * Load the mapped class for a directory prefix and relative class.
-     *
-     * @param string $class The class name.
-     * @param string $classPath The class relative path.
-     *
-     * @return mixed bool false if no mapped file can be loaded, or the
-     * name of the mapped file that was loaded.
-     */
-    protected function loadMappedClass($class, $classPath)
-    {
-        // Look through registered directories
-        foreach ($this->directories as $directory) {
-
-            // If the mapped class exists, require it
-            if ($this->isRealFilePath($path = $directory.DIRECTORY_SEPARATOR.$classPath.'.php')) {
-                $this->requireClass($class, $path);
-
-                return $path;
-            }
-        }
-
-        // never found it
-        return FALSE;
-    }
-
-    /**
-     * Determine if a relative path to a file exists and is real
-     *
-     * @param  string $path
-     *
-     * @return bool
-     */
-    protected function isRealFilePath($path)
-    {
-        return is_file(realpath($this->basePath.DIRECTORY_SEPARATOR.$path));
-    }
-
-    /**
-     * If a file exists, require it from the file system.
-     *
-     * @param $class
-     * @param string $path The file to require.
-     *
-     * @return void True if the file exists, false if not.
-     */
-    protected function requireClass($class, $path)
-    {
-        require_once $this->basePath.DIRECTORY_SEPARATOR.$path;
-
-        $this->manifest[$class] = $path;
+        return $this->directories;
     }
 
     /**
@@ -200,11 +155,141 @@ class ClassLoader
     }
 
     /**
-     * Gets all the directories registered with the loader.
+     * Get the normal file name for a class.
+     *
+     * @param  string $class
+     *
      * @return array
      */
-    public function getDirectories()
+    protected function normalizeClass($class)
     {
-        return $this->directories;
+        // Strip first slash
+        $class = ltrim($class, '\\');
+
+        // Work backwards through the namespace names of the fully-qualified
+        // class name to find a mapped file name
+        $pos = strrpos($class, '\\');
+
+        // Retain the trailing namespace separator in the prefix
+        $directory = substr($class, 0, $pos + 1);
+
+        // The rest is the relative class name
+        $relativeClass = substr($class, $pos + 1);
+        $directory = str_replace(['\\', '.'], DIRECTORY_SEPARATOR, $directory);
+
+        $directory = trim($directory, DIRECTORY_SEPARATOR);
+
+        $lowerClass = strtolower($directory).DIRECTORY_SEPARATOR.$relativeClass;
+        $upperClass = $directory.DIRECTORY_SEPARATOR.$relativeClass;
+
+        return [$lowerClass, $upperClass];
+    }
+
+    /**
+     * Load the mapped class for a directory prefix and relative class.
+     *
+     * @param string $class The class name.
+     *
+     * @return mixed bool false if no mapped file can be loaded, or the
+     * name of the mapped file that was loaded.
+     */
+    protected function loadMappedClass($class)
+    {
+        list($lowerClass, $upperClass) = $this->normalizeClass($class);
+
+        // Look through registered directories
+        foreach ($this->directories as $directory) {
+
+            // If the mapped class exists, require it
+            if ($this->isRealFilePath($path = $directory.DIRECTORY_SEPARATOR.$lowerClass.'.php')) {
+                $this->requireClass($class, $path);
+
+                return $path;
+            }
+
+            if ($this->isRealFilePath($path = $directory.DIRECTORY_SEPARATOR.$upperClass.'.php')) {
+                $this->requireClass($class, $path);
+
+                return TRUE;
+            }
+        }
+
+        // never found it
+        return FALSE;
+    }
+
+    /**
+     * Determine if a relative path to a file exists and is real
+     *
+     * @param  string $path
+     *
+     * @return bool
+     */
+    protected function isRealFilePath($path)
+    {
+        return is_file(realpath($this->basePath.DIRECTORY_SEPARATOR.$path));
+    }
+
+    /**
+     * If a file exists, require it from the file system.
+     *
+     * @param $class
+     * @param string $path The file to require.
+     *
+     * @return void True if the file exists, false if not.
+     */
+    protected function requireClass($class, $path)
+    {
+        require_once $this->basePath.DIRECTORY_SEPARATOR.$path;
+
+        $this->manifest[$class] = $path;
+
+        $this->manifestIsDirty = TRUE;
+    }
+
+    /**
+     * Load the manifest into memory.
+     *
+     * @return void
+     */
+    protected function loadManifest()
+    {
+        if (!is_null($this->manifest)) {
+            return;
+        }
+
+        if (file_exists($this->manifestPath)) {
+            try {
+                $this->manifest = $this->files->getRequire($this->manifestPath);
+
+                if (!is_array($this->manifest)) {
+                    $this->manifest = [];
+                }
+            } catch (Exception $ex) {
+                $this->manifest = [];
+            }
+        }
+        else {
+            $this->manifest = [];
+        }
+    }
+
+    /**
+     * Write the manifest array to filesystem.
+     *
+     * @param  array $manifest
+     *
+     * @return void
+     * @throws \Exception
+     */
+    protected function write(array $manifest)
+    {
+        if (!is_writable($path = dirname($this->manifestPath))) {
+            throw new Exception('The '.$path.' directory must be present and writable.');
+        }
+
+        $this->files->put(
+            $this->manifestPath, '<?php return '.var_export($manifest, TRUE).';'
+        );
     }
 }

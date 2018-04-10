@@ -264,13 +264,13 @@ class Application extends BaseApplication
     public function hasDatabase()
     {
         try {
-            if (!$this->hasDatabase)
+            if (is_null($this->hasDatabase))
                 $this->hasDatabase = $this['db.connection']->getSchemaBuilder()->hasTable('settings');
         } catch (Exception $ex) {
             return FALSE;
         }
 
-        return TRUE;
+        return $this->hasDatabase;
     }
 
     /**
