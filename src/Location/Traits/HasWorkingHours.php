@@ -5,6 +5,7 @@ namespace Igniter\Flame\Location\Traits;
 use Carbon\Carbon;
 use Exception;
 use Igniter\Flame\Location\WorkingSchedule;
+use Illuminate\Support\Collection;
 use InvalidArgumentException;
 
 trait HasWorkingHours
@@ -93,7 +94,9 @@ trait HasWorkingHours
         if (isset($this->workingSchedules[$type]))
             return $this->workingSchedules[$type];
 
-        $hours = $this->getWorkingHoursByType($type);
+        if (!$hours = $this->getWorkingHoursByType($type))
+            $hours = new Collection([]);
+
         $workingSchedule = WorkingSchedule::load($hours, $type);
 
         $this->workingSchedules[$type] = $workingSchedule;
