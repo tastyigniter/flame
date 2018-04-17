@@ -35,25 +35,10 @@ class Environment
      *  * debug: When set to true, it automatically set "auto_reload" to true as
      *           well (default to false).
      *  * charset: The charset used by the templates (default to UTF-8).
-     *  * base_template_class: The base template class to use for generated
-     *                         templates (default to Twig_Template).
+     *  * templateClass: The base template class to use for generated
+     *                         templates.
      *  * cache: An absolute path where to store the compiled templates,
-     *           a Twig_Cache_Interface implementation,
-     *           or false to disable compilation cache (default).
-     *  * auto_reload: Whether to reload the template if the original source changed.
-     *                 If you don't provide the auto_reload option, it will be
-     *                 determined automatically based on the debug value.
-     *  * strict_variables: Whether to ignore invalid variables in templates
-     *                      (default to false).
-     *  * autoescape: Whether to enable auto-escaping (default to html):
-     *                  * false: disable auto-escaping
-     *                  * true: equivalent to html
-     *                  * html, js: set the autoescaping to one of the supported strategies
-     *                  * name: set the autoescaping strategy based on the template name extension
-     *                  * PHP callback: a PHP callback that returns an escaping strategy based on the template "name"
-     *  * optimizations: A flag that indicates which optimizations to apply
-     *                   (default to -1 which means that all optimizations are enabled;
-     *                   set it to 0 to disable).
+     *           or false to disable compilation cache.
      *
      * @param TemplateLoader $loader
      * @param array $options An array of options
@@ -65,25 +50,14 @@ class Environment
         $options = array_merge([
             'debug'   => FALSE,
             'charset' => 'UTF-8',
-//            'base_template_class' => 'Twig_Template',
-//            'strict_variables'    => FALSE,
-//            'autoescape'          => 'html',
+            'templateClass' => 'Igniter\Flame\Pagic\Template',
             'cache'   => FALSE,
-//            'auto_reload'         => null,
-//            'optimizations'       => -1,
         ], $options);
 
         $this->debug = (bool)$options['debug'];
         $this->charset = strtoupper($options['charset']);
         $this->templateClass = $options['templateClass'];
-//        $this->autoReload = null === $options['auto_reload'] ? $this->debug : (bool)$options['auto_reload'];
-//        $this->strictVariables = (bool)$options['strict_variables'];
         $this->setCache($options['cache']);
-
-//        $this->addExtension(new Twig_Extension_Core());
-//        $this->addExtension(new Twig_Extension_Escaper($options['autoescape']));
-//        $this->addExtension(new Twig_Extension_Optimizer($options['optimizations']));
-//        $this->staging = new Twig_Extension_Staging();
     }
 
     public function setLoader(TemplateLoader $loader)

@@ -489,105 +489,103 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     }
 
     /**
-     * Whether a offset exists
-     * @link http://php.net/manual/en/arrayaccess.offsetexists.php
+     * Determine if an attribute exists on the model.
      *
-     * @param mixed $offset <p>
-     * An offset to check for.
-     * </p>
+     * @param  string  $key
+     * @return bool
+     */
+    public function __isset($key)
+    {
+        return isset($this->attributes[$key]) OR
+            (
+                $this->hasGetMutator($key) &&
+                !is_null($this->getAttribute($key))
+            );
+    }
+
+    /**
+     * Unset an attribute on the model.
      *
-     * @return void true on success or false on failure.
-     * </p>
-     * <p>
-     * The return value will be casted to boolean if non-boolean was returned.
-     * @since 5.0.0
+     * @param  string  $key
+     * @return void
+     */
+    public function __unset($key)
+    {
+        unset($this->attributes[$key]);
+    }
+
+    /**
+     * Determine if the given attribute exists.
+     *
+     * @param  mixed  $offset
+     * @return bool
      */
     public function offsetExists($offset)
     {
-        // TODO: Implement offsetExists() method.
+        return isset($this->$offset);
     }
 
     /**
-     * Offset to retrieve
-     * @link http://php.net/manual/en/arrayaccess.offsetget.php
+     * Get the value for a given offset.
      *
-     * @param mixed $offset <p>
-     * The offset to retrieve.
-     * </p>
-     *
-     * @return mixed Can return all value types.
-     * @since 5.0.0
+     * @param  mixed  $offset
+     * @return mixed
      */
     public function offsetGet($offset)
     {
-        // TODO: Implement offsetGet() method.
+        return $this->$offset;
     }
 
     /**
-     * Offset to set
-     * @link http://php.net/manual/en/arrayaccess.offsetset.php
+     * Set the value for a given offset.
      *
-     * @param mixed $offset <p>
-     * The offset to assign the value to.
-     * </p>
-     * @param mixed $value <p>
-     * The value to set.
-     * </p>
-     *
+     * @param  mixed  $offset
+     * @param  mixed  $value
      * @return void
-     * @since 5.0.0
      */
     public function offsetSet($offset, $value)
     {
-        // TODO: Implement offsetSet() method.
+        $this->$offset = $value;
     }
 
     /**
-     * Offset to unset
-     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
+     * Unset the value for a given offset.
      *
-     * @param mixed $offset <p>
-     * The offset to unset.
-     * </p>
-     *
+     * @param  mixed  $offset
      * @return void
-     * @since 5.0.0
      */
     public function offsetUnset($offset)
     {
-        // TODO: Implement offsetUnset() method.
+        unset($this->$offset);
     }
 
     /**
      * Get the instance as an array.
-     * @return void
+     * @return array
      */
     public function toArray()
     {
-        // TODO: Implement toArray() method.
+        return $this->attributesToArray();
     }
 
     /**
-     * Convert the object to its JSON representation.
+     * Convert the model instance to JSON.
      *
-     * @param  int $options
-     *
+     * @param  int  $options
      * @return string
      */
     public function toJson($options = 0)
     {
-        // TODO: Implement toJson() method.
+        return json_encode($this->jsonSerialize(), $options);
     }
 
     /**
-     * Specify data which should be serialized to JSON
-     * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since 5.4.0
+     * Convert the object into something JSON serializable.
+     *
+     * @return array
      */
     public function jsonSerialize()
     {
-        // TODO: Implement jsonSerialize() method.
+        return $this->toArray();
     }
 }

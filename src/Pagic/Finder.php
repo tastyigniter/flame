@@ -326,7 +326,7 @@ class Finder
      *
      * @param  array $results
      *
-     * @return \October\Rain\Halcyon\Model[]
+     * @return \Igniter\Flame\Pagic\Model[]
      */
     public function getModels(array $results)
     {
