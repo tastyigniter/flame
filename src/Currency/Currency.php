@@ -203,7 +203,7 @@ class Currency
      */
     public function isActive($code)
     {
-        return $code && (bool)Arr::get($this->getCurrency($code), 'active', FALSE);
+        return $code && (bool)Arr::get($this->getCurrency($code), 'currency_status', FALSE);
     }
 
     /**

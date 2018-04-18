@@ -20,7 +20,7 @@ class CurrencyServiceProvider extends ServiceProvider
             __DIR__.'/config/currency.php', 'currency'
         );
 
-//        $this->app[\Illuminate\Routing\Router::class]->aliasMiddleware('currency', CurrencyMiddleware::class);
+        $this->app[\Illuminate\Routing\Router::class]->aliasMiddleware('currency', CurrencyMiddleware::class);
 
         $this->registerCurrency();
         $this->registerCurrencyCommands();

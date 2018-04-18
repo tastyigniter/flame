@@ -2,8 +2,6 @@
 
 namespace Igniter\Flame\Translation;
 
-use Closure;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 
 class Localization
@@ -11,17 +9,21 @@ class Localization
     protected static $authLocalResolver;
 
     protected $request;
+
     protected $locale;
 
     protected $supportedLocales;
 
+    public $detectBrowserLocale;
+
     protected $sessionKey = 'igniter.flame.translation.locale';
 
-    public function __construct(Request $request, $locale, array $supportedLocales = [])
+    public function __construct(Request $request, $locale, array $config = [])
     {
         $this->request = $request;
         $this->locale = $locale;
-        $this->supportedLocales = $supportedLocales;
+        $this->supportedLocales = array_get($config, 'supportedLocales');
+        $this->detectBrowserLocale = array_get($config, 'detectBrowserLocale');
     }
 
     public function loadLocale()
@@ -47,9 +49,11 @@ class Localization
         }
 
         // Get locale from user browser
-        $browserLocale = $this->getBrowserLocale();
-        if ($browserLocale AND $this->isValid($browserLocale)) {
-            return $browserLocale;
+        if ($this->detectBrowserLocale) {
+            $browserLocale = $this->getBrowserLocale();
+            if ($browserLocale AND $this->isValid($browserLocale)) {
+                return $browserLocale;
+            }
         }
 
         return $this->locale;
