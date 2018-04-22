@@ -150,7 +150,8 @@ class DatabaseSettingStore extends SettingStore
 
         foreach ($keys as $key => $sort) {
             if (isset($insertData[$key])) {
-                $updateData[$key] = $insertData[$key];
+                if ($sort != $insertData[$key])
+                    $updateData[$key] = $insertData[$key];
             }
             else {
                 $deleteKeys[] = $key;
