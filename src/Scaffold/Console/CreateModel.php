@@ -38,7 +38,7 @@ class CreateModel extends GeneratorCommand
      */
     protected $stubs = [
         'model/model.stub'  => 'models/{{studly_name}}.php',
-        'model/create_table.stub'  => 'database/migration/{{timestamp}}_create_{{lower_name}}_table.php',
+        'model/create_table.stub'  => 'database/migrations/{{timestamp}}_create_{{lower_name}}_table.php',
         'model/config.stub'  => 'models/config/{{lower_name}}.php',
     ];
 
