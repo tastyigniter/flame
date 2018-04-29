@@ -29,13 +29,13 @@ class Model extends EloquentModel
      * The name of the "date_added" column.
      * @var string
      */
-    const CREATED_AT = null;
+    const CREATED_AT = 'created_at';
 
     /**
      * The name of the "date_updated" column.
      * @var string
      */
-    const UPDATED_AT = null;
+    const UPDATED_AT = 'updated_at';
 
     /**
      * @var array Make the model's attributes public so actions can modify them.
@@ -885,8 +885,9 @@ class Model extends EloquentModel
                     $relation[0],
                     $relation['name'],
                     $relation['table'],
+                    $relation['pivot'],
                     $relation['foreignKey'],
-                    $relation['otherKey'], FALSE, $relationName);
+                    $relation['otherKey'], null, FALSE);
                 break;
 
             case 'morphedByMany':
