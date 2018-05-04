@@ -29,13 +29,13 @@ class Model extends EloquentModel
      * The name of the "date_added" column.
      * @var string
      */
-    const CREATED_AT = 'created_at';
+    const CREATED_AT = null;
 
     /**
      * The name of the "date_updated" column.
      * @var string
      */
-    const UPDATED_AT = 'updated_at';
+    const UPDATED_AT = null;
 
     /**
      * @var array Make the model's attributes public so actions can modify them.
