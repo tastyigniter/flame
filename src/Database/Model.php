@@ -731,7 +731,8 @@ class Model extends EloquentModel
     /**
      * Get a relationship.
      *
-     * @param  string  $key
+     * @param  string $key
+     *
      * @return mixed
      */
     public function getRelationValue($key)

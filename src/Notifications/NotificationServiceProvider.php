@@ -35,6 +35,5 @@ class NotificationServiceProvider extends BaseNotificationServiceProvider
         $this->app->make(ChannelManager::class)->extend('mail', function () {
             return $this->app->make(Channels\MailChannel::class);
         });
-
     }
 }

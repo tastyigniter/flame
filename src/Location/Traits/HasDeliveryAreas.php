@@ -82,7 +82,7 @@ trait HasDeliveryAreas
      */
     public function findOrFirstDeliveryArea(GeoPosition $position)
     {
-        if (!$area = $this->findDeliveryArea($position))
+        if (!$area = $this->filterDeliveryArea($position))
             $area = $this->findAllDeliveryAreas()->first();
 
         return $area;

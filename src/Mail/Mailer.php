@@ -7,17 +7,17 @@ use October\Rain\Mail\Mailer as BaseMailer;
 
 class Mailer extends BaseMailer
 {
-    public function sendToMany($recipients, $view, array $data = [], $callback = null, $queue = false)
+    public function sendToMany($recipients, $view, array $data = [], $callback = null, $queue = FALSE)
     {
         if ($callback && !$queue && !is_callable($callback)) {
             $queue = $callback;
         }
 
-        $method = $queue === true ? 'queue' : 'send';
+        $method = $queue === TRUE ? 'queue' : 'send';
         $recipients = $this->processRecipients($recipients);
 
         foreach ($recipients as $address => $name) {
-            $this->{$method}($view, $data, function($message) use ($address, $name, $callback) {
+            $this->{$method}($view, $data, function ($message) use ($address, $name, $callback) {
 
                 $message->to($address, $name);
 
@@ -26,7 +26,6 @@ class Mailer extends BaseMailer
                 }
             });
         }
-
     }
 
     protected function parseView($view)
@@ -51,7 +50,7 @@ class Mailer extends BaseMailer
             // to mail the raw value is expected to be bool
             if (isset($view['raw'])) {
                 $view['text'] = $view['raw'];
-                $view['raw'] = true;
+                $view['raw'] = TRUE;
             }
 
             return [

@@ -200,8 +200,7 @@ class Location extends Model
         $sql .= " sin( radians( location_lat ) ) ) ) AS distance";
 
         $query->selectRaw(DB::raw($sql), [$latitude, $longitude, $latitude])
-            // ->having('distance', '>', 100)
-              ->orderBy('distance', 'asc');
+            ->orderBy('distance', 'asc');
 
         return $query;
     }

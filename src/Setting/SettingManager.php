@@ -2,7 +2,6 @@
 
 namespace Igniter\Flame\Setting;
 
-use Igniter\Flame\Foundation\Application;
 use Illuminate\Support\Manager;
 
 class SettingManager extends Manager

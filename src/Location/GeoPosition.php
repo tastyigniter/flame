@@ -88,7 +88,7 @@ class GeoPosition implements Arrayable
             'stateCode'        => $this->stateCode,
             'country'          => $this->country,
             'countryCode'      => $this->countryCode,
-            'postalCode'      => $this->postalCode,
+            'postalCode'       => $this->postalCode,
         ];
     }
 }

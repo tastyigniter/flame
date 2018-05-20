@@ -14,10 +14,10 @@ class ScaffoldServiceProvider extends ServiceProvider
      * @var array
      */
     protected $commands = [
-        'CreateExtension' => 'command.create.extension',
-        'CreateComponent' => 'command.create.component',
-        'CreateController'     => 'command.create.controller',
-        'CreateModel'     => 'command.create.model',
+        'CreateExtension'  => 'command.create.extension',
+        'CreateComponent'  => 'command.create.component',
+        'CreateController' => 'command.create.controller',
+        'CreateModel'      => 'command.create.model',
     ];
 
     /**

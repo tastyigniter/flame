@@ -174,10 +174,11 @@ class Manager
             return null;
 
         $query = $this->createLocationModelQuery();
-        $query->select('*')->selectDistance($coordinates['latitude'], $coordinates['longitude']);
-        $location = $query->isEnabled()->first();
+        $query->select('*')->selectDistance(
+            $coordinates['latitude'], $coordinates['longitude']
+        );
 
-        return $location ?: null;
+        return $query->isEnabled()->get();
     }
 
     //

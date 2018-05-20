@@ -1,7 +1,6 @@
 <?php namespace Igniter\Flame\Location;
 
 use Carbon\Carbon;
-use Igniter\Flame\Location\Models\Location;
 use Igniter\Flame\Location\Models\WorkingHour;
 use Illuminate\Support\Collection;
 
@@ -139,6 +138,7 @@ class WorkingSchedule
 
             if ($workingHours->checkStatus($dateToCheck) != WorkingHour::CLOSED) {
                 $dateIndex = $carbonDate->toDateString();
+
                 return $this->periodsCache[$dateIndex] = $workingHours;
             }
         }

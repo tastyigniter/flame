@@ -48,10 +48,10 @@ class Environment
         $this->setLoader($loader);
 
         $options = array_merge([
-            'debug'   => FALSE,
-            'charset' => 'UTF-8',
+            'debug'         => FALSE,
+            'charset'       => 'UTF-8',
             'templateClass' => 'Igniter\Flame\Pagic\Template',
-            'cache'   => FALSE,
+            'cache'         => FALSE,
         ], $options);
 
         $this->debug = (bool)$options['debug'];

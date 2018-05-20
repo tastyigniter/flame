@@ -411,6 +411,7 @@ if (!function_exists('array_undot')) {
         foreach ($dottedArray as $key => $value) {
             array_set($array, $key, $value);
         }
+
         return $array;
     }
 }

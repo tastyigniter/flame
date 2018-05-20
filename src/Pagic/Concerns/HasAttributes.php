@@ -34,7 +34,7 @@ trait HasAttributes
      *
      * @var bool
      */
-    public static $snakeAttributes = true;
+    public static $snakeAttributes = TRUE;
 
     /**
      * The cache of the mutated attributes for each class.

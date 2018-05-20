@@ -111,7 +111,7 @@ trait HasEvents
      *
      * @param  string $event
      * @param  \Closure|string $callback
-     * @param  int  $priority
+     * @param  int $priority
      *
      * @return void
      */
@@ -265,7 +265,7 @@ trait HasEvents
      * Register a saving model event with the dispatcher.
      *
      * @param  \Closure|string $callback
-     * @param  int  $priority
+     * @param  int $priority
      *
      * @return void
      */
@@ -278,7 +278,7 @@ trait HasEvents
      * Register a saved model event with the dispatcher.
      *
      * @param  \Closure|string $callback
-     * @param  int  $priority
+     * @param  int $priority
      *
      * @return void
      */
@@ -291,7 +291,7 @@ trait HasEvents
      * Register an updating model event with the dispatcher.
      *
      * @param  \Closure|string $callback
-     * @param  int  $priority
+     * @param  int $priority
      *
      * @return void
      */
@@ -304,7 +304,7 @@ trait HasEvents
      * Register an updated model event with the dispatcher.
      *
      * @param  \Closure|string $callback
-     * @param  int  $priority
+     * @param  int $priority
      *
      * @return void
      */
@@ -317,7 +317,7 @@ trait HasEvents
      * Register a creating model event with the dispatcher.
      *
      * @param  \Closure|string $callback
-     * @param  int  $priority
+     * @param  int $priority
      *
      * @return void
      */
@@ -330,7 +330,7 @@ trait HasEvents
      * Register a created model event with the dispatcher.
      *
      * @param  \Closure|string $callback
-     * @param  int  $priority
+     * @param  int $priority
      *
      * @return void
      */
@@ -343,7 +343,7 @@ trait HasEvents
      * Register a deleting model event with the dispatcher.
      *
      * @param  \Closure|string $callback
-     * @param  int  $priority
+     * @param  int $priority
      *
      * @return void
      */
@@ -356,7 +356,7 @@ trait HasEvents
      * Register a deleted model event with the dispatcher.
      *
      * @param  \Closure|string $callback
-     * @param  int  $priority
+     * @param  int $priority
      *
      * @return void
      */
