@@ -7,14 +7,14 @@ use Str;
 
 class MailChannel extends BaseMailChannel
 {
-
     /**
      * Build the mail message.
      *
-     * @param  \Illuminate\Mail\Message  $mailMessage
-     * @param  mixed  $notifiable
-     * @param  \Illuminate\Notifications\Notification  $notification
-     * @param  \Illuminate\Notifications\Messages\MailMessage  $message
+     * @param  \Illuminate\Mail\Message $mailMessage
+     * @param  mixed $notifiable
+     * @param  \Illuminate\Notifications\Notification $notification
+     * @param  \Illuminate\Notifications\Messages\MailMessage $message
+     *
      * @return void
      */
     protected function buildMessage($mailMessage, $notifiable, $notification, $message)
@@ -29,7 +29,7 @@ class MailChannel extends BaseMailChannel
 
         $this->addAttachments($mailMessage, $message);
 
-        if (! is_null($message->priority)) {
+        if (!is_null($message->priority)) {
             $mailMessage->setPriority($message->priority);
         }
     }

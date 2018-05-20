@@ -28,6 +28,7 @@ trait HasDeliveryAreas
 
         $area = Area::make();
         $area->location_id = $this->getKey();
+
         return $area;
     }
 

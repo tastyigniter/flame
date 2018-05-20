@@ -30,7 +30,7 @@ class RegisterClassLoader
             'extensions',
         ]);
 
-        $app->after(function() use ($loader) {
+        $app->after(function () use ($loader) {
             $loader->store();
         });
     }

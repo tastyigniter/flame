@@ -3,13 +3,11 @@
 namespace Igniter\Flame\Scaffold\Console;
 
 use Igniter\Flame\Scaffold\GeneratorCommand;
-use Str;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 class CreateExtension extends GeneratorCommand
 {
-
     /**
      * The console command name.
      *
@@ -37,27 +35,28 @@ class CreateExtension extends GeneratorCommand
      * @var array
      */
     protected $stubs = [
-        'extension.stub'  => 'Extension.php',
+        'extension.stub' => 'Extension.php',
     ];
 
     protected function prepareVars()
     {
         if (!$code = $this->getExtensionInput()) {
             $this->error('Invalid extension name, Example name: AuthorName.ExtensionName');
+
             return;
         }
 
         list($author, $name) = $code;
 
         $this->vars = [
-            'name'   => $name,
-            'lower_name'   => strtolower($name),
-            'title_name'   => title_case($name),
-            'studly_name'   => studly_case($name),
+            'name'        => $name,
+            'lower_name'  => strtolower($name),
+            'title_name'  => title_case($name),
+            'studly_name' => studly_case($name),
 
-            'author' => $author,
-            'lower_author' => strtolower($author),
-            'title_author' => title_case($author),
+            'author'        => $author,
+            'lower_author'  => strtolower($author),
+            'title_author'  => title_case($author),
             'studly_author' => studly_case($author),
         ];
     }

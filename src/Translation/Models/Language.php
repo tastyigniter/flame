@@ -70,7 +70,7 @@ class Language extends Model
             $oldText = Lang::get("{$namespace}::{$group}.{$key}");
 
             if (strcmp($text, $oldText) === 0)
-                return false;
+                return FALSE;
 
             $this->translations()->updateOrCreate([
                 'group'     => $group,

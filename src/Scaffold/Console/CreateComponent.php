@@ -8,7 +8,6 @@ use Symfony\Component\Console\Input\InputOption;
 
 class CreateComponent extends GeneratorCommand
 {
-
     /**
      * The console command name.
      *
@@ -36,8 +35,8 @@ class CreateComponent extends GeneratorCommand
      * @var array
      */
     protected $stubs = [
-        'component/component.stub'  => 'components/{{studly_name}}.php',
-        'component/default.stub'  => 'components/{{lower_name}}/default.php',
+        'component/component.stub' => 'components/{{studly_name}}.php',
+        'component/default.stub'   => 'components/{{lower_name}}/default.php',
     ];
 
     /**
@@ -49,6 +48,7 @@ class CreateComponent extends GeneratorCommand
     {
         if (!$code = $this->getExtensionInput()) {
             $this->error('Invalid extension name, Example name: AuthorName.ExtensionName');
+
             return;
         }
 
@@ -56,19 +56,19 @@ class CreateComponent extends GeneratorCommand
         $component = $this->argument('component');
 
         $this->vars = [
-            'extension'   => $extension,
-            'lower_extension'   => strtolower($extension),
-            'title_extension'   => title_case($extension),
-            'studly_extension'   => studly_case($extension),
+            'extension'        => $extension,
+            'lower_extension'  => strtolower($extension),
+            'title_extension'  => title_case($extension),
+            'studly_extension' => studly_case($extension),
 
-            'author' => $author,
-            'lower_author' => strtolower($author),
-            'title_author' => title_case($author),
+            'author'        => $author,
+            'lower_author'  => strtolower($author),
+            'title_author'  => title_case($author),
             'studly_author' => studly_case($author),
 
-            'name' => $component,
-            'lower_name' => strtolower($component),
-            'title_name' => title_case($component),
+            'name'        => $component,
+            'lower_name'  => strtolower($component),
+            'title_name'  => title_case($component),
             'studly_name' => studly_case($component),
         ];
     }
@@ -94,7 +94,7 @@ class CreateComponent extends GeneratorCommand
     protected function getOptions()
     {
         return [
-            ['force', null, InputOption::VALUE_NONE, 'Overwrite existing files with generated ones.']
+            ['force', null, InputOption::VALUE_NONE, 'Overwrite existing files with generated ones.'],
         ];
     }
 }

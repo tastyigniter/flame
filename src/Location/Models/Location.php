@@ -2,12 +2,12 @@
 
 namespace Igniter\Flame\Location\Models;
 
-use Main\Models\Image_tool_model;
 use DB;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Location\GeoPosition;
 use Igniter\Flame\Location\Traits\HasDeliveryAreas;
 use Igniter\Flame\Location\Traits\HasWorkingHours;
+use Main\Models\Image_tool_model;
 
 class Location extends Model
 {
@@ -200,7 +200,7 @@ class Location extends Model
         $sql .= " sin( radians( location_lat ) ) ) ) AS distance";
 
         $query->selectRaw(DB::raw($sql), [$latitude, $longitude, $latitude])
-            ->orderBy('distance', 'asc');
+              ->orderBy('distance', 'asc');
 
         return $query;
     }
