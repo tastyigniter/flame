@@ -4,6 +4,7 @@ namespace Igniter\Flame\Pagic;
 
 use ArrayAccess;
 use BadMethodCallException;
+use Exception;
 use Igniter\Flame\Pagic\Source\SourceResolverInterface;
 use Igniter\Flame\Support\Extendable;
 use Igniter\Flame\Traits\EventEmitter;
@@ -82,7 +83,17 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
      */
     protected $allowedExtensions = ['php'];
 
+    /**
+     * @var string Default file extension.
+     */
     protected $defaultExtension = 'php';
+
+    /**
+     * @var int The maximum allowed path nesting level. The default value is 2,
+     * meaning that files can only exist in the root directory, or in a
+     * subdirectory. Set to null if any level is allowed.
+     */
+    protected $maxNesting = 2;
 
     /**
      * Create a new Halcyon model instance.
@@ -231,6 +242,44 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     }
 
     /**
+     * Save a new model and return the instance.
+     *
+     * @param  array $attributes
+     *
+     * @return static
+     */
+    public static function create(array $attributes = [])
+    {
+        $model = new static($attributes);
+
+        $model->save();
+
+        return $model;
+    }
+
+    /**
+     * Begin querying the model.
+     *
+     * @return \Igniter\Flame\Pagic\Finder
+     */
+    public static function query()
+    {
+        return (new static)->newFinder();
+    }
+
+    /**
+     * Get all of the models from the source.
+     *
+     * @return \Illuminate\Support\Collection|static[]
+     */
+    public static function all()
+    {
+        $instance = new static;
+
+        return $instance->newFinder()->get();
+    }
+
+    /**
      * Fill the model with an array of attributes.
      *
      * @param  array $attributes
@@ -277,6 +326,20 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     public function getSourceName()
     {
         return $this->source;
+    }
+
+    /**
+     * Returns the file name without the extension.
+     * @return string
+     */
+    public function getBaseFileNameAttribute()
+    {
+        $pos = strrpos($this->fileName, '.');
+        if ($pos === FALSE) {
+            return $this->fileName;
+        }
+
+        return substr($this->fileName, 0, $pos);
     }
 
     /**
@@ -327,6 +390,15 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     public function getAllowedExtensions()
     {
         return $this->allowedExtensions;
+    }
+
+    /**
+     * Returns the maximum directory nesting allowed by this template.
+     * @return int
+     */
+    public function getMaxNesting()
+    {
+        return $this->maxNesting;
     }
 
     /**
@@ -421,6 +493,190 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     }
 
     /**
+     * Update the model in the database.
+     *
+     * @param  array $attributes
+     *
+     * @return bool|int
+     */
+    public function update(array $attributes = [])
+    {
+        if (!$this->exists) {
+            return $this->newFinder()->update($attributes);
+        }
+
+        return $this->fill($attributes)->save();
+    }
+
+    /**
+     * Save the model to the source.
+     *
+     * @param  array $options
+     *
+     * @return bool
+     */
+    public function save(array $options = [])
+    {
+        return $this->saveInternal(['force' => FALSE] + $options);
+    }
+
+    /**
+     * Save the model to the database. Is used by {@link save()} and {@link forceSave()}.
+     *
+     * @param array $options
+     *
+     * @return bool
+     */
+    public function saveInternal(array $options = [])
+    {
+        // Event
+        if ($this->fireEvent('model.saveInternal', [$this->attributes, $options], TRUE) === FALSE) {
+            return FALSE;
+        }
+
+        $query = $this->newFinder();
+
+        // If the "saving" event returns false we'll bail out of the save and return
+        // false, indicating that the save failed. This provides a chance for any
+        // listeners to cancel save operations if validations fail or whatever.
+        if ($this->fireModelEvent('saving') === FALSE) {
+            return FALSE;
+        }
+
+        if ($this->exists) {
+            $saved = $this->performUpdate($query, $options);
+        }
+        else {
+            $saved = $this->performInsert($query, $options);
+        }
+
+        if ($saved) {
+            $this->finishSave($options);
+        }
+
+        return $saved;
+    }
+
+    /**
+     * Finish processing on a successful save operation.
+     *
+     * @param  array $options
+     *
+     * @return void
+     */
+    protected function finishSave(array $options)
+    {
+        $this->fireModelEvent('saved', FALSE);
+
+        $this->mtime = $this->newFinder()->lastModified();
+
+        $this->syncOriginal();
+    }
+
+    /**
+     * Perform a model update operation.
+     *
+     * @param  \Igniter\Flame\Pagic\Finder $query
+     * @param  array $options
+     *
+     * @return bool
+     */
+    protected function performUpdate(Finder $query, array $options = [])
+    {
+        $dirty = $this->getDirty();
+
+        if (count($dirty) > 0) {
+            // If the updating event returns false, we will cancel the update operation so
+            // developers can hook Validation systems into their models and cancel this
+            // operation if the model does not pass validation. Otherwise, we update.
+            if ($this->fireModelEvent('updating') === FALSE) {
+                return FALSE;
+            }
+
+            $dirty = $this->getDirty();
+
+            if (count($dirty) > 0) {
+                $query->update($dirty);
+
+                $this->fireModelEvent('updated', FALSE);
+            }
+        }
+
+        return TRUE;
+    }
+
+    /**
+     * Perform a model insert operation.
+     *
+     * @param  \Igniter\Flame\Pagic\Finder $query
+     * @param  array $options
+     *
+     * @return bool
+     */
+    protected function performInsert(Finder $query, array $options = [])
+    {
+        if ($this->fireModelEvent('creating') === FALSE) {
+            return FALSE;
+        }
+
+        // Ensure the settings attribute is passed through so this distinction
+        // is recognised, mainly by the processor.
+        $attributes = $this->attributesToArray();
+
+        $query->insert($attributes);
+
+        // We will go ahead and set the exists property to true, so that it is set when
+        // the created event is fired, just in case the developer tries to update it
+        // during the event. This will allow them to do so and run an update here.
+        $this->exists = TRUE;
+
+        $this->fireModelEvent('created', FALSE);
+
+        return TRUE;
+    }
+
+    /**
+     * Delete the model from the database.
+     *
+     * @return bool|null
+     *
+     * @throws \Exception
+     */
+    public function delete()
+    {
+        if (is_null($this->fileName)) {
+            throw new Exception('No file name (fileName) defined on model.');
+        }
+
+        if ($this->exists) {
+            if ($this->fireModelEvent('deleting') === FALSE) {
+                return FALSE;
+            }
+
+            $this->performDeleteOnModel();
+
+            $this->exists = FALSE;
+
+            // Once the model has been deleted, we will fire off the deleted event so that
+            // the developers may hook into post-delete operations. We will then return
+            // a boolean true as the delete is presumably successful on the database.
+            $this->fireModelEvent('deleted', FALSE);
+
+            return TRUE;
+        }
+    }
+
+    /**
+     * Perform the actual delete query on this model instance.
+     *
+     * @return void
+     */
+    protected function performDeleteOnModel()
+    {
+        $this->newFinder()->delete();
+    }
+
+    /**
      * Convert the model to its string representation.
      * @return string
      */
@@ -491,14 +747,15 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Determine if an attribute exists on the model.
      *
-     * @param  string  $key
+     * @param  string $key
+     *
      * @return bool
      */
     public function __isset($key)
     {
         return isset($this->attributes[$key]) OR
             (
-                $this->hasGetMutator($key) &&
+                $this->hasGetMutator($key) AND
                 !is_null($this->getAttribute($key))
             );
     }
@@ -506,7 +763,8 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Unset an attribute on the model.
      *
-     * @param  string  $key
+     * @param  string $key
+     *
      * @return void
      */
     public function __unset($key)
@@ -517,7 +775,8 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Determine if the given attribute exists.
      *
-     * @param  mixed  $offset
+     * @param  mixed $offset
+     *
      * @return bool
      */
     public function offsetExists($offset)
@@ -528,7 +787,8 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Get the value for a given offset.
      *
-     * @param  mixed  $offset
+     * @param  mixed $offset
+     *
      * @return mixed
      */
     public function offsetGet($offset)
@@ -539,8 +799,9 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Set the value for a given offset.
      *
-     * @param  mixed  $offset
-     * @param  mixed  $value
+     * @param  mixed $offset
+     * @param  mixed $value
+     *
      * @return void
      */
     public function offsetSet($offset, $value)
@@ -551,7 +812,8 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Unset the value for a given offset.
      *
-     * @param  mixed  $offset
+     * @param  mixed $offset
+     *
      * @return void
      */
     public function offsetUnset($offset)
@@ -571,7 +833,8 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Convert the model instance to JSON.
      *
-     * @param  int  $options
+     * @param  int $options
+     *
      * @return string
      */
     public function toJson($options = 0)

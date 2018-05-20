@@ -96,13 +96,18 @@ class FileParser
         $content = [];
 
         if ($settings) {
-            $content[] = $settings;
+            $frontMatter = Yaml::dump(array_except($settings, 'components'));
+            if ($components = array_get($settings, 'components')) {
+                foreach ($components as $key => $component) {
+                    $frontMatter .= PHP_EOL.Yaml::dump([$key => $component]);
+                }
+            }
+            $content[] = $frontMatter;
         }
 
         if ($code) {
-            $code = preg_replace('/^\<\?php/', '',
-                preg_replace('/^\<\?/', '', preg_replace('/\?>$/', '', $code))
-            );
+            $code = preg_replace('/^\<\?php/', '', $code);
+            $code = preg_replace('/^\<\?/', '', preg_replace('/\?>$/', '', $code));
 
             $code = trim($code, PHP_EOL);
             $content[] = '<?php'.PHP_EOL.$code.PHP_EOL.'?>';
@@ -110,7 +115,7 @@ class FileParser
 
         $content[] = $markup;
 
-        $content = trim(implode(PHP_EOL.self::SOURCE_SEPARATOR.PHP_EOL, $content));
+        $content = self::SOURCE_SEPARATOR.PHP_EOL.trim(implode(PHP_EOL.self::SOURCE_SEPARATOR.PHP_EOL, $content));
 
         return $content;
     }
@@ -169,9 +174,8 @@ class FileParser
         $className = 'Pagic'.$uniqueName.'Class';
 
         $code = preg_replace('/^\s*function/m', 'public function', $code);
-        $code = preg_replace('/^\<\?php/', '',
-            preg_replace('/^\<\?/', '', preg_replace('/\?>$/', '', $code))
-        );
+        $code = preg_replace('/^\<\?php/', '', $code);
+        $code = preg_replace('/^\<\?/', '', preg_replace('/\?>$/', '', $code));
 
         $imports = [];
         $pattern = '/(use\s+[a-z0-9_\\\\]+(\s+as\s+[a-z0-9_]+)?;\n?)/mi';

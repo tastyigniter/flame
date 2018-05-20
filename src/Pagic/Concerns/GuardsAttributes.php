@@ -20,9 +20,7 @@ trait GuardsAttributes
      */
     public function getFillable()
     {
-        $defaults = ['fileName'];
-
-        return array_merge($defaults, $this->fillable);
+        return $this->fillable;
     }
 
     /**
@@ -49,7 +47,9 @@ trait GuardsAttributes
     protected function fillableFromArray(array $attributes)
     {
         if (count($this->getFillable()) > 0) {
-            return array_intersect_key($attributes, array_flip($this->getFillable()));
+            return array_intersect_key($attributes, array_flip(
+                array_merge(['fileName'], $this->getFillable())
+            ));
         }
 
         return $attributes;

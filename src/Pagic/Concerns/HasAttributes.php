@@ -30,6 +30,13 @@ trait HasAttributes
     protected $changes = [];
 
     /**
+     * Indicates whether attributes are snake cased on arrays.
+     *
+     * @var bool
+     */
+    public static $snakeAttributes = true;
+
+    /**
      * The cache of the mutated attributes for each class.
      *
      * @var array
@@ -497,14 +504,6 @@ trait HasAttributes
         }
         elseif (is_null($current)) {
             return FALSE;
-        }
-        elseif ($this->isDateAttribute($key)) {
-            return $this->fromDateTime($current) ===
-                $this->fromDateTime($original);
-        }
-        elseif ($this->hasCast($key)) {
-            return $this->castAttribute($key, $current) ===
-                $this->castAttribute($key, $original);
         }
 
         return is_numeric($current) && is_numeric($original)

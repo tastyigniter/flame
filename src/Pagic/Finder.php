@@ -7,6 +7,9 @@ use Igniter\Flame\Pagic\Processors\Processor;
 use Igniter\Flame\Pagic\Source\MemorySource;
 use Igniter\Flame\Pagic\Source\SourceInterface;
 use Illuminate\Support\Collection;
+use October\Rain\Halcyon\Exception\InvalidExtensionException;
+use October\Rain\Halcyon\Exception\InvalidFileNameException;
+use October\Rain\Halcyon\Exception\MissingFileNameException;
 
 class Finder
 {
@@ -254,16 +257,105 @@ class Finder
     {
         $select = is_null($key) ? [$column] : [$column, $key];
 
-        if (!is_null($this->cacheMinutes)) {
-            $results = $this->getCached($select);
-        }
-        else {
-            $results = $this->getFresh($select);
-        }
-
-        $collection = new Collection($results);
+        $collection = $this->get($select);
 
         return $collection->pluck($column, $key);
+    }
+
+    /**
+     * Insert a new record into the source.
+     *
+     * @param  array $values
+     *
+     * @return bool
+     */
+    public function insert(array $values)
+    {
+        if (empty($values)) {
+            return TRUE;
+        }
+
+        $this->validateFileName();
+
+        list($name, $extension) = $this->model->getFileNameParts();
+
+        $result = $this->processor->processInsert($this, $values);
+
+        return $this->source->insert(
+            $this->model->getTypeDirName(),
+            $name,
+            $extension,
+            $result
+        );
+    }
+
+    /**
+     * Update a record in the source.
+     *
+     * @param  array $values
+     *
+     * @return int
+     */
+    public function update(array $values)
+    {
+        $this->validateFileName();
+
+        list($name, $extension) = $this->model->getFileNameParts();
+
+        $result = $this->processor->processUpdate($this, $values);
+
+        $oldName = $oldExtension = null;
+
+        if ($this->model->isDirty('fileName')) {
+            list($oldName, $oldExtension) = $this->model->getFileNameParts(
+                $this->model->getOriginal('fileName')
+            );
+        }
+
+        return $this->source->update(
+            $this->model->getTypeDirName(),
+            $name,
+            $extension,
+            $result,
+            $oldName,
+            $oldExtension
+        );
+    }
+
+    /**
+     * Delete a source from the filesystem.
+     *
+     * @return bool
+     */
+    public function delete()
+    {
+        $this->validateFileName();
+
+        list($name, $extension) = $this->model->getFileNameParts();
+
+        return $this->source->delete(
+            $this->model->getTypeDirName(),
+            $name,
+            $extension
+        );
+    }
+
+    /**
+     * Returns the last modified time of the object.
+     *
+     * @return int
+     */
+    public function lastModified()
+    {
+        $this->validateFileName();
+
+        list($name, $extension) = $this->model->getFileNameParts();
+
+        return $this->source->lastModified(
+            $this->model->getTypeDirName(),
+            $name,
+            $extension
+        );
     }
 
     /**
@@ -295,12 +387,11 @@ class Finder
 
             return $this->source->select($this->in, $name, $extension);
         }
-        else {
-            return $this->source->selectAll($this->in, [
-                'columns'    => $this->columns,
-                'extensions' => $this->extensions,
-            ]);
-        }
+
+        return $this->source->selectAll($this->in, [
+            'columns'    => $this->columns,
+            'extensions' => $this->extensions,
+        ]);
     }
 
     /**
@@ -353,6 +444,88 @@ class Finder
     public function getModel()
     {
         return $this->model;
+    }
+
+    //
+    // Validation
+    //
+
+    /**
+     * Validate the supplied filename, extension and path.
+     *
+     * @param string $fileName
+     *
+     * @return bool
+     */
+    protected function validateFileName($fileName = null)
+    {
+        if ($fileName === null) {
+            $fileName = $this->model->fileName;
+        }
+
+        if (!strlen($fileName)) {
+            throw (new MissingFileNameException)->setModel($this->model);
+        }
+
+        if (!$this->validateFileNamePath($fileName, $this->model->getMaxNesting())) {
+            throw (new InvalidFileNameException)->setInvalidFileName($fileName);
+        }
+
+        $this->validateFileNameExtension($fileName, $this->model->getAllowedExtensions());
+
+        return TRUE;
+    }
+
+    /**
+     * Validates whether a file has an allowed extension.
+     *
+     * @param string $fileName Specifies a path to validate
+     * @param array $allowedExtensions A list of allowed file extensions
+     *
+     * @return void
+     */
+    protected function validateFileNameExtension($fileName, $allowedExtensions)
+    {
+        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+        if (strlen($extension) AND !in_array($extension, $allowedExtensions)) {
+            throw (new InvalidExtensionException)
+                ->setInvalidExtension($extension)
+                ->setAllowedExtensions($allowedExtensions);
+        }
+    }
+
+    /**
+     * Validates a template path.
+     * Template directory and file names can contain only alphanumeric symbols, dashes and dots.
+     *
+     * @param string $filePath Specifies a path to validate
+     * @param integer $maxNesting Specifies the maximum allowed nesting level
+     *
+     * @return bool
+     */
+    protected function validateFileNamePath($filePath, $maxNesting = 2)
+    {
+        if (strpos($filePath, '..') !== FALSE) {
+            return FALSE;
+        }
+
+        if (strpos($filePath, './') !== FALSE || strpos($filePath, '//') !== FALSE) {
+            return FALSE;
+        }
+
+        $segments = explode('/', $filePath);
+        if ($maxNesting !== null AND count($segments) > $maxNesting) {
+            return FALSE;
+        }
+
+        foreach ($segments as $segment) {
+            if (!preg_match('/^[a-z0-9\_\-\.\/]+$/i', $segment)) {
+                return FALSE;
+            }
+        }
+
+        return TRUE;
     }
 
     //

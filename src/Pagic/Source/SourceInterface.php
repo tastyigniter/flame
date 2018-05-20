@@ -31,7 +31,7 @@ interface SourceInterface
      * @param  string $dirName
      * @param  string $fileName
      * @param  string $extension
-     * @param  array $content
+     * @param  string $content
      *
      * @return bool
      */
@@ -43,11 +43,13 @@ interface SourceInterface
      * @param  string $dirName
      * @param  string $fileName
      * @param  string $extension
-     * @param  array $content
+     * @param  string $content
+     * @param string $oldFileName
+     * @param string $oldExtension
      *
      * @return int
      */
-    public function update($dirName, $fileName, $extension, $content);
+    public function update($dirName, $fileName, $extension, $content, $oldFileName = null, $oldExtension = null);
 
     /**
      * Run a delete statement against the datasource.
