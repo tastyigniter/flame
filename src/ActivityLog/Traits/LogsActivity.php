@@ -69,7 +69,7 @@ trait LogsActivity
 
     public function activity()
     {
-        return $this->morphMany('Admin\Models\Activities_model', 'subject');
+        return $this->morphMany('System\Models\Activities_model', 'subject');
     }
 
     public function getMessageForEvent($eventName)
