@@ -7,8 +7,6 @@ class DatabaseMigrationRepository extends BaseDatabaseMigrationRepository
 {
     protected $group;
 
-    public $wasFreshlyMigrated;
-
     /**
      * Get the ran migrations.
      * @return array
@@ -45,15 +43,8 @@ class DatabaseMigrationRepository extends BaseDatabaseMigrationRepository
     {
         $schema = $this->getConnection()->getSchemaBuilder();
 
-        // Before migrating, we will check two scenarios:
-        // If migration table exists that means we already installed
-        // database tables using CI_Migration library so we will modify the migration table,
-        // else create fresh migration table
-        $method = 'table';
-        if (!$schema->hasTable($this->table)) {
-            $method = 'create';
-            $this->wasFreshlyMigrated = TRUE;
-        }
+        $method = (!$schema->hasTable($this->table))
+            ? 'create' : 'table';
 
         $schema->$method($this->table, function (Blueprint $table) use ($method) {
             // Drop old columns from CI_Migration library
