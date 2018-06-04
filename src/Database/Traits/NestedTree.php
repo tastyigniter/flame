@@ -42,18 +42,18 @@ trait NestedTree
         return defined('static::PARENT_ID') ? static::PARENT_ID : 'parent_id';
     }
 
-    public static function create(array $attributes = [], $sessionKey = null)
+    public static function create(array $attributes = [], $parentOrSessionKey = null)
     {
         $children = array_pull($attributes, 'children');
 
         $instance = new static($attributes);
 
-        $parent = $instance->getParentId();
-        if ($parent instanceof self) {
-            $instance->appendToNode($sessionKey);
+        if ($parentOrSessionKey instanceof self) {
+            $instance->appendToNode($parentOrSessionKey);
+            $parentOrSessionKey = null;
         }
 
-        $instance->save(null, $parent);
+        $instance->save(null, $parentOrSessionKey);
 
         // Now create children
         $relation = new EloquentCollection;
