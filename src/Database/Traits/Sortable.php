@@ -21,7 +21,10 @@ use Exception;
  *
  * You can change the sort field used by declaring:
  *
- *   const SORT_ORDER = 'my_priority';
+ *   public $sortable [
+ *      'sortOrderColumn' = 'priority',
+ *      'sortWhenCreating' = FALSE,
+ *  ];
  *
  */
 trait Sortable
@@ -34,10 +37,10 @@ trait Sortable
     public static function bootSortable()
     {
         static::creating(function ($model) {
-            $sortOrderColumn = static::getSortOrderColumn();
+            $sortOrderColumn = $model->getSortOrderColumn();
 
             // only automatically calculate next position with max+1 when a position has not been set already
-            if ($model->{$sortOrderColumn} === null) {
+            if ($model->sortWhenCreating() AND $sortOrderColumn) {
                 $model->setAttribute($sortOrderColumn, static::on()->max($sortOrderColumn) + 1);
             }
         });
@@ -45,9 +48,7 @@ trait Sortable
 
     public function scopeSorted($query)
     {
-        $sortableField = static::getSortOrderColumn();
-
-        return $query->orderBy($sortableField);
+        return $query->orderBy($this->getSortOrderColumn());
     }
 
     /**
@@ -73,7 +74,7 @@ trait Sortable
 
         foreach ($itemIds as $index => $id) {
             $order = $itemOrders[$index];
-            $this->newQuery()->where('id', $id)->update([static::getSortOrderColumn() => $order]);
+            $this->newQuery()->where('id', $id)->update([$this->getSortOrderColumn() => $order]);
         }
     }
 
@@ -82,8 +83,13 @@ trait Sortable
      *
      * @return string
      */
-    public static function getSortOrderColumn()
+    public function getSortOrderColumn()
     {
-        return static::SORT_ORDER;
+        return $this->sortable['sortOrderColumn'] ?? static::SORT_ORDER;
+    }
+
+    public function sortWhenCreating()
+    {
+        return $this->sortable['sortWhenCreating'] ?? true;
     }
 }
