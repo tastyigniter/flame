@@ -125,7 +125,7 @@ class WorkingHour extends Model
         if (!$this->opening_time OR !$this->closing_time)
             return null;
 
-        return $this->opening_time->gt($this->closing_time);
+        return $this->opening_time > $this->closing_time;
     }
 
     public function checkStatus($dateTime = null)

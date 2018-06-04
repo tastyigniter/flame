@@ -45,7 +45,7 @@ class Model extends EloquentModel
     public $timestamps = FALSE;
 
     /**
-     * The storage format of the model's date columns.
+     * The storage format of the model's time columns.
      * @var string
      */
     protected $timeFormat;
@@ -368,8 +368,8 @@ class Model extends EloquentModel
                 return $this->asDateTime($value);
             case 'timestamp':
                 return $this->asTimeStamp($value);
-            case 'time':
-                return $this->asTime($value);
+//            case 'time':
+//                return $this->asTime($value);
             case 'serialize':
                 return $this->fromSerialized($value);
             default:
@@ -416,9 +416,9 @@ class Model extends EloquentModel
         // the connection grammar's date format. We will auto set the values.
         elseif ($value && (in_array($key, $this->getDates()) || $this->isDateCastable($key))) {
             $value = $this->fromDateTime($value);
-        }
-        elseif ($value && $this->isTimeCastable($key)) {
-            $value = $this->fromTime($value);
+//        }
+//        elseif ($value && $this->isTimeCastable($key)) {
+//            $value = $this->fromTime($value);
         }
 
         if (!is_null($value) && $this->isSerializedCastable($key)) {
@@ -533,7 +533,7 @@ class Model extends EloquentModel
      */
     protected function isTimeCastable($key)
     {
-        return $this->hasCast($key, ['time']);
+        return $this->hasCast($key, ['timee']);
     }
 
     /**
