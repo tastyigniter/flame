@@ -2,6 +2,7 @@
 
 namespace Igniter\Flame\Cart;
 
+use Exception;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Arr;
@@ -358,9 +359,12 @@ class CartCondition implements Arrayable, Jsonable, Serializable
 
     protected function parseRule($rule)
     {
-        preg_match('/([a-zA-Z0-9]+)(?:\s*)([\=\!\<\>]{1,2})(?:\s*)([a-zA-Z0-9]+)/', $rule, $matches);
+        preg_match('/([a-zA-Z0-9\-?]+)(?:\s*)([\=\!\<\>]{1,2})(?:\s*)([\-?a-zA-Z0-9]+)/', $rule, $matches);
 
-        if (count($matches)) array_shift($matches);
+        if (!count($matches))
+            throw new Exception(sprintf('Rule [%s] format is invalid.', $rule));
+
+        array_shift($matches);
 
         return $matches;
     }

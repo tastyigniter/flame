@@ -82,6 +82,19 @@ class WorkingSchedule
         return $this->getTime('close', null, $format);
     }
 
+    public function getTimeSlotStartTime($timeInterval)
+    {
+        $workingHours = $this->getPeriod();
+
+        $currentTime = Carbon::now()->addMinutes($timeInterval);
+        foreach ($workingHours->generateTimes($timeInterval) as $dateTime) {
+            if ($currentTime->lte($dateTime))
+                return $dateTime;
+        }
+
+        return null;
+    }
+
     public function getTime($name, $dateTime = null, $format = null)
     {
         if (!$period = $this->getPeriod($dateTime))

@@ -46,16 +46,12 @@ class Area extends Model
             'all'   => '{amount} on all orders',
             'above' => '{amount} above {total}',
             'below' => '{amount} below {total}',
-            'free'  => 'Free Delivery',
-//            'no_condition' => 'not available %s %s',
-//            'no_total'     => 'No Min. Order Amount',
-//            'prefix'       => 'Delivery charge: %s',
         ];
 
         if (is_null($name))
             return $trans;
 
-        return isset($trans[$name]) ? $trans[$name] : null;
+        return $trans[$name] ?? null;
     }
 
     //
@@ -85,12 +81,12 @@ class Area extends Model
 
     public function deliveryAmount($cartTotal)
     {
-        return $this->matchCondition($cartTotal, 'amount');
+        return $this->getConditionValue('amount', $cartTotal);
     }
 
     public function minimumOrderTotal($cartTotal)
     {
-        return $this->matchCondition($cartTotal, 'total');
+        return $this->getConditionValue('total', $cartTotal);
     }
 
     public function listConditions()
@@ -207,51 +203,40 @@ class Area extends Model
             AND $position->longitude < max($vertex1->lng, $vertex2->lng));
     }
 
-    protected function matchCondition($cartTotal, $key)
+    protected function getConditionValue($type, $cartTotal)
+    {
+        if (!$condition = $this->filterConditionRules($type, $cartTotal))
+            return null;
+
+        $condition = (object)$condition;
+
+        // Delivery is unavailable when delivery charge from the matched rule is -1
+        if ($condition->amount < 0)
+            return $type == 'total' ? $condition->total : null;
+
+        // At this stage, minimum total is 0 when the matched condition is a below rule
+        if ($type == 'total' AND $condition->type == 'below')
+            return 0;
+
+        return $condition->{$type};
+    }
+
+    protected function filterConditionRules($value = 'total', $cartTotal)
     {
         $collection = collect($this->conditions);
 
-        // If a 'all' condition type exist we will return the first one found
-        $condition = $collection
-            ->where('type', 'all')
-            ->sortBy($key)
-            ->first();
+        if ($value == 'total')
+            return $collection->sortBy($value)->first();
 
-        if ($condition)
-            return $condition[$key];
-
-        // Minimum total is 0 when a 'below' condition type exist
-        if ($key == 'total' AND $collection->where('type', 'below')->isNotEmpty())
-            return 0;
-
-        // Find the first matching 'below' condition
-        $condition = $collection
-            ->where('type', 'below')
-            ->sortByDesc('total')
-            ->first(function ($item) use ($cartTotal) {
-                return $cartTotal < $item['total'];
-            });
-
-        if ($condition)
-            return $condition[$key];
-
-        // Find the first matching 'above' condition
-        $collection->where('type', 'above');
-
-        if ($key == 'total') {
-            $condition = $collection->sortBy('total')->first();
-        }
-        else {
-            $condition = $collection
-                ->sortByDesc('total')
-                ->first(function ($item) use ($cartTotal) {
-                    return $cartTotal > $item['total'];
-                });
-        }
-
-        if ($condition)
-            return $condition[$key];
-
-        return null;
+        return $collection->first(function ($condition) use ($cartTotal) {
+            switch ($condition['type']) {
+                case 'all':
+                    return TRUE;
+                case 'below':
+                    return $cartTotal < $condition['total'];
+                case 'above':
+                    return $cartTotal > $condition['total'];
+            }
+        });
     }
 }
