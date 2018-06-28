@@ -1,8 +1,9 @@
 <?php namespace Igniter\Flame\ActivityLog;
 
+use Exception;
 use Igniter\Flame\ActivityLog\Models\Activity;
 use Igniter\Flame\Database\Model;
-use Igniter\Flame\Foundation\Application;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Traits\Macroable;
 
 class ActivityLogger
@@ -30,18 +31,14 @@ class ActivityLogger
 
     public function __construct(Application $app)
     {
-        if ($app->runningInConsole()) {
-            $this->causedBy = null;
-        }
-        else {
-            $this->causedBy = (!$app->runningInAdmin())
-                ? $app['auth']->user()
-                : $app['admin.auth']->user();
-        }
+        $this->auth = $app->runningInAdmin()
+            ? $app['admin.auth'] : $app['auth'];
+
+        $this->causedBy = $this->auth->user();
 
         $this->properties = collect();
-        $this->logName = 'default';
-        $this->logEnabled = TRUE;
+        $this->logName = $app['config']->get('system.activityLogName', 'default');
+        $this->logEnabled = $app['config']->get('system.activityLogEnabled', TRUE);
     }
 
     /**
@@ -57,12 +54,14 @@ class ActivityLogger
     }
 
     /**
-     * @param Model $model
+     * @param Model|int|string $modelOrId
      *
      * @return $this
      */
-    public function causedBy(Model $model)
+    public function causedBy($modelOrId)
     {
+        $model = $this->normalizeCauser($modelOrId);
+
         $this->causedBy = $model;
 
         return $this;
@@ -135,6 +134,26 @@ class ActivityLogger
     public function getModelInstance()
     {
         return new Activity;
+    }
+
+    /**
+     * @param Model|int|string $modelOrId
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    protected function normalizeCauser($modelOrId)
+    {
+        if ($modelOrId instanceof Model) {
+            return $modelOrId;
+        }
+
+        $model = $this->auth->getById($modelOrId);
+
+        if ($model) {
+            return $model;
+        }
+
+        throw new Exception("Could not determine a user with identifier '{$modelOrId}''.");
     }
 
     protected function replacePlaceholders($message, Activity $activity)

@@ -27,17 +27,6 @@ class Activity extends Model
      */
     public $primaryKey = 'activity_id';
 
-    protected $fillable = [
-        'domain',
-        'context',
-        'user',
-        'user_id',
-        'action',
-        'message',
-        'status',
-        'date_added',
-    ];
-
     public $timestamps = TRUE;
 
     public $casts = [

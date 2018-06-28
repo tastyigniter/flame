@@ -33,6 +33,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 trait LogsActivity
 {
+    protected $enableLoggingModelsEvents = TRUE;
+
     protected $oldAttributes = [];
 
     protected static function bootLogsActivity()
@@ -41,12 +43,10 @@ trait LogsActivity
             return static::$eventName(function (Model $model) use ($eventName) {
 
                 if ($eventName == 'updated') {
-                    static::updating(function (Model $model) {
-                        //temporary hold the original attributes on the model
-                        //as we'll need these in the updating event
-                        $oldValues = $model->replicate()->setRawAttributes($model->getOriginal());
-                        $model->oldAttributes = static::logChanges($oldValues);
-                    });
+                    //temporary hold the original attributes on the model
+                    //as we'll need these in the updating event
+                    $oldValues = $model->replicate()->setRawAttributes($model->getOriginal());
+                    $model->oldAttributes = static::logChanges($oldValues);
                 }
 
                 if (!$model->shouldLogEvent($eventName)) {
@@ -65,6 +65,20 @@ trait LogsActivity
                       ->log($description);
             });
         });
+    }
+
+    public function disableLogging()
+    {
+        $this->enableLoggingModelsEvents = FALSE;
+
+        return $this;
+    }
+
+    public function enableLogging()
+    {
+        $this->enableLoggingModelsEvents = TRUE;
+
+        return $this;
     }
 
     public function activity()
