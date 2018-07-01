@@ -3,6 +3,7 @@
 namespace Igniter\Flame\Cart;
 
 use Closure;
+use Exception;
 use Igniter\Flame\Cart\Contracts\Buyable;
 use Igniter\Flame\Cart\Exceptions\InvalidRowIDException;
 use Igniter\Flame\Cart\Exceptions\UnknownModelException;
@@ -34,6 +35,12 @@ class Cart
      * @var string
      */
     protected $instance;
+
+    /**
+     * @var array Collection of all conditions used in this cart.
+     * @see \Igniter\Flame\Cart\CartCondition
+     */
+    protected $allConditions;
 
     protected $conditionPriorities;
 
@@ -248,17 +255,12 @@ class Cart
      */
     public function total()
     {
-        $conditions = $this->conditions();
-
         $subTotal = $this->subtotal();
 
-        $total = $conditions->reduce(function ($total, CartCondition $condition) {
-            $newTotal = $condition->apply($total);
+        if ($this->getContent()->isEmpty())
+            return $subTotal;
 
-            return ($newTotal === FALSE) ? $total : $newTotal;
-        }, $subTotal);
-
-        return $total;
+        return $this->applyConditionsOnTotal($subTotal);
     }
 
     /**
@@ -308,6 +310,174 @@ class Cart
         $content->put($cartItem->rowId, $cartItem);
 
         $this->putSession('content', $content);
+    }
+
+    //
+    // Conditions
+    //
+
+    public function conditions()
+    {
+        return $this->getConditions()->sortBy(function ($condition) {
+            return $condition->priority;
+        })->filter(function (CartCondition $condition) {
+            return $condition->isValid();
+        });
+    }
+
+    public function loadCondition($name, $config)
+    {
+        $allConditions = $this->getConditions();
+
+        // Extensibility
+        $this->fireEvent('condition.beforeLoad');
+
+        if (!$condition = $allConditions->get($name)) {
+            $className = array_get($config, 'className');
+            if (!class_exists($className))
+                throw new Exception(sprintf("The Cart Condition class name '%s' has not been registered", $className));
+
+            $condition = new $className($config);
+        }
+
+        $condition->name = $name;
+        $condition->setCart($this->instance, $this->getContent());
+
+        $condition->onLoad();
+
+        $allConditions->put($name, $condition);
+
+        $this->putSession('conditions', $allConditions);
+    }
+
+    /**
+     * get condition applied on the cart by its name
+     *
+     * @param $name
+     *
+     * @return CartCondition
+     */
+    public function getCondition($name)
+    {
+        return $this->getConditions()->get($name);
+    }
+
+    /**
+     * Removes a condition on a cart by unique id,
+     *
+     * @param $name
+     *
+     * @return bool
+     */
+    public function removeCondition($name)
+    {
+        $cartCondition = $this->getCondition($name);
+        if (!$cartCondition->removeable)
+            return FALSE;
+
+        $this->fireEvent('condition.removing', $cartCondition);
+
+        $allConditions = $this->getConditions();
+
+        $allConditions->pull($name);
+
+        $this->fireEvent('condition.removed', $cartCondition);
+
+        $this->putSession('conditions', $allConditions);
+    }
+
+    public function clearConditions()
+    {
+        $this->fireEvent('condition.clearing');
+
+        $this->putSession('conditions', null);
+
+        $this->fireEvent('condition.cleared');
+    }
+
+    protected function applyConditionsOnTotal($subTotal)
+    {
+        $total = $this->getConditions()->reduce(function ($total, CartCondition $condition) {
+            $newTotal = $condition->apply($total);
+
+            return ($newTotal === FALSE) ? $total : $newTotal;
+        }, $subTotal);
+
+        return $total;
+    }
+
+    //
+    //
+    //
+
+    /**
+     * Get the carts content, if there is no cart content set yet, return a new empty Collection
+     *
+     * @return \Igniter\Flame\Cart\CartContent
+     */
+    protected function getContent()
+    {
+        if (!$content = $this->getSession('content'))
+            $content = new CartContent;
+
+        return $content;
+    }
+
+    /**
+     * Get the carts conditions, if there is no cart condition set yet, return a new empty Collection
+     *
+     * @return \Igniter\Flame\Cart\CartContent
+     */
+    protected function getConditions()
+    {
+        if (!$conditions = $this->getSession('conditions'))
+            $conditions = new Collection;
+
+        return $conditions;
+    }
+
+    /**
+     * Create a new CartItem from the supplied attributes.
+     *
+     * @param mixed $id
+     * @param mixed $name
+     * @param int|float $qty
+     * @param float $price
+     * @param array $options
+     *
+     * @return \Igniter\Flame\Cart\CartItem
+     */
+    protected function createCartItem($id, $name, $qty, $price, array $options)
+    {
+        if ($id instanceof Buyable) {
+            $cartItem = CartItem::fromBuyable($id, $qty ?: []);
+            $cartItem->setQuantity($name ?: 1);
+            $cartItem->associate($id);
+        }
+        elseif (is_array($id)) {
+            $cartItem = CartItem::fromArray($id);
+            $cartItem->setQuantity($id['qty']);
+        }
+        else {
+            $cartItem = CartItem::fromAttributes($id, $name, $price, $options);
+            $cartItem->setQuantity($qty);
+        }
+
+        return $cartItem;
+    }
+
+    /**
+     * Check if the item is a multidimensional array or an array of Buyables.
+     *
+     * @param mixed $item
+     *
+     * @return bool
+     */
+    protected function isMulti($item)
+    {
+        if (!is_array($item)) return FALSE;
+
+        return is_array(head($item)) || head($item) instanceof Buyable;
     }
 
     /**
@@ -369,207 +539,6 @@ class Cart
 ////             ->where('identifier', $identifier)->delete();
 //    }
 
-    public function conditions()
-    {
-        $conditions = $this->getSortedConditions();
-
-        $conditions->each(function (CartCondition $condition) {
-            $condition->applyContent($this->getContent());
-        });
-
-        return $conditions;
-    }
-
-    public function condition(CartCondition $condition)
-    {
-        $conditions = $this->getConditions();
-
-        // Check if priority has been applied
-        if ($condition->priority == 0) {
-            $last = $conditions->last();
-            $condition->setPriority(!is_null($last) ? $last->priority + 1 : 1);
-        }
-
-        $conditions->put($condition->uniqueId, $condition);
-
-        $conditions = $conditions->sortBy(function ($condition, $key) {
-            return $condition->priority;
-        });
-
-        $this->putSession('conditions', $conditions);
-    }
-
-    /**
-     * get condition applied on the cart by its name
-     *
-     * @param $uniqueId
-     *
-     * @return CartCondition
-     */
-    public function getCondition($uniqueId)
-    {
-        return $this->getConditions()->get($uniqueId);
-    }
-
-    /**
-     * Get all the condition filtered by name
-     *
-     * @param $name
-     *
-     * @return \Igniter\Flame\Cart\CartContent
-     */
-    public function getConditionByName($name)
-    {
-        return $this->getConditions()->first(function (CartCondition $condition) use ($name) {
-            return $condition->name == $name;
-        });
-    }
-
-    /**
-     * Removes a condition on a cart by unique id,
-     *
-     * @param $uniqueId
-     */
-    public function removeCondition($uniqueId)
-    {
-        $conditions = $this->getConditions();
-
-        $conditions->pull($uniqueId);
-
-        $this->putSession('conditions', $conditions);
-    }
-
-    /**
-     * Removes a condition on a cart by name,
-     *
-     * @param $name
-     */
-    public function removeConditionByName($name)
-    {
-        $condition = $this->getConditionByName($name);
-
-        if ($condition)
-            $this->removeCondition($condition->uniqueId);
-    }
-
-    public function clearConditions()
-    {
-        $this->putSession('conditions', null);
-    }
-
-    public function setConditionsPriorities($conditionPriorities)
-    {
-        $this->conditionPriorities = $conditionPriorities;
-    }
-
-    /**
-     * Get the carts content, if there is no cart content set yet, return a new empty Collection
-     *
-     * @return \Igniter\Flame\Cart\CartContent
-     */
-    protected function getContent()
-    {
-        if (!$content = $this->getSession('content'))
-            $content = new CartContent;
-
-        return $content;
-    }
-
-    /**
-     * Get the carts conditions, if there is no cart condition set yet, return a new empty Collection
-     *
-     * @return \Igniter\Flame\Cart\CartContent
-     */
-    protected function getConditions()
-    {
-        if (!$conditions = $this->getSession('conditions'))
-            $conditions = new Collection;
-
-        return $conditions;
-    }
-
-    public function getSortedConditions()
-    {
-        $sorted = $this->getConditions()->sortBy(function ($condition, $key) {
-            return array_get($this->conditionPriorities, $condition->name, $condition->priority);
-        });
-
-        return $sorted;
-    }
-
-    public function allTotals()
-    {
-        $totals = [
-            [
-                'name'     => 'subtotal',
-                'label'    => 'Subtotal',
-                'value'    => $this->subtotal(),
-                'priority' => array_get($this->conditionPriorities, 'subtotal', 0),
-            ],
-            [
-                'name'     => 'total',
-                'label'    => 'Order Total',
-                'value'    => $this->total(),
-                'priority' => array_get($this->conditionPriorities, 'total', 999),
-            ],
-        ];
-
-        foreach ($this->getSortedConditions() as $condition) {
-            $totals[] = [
-                'name'     => $condition->name,
-                'label'    => $condition->label,
-                'value'    => $condition->result(),
-                'priority' => array_get($this->conditionPriorities, 'priority', $condition->priority),
-            ];
-        }
-
-        return $totals;
-    }
-
-    /**
-     * Create a new CartItem from the supplied attributes.
-     *
-     * @param mixed $id
-     * @param mixed $name
-     * @param int|float $qty
-     * @param float $price
-     * @param array $options
-     *
-     * @return \Igniter\Flame\Cart\CartItem
-     */
-    protected function createCartItem($id, $name, $qty, $price, array $options)
-    {
-        if ($id instanceof Buyable) {
-            $cartItem = CartItem::fromBuyable($id, $qty ?: []);
-            $cartItem->setQuantity($name ?: 1);
-            $cartItem->associate($id);
-        }
-        elseif (is_array($id)) {
-            $cartItem = CartItem::fromArray($id);
-            $cartItem->setQuantity($id['qty']);
-        }
-        else {
-            $cartItem = CartItem::fromAttributes($id, $name, $price, $options);
-            $cartItem->setQuantity($qty);
-        }
-
-        return $cartItem;
-    }
-
-    /**
-     * Check if the item is a multidimensional array or an array of Buyables.
-     *
-     * @param mixed $item
-     *
-     * @return bool
-     */
-    protected function isMulti($item)
-    {
-        if (!is_array($item)) return FALSE;
-
-        return is_array(head($item)) || head($item) instanceof Buyable;
-    }
-
     /**
      * @param $identifier
      *
@@ -625,6 +594,10 @@ class Cart
 //        return is_null($connection) ? config('database.default') : $connection;
 //    }
 
+    //
+    // Session
+    //
+
     protected function hasSession($key)
     {
         return $this->session->has(sprintf('%s.%s', $this->instance, $key));
@@ -639,6 +612,10 @@ class Cart
     {
         $this->session->put($this->instance.'.'.$key, $content);
     }
+
+    //
+    // Events
+    //
 
     /**
      * @param $name

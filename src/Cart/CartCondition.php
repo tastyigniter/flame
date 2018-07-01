@@ -2,7 +2,7 @@
 
 namespace Igniter\Flame\Cart;
 
-use Exception;
+use Igniter\Flame\Cart\Helpers\CartConditionHelper;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Arr;
@@ -15,21 +15,20 @@ use Serializable;
  *   $condition = new CartCondition($code, $name, $target, $action, $priority);
  *   Cart::condition($condition);
  */
-class CartCondition implements Arrayable, Jsonable, Serializable
+abstract class CartCondition implements Arrayable, Jsonable, Serializable
 {
-    /**
-     * The uniqueID of the cart condition.
-     *
-     * @var string
-     */
-    public $uniqueId;
+    use CartConditionHelper;
+
+    //
+    // Configurable properties
+    //
 
     /**
      * The name for this cart condition.
      *
      * @var int|float
      */
-    public $name;
+    public $name = 'default';
 
     /**
      * The label for this cart condition.
@@ -39,18 +38,11 @@ class CartCondition implements Arrayable, Jsonable, Serializable
     public $label;
 
     /**
-     * The type of the cart condition.
-     *
-     * @var int|string
-     */
-    public $type;
-
-    /**
      * The priority for this cart condition.
      *
      * @var int
      */
-    public $priority;
+    public $priority = 0;
 
     /**
      * The target of the cart condition.
@@ -59,75 +51,183 @@ class CartCondition implements Arrayable, Jsonable, Serializable
      */
     public $target = 'subtotal';
 
-    /**
-     * The actions for this cart condition.
-     *
-     * @var array
-     */
-    public $actions = [];
-
-    /**
-     * The rules for this cart condition.
-     *
-     * @var array
-     */
-    public $rules = [];
-
-    public $metaData = [];
-
     public $removeable = FALSE;
 
-    public $passed = TRUE;
+    public $disabled = FALSE;
+
+    //
+    // Object properties
+    //
+
+    protected $cartInstance;
+
+    /**
+     * @var \Igniter\Flame\Cart\CartContent
+     */
+    protected $cartContent;
+
+    protected $passed = FALSE;
 
     protected $result;
 
-    protected $content;
-
     protected $calculatedTotal;
 
-    protected $whenInvalidCallbacks = [];
+    /**
+     * The config for this cart condition.
+     *
+     * @var array
+     */
+    protected $config = [];
 
-    protected $whenValidCallbacks = [];
+    protected $metaData = [];
 
     /**
      * CartItem constructor.
      *
-     * @param $name
-     * @param $config
+     * @param array $config
      */
-    public function __construct($name, $config)
+    public function __construct($config = [])
     {
-        if (!strlen($name))
-            throw new \InvalidArgumentException('Please supply a valid name.');
-
-        $this->name = $name;
-        $this->evalConfig($config);
+        $this->config = $config;
+        $this->fillFromConfig($config);
     }
 
-    protected function evalConfig($config)
+    protected function fillFromConfig($config)
     {
-        if (!isset($config['label']) OR !strlen($config['label']))
-            throw new \InvalidArgumentException('Please supply a valid label.');
-
-        $priority = array_get($config, 'priority', 0);
-        if (strlen($priority) < 0 OR !is_numeric($priority))
-            throw new \InvalidArgumentException('Please supply a valid priority.');
-
-        $this->priority = $priority;
-        $this->name = array_get($config, 'name', $this->name);
         $this->label = array_get($config, 'label', $this->label);
-        $this->type = array_get($config, 'type', 'other');
+        $this->name = array_get($config, 'name', $this->name);
         $this->target = array_get($config, 'target', $this->target);
+        $this->priority = array_get($config, 'priority', $this->priority);
         $this->metaData = array_get($config, 'metaData', $this->metaData);
-//        $this->actions = array_get($config, 'actions', $this->actions);
-//        $this->rules = array_get($config, 'rules', $this->rules);
-        $this->removeable = array_get($config, 'removeable', $this->removeable);
-//        $this->passed = array_get($config, 'passed', $this->passed);
-        $this->uniqueId = $this->generateUniqueId($this->name, $this->target);
+    }
+
+    public function isValid()
+    {
+        return $this->passed;
+    }
+
+    public function apply($total)
+    {
+        if ($this->beforeApply() === FALSE)
+            return $total;
+
+        $rules = $this->getRules();
+        if ($passed = $this->validate($rules))
+            $total = $this->calculateTotal($total);
+
+        if ($rules AND $this->totalAsChanged($total)) {
+            if ($passed) {
+                $this->whenValid();
+            }
+            else {
+                $this->whenInvalid();
+            }
+        }
+
+        $this->passed = $passed;
+        $this->calculatedTotal = $total;
+
+        $this->afterApply();
+
+        return $total;
+    }
+
+    public function calculatedValue()
+    {
+        return $this->result;
+    }
+
+    //
+    // Extensions & Overrides
+    //
+
+    /**
+     * Get the rules for this cart condition.
+     *
+     * @return array
+     */
+    public function getRules()
+    {
+        return [];
     }
 
     /**
-     * Set the order to apply this condition.
+     * Get the actions for this cart condition.
+     *
+     * @return array
+     */
+    public function getActions()
+    {
+        return [];
+    }
+
+    /**
+     * Called before condition is loaded into cart session
+     */
+    public function onLoad()
+    {
+    }
+
+    /**
+     * Called before the applying of condition on cart total.
+     */
+    public function beforeApply()
+    {
+    }
+
+    /**
+     * Called after the applying of condition on cart total.
+     */
+    public function afterApply()
+    {
+    }
+
+    /**
+     * Called once when the condition validation passes.
+     */
+    public function whenValid()
+    {
+    }
+
+    /**
+     * Called once when the condition validation fails.
+     */
+    public function whenInvalid()
+    {
+    }
+
+    //
+    // Getters and Setters
+    //
+
+    /**
+     * Apply condition to target
+     *
+     * @param $cartInstance
+     * @param $cartContent
+     *
+     * @return \Igniter\Flame\Cart\CartCondition
+     */
+    public function setCart($cartInstance, CartContent $cartContent)
+    {
+        $this->cartInstance = $cartInstance;
+        $this->cartContent = $cartContent;
+
+        return $this;
+    }
+
+    public function getLabel()
+    {
+        return (sscanf($this->label, 'lang:%s', $line) === 1) ? lang($line) : $this->label;
+    }
+
+    public function getPriority()
+    {
+        return $this->priority;
+    }
+
+    /**
+     * Set the order in which this condition is applied.
      *
      * @param int $priority
      */
@@ -136,27 +236,14 @@ class CartCondition implements Arrayable, Jsonable, Serializable
         $this->priority = $priority;
     }
 
-    /**
-     * Set the actions for this cart condition.
-     *
-     * @param $actions
-     */
-    public function setActions(array $actions)
+    public function getConfig($key, $default = null)
     {
-        if (!isset($actions[0]))
-            $actions = [$actions];
-
-        $this->actions = $actions;
+        return array_get($this->config, $key, $default);
     }
 
-    /**
-     * Set the rules for this cart condition.
-     *
-     * @param array $rules
-     */
-    public function setRules(array $rules)
+    public function setConfig($key, $value)
     {
-        $this->rules = $rules;
+        return array_set($this->config, $key, $value);
     }
 
     public function getMetaData($key = null, $default = null)
@@ -189,297 +276,6 @@ class CartCondition implements Arrayable, Jsonable, Serializable
         }
     }
 
-    public function result()
-    {
-        return $this->result;
-    }
-
-    /**
-     * Apply condition to target
-     *
-     * @param $cartContent
-     *
-     * @return \Igniter\Flame\Cart\CartCondition
-     */
-    public function applyContent($cartContent)
-    {
-        $this->content = $cartContent;
-
-        return $this;
-    }
-
-    public function apply($total)
-    {
-        $validated = $this->validateRules();
-
-        $total = $this->calculateTotal($total);
-
-        if ($this->rules AND $this->totalAsChanged($total)) {
-            if ($validated) {
-                $this->resolveWhenValid();
-            }
-            else {
-                $this->resolveWhenInvalid();
-            }
-        }
-
-        return $this->calculatedTotal = $total;
-    }
-
-    protected function validateRules()
-    {
-        collect($this->rules)->each(function ($rule) {
-            return $this->passed = $this->ruleIsValid($rule);
-        });
-
-        return $this->passed;
-    }
-
-    protected function calculateValue($result, $action)
-    {
-        $actionValue = array_get($action, 'value', 0);
-
-        if ($this->valueIsPercentage($actionValue)) {
-            $cleanValue = $this->cleanValue($actionValue);
-            $value = (float)($result * ($cleanValue / 100));
-        }
-        else {
-            $value = (float)$this->cleanValue($actionValue);
-        }
-
-        $this->result += $value;
-
-        return $value;
-    }
-
-    protected function calculateTotal($total)
-    {
-        $this->result = 0;
-
-        if (!$this->passed)
-            return FALSE;
-
-        $result = collect($this->actions)->reduce(function ($total, $action) {
-            $actionValue = array_get($action, 'value', 0);
-
-            $value = $this->calculateValue($total, $action);
-
-            $result = $total;
-            if ($this->actionIsInclusive($action)) {
-                $result = $total;
-            }
-            else if ($this->valueIsToBeSubtracted($actionValue)) {
-                $result = (float)($total - $value);
-            }
-            else if ($this->valueIsToBeAdded($actionValue)) {
-                $result = (float)($total + $value);
-            }
-            else if ($this->valueIsToBeMultiplied($actionValue)) {
-                $result = (float)($total * $value);
-            }
-            else if ($this->valueIsToBeDivided($actionValue)) {
-                $result = (float)($total / $value);
-            }
-
-            if ($actionMultiplier = array_get($action, 'multiplier'))
-                $result = (float)($total * $this->getContentValue($actionMultiplier));
-
-            $actionMax = array_get($action, 'max', FALSE);
-            if ($this->actionHasReachedMax($actionMax, $result))
-                $result = $actionMax;
-
-            return $result;
-        }, $total);
-
-        return $result;
-    }
-
-    protected function actionHasReachedMax($actionMax, $value)
-    {
-        return ($actionMax AND $value > $actionMax) ? $actionMax : FALSE;
-    }
-
-    /**
-     * removes some arithmetic signs (%,+,-, /, *) only
-     *
-     * @param $value
-     *
-     * @return mixed
-     */
-    protected function cleanValue($value)
-    {
-        return str_replace(['%', '-', '+', '*', '/'], '', $value);
-    }
-
-    protected function getTargetValue()
-    {
-        if (!method_exists($this->content, $this->target))
-            throw new \BadMethodCallException(sprintf('Attribute [%s] was not found on %s',
-                $this->target, get_class($this->content)));
-
-        return call_user_func([$this->content, $this->target]);
-    }
-
-    protected function getContentValue($key)
-    {
-        if (property_exists($this, $key))
-            return $this->{$key};
-
-        if (!method_exists($this->content, $key))
-            return $key;
-
-        return call_user_func([$this->content, $key]);
-    }
-
-    protected function ruleIsValid($rule)
-    {
-        list($leftOperand, $operator, $rightOperand) = $this->parseRule($rule);
-        $leftOperand = $this->getContentValue($leftOperand);
-        $rightOperand = $this->getContentValue($rightOperand);
-
-        switch ($operator) {
-            case '=':
-                return $leftOperand == $rightOperand;
-            case '==':
-                return $leftOperand === $rightOperand;
-            case '!=':
-                return $leftOperand != $rightOperand;
-            case '<':
-                return $leftOperand < $rightOperand;
-            case '<=':
-                return $leftOperand <= $rightOperand;
-            case '>':
-                return $leftOperand > $rightOperand;
-            case '>=':
-                return $leftOperand >= $rightOperand;
-        }
-
-        return FALSE;
-    }
-
-    protected function parseRule($rule)
-    {
-        preg_match('/([a-zA-Z0-9\-?]+)(?:\s*)([\=\!\<\>]{1,2})(?:\s*)([\-?a-zA-Z0-9]+)/', $rule, $matches);
-
-        if (!count($matches))
-            throw new Exception(sprintf('Rule [%s] format is invalid.', $rule));
-
-        array_shift($matches);
-
-        return $matches;
-    }
-
-    protected function totalAsChanged($total)
-    {
-        return $this->calculatedTotal !== $total;
-    }
-
-    protected function actionIsInclusive($action)
-    {
-        return array_get($action, 'inclusive', FALSE);
-    }
-
-    /**
-     * check if value is a percentage
-     *
-     * @param $value
-     *
-     * @return bool
-     */
-    protected function valueIsPercentage($value)
-    {
-        return (preg_match('/%/', $value) == 1);
-    }
-
-    /**
-     * check if value is a subtract
-     *
-     * @param $value
-     *
-     * @return bool
-     */
-    protected function valueIsToBeSubtracted($value)
-    {
-        return (preg_match('/\-/', $value) == 1);
-    }
-
-    /**
-     * check if value is to be added
-     *
-     * @param $value
-     *
-     * @return bool
-     */
-    protected function valueIsToBeAdded($value)
-    {
-        return (preg_match('/\+/', $value) == 1);
-    }
-
-    /**
-     * check if value is to be added
-     *
-     * @param $value
-     *
-     * @return bool
-     */
-    protected function valueIsToBeMultiplied($value)
-    {
-        return (preg_match('/\*/', $value) == 1);
-    }
-
-    /**
-     * check if value is to be added
-     *
-     * @param $value
-     *
-     * @return bool
-     */
-    protected function valueIsToBeDivided($value)
-    {
-        return (preg_match('/\\//', $value) == 1);
-    }
-
-    /**
-     * Generate a unique id for the cart condition.
-     *
-     * @param $type
-     * @param $target
-     *
-     * @return string
-     */
-    protected function generateUniqueId($type, $target)
-    {
-        return md5($type.$target);
-    }
-
-    //
-    // Callbacks
-    //
-
-    public function whenValid($callback)
-    {
-        $this->whenValidCallbacks[] = $callback;
-    }
-
-    public function whenInvalid($callback)
-    {
-        $this->whenInvalidCallbacks[] = $callback;
-    }
-
-    protected function resolveWhenValid()
-    {
-        foreach ($this->whenValidCallbacks as $callback) {
-            $callback();
-        }
-    }
-
-    protected function resolveWhenInvalid()
-    {
-        foreach ($this->whenInvalidCallbacks as $callback) {
-            $callback();
-        }
-    }
-
     //
     //
     //
@@ -494,9 +290,8 @@ class CartCondition implements Arrayable, Jsonable, Serializable
         return [
             'name'       => $this->name,
             'label'      => $this->label,
-            'type'       => $this->type,
-            'priority'   => $this->priority,
             'target'     => $this->target,
+            'priority'   => $this->priority,
             'metaData'   => $this->metaData,
             'removeable' => $this->removeable,
         ];
@@ -531,6 +326,6 @@ class CartCondition implements Arrayable, Jsonable, Serializable
      */
     public function unserialize($serialized)
     {
-        $this->evalConfig(unserialize($serialized));
+        $this->fillFromConfig(unserialize($serialized));
     }
 }
