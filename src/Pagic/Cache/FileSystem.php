@@ -18,9 +18,9 @@ class FileSystem
     /**
      * @param $path string The cache file path
      */
-    public function __construct($path)
+    public function __construct($path = null)
     {
-        $this->path = $path;
+        $this->path = $path ?? storage_path().'/system/cache/';
     }
 
     public function getCacheKey($name, $hashName = FALSE)
@@ -108,6 +108,5 @@ class FileSystem
         $cached[$filePath] = $cacheItem;
 
         Cache::put($this->dataCacheKey, base64_encode(serialize($cached)), 1440);
-//        self::$cache[$filePath] = $cacheItem;
     }
 }
