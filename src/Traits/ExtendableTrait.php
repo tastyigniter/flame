@@ -73,7 +73,9 @@ trait ExtendableTrait
         }
 
         foreach ($uses as $use) {
-            $useClass = str_replace('.', '\\', trim(basename($use)));
+            // modified the basename($use) to $use in trim to avoid file separator confusion in Wamp
+            // Need to double check this in Xampp (mac)
+            $useClass = str_replace('.', '\\', trim($use));
 
             $this->extendClassWith($useClass);
         }
