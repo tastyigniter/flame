@@ -87,11 +87,12 @@ class WorkingSchedule
         $workingHours = $this->getPeriod();
 
         $currentTime = Carbon::now()->addMinutes($timeInterval);
-        foreach ($workingHours->generateTimes($timeInterval) as $dateTime) {
-            if ($currentTime->lte($dateTime))
-                return $dateTime;
+        if (!empty($workingHours)) {
+            foreach ($workingHours->generateTimes($timeInterval) as $dateTime) {
+                if ($currentTime->lte($dateTime))
+                    return $dateTime;
+            }
         }
-
         return null;
     }
 
