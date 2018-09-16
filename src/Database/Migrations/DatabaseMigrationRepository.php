@@ -101,8 +101,9 @@ class DatabaseMigrationRepository extends BaseDatabaseMigrationRepository
     }
 
     /**
-     * Resolve the database connection instance.
-     * @return \Illuminate\Database\Connection
+     * Get the module or extension the migration belongs to.
+     *
+     * @return string
      */
     public function getGroup()
     {
@@ -110,7 +111,7 @@ class DatabaseMigrationRepository extends BaseDatabaseMigrationRepository
     }
 
     /**
-     * Set the information source to gather data.
+     * Set the module or extension the migration belongs to.
      *
      * @param  string $name
      *
