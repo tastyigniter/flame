@@ -4,11 +4,14 @@ namespace Igniter\Flame\Scaffold;
 
 use Igniter\Flame\Support\StringParser;
 use Illuminate\Console\Command;
+use Illuminate\Console\ConfirmableTrait;
 use Illuminate\Filesystem\Filesystem;
 use ReflectionClass;
 
 abstract class GeneratorCommand extends Command
 {
+    use ConfirmableTrait;
+
     /**
      * The filesystem instance.
      *
@@ -67,6 +70,9 @@ abstract class GeneratorCommand extends Command
      */
     public function handle()
     {
+        if (!$this->confirmToProceed())
+            return;
+
         $this->prepareVars();
 
         $this->buildStubs();

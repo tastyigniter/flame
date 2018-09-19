@@ -37,9 +37,9 @@ class CreateModel extends GeneratorCommand
      * @var array
      */
     protected $stubs = [
-        'model/model.stub'  => 'models/{{studly_name}}.php',
-        'model/create_table.stub'  => 'database/migrations/{{timestamp}}_create_{{lower_name}}_table.php',
-        'model/config.stub'  => 'models/config/{{lower_name}}.php',
+        'model/model.stub' => 'models/{{studly_name}}.php',
+        'model/create_table.stub' => 'database/migrations/{{timestamp}}_create_{{snake_plural_name}}_table.php',
+        'model/config.stub' => 'models/config/{{lower_name}}.php',
     ];
 
     /**
@@ -58,11 +58,11 @@ class CreateModel extends GeneratorCommand
         $model = $this->argument('model');
 
         $this->vars = [
-            'timestamp'   => Carbon::now()->format('Y_m_d_Hmi'),
-            'extension'   => $extension,
-            'lower_extension'   => strtolower($extension),
-            'title_extension'   => title_case($extension),
-            'studly_extension'   => studly_case($extension),
+            'timestamp' => Carbon::now()->format('Y_m_d_Hmi'),
+            'extension' => $extension,
+            'lower_extension' => strtolower($extension),
+            'title_extension' => title_case($extension),
+            'studly_extension' => studly_case($extension),
 
             'author' => $author,
             'lower_author' => strtolower($author),
@@ -74,8 +74,8 @@ class CreateModel extends GeneratorCommand
             'title_name' => title_case($model),
             'studly_name' => studly_case($model),
             'plural_name' => str_plural($model),
-            'studly_plural_name'   => studly_case(str_plural($model)),
-            'snake_plural_name'   => snake_case(str_plural($model)),
+            'studly_plural_name' => studly_case(str_plural($model)),
+            'snake_plural_name' => snake_case(str_plural($model)),
         ];
     }
 

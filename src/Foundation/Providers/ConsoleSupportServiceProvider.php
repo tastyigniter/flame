@@ -3,7 +3,6 @@
 namespace Igniter\Flame\Foundation\Providers;
 
 use Igniter\Flame\Database\MigrationServiceProvider;
-use Illuminate\Foundation\Providers\ArtisanServiceProvider;
 use Illuminate\Foundation\Providers\ComposerServiceProvider;
 use Illuminate\Foundation\Providers\ConsoleSupportServiceProvider as BaseServiceProvider;
 

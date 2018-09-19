@@ -36,10 +36,10 @@ class CreateController extends GeneratorCommand
      */
     protected $stubs = [
         'controller/controller.stub' => 'controllers/{{studly_name}}.php',
-        'controller/index.stub'      => 'views/{{lower_name}}/index.php',
-        'controller/create.stub'     => 'views/{{lower_name}}/create.php',
-        'controller/edit.stub'       => 'views/{{lower_name}}/edit.php',
-        'controller/preview.stub'    => 'views/{{lower_name}}/preview.php',
+        'controller/index.stub' => 'views/{{lower_name}}/index.php',
+        'controller/create.stub' => 'views/{{lower_name}}/create.php',
+        'controller/edit.stub' => 'views/{{lower_name}}/edit.php',
+        'controller/preview.stub' => 'views/{{lower_name}}/preview.php',
     ];
 
     /**
@@ -59,23 +59,26 @@ class CreateController extends GeneratorCommand
         $controller = $this->argument('controller');
 
         $this->vars = [
-            'extension'        => $extension,
-            'lower_extension'  => strtolower($extension),
-            'title_extension'  => title_case($extension),
+            'extension' => $extension,
+            'lower_extension' => strtolower($extension),
+            'title_extension' => title_case($extension),
             'studly_extension' => studly_case($extension),
 
-            'author'        => $author,
-            'lower_author'  => strtolower($author),
-            'title_author'  => title_case($author),
+            'author' => $author,
+            'lower_author' => strtolower($author),
+            'title_author' => title_case($author),
             'studly_author' => studly_case($author),
 
-            'name'               => $controller,
-            'lower_name'         => strtolower($controller),
-            'title_name'         => title_case($controller),
-            'studly_name'        => studly_case($controller),
-            'plural_name'        => str_plural($controller),
+            'name' => $controller,
+            'lower_name' => strtolower($controller),
+            'title_name' => title_case($controller),
+            'studly_name' => studly_case($controller),
+            'singular_name' => str_singular($controller),
+            'studly_singular_name' => studly_case(str_singular($controller)),
+            'snake_singular_name' => snake_case(str_singular($controller)),
+            'plural_name' => str_plural($controller),
             'studly_plural_name' => studly_case(str_plural($controller)),
-            'snake_plural_name'  => snake_case(str_plural($controller)),
+            'snake_plural_name' => snake_case(str_plural($controller)),
         ];
     }
 

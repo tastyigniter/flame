@@ -10,4 +10,8 @@ class {{studly_name}} extends BaseComponent
     {
         return [];
     }
+
+    public function onRun() {
+        // Do something when the component is loaded by a page or layout
+    }
 }

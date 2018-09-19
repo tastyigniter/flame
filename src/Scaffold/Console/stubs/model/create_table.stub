@@ -1,7 +1,10 @@
 <?php
 
+namespace {{studly_author}}\{{studly_extension}}\Database\Migrations;
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class Create{{studly_plural_name}}Table extends Migration
 {
