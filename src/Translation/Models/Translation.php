@@ -78,6 +78,16 @@ class Translation extends Model
     }
 
     /**
+     *  Flag this entry as pending review.
+     */
+    public function flagAsUnstable()
+    {
+        $this->unstable = 1;
+
+        $this->save();
+    }
+
+    /**
      *  Set the translation to the locked state
      * @return \Igniter\Flame\Translation\Models\Translation
      */

@@ -86,7 +86,7 @@ trait HasWorkingHours
         return $this->working_hours()->get();
     }
 
-    public function workingSchedule($type = null, $date = null)
+    public function workingSchedule($type = null)
     {
         if (is_null($type) OR !in_array($type, $this->availableWorkingTypes()))
             throw new InvalidArgumentException("Defined parameter '$type' is not a valid working type.");

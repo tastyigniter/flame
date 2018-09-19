@@ -2,6 +2,7 @@
 
 namespace Igniter\Flame\Location;
 
+use GuzzleHttp\Client;
 use Illuminate\Support\Fluent;
 
 abstract class AbstractGeocoder
@@ -36,15 +37,11 @@ abstract class AbstractGeocoder
      */
     protected function getUrlContent($url)
     {
-        $timeout = 5;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-        $urlContent = curl_exec($ch);
-        curl_close($ch);
+        $response = (new Client())->get($url, [
+            'timeout' => 5
+        ]);
 
-        return $urlContent;
+        return $response->getBody();
     }
 
     /**
