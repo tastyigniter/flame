@@ -32,6 +32,16 @@ class Manager
     }
 
     /**
+     * Set the current location instance.
+     *
+     * @return \Igniter\Flame\Location\Manager
+     */
+    public function instance()
+    {
+        return $this;
+    }
+
+    /**
      * @return mixed
      */
     public function getDefaultLocation()

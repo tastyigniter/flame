@@ -64,9 +64,11 @@ class Template
         try {
             $filePath = $this->path;
             include $filePath;
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
             $this->handleException($e, $obLevel);
-        } catch (Throwable $e) {
+        }
+        catch (Throwable $e) {
             $this->handleException(new FatalThrowableError($e), $obLevel);
         }
 
