@@ -68,9 +68,9 @@ trait HasDeliveryAreas
     {
         $areas = $this->findAllDeliveryAreas();
 
-        $area = $areas->filter(function (Area $model) use ($position) {
-            return $model->checkBoundary($position) != 'outside';
-        })->first();
+        $area = $areas->first(function (Area $model) use ($position) {
+            return $model->checkBoundary($position) != Area::OUTSIDE;
+        });
 
         return $area;
     }

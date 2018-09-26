@@ -180,12 +180,10 @@ class Manager
 
     public function searchByCoordinates(array $coordinates)
     {
-        if (!isset($coordinates['latitude']) OR !isset($coordinates['longitude']))
-            return null;
-
         $query = $this->createLocationModelQuery();
         $query->select('*')->selectDistance(
-            $coordinates['latitude'], $coordinates['longitude']
+            array_get($coordinates, 'latitude', 0),
+            array_get($coordinates, 'longitude', 0)
         );
 
         return $query->isEnabled()->get();

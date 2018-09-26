@@ -44,6 +44,8 @@ class Cart
 
     protected $conditionPriorities;
 
+    protected $destroyOnLogout;
+
     /**
      * Cart constructor.
      *
@@ -593,6 +595,19 @@ class Cart
 //
 //        return is_null($connection) ? config('database.default') : $connection;
 //    }
+
+    public function setDestroyOnLogout($destroyOnLogout)
+    {
+        $this->destroyOnLogout = $destroyOnLogout;
+    }
+
+    public function getDestroyOnLogout()
+    {
+        if (is_null($this->destroyOnLogout))
+            return config('cart.destroyOnLogout');
+
+        return $this->destoryOnLogout;
+    }
 
     //
     // Session

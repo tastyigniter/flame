@@ -20,12 +20,33 @@ class LocationServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->registerGeocoder();
+
+        $this->registerGoogleGeocoder();
+
+        $this->registerManager();
+
+        $this->app->alias('location', Manager::class);
+    }
+
+    protected function registerGeocoder()
+    {
         $this->app->singleton('geocoder', function ($app) {
             return new Geocoder($app);
         });
+    }
 
+    protected function registerGoogleGeocoder()
+    {
         $this->app['geocoder']->extend('google', function () {
             return new GoogleGeocoder();
+        });
+    }
+
+    protected function registerManager()
+    {
+        $this->app->singleton('location', function ($app) {
+            return new Manager($app['session.store'], $app['events']);
         });
     }
 
@@ -35,6 +56,6 @@ class LocationServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['geocoder'];
+        return ['location', Manager::class];
     }
 }
