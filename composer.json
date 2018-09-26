@@ -17,6 +17,7 @@
     "doctrine/instantiator": "1.0.*",
     "kriswallsmith/assetic": "~1.4",
     "natxet/CssMin": "~3.0",
+    "leafo/scssphp": "~0.7",
     "guzzlehttp/guzzle": "~6.3",
     "symfony/yaml": "~3.2",
     "october/rain": "1.0.*",
