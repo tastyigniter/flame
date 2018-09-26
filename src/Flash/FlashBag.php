@@ -4,7 +4,7 @@ namespace Igniter\Flame\Flash;
 
 class FlashBag
 {
-    const SESSION_KEY = '_ti_flash';
+    protected $sessionKey = '_ti_flash';
 
     /**
      * The session store.
@@ -22,13 +22,24 @@ class FlashBag
     /**
      * Create a new FlashNotifier instance.
      *
-     * @param array $messages
      * @param FlashStore $store
      */
-    function __construct(array $messages = [], FlashStore $store)
+    public function __construct(FlashStore $store)
     {
         $this->store = $store;
-        $this->messages = $store->get(static::SESSION_KEY, collect());
+    }
+
+    public function setSessionKey($key)
+    {
+        $this->sessionKey = $key;
+    }
+
+    public function messages()
+    {
+        if ($this->messages)
+            return $this->messages;
+
+        return $this->messages = $this->store->get($this->sessionKey, collect());
     }
 
     /**
@@ -38,7 +49,7 @@ class FlashBag
      */
     public function all()
     {
-        $messages = $this->messages;
+        $messages = $this->messages();
 
         $this->clear();
 
@@ -142,7 +153,7 @@ class FlashBag
             $message = new Message(compact('message', 'level'));
         }
 
-        $this->messages->push($message);
+        $this->messages()->push($message);
 
         return $this->flash();
     }
@@ -156,7 +167,7 @@ class FlashBag
      */
     protected function updateLastMessage($overrides = [])
     {
-        $this->messages->last()->update($overrides);
+        $this->messages()->last()->update($overrides);
 
         return $this;
     }
@@ -204,7 +215,7 @@ class FlashBag
      */
     public function clear()
     {
-        $this->store->forget(static::SESSION_KEY);
+        $this->store->forget($this->sessionKey);
 
         $this->messages = collect();
 
@@ -216,7 +227,7 @@ class FlashBag
      */
     protected function flash()
     {
-        $this->store->flash(static::SESSION_KEY, $this->messages);
+        $this->store->flash($this->sessionKey, $this->messages());
 
         return $this;
     }
