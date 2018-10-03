@@ -11,7 +11,7 @@ class Translation extends Model
 
     const UPDATED_AT = 'updated_at';
 
-    protected static $cacheKey = 'igniter.flame.translation';
+    protected static $cacheKey = 'igniter.translation';
 
     public $timestamps = TRUE;
 

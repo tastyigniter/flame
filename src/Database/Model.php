@@ -67,17 +67,17 @@ class Model extends EloquentModel
      * $morphMany = [$relation, [$model, 'table' => 'table_name', 'name' => 'name']] custom key/value mode
      */
     public $relation = [
-        'hasMany'        => [],
-        'hasOne'         => [],
-        'belongsTo'      => [],
-        'belongsToMany'  => [],
-        'morphTo'        => [],
-        'morphOne'       => [],
-        'morphMany'      => [],
-        'morphToMany'    => [],
-        'morphedByMany'  => [],
-        'attachOne'      => [],
-        'attachMany'     => [],
+        'hasMany' => [],
+        'hasOne' => [],
+        'belongsTo' => [],
+        'belongsToMany' => [],
+        'morphTo' => [],
+        'morphOne' => [],
+        'morphMany' => [],
+        'morphToMany' => [],
+        'morphedByMany' => [],
+        'attachOne' => [],
+        'attachMany' => [],
         'hasManyThrough' => [],
     ];
 
@@ -462,7 +462,8 @@ class Model extends EloquentModel
     {
         try {
             $value = parent::asDateTime($value);
-        } catch (InvalidArgumentException $ex) {
+        }
+        catch (InvalidArgumentException $ex) {
             $value = Carbon::parse($value);
         }
 
@@ -992,8 +993,8 @@ class Model extends EloquentModel
     }
 
     public function belongsToMany($related,
-        $table = null, $foreignPivotKey = null, $relatedPivotKey = null,
-        $parentKey = null, $relatedKey = null, $relation = null)
+                                  $table = null, $foreignPivotKey = null, $relatedPivotKey = null,
+                                  $parentKey = null, $relatedKey = null, $relation = null)
     {
         // If no relationship name was passed, we will pull backtraces to get the
         // name of the calling function. We will use that function name as the

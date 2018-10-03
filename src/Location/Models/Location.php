@@ -36,7 +36,7 @@ class Location extends Model
 
     public $relation = [
         'hasMany' => [
-            'working_hours'  => ['Admin\Models\Working_hours_model'],
+            'working_hours' => ['Admin\Models\Working_hours_model'],
             'delivery_areas' => ['Admin\Models\Location_areas_model'],
         ],
     ];
@@ -77,18 +77,18 @@ class Location extends Model
         $row = $this;
 
         $address_data = [
-            'address_1'    => $row['location_address_1'],
-            'address_2'    => $row['location_address_2'],
-            'city'         => $row['location_city'],
-            'state'        => $row['location_state'],
-            'postcode'     => $row['location_postcode'],
+            'address_1' => $row['location_address_1'],
+            'address_2' => $row['location_address_2'],
+            'city' => $row['location_city'],
+            'state' => $row['location_state'],
+            'postcode' => $row['location_postcode'],
             'location_lat' => $row['location_lat'],
             'location_lng' => $row['location_lng'],
-            'country_id'   => $row['location_country_id'],
-            'country'      => isset($row['country_name']) ? $row['country_name'] : null,
-            'iso_code_2'   => isset($row['iso_code_2']) ? $row['iso_code_2'] : null,
-            'iso_code_3'   => isset($row['iso_code_3']) ? $row['iso_code_3'] : null,
-            'format'       => isset($row['format']) ? $row['format'] : null,
+            'country_id' => $row['location_country_id'],
+            'country' => isset($row['country_name']) ? $row['country_name'] : null,
+            'iso_code_2' => isset($row['iso_code_2']) ? $row['iso_code_2'] : null,
+            'iso_code_3' => isset($row['iso_code_3']) ? $row['iso_code_3'] : null,
+            'format' => isset($row['format']) ? $row['format'] : null,
         ];
 
         return $address_data;
@@ -116,7 +116,7 @@ class Location extends Model
 
     public function getOrderTimeInterval($orderType)
     {
-        return $orderType == 'delivery' ? $this->deliveryMinutes() : $this->collectionMinutes();
+        return $orderType == static::DELIVERY ? $this->deliveryMinutes() : $this->collectionMinutes();
     }
 
     public function deliveryMinutes()
@@ -165,7 +165,14 @@ class Location extends Model
 
     public function availableOrderTypes()
     {
-        return [1 => static::DELIVERY, 2 => static::COLLECTION];
+        $orderTypes = [];
+        if ($this->hasDelivery())
+            $orderTypes[1] = static::DELIVERY;
+
+        if ($this->hasCollection())
+            $orderTypes[2] = static::COLLECTION;
+
+        return $orderTypes;
     }
 
     public function calculateDistance(GeoPosition $position)

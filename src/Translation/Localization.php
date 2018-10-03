@@ -16,7 +16,7 @@ class Localization
 
     public $detectBrowserLocale;
 
-    protected $sessionKey = 'igniter.flame.translation.locale';
+    protected $sessionKey = 'igniter.translation.locale';
 
     public function __construct(Request $request, $locale, array $config = [])
     {

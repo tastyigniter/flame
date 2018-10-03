@@ -39,7 +39,7 @@ class GoogleGeocoder extends AbstractGeocoder
         $position->status = $this->status;
         $position->error = $this->errorMessage;
 
-        foreach ($address->address_components as $component) {
+        foreach ($address->get('address_components', []) as $component) {
             if (in_array('country', $component->types)) {
                 $position->country = $component->long_name;
                 $position->countryCode = $component->short_name;
@@ -57,9 +57,11 @@ class GoogleGeocoder extends AbstractGeocoder
                 $position->postalCode = $component->long_name;
         }
 
-        $position->formattedAddress = $address->formatted_address;
-        $position->latitude = $address->geometry->location->lat;
-        $position->longitude = $address->geometry->location->lng;
+        $position->formattedAddress = $address->get('formatted_address');
+        if ($geometry = $address->get('geometry')) {
+            $position->latitude = $geometry->location->lat;
+            $position->longitude = $geometry->location->lng;
+        }
 
         return $position;
     }
@@ -89,9 +91,10 @@ class GoogleGeocoder extends AbstractGeocoder
             if (isset($response->error_message))
                 $this->errorMessage = $response->error_message;
 
-            if ($response->status == 'OK' AND isset($response->results[0]))
-                return new Fluent($response->results[0]);
-        } catch (\Exception $ex) {
+//            if ($response->status == 'OK' AND isset($response->results[0]))
+            return new Fluent($response->results[0] ?? []);
+        }
+        catch (\Exception $ex) {
             return FALSE;
         }
     }

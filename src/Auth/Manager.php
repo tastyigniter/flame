@@ -25,7 +25,7 @@ class Manager
     protected $hasher;
 
     /**
-     * @var UserModel The currently authenticated user.
+     * @var \Igniter\Flame\Auth\Models\User The currently authenticated user.
      */
     protected $user;
 
@@ -106,7 +106,7 @@ class Manager
     /**
      * Get the currently authenticated user.
      *
-     * @return UserModel
+     * @return \Igniter\Flame\Auth\Models\User
      */
     public function user()
     {
@@ -133,7 +133,7 @@ class Manager
 
     /**
      * Get the currently authenticated user model.
-     * @return UserModel
+     * @return \Igniter\Flame\Auth\Models\User
      */
     public function getUser()
     {
@@ -189,7 +189,7 @@ class Manager
     /**
      * Log a user into the application.
      *
-     * @param UserModel $userModel
+     * @param \Igniter\Flame\Auth\Models\User $userModel
      * @param bool $remember
      *
      * @throws \Exception
@@ -465,10 +465,10 @@ class Manager
 
         $sessionData = Session::get($this->sessionKey);
         $sessionData[static::AUTH_KEY_NAME] = [
-            'id'              => $id,
-            $identityName     => $id,
+            'id' => $id,
+            $identityName => $id,
             $this->identifier => $userModel->{$this->identifier},
-            'last_check'      => Carbon::now(),
+            'last_check' => Carbon::now(),
         ];
 
         Session::put($this->sessionKey, $sessionData);
