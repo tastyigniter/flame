@@ -26,7 +26,7 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     /**
      * The name for this cart condition.
      *
-     * @var int|float
+     * @var string
      */
     public $name = 'default';
 
@@ -44,13 +44,6 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
      */
     public $priority = 0;
 
-    /**
-     * The target of the cart condition.
-     *
-     * @var string subtotal or total or quantity
-     */
-    public $target = 'subtotal';
-
     public $removeable = FALSE;
 
     public $disabled = FALSE;
@@ -59,18 +52,13 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     // Object properties
     //
 
-    protected $cartInstance;
-
-    /**
-     * @var \Igniter\Flame\Cart\CartContent
-     */
     protected $cartContent;
 
     protected $passed = FALSE;
 
-    protected $result;
+    protected $applied = FALSE;
 
-    protected $calculatedTotal;
+    protected $calculatedValue;
 
     /**
      * The config for this cart condition.
@@ -92,12 +80,12 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
         $this->fillFromConfig($config);
     }
 
-    protected function fillFromConfig($config)
+    public function fillFromConfig($config)
     {
         $this->label = array_get($config, 'label', $this->label);
         $this->name = array_get($config, 'name', $this->name);
-        $this->target = array_get($config, 'target', $this->target);
         $this->priority = array_get($config, 'priority', $this->priority);
+        $this->removeable = array_get($config, 'removeable', $this->removeable);
         $this->metaData = array_get($config, 'metaData', $this->metaData);
     }
 
@@ -106,35 +94,42 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
         return $this->passed;
     }
 
-    public function apply($total)
+    /**
+     * Apply condition to cart content
+     *
+     * @param $subTotal
+     * @return \Igniter\Flame\Cart\CartCondition
+     */
+    public function apply($subTotal)
     {
-        if ($this->beforeApply() === FALSE)
-            return $total;
+        if ($this->applied
+            OR $this->beforeApply() === FALSE
+        ) return $this;
 
-        $rules = $this->getRules();
-        if ($passed = $this->validate($rules))
-            $total = $this->calculateTotal($total);
+        if ($passed = $this->validate($this->getRules()))
+            $this->processValue($subTotal);
 
-        if ($rules AND $this->totalAsChanged($total)) {
-            if ($passed) {
-                $this->whenValid();
-            }
-            else {
-                $this->whenInvalid();
-            }
+        if ($passed) {
+            $this->whenValid();
+        }
+        else {
+            $this->whenValid();
         }
 
         $this->passed = $passed;
-        $this->calculatedTotal = $total;
+        $this->applied = TRUE;
 
         $this->afterApply();
 
-        return $total;
+        return $this;
     }
 
-    public function calculatedValue()
+    public function calculateTotal($subTotal)
     {
-        return $this->result;
+        if ($this->applied AND $this->passed)
+            $subTotal = $this->processTotal($subTotal);
+
+        return $subTotal;
     }
 
     //
@@ -142,7 +137,7 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     //
 
     /**
-     * Get the rules for this cart condition.
+     * Returns the rules for this cart condition.
      *
      * @return array
      */
@@ -152,7 +147,7 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     }
 
     /**
-     * Get the actions for this cart condition.
+     * Returns the actions for this cart condition.
      *
      * @return array
      */
@@ -200,25 +195,25 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     // Getters and Setters
     //
 
-    /**
-     * Apply condition to target
-     *
-     * @param $cartInstance
-     * @param $cartContent
-     *
-     * @return \Igniter\Flame\Cart\CartCondition
-     */
-    public function setCart($cartInstance, CartContent $cartContent)
+    public function setCartContent($cartContent)
     {
-        $this->cartInstance = $cartInstance;
         $this->cartContent = $cartContent;
 
         return $this;
     }
 
+    public function getCartContent()
+    {
+    }
+
     public function getLabel()
     {
         return (sscanf($this->label, 'lang:%s', $line) === 1) ? lang($line) : $this->label;
+    }
+
+    public function getValue()
+    {
+        return $this->calculatedValue;
     }
 
     public function getPriority()
@@ -288,11 +283,10 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     public function toArray()
     {
         return [
-            'name'       => $this->name,
-            'label'      => $this->label,
-            'target'     => $this->target,
-            'priority'   => $this->priority,
-            'metaData'   => $this->metaData,
+            'name' => $this->name,
+            'label' => $this->label,
+            'priority' => $this->priority,
+            'metaData' => $this->metaData,
             'removeable' => $this->removeable,
         ];
     }

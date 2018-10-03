@@ -6,6 +6,11 @@ use Exception;
 
 trait CartConditionHelper
 {
+    /**
+     * @var \Illuminate\Support\Collection
+     */
+    protected $actionCollection;
+
     protected function validate($rules)
     {
         $passed = collect($rules)->filter(function ($rule) {
@@ -15,53 +20,60 @@ trait CartConditionHelper
         return $passed == count($rules);
     }
 
-    protected function calculateValue($result, $actionValue)
+    protected function processValue($total)
     {
-        if ($this->valueIsPercentage($actionValue)) {
-            $cleanValue = $this->cleanValue($actionValue);
-            $value = ($result * ($cleanValue / 100));
-        }
-        else {
-            $value = (float)$this->cleanValue($actionValue);
-        }
+        $this->calculatedValue = 0;
 
-        $this->result += $value;
-
-        return $value;
-    }
-
-    protected function calculateTotal($total)
-    {
-        $this->result = 0;
-
-        $result = collect($this->getActions())->reduce(function ($total, $action) {
+        $result = collect($this->getActions())->map(function ($action) use ($total) {
             $action = $this->parseAction($action);
-
             $actionValue = array_get($action, 'value', 0);
 
-            $value = $this->calculateValue($total, $actionValue);
+            if ($this->valueIsPercentage($actionValue)) {
+                $cleanValue = $this->cleanValue($actionValue);
+                $value = ($total * ($cleanValue / 100));
+            }
+            else {
+                $value = (float)$this->cleanValue($actionValue);
+            }
+
+            $this->calculatedValue += $value;
+            $action['cleanValue'] = (float)$this->cleanValue($actionValue, '-');
+
+            return $action;
+        });
+
+        $this->actionCollection = $result;
+    }
+
+    protected function processTotal($total)
+    {
+        $result = $this->actionCollection->reduce(function ($total, $action) {
+            $action = $this->parseAction($action);
+            $actionValue = array_get($action, 'value', 0);
+            $calculatedValue = array_get($action, 'cleanValue', 0);
+            $actionMultiplier = array_get($action, 'multiplier');
+            $actionMax = array_get($action, 'max', FALSE);
 
             $result = $total;
             if ($this->actionIsInclusive($action)) {
                 $result = $total;
             }
             else if ($this->valueIsToBeSubtracted($actionValue)) {
-                $result = ($total - $value);
+                $result = ($total - $calculatedValue);
             }
             else if ($this->valueIsToBeAdded($actionValue)) {
-                $result = ($total + $value);
+                $result = ($total + $calculatedValue);
             }
             else if ($this->valueIsToBeMultiplied($actionValue)) {
-                $result = ($total * $value);
+                $result = ($total * $calculatedValue);
             }
             else if ($this->valueIsToBeDivided($actionValue)) {
-                $result = (float)($total / $value);
+                $result = (float)($total / $calculatedValue);
             }
 
-            if ($actionMultiplier = array_get($action, 'multiplier'))
-                $result = (float)($total * $this->getContentValue($actionMultiplier));
+            if ($actionMultiplier)
+                $result = (float)($total * $this->operandValue($actionMultiplier));
 
-            $actionMax = array_get($action, 'max', FALSE);
             if ($this->actionHasReachedMax($actionMax, $result))
                 $result = $actionMax;
 
@@ -77,42 +89,39 @@ trait CartConditionHelper
     }
 
     /**
-     * removes some arithmetic signs (%,+,-, /, *) only
+     * Removes some arithmetic signs (%,+,-, /, *) only
      *
      * @param $value
+     * @param string $include
      *
      * @return mixed
      */
-    protected function cleanValue($value)
+    protected function cleanValue($value, $include = null)
     {
-        return str_replace(['%', '-', '+', '*', '/'], '', $value);
+        $search = ['%', '+', '*', '/'];
+        if ($include)
+            $search[] = $include;
+
+        return str_replace($search, '', $value);
     }
 
-    protected function getTargetValue()
-    {
-        if (!method_exists($this->cartContent, $this->target))
-            throw new \BadMethodCallException(sprintf('Cart content property [%s] was not found on %s',
-                $this->target, get_class($this->cartContent)));
-
-        return call_user_func([$this->cartContent, $this->target]);
-    }
-
-    protected function getContentValue($key)
+    protected function operandValue($key)
     {
         if (property_exists($this, $key))
             return $this->{$key};
 
-        if (!method_exists($this->cartContent, $key))
-            return $key;
+        $cartContent = $this->getCartContent();
+        if (method_exists($cartContent, $key))
+            return call_user_func([$cartContent, $key]);
 
-        return call_user_func([$this->cartContent, $key]);
+        return $key;
     }
 
     protected function ruleIsValid($rule)
     {
         list($leftOperand, $operator, $rightOperand) = $this->parseRule($rule);
-        $leftOperand = $this->getContentValue($leftOperand);
-        $rightOperand = $this->getContentValue($rightOperand);
+        $leftOperand = $this->operandValue($leftOperand);
+        $rightOperand = $this->operandValue($rightOperand);
 
         switch ($operator) {
             case '=':
@@ -157,18 +166,13 @@ trait CartConditionHelper
         return $action;
     }
 
-    protected function totalAsChanged($total)
-    {
-        return $this->calculatedTotal !== $total;
-    }
-
     protected function actionIsInclusive($action)
     {
         return array_get($action, 'inclusive', FALSE);
     }
 
     /**
-     * check if value is a percentage
+     * Check if value is a percentage
      *
      * @param $value
      *
@@ -180,7 +184,7 @@ trait CartConditionHelper
     }
 
     /**
-     * check if value is a subtract
+     * Check if value is a subtract
      *
      * @param $value
      *
@@ -192,7 +196,7 @@ trait CartConditionHelper
     }
 
     /**
-     * check if value is to be added
+     * Check if value is to be added
      *
      * @param $value
      *
@@ -204,7 +208,7 @@ trait CartConditionHelper
     }
 
     /**
-     * check if value is to be added
+     * Check if value is to be added
      *
      * @param $value
      *
@@ -216,7 +220,7 @@ trait CartConditionHelper
     }
 
     /**
-     * check if value is to be added
+     * Check if value is to be added
      *
      * @param $value
      *
