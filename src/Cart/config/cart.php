@@ -12,13 +12,7 @@ return [
     |
     */
 
-    'database' => [
-
-        'connection' => null,
-
-        'table' => 'cart',
-
-    ],
+    'model' => '\Igniter\Flame\Cart\Models\Cart',
 
     /*
     |--------------------------------------------------------------------------
@@ -31,5 +25,7 @@ return [
     */
 
     'destroyOnLogout' => FALSE,
+
+    'conditions' => [],
 
 ];

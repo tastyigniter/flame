@@ -8,8 +8,7 @@ use Igniter\Flame\Cart\Contracts\Buyable;
 use Igniter\Flame\Cart\Exceptions\InvalidRowIDException;
 use Igniter\Flame\Cart\Exceptions\UnknownModelException;
 use Illuminate\Events\Dispatcher;
-use Illuminate\Session\Store;
-use Illuminate\Support\Collection;
+use Illuminate\Session\SessionManager;
 
 class Cart
 {
@@ -36,23 +35,15 @@ class Cart
      */
     protected $instance;
 
-    /**
-     * @var array Collection of all conditions used in this cart.
-     * @see \Igniter\Flame\Cart\CartCondition
-     */
-    protected $allConditions;
-
-    protected $conditionPriorities;
-
-    protected $destroyOnLogout;
+    protected $conditionsLoaded;
 
     /**
      * Cart constructor.
      *
-     * @param \Illuminate\Session\Store $session
+     * @param \Illuminate\Session\SessionManager $session
      * @param \Illuminate\Events\Dispatcher $events
      */
-    public function __construct(Store $session, Dispatcher $events)
+    public function __construct(SessionManager $session, Dispatcher $events)
     {
         $this->session = $session;
         $this->events = $events;
@@ -91,23 +82,22 @@ class Cart
     /**
      * Add an item to the cart.
      *
-     * @param mixed $id
-     * @param mixed $name
+     * @param $buyable
      * @param int|float $qty
-     * @param float $price
      * @param array $options
+     * @param null $comment
      *
      * @return \Igniter\Flame\Cart\CartItem
      */
-    public function add($id, $name = null, $qty = null, $price = null, array $options = [])
+    public function add($buyable, $qty = null, array $options = [], $comment = null)
     {
-        if ($this->isMulti($id)) {
+        if ($this->isMulti($buyable)) {
             return array_map(function ($item) {
                 return $this->add($item);
-            }, $id);
+            }, $buyable);
         }
 
-        $cartItem = $this->createCartItem($id, $name, $qty, $price, $options);
+        $cartItem = $this->createCartItem($buyable, $qty, $options, $comment);
 
         $this->fireEvent('adding', $cartItem);
 
@@ -166,9 +156,8 @@ class Cart
 
             return $cartItem->rowId;
         }
-        else {
-            $content->put($cartItem->rowId, $cartItem);
-        }
+
+        $content->put($cartItem->rowId, $cartItem);
 
         $this->fireEvent('updated', $cartItem);
 
@@ -219,13 +208,15 @@ class Cart
     /**
      * Destroy the current cart instance.
      *
+     * @param mixed $identifier
      * @return void
      */
-    public function destroy()
+    public function destroy($identifier = null)
     {
         $this->fireEvent('clearing');
 
         $this->session->remove($this->instance);
+        $this->deleteStored($identifier);
 
         $this->fireEvent('cleared');
     }
@@ -257,12 +248,7 @@ class Cart
      */
     public function total()
     {
-        $subTotal = $this->subtotal();
-
-        if ($this->getContent()->isEmpty())
-            return $subTotal;
-
-        return $this->applyConditionsOnTotal($subTotal);
+        return $this->getConditions()->total($this->subtotal());
     }
 
     /**
@@ -318,42 +304,16 @@ class Cart
     // Conditions
     //
 
+    /**
+     * @return CartConditions
+     */
     public function conditions()
     {
-        return $this->getConditions()->sortBy(function ($condition) {
-            return $condition->priority;
-        })->filter(function (CartCondition $condition) {
-            return $condition->isValid();
-        });
-    }
-
-    public function loadCondition($name, $config)
-    {
-        $allConditions = $this->getConditions();
-
-        // Extensibility
-        $this->fireEvent('condition.beforeLoad');
-
-        if (!$condition = $allConditions->get($name)) {
-            $className = array_get($config, 'className');
-            if (!class_exists($className))
-                throw new Exception(sprintf("The Cart Condition class name '%s' has not been registered", $className));
-
-            $condition = new $className($config);
-        }
-
-        $condition->name = $name;
-        $condition->setCart($this->instance, $this->getContent());
-
-        $condition->onLoad();
-
-        $allConditions->put($name, $condition);
-
-        $this->putSession('conditions', $allConditions);
+        return $this->getConditions()->applied($this->subtotal());
     }
 
     /**
-     * get condition applied on the cart by its name
+     * Get condition applied on the cart by its name
      *
      * @param $name
      *
@@ -397,15 +357,41 @@ class Cart
         $this->fireEvent('condition.cleared');
     }
 
-    protected function applyConditionsOnTotal($subTotal)
+    /**
+     * @param $condition CartCondition
+     */
+    public function condition($condition)
     {
-        $total = $this->getConditions()->reduce(function ($total, CartCondition $condition) {
-            $newTotal = $condition->apply($total);
+        // Extensibility
+        $this->fireEvent('condition.loading');
 
-            return ($newTotal === FALSE) ? $total : $newTotal;
-        }, $subTotal);
+        $condition->setCartContent($this->getContent());
 
-        return $total;
+        $condition->onLoad();
+
+        $allConditions = $this->getConditions();
+        $allConditions->put($condition->name, $condition);
+
+        $this->fireEvent('condition.loaded');
+
+        $this->putSession('conditions', $allConditions);
+    }
+
+    public function loadConditions()
+    {
+        if ($this->conditionsLoaded)
+            return;
+
+        $allConditions = $this->getConditions();
+
+        $allConditions->load(config('cart.conditions', []));
+
+        $this->clearConditions();
+        foreach ($allConditions as $condition) {
+            $this->condition($condition);
+        }
+
+        $this->conditionsDefined = TRUE;
     }
 
     //
@@ -428,12 +414,12 @@ class Cart
     /**
      * Get the carts conditions, if there is no cart condition set yet, return a new empty Collection
      *
-     * @return \Igniter\Flame\Cart\CartContent
+     * @return \Igniter\Flame\Cart\CartConditions
      */
     protected function getConditions()
     {
         if (!$conditions = $this->getSession('conditions'))
-            $conditions = new Collection;
+            $conditions = new CartConditions;
 
         return $conditions;
     }
@@ -441,28 +427,23 @@ class Cart
     /**
      * Create a new CartItem from the supplied attributes.
      *
-     * @param mixed $id
-     * @param mixed $name
+     * @param $buyable
      * @param int|float $qty
-     * @param float $price
      * @param array $options
+     * @param null $comment
      *
      * @return \Igniter\Flame\Cart\CartItem
      */
-    protected function createCartItem($id, $name, $qty, $price, array $options)
+    protected function createCartItem($buyable, $qty = null, array $options = [], $comment = null)
     {
-        if ($id instanceof Buyable) {
-            $cartItem = CartItem::fromBuyable($id, $qty ?: []);
-            $cartItem->setQuantity($name ?: 1);
-            $cartItem->associate($id);
-        }
-        elseif (is_array($id)) {
-            $cartItem = CartItem::fromArray($id);
-            $cartItem->setQuantity($id['qty']);
+        if ($buyable instanceof Buyable) {
+            $cartItem = CartItem::fromBuyable($buyable, $options, $comment);
+            $cartItem->setQuantity($qty);
+            $cartItem->associate($buyable);
         }
         else {
-            $cartItem = CartItem::fromAttributes($id, $name, $price, $options);
-            $cartItem->setQuantity($qty);
+            $cartItem = CartItem::fromArray($buyable);
+            $cartItem->setQuantity(array_get($buyable, 'qty'));
         }
 
         return $cartItem;
@@ -489,124 +470,95 @@ class Cart
      *
      * @return void
      */
-//    public function store($identifier)
-//    {
-//        $content = $this->getContent();
-//
-//        if ($this->storedCartWithIdentifierExists($identifier)) {
-//            throw new CartAlreadyStoredException("A cart with identifier {$identifier} was already stored.");
-//        }
-//
-//        $this->getConnection()->table($this->getTableName())->insert([
-//            'identifier' => $identifier,
-//            'instance'   => $this->currentInstance(),
-//            'content'    => serialize($content),
-//        ]);
-//
-//        $this->fireEvent('stored', $identifier);
-//    }
+    public function store($identifier)
+    {
+        $cartStore = $this->createModel()->firstOrCreate([
+            'identifier' => $identifier,
+            'instance' => $this->currentInstance()
+        ]);
+
+        $cartStore->data = serialize([
+            'content' => $this->getContent(),
+            'conditions' => $this->getConditions()
+        ]);
+
+        $cartStore->save();
+
+        $this->fireEvent('stored', $identifier);
+    }
 
     /**
      * Restore the cart with the given identifier.
-     *
-     * @return \Igniter\Flame\Cart\CartContent
+     * @param mixed $identifier
      */
-//    public function restore($identifier)
-//    {
-//        if (!$this->storedCartWithIdentifierExists($identifier)) {
-//            return;
-//        }
-//
-//        $stored = $this->getStoredCartByIdentifier($identifier);
-//
-//        $storedContent = unserialize($stored->content);
-//
-//        $currentInstance = $this->currentInstance();
-//
-//        $this->instance($stored->instance);
-//
-//        $content = $this->getContent();
-//
-//        foreach ($storedContent as $cartItem) {
-//            $content->put($cartItem->rowId, $cartItem);
-//        }
-//
-//        $this->fireEvent('restored');
-//
-//        $this->putSession('content', $content);
-//
-//        $this->instance($currentInstance);
-//
-////        $this->getConnection()->table($this->getTableName())
-////             ->where('identifier', $identifier)->delete();
-//    }
+    public function restore($identifier)
+    {
+        if (!$this->storedCartWithIdentifierExists($identifier)) {
+            return;
+        }
+
+        $stored = $this->getStoredCartByIdentifier($identifier);
+
+        $storedData = unserialize($stored->data);
+
+        $content = $this->getContent();
+        $conditions = $this->getConditions();
+
+        $storedContent = array_get($storedData, 'content');
+        foreach ($storedContent as $cartItem) {
+            $content->put($cartItem->rowId, $cartItem);
+        }
+
+        $storedConditions = array_get($storedData, 'conditions');
+        foreach ($storedConditions as $cartCondition) {
+            $conditions->put($cartCondition->name, $cartCondition);
+        }
+
+        $this->putSession('content', $content);
+        $this->putSession('conditions', $conditions);
+
+        $this->fireEvent('restored');
+
+        $this->deleteStored($identifier);
+    }
+
+    public function deleteStored($identifier)
+    {
+        $this->createModel()
+             ->where('identifier', $identifier)
+             ->where('instance', $this->currentInstance())->delete();
+    }
 
     /**
      * @param $identifier
      *
      * @return bool
      */
-//    protected function storedCartWithIdentifierExists($identifier)
-//    {
-//        return $this->getConnection()
-//                    ->table($this->getTableName())
-//                    ->where('identifier', $identifier)->exists();
-//    }
-
-//    protected function getStoredCartByIdentifier($identifier)
-//    {
-//        return $this->getConnection()
-//                    ->table($this->getTableName())
-//                    ->where('identifier', $identifier)->first();
-//    }
-
-    /**
-     * Get the database connection.
-     *
-     * @return \Illuminate\Database\Connection
-     */
-//    protected function getConnection()
-//    {
-//        $connectionName = $this->getConnectionName();
-//
-//        return app(DatabaseManager::class)->connection($connectionName);
-//    }
-
-    /**
-     * Get the database table name.
-     *
-     * @return string
-     */
-//    protected function getTableName()
-//    {
-//        return config('database.table', 'cart');
-//    }
-
-    /**
-     * Get the database connection name.
-     *
-     * @param $key
-     *
-     * @return string
-     */
-//    protected function getConnectionName()
-//    {
-//        $connection = config('cart.database.connection');
-//
-//        return is_null($connection) ? config('database.default') : $connection;
-//    }
-
-    public function setDestroyOnLogout($destroyOnLogout)
+    protected function storedCartWithIdentifierExists($identifier)
     {
-        $this->destroyOnLogout = $destroyOnLogout;
+        return $this->createModel()
+                    ->where('identifier', $identifier)
+                    ->where('instance', $this->currentInstance())->exists();
     }
 
-    public function getDestroyOnLogout()
+    protected function getStoredCartByIdentifier($identifier)
     {
-        if (is_null($this->destroyOnLogout))
-            return config('cart.destroyOnLogout');
+        return $this->createModel()
+                    ->where('identifier', $identifier)->first();
+    }
 
-        return $this->destoryOnLogout;
+    /**
+     * Create a new instance of the model
+     * @return mixed
+     * @throws Exception
+     */
+    protected function createModel()
+    {
+        $modelClass = config('cart.model');
+        if (!$modelClass OR !class_exists($modelClass))
+            throw new Exception(sprintf('Missing model [%s] in %s', $modelClass, get_called_class()));
+
+        return new $modelClass();
     }
 
     //
@@ -625,7 +577,7 @@ class Cart
 
     protected function putSession($key, $content)
     {
-        $this->session->put($this->instance.'.'.$key, $content);
+        $this->session->put(sprintf('%s.%s', $this->instance, $key), $content);
     }
 
     //
@@ -643,6 +595,6 @@ class Cart
         if (is_null($payload))
             return $this->events->fire('cart.'.$name, [$this]);
 
-        return $this->events->fire('cart.'.$name, [$payload, $this]);
+        return $this->events->fire('cart.'.$name, [$this, $payload]);
     }
 }

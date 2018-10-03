@@ -71,8 +71,9 @@ class CartItem implements Arrayable, Jsonable
      * @param string $name
      * @param float $price
      * @param array $options
+     * @param null $comment
      */
-    public function __construct($id, $name, $price, array $options = [])
+    public function __construct($id, $name, $price, array $options = [], $comment = null)
     {
         if (!strlen($id)) {
             throw new \InvalidArgumentException('Please supply a valid identifier.');
@@ -88,6 +89,7 @@ class CartItem implements Arrayable, Jsonable
         $this->name = $name;
         $this->price = (float)$price;
         $this->options = new CartItemOptions($options);
+        $this->comment = $comment;
         $this->rowId = $this->generateRowId($id, $options);
     }
 
@@ -182,6 +184,7 @@ class CartItem implements Arrayable, Jsonable
         $this->price = array_get($attributes, 'price', $this->price);
         $this->qty = array_get($attributes, 'qty', $this->qty);
         $this->options = new CartItemOptions(array_get($attributes, 'options', $this->options));
+        $this->comment = array_get($attributes, 'comment', $this->comment);
 
         $this->rowId = $this->generateRowId($this->id, $this->options->all());
     }
@@ -225,16 +228,18 @@ class CartItem implements Arrayable, Jsonable
      *
      * @param \Igniter\Flame\Cart\Contracts\Buyable $item
      * @param array $options
+     * @param null $comment
      *
      * @return \Igniter\Flame\Cart\CartItem
      */
-    public static function fromBuyable(Buyable $item, array $options = [])
+    public static function fromBuyable(Buyable $item, array $options = [], $comment = null)
     {
         return new self(
             $item->getBuyableIdentifier($options),
             $item->getBuyableName($options),
             $item->getBuyablePrice($options),
-            $options
+            $options,
+            $comment
         );
     }
 
@@ -247,24 +252,13 @@ class CartItem implements Arrayable, Jsonable
      */
     public static function fromArray(array $attributes)
     {
-        $options = array_get($attributes, 'options', []);
-
-        return new self($attributes['id'], $attributes['name'], $attributes['price'], $options);
-    }
-
-    /**
-     * Create a new instance from the given attributes.
-     *
-     * @param int|string $id
-     * @param string $name
-     * @param float $price
-     * @param array $options
-     *
-     * @return \Igniter\Flame\Cart\CartItem
-     */
-    public static function fromAttributes($id, $name, $price, array $options = [])
-    {
-        return new self($id, $name, $price, $options);
+        return new self(
+            $attributes['id'],
+            $attributes['name'],
+            $attributes['price'],
+            array_get($attributes, 'options', []),
+            array_get($attributes, 'comment')
+        );
     }
 
     /**
@@ -279,7 +273,7 @@ class CartItem implements Arrayable, Jsonable
     {
         ksort($options);
 
-        return md5($id.serialize($options));
+        return md5($id.serialize($options).$this->comment);
     }
 
     /**
@@ -290,13 +284,13 @@ class CartItem implements Arrayable, Jsonable
     public function toArray()
     {
         return [
-            'rowId'    => $this->rowId,
-            'id'       => $this->id,
-            'name'     => $this->name,
-            'qty'      => $this->qty,
-            'price'    => $this->price,
-            'options'  => $this->options->toArray(),
-            'comment'  => $this->comment,
+            'rowId' => $this->rowId,
+            'id' => $this->id,
+            'name' => $this->name,
+            'qty' => $this->qty,
+            'price' => $this->price,
+            'options' => $this->options->toArray(),
+            'comment' => $this->comment,
             'subtotal' => $this->subtotal(),
         ];
     }
