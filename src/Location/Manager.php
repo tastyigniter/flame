@@ -25,6 +25,8 @@ class Manager
 
     protected $loaded;
 
+    protected static $schedulesCache;
+
     public function __construct(Store $session, Dispatcher $events)
     {
         $this->session = $session;
@@ -50,7 +52,7 @@ class Manager
     }
 
     /**
-     * @param mixed $defaultLocation
+     * @param string $defaultLocation
      */
     public function setDefaultLocation($defaultLocation)
     {
@@ -110,6 +112,11 @@ class Manager
         $this->model = $this->getById($id);
 
         return $this;
+    }
+
+    public function setModelClass($className)
+    {
+        $this->locationModel = $className;
     }
 
     /**
@@ -187,6 +194,20 @@ class Manager
         );
 
         return $query->isEnabled()->get();
+    }
+
+    public function workingSchedule($type, $days = null, $interval = null)
+    {
+        $cacheKey = sprintf('%s.%s', $this->getModel()->getKey(), $type);
+
+        if (isset(self::$schedulesCache[$cacheKey]))
+            return self::$schedulesCache[$cacheKey];
+
+        $schedule = $this->getModel()->newWorkingSchedule($type, $days, $interval);
+
+        self::$schedulesCache[$cacheKey] = $schedule;
+
+        return $schedule;
     }
 
     //

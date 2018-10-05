@@ -5,7 +5,6 @@ namespace Igniter\Flame\Location\Traits;
 use Carbon\Carbon;
 use Exception;
 use Igniter\Flame\Location\WorkingSchedule;
-use Illuminate\Support\Collection;
 use InvalidArgumentException;
 
 trait HasWorkingHours
@@ -20,6 +19,19 @@ trait HasWorkingHours
      */
     protected $workingSchedules;
 
+    protected $currentTime;
+
+    /**
+     * @return Carbon
+     */
+    public function getCurrentTime()
+    {
+        if (!is_null($this->currentTime))
+            return $this->currentTime;
+
+        return $this->currentTime = Carbon::now();
+    }
+
     public function availableWorkingTypes()
     {
         return [static::OPENING, static::DELIVERY, static::COLLECTION];
@@ -28,7 +40,7 @@ trait HasWorkingHours
     public function listWorkingHours()
     {
         if (!$this->workingHours)
-            $this->workingHours = $this->getWorkingHours();
+            $this->workingHours = $this->loadWorkingHours();
 
         return $this->workingHours;
     }
@@ -77,7 +89,7 @@ trait HasWorkingHours
         return $this->getWorkingHourByDayAndType($weekday, $type);
     }
 
-    public function getWorkingHours()
+    public function loadWorkingHours()
     {
         if (!$this->hasRelation('working_hours'))
             throw new Exception(sprintf("Model '%s' does not contain a definition for 'working_hours'.",
@@ -86,21 +98,25 @@ trait HasWorkingHours
         return $this->working_hours()->get();
     }
 
-    public function workingSchedule($type = null)
+    public function newWorkingSchedule($type, $days = null, $interval = null)
     {
-        if (is_null($type) OR !in_array($type, $this->availableWorkingTypes()))
+        $types = $this->availableWorkingTypes();
+        if (is_null($type) OR !in_array($type, $types))
             throw new InvalidArgumentException("Defined parameter '$type' is not a valid working type.");
 
-        if (isset($this->workingSchedules[$type]))
-            return $this->workingSchedules[$type];
+        if (is_null($days)) {
+            $days = $this->hasFutureOrder()
+                ? (int)$this->futureOrderDays($type)
+                : 0;
+        }
 
-        if (!$hours = $this->getWorkingHoursByType($type))
-            $hours = new Collection([]);
+        $schedule = WorkingSchedule::create(
+            $this->getWorkingHoursByType($type),
+            $days, $interval ?? $this->getOrderTimeInterval($type)
+        );
 
-        $workingSchedule = WorkingSchedule::load($hours, $type);
+        $schedule->setNow($this->getCurrentTime());
 
-        $this->workingSchedules[$type] = $workingSchedule;
-
-        return $workingSchedule;
+        return $schedule;
     }
 }

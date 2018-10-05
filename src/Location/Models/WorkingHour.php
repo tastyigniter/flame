@@ -3,8 +3,6 @@
 namespace Igniter\Flame\Location\Models;
 
 use Carbon\Carbon;
-use DateInterval;
-use DatePeriod;
 use Igniter\Flame\Database\Model;
 
 class WorkingHour extends Model
@@ -41,17 +39,7 @@ class WorkingHour extends Model
 
     protected $appends = ['day', 'open', 'close'];
 
-    /**
-     * @var Carbon
-     */
     protected $weekDate;
-
-    public function setWeekDate(Carbon $weekDate)
-    {
-        $this->weekDate = $weekDate;
-
-        return $this;
-    }
 
     public function getWeekDate()
     {
@@ -126,33 +114,5 @@ class WorkingHour extends Model
             return null;
 
         return $this->opening_time > $this->closing_time;
-    }
-
-    public function checkStatus($dateTime = null)
-    {
-        if (is_null($dateTime))
-            $dateTime = Carbon::now();
-
-        if (!$this->isEnabled())
-            return self::CLOSED;
-
-        if ($this->getWeekDate()->isToday() AND $this->isOpenAllDay())
-            return self::OPEN;
-
-        if ($dateTime->between($this->open, $this->close))
-            return self::OPEN;
-
-        if ($this->open->gte($dateTime) AND $this->close->gte($dateTime))
-            return self::OPENING;
-
-        return self::CLOSED;
-    }
-
-    public function generateTimes($interval)
-    {
-        $interval = new DateInterval("PT".$interval."M");
-        $dateTimes = new DatePeriod($this->open, $interval, $this->close);
-
-        return $dateTimes;
     }
 }

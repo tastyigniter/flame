@@ -358,7 +358,7 @@ class Cart
     }
 
     /**
-     * @param $condition CartCondition
+     * @param $condition \Igniter\Flame\Cart\CartCondition
      */
     public function condition($condition)
     {
