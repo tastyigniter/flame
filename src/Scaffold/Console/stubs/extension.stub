@@ -34,11 +34,11 @@ class Extension extends BaseExtension
     }
 
     /**
-     * Initialize method, called right before the request route.
+     * Boot method, called right before the request route.
      *
      * @return void
      */
-    public function initialize()
+    public function boot()
     {
 
     }

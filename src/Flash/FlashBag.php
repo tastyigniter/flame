@@ -180,7 +180,7 @@ class FlashBag
      *
      * @return $this
      */
-    public function overlay($message = null, $title = 'Notice')
+    public function overlay($message = null, $title = '')
     {
         if (!$message) {
             return $this->updateLastMessage(['title' => $title, 'overlay' => TRUE]);

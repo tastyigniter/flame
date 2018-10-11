@@ -33,7 +33,7 @@ class WorkingPeriod
         $this->date = $this->parseDate($date)->startOfDay();
         $this->start = $this->parseStart($start);
         $this->end = $this->parseEnd($end);
-        $this->interval = $interval;
+        $this->interval = $interval < 1 ? 1 : $interval;
         $this->status = self::CLOSED;
     }
 
