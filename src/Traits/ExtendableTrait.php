@@ -247,6 +247,8 @@ trait ExtendableTrait
                 return $obj;
             }
         }
+
+        return $this->getClassExtension($shortName);
     }
 
     /**
@@ -431,9 +433,11 @@ trait ExtendableTrait
                  */
                 if (is_string($implement)) {
                     $uses = explode(',', $implement);
-                } elseif (is_array($implement)) {
+                }
+                elseif (is_array($implement)) {
                     $uses = $implement;
-                } else {
+                }
+                else {
                     throw new SystemException(sprintf('Class %s contains an invalid $implement value', $className));
                 }
 
