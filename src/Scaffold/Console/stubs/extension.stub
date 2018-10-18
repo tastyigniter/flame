@@ -65,7 +65,7 @@ class Extension extends BaseExtension
     {
 // Remove this line and uncomment block to activate
         return [
-//            '{{title_author}}.{{title_name}}.SomePermission' => [
+//            '{{title_author}}.{{studly_name}}.SomePermission' => [
 //                'description' => 'Some permission',
 //                'action' => ['access', 'add', 'manage', 'delete'],
 //            ],

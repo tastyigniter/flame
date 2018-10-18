@@ -17,7 +17,7 @@ class {{studly_name}} extends \Admin\Classes\AdminController
     public $listConfig = [
         'list' => [
             'model'        => '{{studly_author}}\{{studly_extension}}\Models\{{studly_singular_name}}',
-            'title'        => 'lang:admin::lang.list.text_title',
+            'title'        => '{{title_name}}',
             'emptyMessage' => 'lang:admin::lang.list.text_empty',
             'defaultSort'  => ['order_id', 'DESC'],
             'configFile'   => '{{snake_singular_name}}',
@@ -51,6 +51,6 @@ class {{studly_name}} extends \Admin\Classes\AdminController
     {
         parent::__construct();
 
-        AdminMenu::setContext('{{lower_name}}', '{{lower_author}}.{{studly_extension}}');
+        AdminMenu::setContext('{{lower_name}}', '{{lower_author}}.{{lower_extension}}');
     }
 }
