@@ -155,6 +155,10 @@ trait LogsActivity
 
     protected function shouldLogEvent($eventName)
     {
+        if (!$this->enableLoggingModelsEvents) {
+            return FALSE;
+        }
+
         if (!in_array($eventName, ['created', 'updated'])) {
             return TRUE;
         }

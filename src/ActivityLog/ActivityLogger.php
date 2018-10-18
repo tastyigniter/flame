@@ -156,7 +156,7 @@ class ActivityLogger
         throw new Exception("Could not determine a user with identifier '{$modelOrId}''.");
     }
 
-    protected function replacePlaceholders($message, Activity $activity)
+    public function replacePlaceholders($message, Activity $activity)
     {
         return preg_replace_callback('/:[a-z0-9._-]+/i', function ($match) use ($activity) {
             $match = $match[0];
