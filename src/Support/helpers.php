@@ -179,7 +179,7 @@ if (!function_exists('setting')) {
      */
     function setting($key = null, $default = null)
     {
-        $settingConfig = app()->make(SettingManager::class);
+        $settingConfig = app(SettingManager::class);
 
         if (is_null($key))
             return $settingConfig;
@@ -197,7 +197,7 @@ if (!function_exists('params')) {
      */
     function params($key = null, $default = null)
     {
-        $settingPrefs = app()->make(SettingManager::class)->driver('prefs');
+        $settingPrefs = app(SettingManager::class)->driver('prefs');
 
         if (is_null($key))
             return $settingPrefs;
