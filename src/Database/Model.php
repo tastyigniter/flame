@@ -64,8 +64,6 @@ class Model extends EloquentModel
         'morphMany' => [],
         'morphToMany' => [],
         'morphedByMany' => [],
-        'attachOne' => [],
-        'attachMany' => [],
         'hasManyThrough' => [],
     ];
 
@@ -73,7 +71,7 @@ class Model extends EloquentModel
      * @var array Excepted relationship types, used to cycle and verify relationships.
      */
     protected static $relationTypes = ['hasOne', 'hasMany', 'belongsTo', 'belongsToMany', 'morphTo', 'morphOne',
-        'morphMany', 'morphToMany', 'morphedByMany', 'attachOne', 'attachMany', 'hasManyThrough'];
+        'morphMany', 'morphToMany', 'morphedByMany', 'hasManyThrough'];
 
     /**
      * The attributes that should be cast to native types.
@@ -891,19 +889,7 @@ class Model extends EloquentModel
                     $relation['foreignKey'],
                     $relation['otherKey'], $relationName);
                 break;
-
-            case 'attachOne':
-            case 'attachMany':
-                $relation = $this->validateRelationArgs($relationName,
-                    ['public', 'foreignKey']
-                );
-                $relationObj = $this->$relationType(
-                    $relation[0],
-                    $relation['public'],
-                    $relation['foreignKey'],
-                    $relationName);
-                break;
-
+                
             case 'hasManyThrough':
                 $relation = $this->validateRelationArgs($relationName, ['foreignKey', 'throughKey', 'otherKey'], ['through']);
                 $relationObj = $this->$relationType(
