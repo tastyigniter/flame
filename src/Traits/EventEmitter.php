@@ -188,22 +188,18 @@ trait EventEmitter
 
         // Local event first
         if ($response = $this->fireEvent($shortEvent, $params, $halt)) {
-            if ($halt) {
+            if ($halt)
                 return $response;
-            }
-            else {
-                $result = array_merge($result, $response);
-            }
+
+            $result = array_merge($result, $response);
         }
 
         // Global event second
         if ($response = Event::fire($event, $longArgs, $halt)) {
-            if ($halt) {
+            if ($halt)
                 return $response;
-            }
-            else {
-                $result = array_merge($result, $response);
-            }
+
+            $result = array_merge($result, $response);
         }
 
         return $result;

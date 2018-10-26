@@ -2,6 +2,7 @@
 
 namespace Igniter\Flame\Location;
 
+use Closure;
 use Igniter\Flame\Location\Models\Location;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Session\Store;
@@ -27,6 +28,13 @@ class Manager
 
     protected static $schedulesCache;
 
+    /**
+     * The route parameter resolver callback.
+     *
+     * @var \Closure
+     */
+    protected static $locationSlugResolver;
+
     public function __construct(Store $session, Dispatcher $events)
     {
         $this->session = $session;
@@ -41,6 +49,29 @@ class Manager
     public function instance()
     {
         return $this;
+    }
+
+    /**
+     * Resolve the location slug from route parameter.
+     *
+     * @return string
+     */
+    public function resolveLocationSlug()
+    {
+        if (isset(static::$locationSlugResolver)) {
+            return call_user_func(static::$locationSlugResolver);
+        }
+    }
+
+    /**
+     * Set the location route parameter resolver callback.
+     *
+     * @param  \Closure $resolver
+     * @return void
+     */
+    public function locationSlugResolver(Closure $resolver)
+    {
+        static::$locationSlugResolver = $resolver;
     }
 
     /**
@@ -69,11 +100,16 @@ class Manager
         if (!is_null($this->model))
             return $this->model;
 
-        if (!$id = $this->getSession('id'))
-            $id = $this->defaultLocation;
+        if ($slug = $this->resolveLocationSlug()) {
+            $this->setCurrent($this->getBySlug($slug));
+        }
+        else {
+            if (!$id = $this->getSession('id'))
+                $id = $this->defaultLocation;
 
-        if (!is_null($id) AND $model = $this->getById($id)) {
-            $this->setCurrent($model);
+            if (!is_null($id) AND $model = $this->getById($id)) {
+                $this->setCurrent($model);
+            }
         }
 
         return $this->model;
