@@ -373,7 +373,7 @@ class Model extends EloquentModel
             return $this->relations[$key];
         }
 
-        if ($this->hasRelation($key)) {
+        if ($this->hasRelation($key) || method_exists($this, $key)) {
             return $this->getRelationshipFromMethod($key);
         }
     }
@@ -889,7 +889,7 @@ class Model extends EloquentModel
                     $relation['foreignKey'],
                     $relation['otherKey'], $relationName);
                 break;
-                
+
             case 'hasManyThrough':
                 $relation = $this->validateRelationArgs($relationName, ['foreignKey', 'throughKey', 'otherKey'], ['through']);
                 $relationObj = $this->$relationType(
