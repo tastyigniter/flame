@@ -42,7 +42,7 @@ class Manager
     }
 
     /**
-     * Set the current location instance.
+     * Helper to get the current location instance.
      *
      * @return \Igniter\Flame\Location\Manager
      */

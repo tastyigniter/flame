@@ -7,7 +7,6 @@ use Igniter\Flame\Database\Model;
 use Igniter\Flame\Location\GeoPosition;
 use Igniter\Flame\Location\Traits\HasDeliveryAreas;
 use Igniter\Flame\Location\Traits\HasWorkingHours;
-use Main\Models\Image_tool_model;
 
 class Location extends Model
 {
@@ -94,16 +93,6 @@ class Location extends Model
         return $address_data;
     }
 
-    public function getThumb($options = [])
-    {
-        return Image_tool_model::resize($this->location_image, $options);
-    }
-
-    public function getGallery()
-    {
-        return array_get($this->options, 'gallery', []);
-    }
-
     public function getReservationInterval()
     {
         return $this->reservation_time_interval;
@@ -132,13 +121,6 @@ class Location extends Model
     public function lastOrderMinutes()
     {
         return $this->last_order_time;
-    }
-
-    public function hasGallery()
-    {
-        $gallery = $this->getGallery();
-
-        return (isset($gallery['images']) AND count(array_filter($gallery['images'])));
     }
 
     public function hasDelivery()
