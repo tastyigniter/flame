@@ -13,8 +13,6 @@ class WorkingHour extends Model
 
     const OPENING = 'opening';
 
-    protected static $weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
     /**
      * @var string The database table name
      */
@@ -49,23 +47,13 @@ class WorkingHour extends Model
         return $this->weekDate;
     }
 
-    public function setWeekDays($weekDays)
-    {
-        self::$weekDays = $weekDays;
-    }
-
-    public function getWeekDays()
-    {
-        return self::$weekDays;
-    }
-
     //
     // Accessors & Mutators
     //
 
     public function getDayAttribute()
     {
-        return self::$weekDays[$this->weekday];
+        return Carbon::now()->startOfWeek()->addDay($this->weekday)->format('l');
     }
 
     public function getOpenAttribute()
