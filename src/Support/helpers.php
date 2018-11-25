@@ -35,6 +35,19 @@ if (!function_exists('assets_url')) {
     }
 }
 
+if (!function_exists('uploads_path')) {
+    /**
+     * Get the path to the uploads folder.
+     *
+     * @param  string $path
+     * @return string
+     */
+    function uploads_path($path = '')
+    {
+        return app('path.uploads').($path ? '/'.$path : $path);
+    }
+}
+
 if (!function_exists('image_url')) {
     /**
      * Image Assets URL
@@ -47,6 +60,7 @@ if (!function_exists('image_url')) {
      */
     function image_url($uri = null, $protocol = null)
     {
+        traceLog('image_url() has been deprecated, use assets_url() instead.');
         return app(UrlGenerator::class)->asset('assets/images/'.$uri, $protocol);
     }
 }
@@ -61,6 +75,7 @@ if (!function_exists('image_path')) {
      */
     function image_path($path = '')
     {
+        traceLog('image_path() has been deprecated, use assets_path() instead.');
         return assets_path('images').($path ? DIRECTORY_SEPARATOR.$path : $path);
     }
 }
