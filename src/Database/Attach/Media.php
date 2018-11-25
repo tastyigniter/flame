@@ -488,12 +488,12 @@ class Media extends Model
 
     public function getDefaultThumbPath($thumbPath, $default = null)
     {
-        if ($default)
-            return $this->getStorageDisk()->path($default);
+        if (!$default) {
+            $this->getStorageDisk()->put($thumbPath, Manipulator::decodedBlankImage());
+            $default = $thumbPath;
+        }
 
-        $this->getStorageDisk()->put($thumbPath, Manipulator::decodedBlankImage());
-
-        return $thumbPath;
+        return $this->getStorageDisk()->path($default);
     }
 
     /**
@@ -529,7 +529,7 @@ class Media extends Model
     protected function getDefaultThumbOptions($override = [])
     {
         $defaultOptions = [
-            'fit' => 'crop',
+            'fit' => 'contain',
             'width' => 0,
             'height' => 0,
             'quality' => 90,
