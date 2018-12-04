@@ -3,10 +3,6 @@
 namespace Igniter\Flame\Foundation\Providers;
 
 use File;
-use Igniter\Flame\ActivityLog\ActivityLogServiceProvider;
-use Igniter\Flame\Currency\CurrencyServiceProvider;
-use Igniter\Flame\Pagic\PagicServiceProvider;
-use Igniter\Flame\Support\HelperServiceProvider;
 use Illuminate\Support\ServiceProvider;
 
 abstract class AppServiceProvider extends ServiceProvider
@@ -48,11 +44,6 @@ abstract class AppServiceProvider extends ServiceProvider
             if (File::isFile($routesFile))
                 require $routesFile;
         }
-
-        $this->app->register(HelperServiceProvider::class);
-        $this->app->register(PagicServiceProvider::class);
-        $this->app->register(ActivityLogServiceProvider::class);
-        $this->app->register(CurrencyServiceProvider::class);
     }
 
     public function getModule($args)
