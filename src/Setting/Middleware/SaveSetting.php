@@ -1,7 +1,6 @@
 <?php namespace Igniter\Flame\Setting\Middleware;
 
 use Closure;
-use Igniter\Flame\Setting\SettingManager;
 
 class SaveSetting
 {
@@ -18,16 +17,6 @@ class SaveSetting
      * @var bool
      */
     protected $settingHandled = FALSE;
-
-    /**
-     * Create a new setting middleware.
-     *
-     * @param \Igniter\Flame\Setting\SettingManager $manager
-     */
-    public function __construct(SettingManager $manager)
-    {
-        $this->manager = $manager;
-    }
 
     public function handle($request, Closure $next)
     {
@@ -47,8 +36,8 @@ class SaveSetting
     public function terminate($request, $response)
     {
         if ($this->settingHandled) {
-            $this->manager->driver('config')->save();
-            $this->manager->driver('prefs')->save();
+            app('system.setting')->save();
+            app('system.parameter')->save();
         }
     }
 }

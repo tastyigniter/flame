@@ -5,6 +5,7 @@ namespace Igniter\Flame\Location\Traits;
 use Carbon\Carbon;
 use Exception;
 use Igniter\Flame\Location\WorkingSchedule;
+use Illuminate\Support\Collection;
 use InvalidArgumentException;
 
 trait HasWorkingHours
@@ -111,7 +112,7 @@ trait HasWorkingHours
         }
 
         $schedule = WorkingSchedule::create(
-            $this->getWorkingHoursByType($type),
+            $this->getWorkingHoursByType($type) ?? new Collection([]),
             $days, $interval ?? $this->getOrderTimeInterval($type)
         );
 

@@ -1,7 +1,6 @@
 <?php
 
 use Igniter\Flame\ActivityLog\ActivityLogger;
-use Igniter\Flame\Setting\SettingManager;
 use Igniter\Flame\Support\StrHelper;
 use Igniter\Flame\Support\StringParser;
 use Illuminate\Routing\UrlGenerator;
@@ -194,7 +193,7 @@ if (!function_exists('setting')) {
      */
     function setting($key = null, $default = null)
     {
-        $settingConfig = app(SettingManager::class);
+        $settingConfig = app('system.setting');
 
         if (is_null($key))
             return $settingConfig;
@@ -212,12 +211,12 @@ if (!function_exists('params')) {
      */
     function params($key = null, $default = null)
     {
-        $settingPrefs = app(SettingManager::class)->driver('prefs');
+        $settingParam = app('system.parameter');
 
         if (is_null($key))
-            return $settingPrefs;
+            return $settingParam;
 
-        return $settingPrefs->get($key, $default);
+        return $settingParam->get($key, $default);
     }
 }
 

@@ -100,17 +100,19 @@ class Manager
         if (!is_null($this->model))
             return $this->model;
 
-        if ($slug = $this->resolveLocationSlug()) {
-            $this->setCurrent($this->getBySlug($slug));
-        }
-        else {
+        $model = null;
+        if ($slug = $this->resolveLocationSlug())
+            $model = $this->getBySlug($slug);
+
+        if (!$model) {
             if (!$id = $this->getSession('id'))
                 $id = $this->defaultLocation;
 
-            if (!is_null($id) AND $model = $this->getById($id)) {
-                $this->setCurrent($model);
-            }
+            $model = $this->getById($id);
         }
+
+        if ($model)
+            $this->setCurrent($model);
 
         return $this->model;
     }

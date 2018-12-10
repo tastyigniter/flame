@@ -18,7 +18,6 @@ class Mailer extends BaseMailer
 
         foreach ($recipients as $address => $name) {
             $this->{$method}($view, $data, function ($message) use ($address, $name, $callback) {
-
                 $message->to($address, $name);
 
                 if (is_callable($callback)) {

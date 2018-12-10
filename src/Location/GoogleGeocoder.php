@@ -91,7 +91,6 @@ class GoogleGeocoder extends AbstractGeocoder
             if (isset($response->error_message))
                 $this->errorMessage = $response->error_message;
 
-//            if ($response->status == 'OK' AND isset($response->results[0]))
             return new Fluent($response->results[0] ?? []);
         }
         catch (\Exception $ex) {

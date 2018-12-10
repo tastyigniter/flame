@@ -15,13 +15,26 @@ class SettingServiceProvider extends ServiceProvider
     {
         $this->registerManager();
 
+        $this->registerStores();
+
         $this->app->singleton(SaveSetting::class);
     }
 
     protected function registerManager()
     {
-        $this->app->singleton(SettingManager::class, function ($app) {
+        $this->app->singleton('setting.manager', function ($app) {
             return new SettingManager($app);
+        });
+    }
+
+    protected function registerStores()
+    {
+        $this->app->singleton('system.setting', function ($app) {
+            return $app['setting.manager']->driver();
+        });
+
+        $this->app->singleton('system.parameter', function ($app) {
+            return $app['setting.manager']->driver('prefs');
         });
     }
 }

@@ -1,5 +1,7 @@
 <?php namespace Igniter\Flame\Support;
 
+use Exception;
+
 /**
  * Configuration rewriter
  *

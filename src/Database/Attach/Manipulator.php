@@ -68,7 +68,7 @@ class Manipulator
             $this->prepareManipulations()
         );
 
-        $this->tempFilePath = sys_get_temp_dir().$tempImage;
+        $this->tempFilePath = sys_get_temp_dir().DIRECTORY_SEPARATOR.$tempImage;
 
         return $this;
     }

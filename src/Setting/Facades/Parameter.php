@@ -4,7 +4,7 @@ namespace Igniter\Flame\Setting\Facades;
 
 use Illuminate\Support\Facades\Facade as IlluminateFacade;
 
-class Setting extends IlluminateFacade
+class Parameter extends IlluminateFacade
 {
     /**
      * Get the registered name of the component.
@@ -14,6 +14,6 @@ class Setting extends IlluminateFacade
      */
     protected static function getFacadeAccessor()
     {
-        return 'system.setting';
+        return 'system.parameter';
     }
 }

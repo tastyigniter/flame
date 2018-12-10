@@ -2,7 +2,8 @@
 
 namespace Igniter\Flame\Setting;
 
-use Illuminate\Database\Connection;
+use Illuminate\Cache\Repository;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Arr;
 use UnexpectedValueException;
 
@@ -10,27 +11,35 @@ class DatabaseSettingStore extends SettingStore
 {
     /**
      * The database connection instance.
-     * @var \Illuminate\Database\Connection
+     * @var \Illuminate\Database\DatabaseManager
      */
-    protected $connection;
+    protected $db;
+
+    /**
+     * The cache instance.
+     * @var \Illuminate\Cache\Repository
+     */
+    protected $cache;
+
+    protected $cacheKey;
 
     /**
      * The table to query from.
      * @var string
      */
-    protected $table;
+    protected $table = 'settings';
 
     /**
      * The key column name to query from.
      * @var string
      */
-    protected $keyColumn;
+    protected $keyColumn = 'item';
 
     /**
      * The value column name to query from.
      * @var string
      */
-    protected $valueColumn;
+    protected $valueColumn = 'value';
 
     /**
      * Any query constraints that should be applied.
@@ -45,17 +54,13 @@ class DatabaseSettingStore extends SettingStore
     protected $extraColumns = [];
 
     /**
-     * @param \Illuminate\Database\Connection $connection
-     * @param string $table
-     * @param null $keyColumn
-     * @param null $valueColumn
+     * @param \Illuminate\Database\DatabaseManager $db
+     * @param \Illuminate\Cache\Repository $cache
      */
-    public function __construct(Connection $connection, $table = null, $keyColumn = null, $valueColumn = null)
+    public function __construct(DatabaseManager $db, Repository $cache)
     {
-        $this->connection = $connection;
-        $this->table = $table ?: 'settings';
-        $this->keyColumn = $keyColumn ?: 'key';
-        $this->valueColumn = $valueColumn ?: 'value';
+        $this->db = $db;
+        $this->cache = $cache;
     }
 
     /**
@@ -175,6 +180,8 @@ class DatabaseSettingStore extends SettingStore
                  ->whereIn($this->keyColumn, $deleteKeys)
                  ->delete();
         }
+
+        $this->flushCache();
     }
 
     /**
@@ -212,17 +219,21 @@ class DatabaseSettingStore extends SettingStore
      */
     protected function read()
     {
-        return $this->parseReadData($this->newQuery()->get());
+        $collection = $this->cacheCallback(function () {
+            return $this->newQuery()->get();
+        });
+
+        return $this->parseReadData($collection);
     }
 
     /**
      * Parse data coming from the database.
      *
-     * @param  array $data
+     * @param  \Illuminate\Support\Collection $data
      *
      * @return array
      */
-    public function parseReadData($data)
+    protected function parseReadData($data)
     {
         $results = [];
 
@@ -246,32 +257,6 @@ class DatabaseSettingStore extends SettingStore
     }
 
     /**
-     * Prepend a value onto an array configuration value.
-     *
-     * @param  string $key
-     * @param  mixed $value
-     *
-     * @return void
-     */
-    public function prepend($key, $value)
-    {
-        // TODO: Implement prepend() method.
-    }
-
-    /**
-     * Push a value onto an array configuration value.
-     *
-     * @param  string $key
-     * @param  mixed $value
-     *
-     * @return void
-     */
-    public function push($key, $value)
-    {
-        // TODO: Implement push() method.
-    }
-
-    /**
      * Create a new query builder instance.
      *
      * @param  $insert  boolean  Whether the query is an insert or not.
@@ -280,7 +265,7 @@ class DatabaseSettingStore extends SettingStore
      */
     protected function newQuery($insert = FALSE)
     {
-        $query = $this->connection->table($this->table);
+        $query = $this->db->table($this->table);
 
         if (!$insert) {
             foreach ($this->extraColumns as $key => $value) {
@@ -309,5 +294,41 @@ class DatabaseSettingStore extends SettingStore
     protected function parseInsertKeyValue($value)
     {
         return is_scalar($value) ? $value : null;
+    }
+
+    //
+    // Cache
+    //
+
+    /**
+     * @return mixed
+     */
+    public function getCacheKey()
+    {
+        return $this->cacheKey;
+    }
+
+    /**
+     * @param mixed $cacheKey
+     */
+    public function setCacheKey($cacheKey)
+    {
+        $this->cacheKey = $cacheKey;
+    }
+
+    protected function flushCache()
+    {
+        if ($cacheKey = $this->getCacheKey()) {
+            $this->cache->forget($this->getCacheKey());
+            $this->loaded = FALSE;
+        }
+    }
+
+    protected function cacheCallback(\Closure $callback)
+    {
+        if ($cacheKey = $this->getCacheKey())
+            return $this->cache->rememberForever($cacheKey, $callback);
+
+        return $callback();
     }
 }
