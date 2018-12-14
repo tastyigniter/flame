@@ -4,8 +4,9 @@ namespace Igniter\Flame\Location\Models;
 
 use Carbon\Carbon;
 use Igniter\Flame\Database\Model;
+use Igniter\Flame\Location\Contracts;
 
-class WorkingHour extends Model
+abstract class AbstractWorkingHour extends Model implements Contracts\WorkingHourInterface
 {
     const CLOSED = 'closed';
 
@@ -37,14 +38,9 @@ class WorkingHour extends Model
 
     protected $appends = ['day', 'open', 'close'];
 
-    protected $weekDate;
-
     public function getWeekDate()
     {
-        if (is_null($this->weekDate))
-            $this->weekDate = new Carbon("{$this->day}");
-
-        return $this->weekDate;
+        return new Carbon($this->day);
     }
 
     //
@@ -58,7 +54,7 @@ class WorkingHour extends Model
 
     public function getOpenAttribute()
     {
-        $openDate = $this->getWeekDate()->copy();
+        $openDate = $this->getWeekDate();
 
         $openDate->setTimeFromTimeString($this->attributes['opening_time']);
 
@@ -67,7 +63,7 @@ class WorkingHour extends Model
 
     public function getCloseAttribute()
     {
-        $closeDate = $this->getWeekDate()->copy();
+        $closeDate = $this->getWeekDate();
 
         $closeDate->setTimeFromTimeString($this->attributes['closing_time']);
 
@@ -102,5 +98,20 @@ class WorkingHour extends Model
             return null;
 
         return $this->opening_time > $this->closing_time;
+    }
+
+    public function getDay()
+    {
+        return $this->day;
+    }
+
+    public function getOpen()
+    {
+        return $this->open->format('H:i');
+    }
+
+    public function getClose()
+    {
+        return $this->close->format('H:i');
     }
 }

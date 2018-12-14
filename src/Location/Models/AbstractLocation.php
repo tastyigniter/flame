@@ -4,11 +4,12 @@ namespace Igniter\Flame\Location\Models;
 
 use DB;
 use Igniter\Flame\Database\Model;
-use Igniter\Flame\Location\GeoPosition;
+use Igniter\Flame\Geolite\Contracts\CoordinatesInterface;
+use Igniter\Flame\Location\Contracts\LocationInterface;
 use Igniter\Flame\Location\Traits\HasDeliveryAreas;
 use Igniter\Flame\Location\Traits\HasWorkingHours;
 
-class Location extends Model
+class AbstractLocation extends Model implements LocationInterface
 {
     use HasWorkingHours;
     use HasDeliveryAreas;
@@ -110,12 +111,12 @@ class Location extends Model
 
     public function deliveryMinutes()
     {
-        return $this->delivery_time;
+        return $this->delivery_time ?: 15;
     }
 
     public function collectionMinutes()
     {
-        return $this->collection_time;
+        return $this->collection_time ?: 15;
     }
 
     public function lastOrderMinutes()
@@ -157,19 +158,15 @@ class Location extends Model
         return $orderTypes;
     }
 
-    public function calculateDistance(GeoPosition $position)
+    public function calculateDistance(CoordinatesInterface $position)
     {
-        if (!is_float($position->latitude) OR !is_float($position->longitude)
-            OR !is_float($this->location_lat) OR !is_float($this->location_lng))
-            return null;
+        $distance = $this->makeDistance();
 
-        $degrees = sin(deg2rad($position->latitude)) * sin(deg2rad($this->location_lat)) +
-            cos(deg2rad($position->latitude)) * cos(deg2rad($this->location_lat)) *
-            cos(deg2rad($position->longitude - $this->location_lng));
+        $distance->setFrom($position);
+        $distance->setTo($this->getCoordinates());
+        $distance->in($this->getDistanceUnit());
 
-        $distance = rad2deg(acos($degrees));
-
-        return $this->getDistanceUnit() == 'km' ? ($distance * static::KM_UNIT) : ($distance * static::M_UNIT);
+        return $distance->haversine();
     }
 
     //
@@ -179,18 +176,34 @@ class Location extends Model
     public function scopeSelectDistance($query, $latitude = null, $longitude = null)
     {
         if (setting('distance_unit') === 'km') {
-            $sql = "( 6371 * acos( cos( radians(?) ) * cos( radians( location_lat ) ) *";
+            $sql = '( 6371 * acos( cos( radians(?) ) * cos( radians( location_lat ) ) *';
         }
         else {
-            $sql = "( 3959 * acos( cos( radians(?) ) * cos( radians( location_lat ) ) *";
+            $sql = '( 3959 * acos( cos( radians(?) ) * cos( radians( location_lat ) ) *';
         }
 
-        $sql .= " cos( radians( location_lng ) - radians(?) ) + sin( radians(?) ) *";
-        $sql .= " sin( radians( location_lat ) ) ) ) AS distance";
+        $sql .= ' cos( radians( location_lng ) - radians(?) ) + sin( radians(?) ) *';
+        $sql .= ' sin( radians( location_lat ) ) ) ) AS distance';
 
         $query->selectRaw(DB::raw($sql), [$latitude, $longitude, $latitude])
               ->orderBy('distance', 'asc');
 
         return $query;
+    }
+
+    /**
+     * @return \Igniter\Flame\Geolite\Model\Coordinates
+     */
+    protected function getCoordinates()
+    {
+        return app('geolite')->coordinates($this->location_lat, $this->location_lng);
+    }
+
+    /**
+     * @return \Igniter\Flame\Geolite\Contracts\DistanceInterface
+     */
+    protected function makeDistance()
+    {
+        return app('geolite')->distance();
     }
 }
