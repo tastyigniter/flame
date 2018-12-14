@@ -99,7 +99,7 @@ trait HasWorkingHours
         return $this->working_hours()->get();
     }
 
-    public function newWorkingSchedule($type, $days = null, $interval = null)
+    public function newWorkingSchedule($type, $days = null)
     {
         $types = $this->availableWorkingTypes();
         if (is_null($type) OR !in_array($type, $types))
@@ -111,9 +111,8 @@ trait HasWorkingHours
                 : 0;
         }
 
-        $schedule = WorkingSchedule::create(
-            $this->getWorkingHoursByType($type) ?? new Collection([]),
-            $days, $interval ?? $this->getOrderTimeInterval($type)
+        $schedule = WorkingSchedule::create($days,
+            $this->getWorkingHoursByType($type) ?? new Collection([])
         );
 
         $schedule->setNow($this->getCurrentTime());

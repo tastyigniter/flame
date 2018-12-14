@@ -2,8 +2,7 @@
 
 namespace Igniter\Flame\Location\Traits;
 
-use Igniter\Flame\Location\GeoPosition;
-use Igniter\Flame\Location\Models\Area;
+use Igniter\Flame\Location\Contracts\AreaInterface;
 
 trait HasDeliveryAreas
 {
@@ -20,7 +19,7 @@ trait HasDeliveryAreas
     /**
      * @param $areaId
      *
-     * @return \Igniter\Flame\Location\Models\Area|null
+     * @return \Igniter\Flame\Location\Contracts\AreaInterface|null
      */
     public function findDeliveryArea($areaId)
     {
@@ -28,29 +27,28 @@ trait HasDeliveryAreas
     }
 
     /**
-     * @param \Igniter\Flame\Location\GeoPosition $position
-     *
-     * @return \Igniter\Flame\Location\Models\Area|null
-     * @throws \Exception
+     * @param \Igniter\Flame\Geolite\Contracts\CoordinatesInterface $coordinates
+     * @return \Igniter\Flame\Location\Contracts\AreaInterface|null
      */
-    public function searchOrFirstDeliveryArea(GeoPosition $position)
+    public function searchOrFirstDeliveryArea($coordinates)
     {
-        if (!$area = $this->searchDeliveryArea($position))
+        if (!$area = $this->searchDeliveryArea($coordinates))
             $area = $this->delivery_areas->first();
 
         return $area;
     }
 
     /**
-     * @param \Igniter\Flame\Location\GeoPosition $position
-     *
-     * @return \Igniter\Flame\Location\Models\Area|null
-     * @throws \Exception
+     * @param \Igniter\Flame\Geolite\Contracts\CoordinatesInterface $coordinates
+     * @return \Igniter\Flame\Location\Contracts\AreaInterface|null
      */
-    public function searchDeliveryArea(GeoPosition $position)
+    public function searchDeliveryArea($coordinates)
     {
-        return $this->delivery_areas->first(function (Area $model) use ($position) {
-            return $model->checkBoundary($position) != Area::OUTSIDE;
+        if (!$coordinates)
+            return null;
+
+        return $this->delivery_areas->first(function (AreaInterface $model) use ($coordinates) {
+            return $model->checkBoundary($coordinates);
         });
     }
 

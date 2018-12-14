@@ -1,217 +1,388 @@
 <?php namespace Igniter\Flame\Location;
 
 use Carbon\Carbon;
+use DateInterval;
 use DateTime;
-use Igniter\Flame\Location\Models\WorkingHour;
+use DateTimeImmutable;
+use DateTimeInterface;
+use DateTimeZone;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 
 class WorkingSchedule
 {
-    protected static $workingSchedulesCache = [];
+    protected $timezone;
 
     /**
-     * @var Collection Holds WorkingHour models
+     * @var \Igniter\Flame\Location\WorkingPeriod[] Holds working periods
      */
-    protected $hours;
+    protected $periods = [];
 
     /**
-     * @var Collection Holds working periods
+     * @var \Igniter\Flame\Location\WorkingPeriod[] Holds working periods exceptions
      */
-    protected $periods;
+    protected $exceptions = [];
+
+    protected $days;
 
     /**
-     * @var Carbon
+     * @var DateTime
      */
     protected $now;
 
     /**
-     * @param Collection $hours
+     * @param null $timezone
      * @param int $days
-     * @param int $interval
-     * @return void
      */
-    public function __construct(Collection $hours, $days = 0, $interval = 15)
+    public function __construct($timezone = null, $days = 5)
     {
-        $this->hours = $hours;
+        $this->timezone = $timezone ? new DateTimeZone($timezone) : null;
         $this->days = $days;
-        $this->interval = $interval;
+
+        $this->periods = WorkingDay::mapDays(function () {
+            return new WorkingPeriod;
+        });
     }
 
     /**
-     * @param $hours
      * @param $days
-     * @param $interval
+     * @param $periods
+     * @param array $exceptions
      * @return self
+     *
+     * $periods = [
+     *    [
+     *      'day' => 'monday',
+     *      'open' => '09:00',
+     *      'close' => '12:00'
+     *    ],
+     *    [
+     *      'day' => 'monday',
+     *      'open' => '09:00',
+     *      'close' => '12:00'
+     *    ],
+     *    'wednesday' => [
+     *      ['09:00', '12:00'],
+     *      ['09:00', '12:00']
+     *    ]
+     * ];
      */
-    public static function create($hours, $days, $interval)
+    public static function create($days, $periods, $exceptions = [])
     {
-        return new static($hours, $days, $interval);
+        return (new static(null, $days))->fill([
+            'periods' => $periods,
+            'exceptions' => $exceptions,
+        ]);
     }
 
-    public function setNow(Carbon $now)
+    public function fill($data)
+    {
+        $exceptions = Arr::get($data, 'exceptions', []);
+        $periods = $this->parsePeriods(Arr::get($data, 'periods', []));
+
+        $this->setPeriods($periods);
+        $this->setExceptions($exceptions);
+
+        return $this;
+    }
+
+    public function setNow(DateTime $now)
     {
         $this->now = $now;
 
         return $this;
     }
 
+    public function setTimezone($timezone)
+    {
+        $this->timezone = new DateTimeZone($timezone);
+    }
+
+    public function exceptions(): array
+    {
+        return $this->exceptions;
+    }
+
+    //
+    //
+    //
+
+    /**
+     * @param string $day
+     * @return \Igniter\Flame\Location\WorkingPeriod
+     * @throws \Igniter\Flame\Location\Exceptions\WorkingHourException
+     */
+    public function forDay(string $day): WorkingPeriod
+    {
+        $day = WorkingDay::normalizeName($day);
+
+        return $this->periods[$day];
+    }
+
+    /**
+     * @param \DateTimeInterface $date
+     * @return \Igniter\Flame\Location\WorkingPeriod
+     */
+    public function forDate(DateTimeInterface $date): WorkingPeriod
+    {
+        $date = $this->applyTimezone($date);
+
+        return $this->exceptions[$date->format('Y-m-d')]
+            ?? ($this->exceptions[$date->format('m-d')]
+                ?? $this->forDay(WorkingDay::onDateTime($date)));
+    }
+
     public function isOpen()
     {
-        return $this->checkStatus() === WorkingHour::OPEN;
+        return $this->isOpenAt(new DateTime());
     }
 
     public function isOpening()
     {
-        return $this->checkStatus() === WorkingHour::OPENING;
+        return $this->nextOpenAt(new DateTime()) ? TRUE : FALSE;
     }
 
     public function isClosed()
     {
-        return $this->checkStatus() === WorkingHour::CLOSED;
+        return $this->isClosedAt(new DateTime());
+    }
+
+    public function isOpenOn(string $day): bool
+    {
+        return count($this->forDay($day)) > 0;
+    }
+
+    public function isClosedOn(string $day): bool
+    {
+        return !$this->isOpenOn($day);
+    }
+
+    public function isOpenAt(DateTimeInterface $dateTime): bool
+    {
+        $dateTime = $this->applyTimezone($dateTime);
+
+        return $this->forDate($dateTime)->isOpenAt(
+            WorkingTime::fromDateTime($dateTime)
+        );
+    }
+
+    public function isClosedAt(DateTimeInterface $dateTime): bool
+    {
+        return !$this->isOpenAt($dateTime);
+    }
+
+    public function nextOpenAt(DateTimeInterface $dateTime): DateTimeInterface
+    {
+        if (!$dateTime instanceof DateTimeImmutable)
+            $dateTime = clone $dateTime;
+
+        $nextOpenAt = $this->forDate($dateTime)->nextOpenAt(
+            WorkingTime::fromDateTime($dateTime)
+        );
+
+        while ($nextOpenAt === FALSE) {
+            $dateTime = $dateTime->modify('+1 day')->setTime(0, 0, 0);
+            $nextOpenAt = $this->forDate($dateTime)->nextOpenAt(
+                WorkingTime::fromDateTime($dateTime)
+            );
+        }
+
+        $dateTime = $dateTime->setTime(
+            $nextOpenAt->toDateTime()->format('G'),
+            $nextOpenAt->toDateTime()->format('i')
+        );
+
+        return $dateTime;
+    }
+
+    /**
+     * Returns the next closed time.
+     *
+     * @param \DateTimeInterface $dateTime
+     * @return \DateTimeInterface
+     */
+    public function nextCloseAt(DateTimeInterface $dateTime): DateTimeInterface
+    {
+        if (!$dateTime instanceof DateTimeImmutable)
+            $dateTime = clone $dateTime;
+
+        $nextCloseAt = $this->forDate($dateTime)->nextCloseAt(
+            WorkingTime::fromDateTime($dateTime)
+        );
+
+        while ($nextCloseAt === FALSE) {
+            $dateTime = $dateTime->modify('+1 day')->setTime(0, 0, 0);
+            $nextCloseAt = $this->forDate($dateTime)->nextCloseAt(
+                WorkingTime::fromDateTime($dateTime)
+            );
+        }
+
+        $dateTime = $dateTime->setTime(
+            $nextCloseAt->toDateTime()->format('G'),
+            $nextCloseAt->toDateTime()->format('i')
+        );
+
+        return $dateTime;
+    }
+
+    /**
+     * @param DateTime|null $dateTime
+     * @return WorkingPeriod
+     */
+    public function getPeriod($dateTime = null)
+    {
+        return $this->forDate($this->parseDate($dateTime));
+    }
+
+    public function getPeriods()
+    {
+        return $this->periods;
     }
 
     public function getOpenTime($format = null)
     {
-        $time = $this->getTime('start');
+        $dateTime = new DateTime();
+        $time = $this->forDate($dateTime)->openTimeAt(
+            WorkingTime::fromDateTime($dateTime)
+        );
 
         return ($time AND $format) ? $time->format($format) : $time;
     }
 
     public function getCloseTime($format = null)
     {
-        $time = $this->getTime('end');
+        $dateTime = new DateTime();
+        $time = $this->forDate($dateTime)->closeTimeAt(
+            WorkingTime::fromDateTime($dateTime)
+        );
 
         return ($time AND $format) ? $time->format($format) : $time;
     }
 
     /**
-     * @param Carbon|mixed Date or timestamp
+     * @param DateTime|mixed Date or timestamp
      *
      * @return string
      */
-    public function checkStatus($datetime = null)
+    public function checkStatus($dateTime = null)
     {
-        return $this->getPeriod($datetime)->status();
+        $dateTime = $this->parseDate($dateTime);
+
+        if ($this->isOpenAt($dateTime))
+            return WorkingPeriod::OPEN;
+
+        if ($this->nextOpenAt($dateTime))
+            return WorkingPeriod::OPENING;
+
+        if ($this->isClosedAt($dateTime))
+            return WorkingPeriod::CLOSED;
+
+        return WorkingPeriod::CLOSED;
     }
 
     /**
-     * @param Carbon|mixed $datetime
-     * @return WorkingPeriod
-     */
-    public function getPeriod($datetime = null)
-    {
-        $datetime = $this->parseDate($datetime);
-
-        $periods = $this->getPeriods($datetime);
-
-        $period = $periods->first(function (WorkingPeriod $period) use ($datetime) {
-            return $period->check($datetime) != WorkingHour::CLOSED;
-        });
-
-        return $period ?? WorkingPeriod::create($datetime);
-    }
-
-    /**
+     * @param int $interval
+     * @param \DateTime|null $dateTime
      * @return Collection
+     * @throws \Exception
      */
-    public function getTimeslot()
+    public function getTimeslot(int $interval = 15, DateTime $dateTime = null)
     {
-        $timeslot = $this->getPeriods()->mapWithKeys(function (WorkingPeriod $period, $date) {
-            $now = $this->now->copy()->addMinutes($period->interval());
-            if ($period->check($now) == WorkingHour::CLOSED)
-                return [];
+        $dateTime = Carbon::instance($this->parseDate($dateTime));
+        $checkDateTime = $dateTime->copy()->addMinutes($interval);
+        $dateInterval = new DateInterval('PT'.($interval ?: 15).'M');
 
-            $timeslot = $period->timeslot()->filter(function ($slot) use ($now) {
-                return $now->lte($slot);
-            })->values();
+        $start = $dateTime->copy()->startOfDay()->subDay();
+        $end = $dateTime->copy()->startOfDay()->addDay($this->days);
 
-            return [$date => $timeslot];
-        });
-
-        return $timeslot->collapse();
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getHours()
-    {
-        return $this->hours;
-    }
-
-    /**
-     * @param $name
-     * @param null $datetime
-     * @return Carbon
-     */
-    protected function getTime($name, $datetime = null)
-    {
-        $period = $this->getPeriod($datetime);
-        if ($period AND in_array($name, ['start', 'end']))
-            return $period->$name();
-
-        throw new InvalidArgumentException(sprintf('The $name must be a valid method on %s.', get_class($period)));
-    }
-
-    protected function getPeriods(Carbon $datetime = null)
-    {
-        $datetime = $this->parseDate($datetime);
-        $datetimeStr = $datetime->toDateString();
-
-        if (isset($this->periods[$datetimeStr]))
-            return $this->periods[$datetimeStr];
-
-        $periods = $this->getRangeOfDays($datetime)->map(function ($day, $date) {
-            if (!$hourModel = $this->getHours()->get($day))
-                return FALSE;
-
-            $start = $hourModel->opening_time;
-            $end = $hourModel->closing_time;
-            $interval = $this->interval;
-            $period = WorkingPeriod::create($date, $start, $end, $interval);
-            $period->setDisabled(!$hourModel->isEnabled());
-
-            return $period;
-        })->filter();
-
-        $this->periods[$datetimeStr] = $periods;
-
-        return $periods;
-    }
-
-    /**
-     * @param \Carbon\Carbon $startDate
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    protected function getRangeOfDays(Carbon $startDate)
-    {
-        $startDate = $startDate->copy()->startOfDay();
-        $start = $startDate->copy()->subDay();
-        $end = $startDate->copy()->addDay($this->days);
-
-        $dates = [];
+        $result = [];
         for ($date = $start; $date->lte($end); $date->addDay()) {
+            $indexValue = $date->toDateString();
+            $timeslot = $this->filterTimeslot(
+                $this->forDate($date)->timeslot($dateInterval),
+                $indexValue, $checkDateTime
+            );
+
+            if ($timeslot->isEmpty())
+                continue;
+
             // Use date string as array key to allow range to span over a week.
-            $dates[$date->toDateTimeString()] = $date->format('N') - 1;
+            $result[$indexValue] = $timeslot;
         }
 
-        return collect($dates);
+        return collect($result)->sort();
     }
 
-    protected function parseDate($start)
+    protected function now()
     {
-        if (!$start) {
-            return $this->now ?? Carbon::now();
+        return $this->now ?? $this->now = new DateTime();
+    }
+
+    protected function setPeriods(array $periods)
+    {
+        foreach ($periods as $day => $period) {
+            $this->periods[$day] = WorkingPeriod::create($period);
         }
-        if ($start instanceof DateTime) {
-            return Carbon::instance($start);
+    }
+
+    protected function setExceptions(array $exceptions)
+    {
+        foreach ($exceptions as $day => $exception) {
+            $this->exceptions[$day] = WorkingPeriod::create($exception);
         }
-        if (is_string($start)) {
-            return Carbon::parse($start);
+    }
+
+    protected function parseDate($start = null)
+    {
+        if (!$start)
+            return $this->now();
+
+        if (is_string($start))
+            return new DateTime($start);
+
+        if ($start instanceof DateTime)
+            return $start;
+
+        throw new InvalidArgumentException('The datetime must be an instance of DateTime.');
+    }
+
+    protected function parsePeriods($periods)
+    {
+        $parsedPeriods = [];
+        foreach ($periods as $day => $period) {
+            if ($period instanceof Contracts\WorkingHourInterface) {
+                $day = WorkingDay::normalizeName($period->getDay());
+                $parsedPeriods[$day][] = $period->isEnabled() ? [
+                    $period->getOpen(),
+                    $period->getClose(),
+                ] : [];
+            }
+            else if (is_array($period)) {
+                $day = WorkingDay::normalizeName($day);
+                $parsedPeriods[$day] = array_merge(
+                    $parsedPeriods[$day] ?? [], $period
+                );
+            }
         }
 
-        throw new InvalidArgumentException('The datetime must be an instance of DateTime or a valid datetime string.');
+        return $parsedPeriods;
+    }
+
+    protected function applyTimezone(DateTimeInterface $date)
+    {
+        if ($this->timezone AND method_exists($date, 'setTimezone'))
+            $date = $date->setTimezone($this->timezone);
+
+        return $date;
+    }
+
+    protected function filterTimeslot(Collection $timeslot, string $date, DateTime $checkDateTime)
+    {
+        return $timeslot->map(function (WorkingTime $slot) use ($date) {
+            return new DateTime($date.' '.$slot->format());
+        })->filter(function (DateTime $dateTime) use ($checkDateTime) {
+            return Carbon::instance($checkDateTime)->lte($dateTime);
+        })->values();
     }
 }

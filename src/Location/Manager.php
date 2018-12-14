@@ -3,26 +3,29 @@
 namespace Igniter\Flame\Location;
 
 use Closure;
-use Igniter\Flame\Location\Models\Location;
-use Illuminate\Events\Dispatcher;
-use Illuminate\Session\Store;
+use Igniter\Flame\Geolite\Contracts\CoordinatesInterface;
+use Igniter\Flame\Location\Contracts;
+use Igniter\Flame\Traits\EventEmitter;
+use Session;
 
 /**
  * Location Manager Class
  * @package        Igniter\Flame\Location\Manager.php
  */
-class Manager
+abstract class Manager
 {
+    use EventEmitter;
+
     protected $sessionKey = 'local_info';
 
     /**
-     * @var \Igniter\Flame\Location\Models\Location
+     * @var \Igniter\Flame\Location\Models\AbstractLocation
      */
     protected $model;
 
     protected $defaultLocation;
 
-    protected $locationModel = 'Igniter\Flame\Location\Models\Location';
+    protected $locationModel;
 
     protected $loaded;
 
@@ -34,12 +37,6 @@ class Manager
      * @var \Closure
      */
     protected static $locationSlugResolver;
-
-    public function __construct(Store $session, Dispatcher $events)
-    {
-        $this->session = $session;
-        $this->events = $events;
-    }
 
     /**
      * Helper to get the current location instance.
@@ -118,15 +115,15 @@ class Manager
     }
 
     /**
-     * @param \Igniter\Flame\Location\Models\Location $locationModel
+     * @param \Igniter\Flame\Location\Contracts\LocationInterface $locationModel
      */
-    public function setCurrent(Location $locationModel)
+    public function setCurrent(Contracts\LocationInterface $locationModel)
     {
         $this->setModel($locationModel);
 
         $this->putSession('id', $locationModel->getKey());
 
-        $this->fireEvent('current.updated', $locationModel);
+        $this->fireSystemEvent('location.current.updated', [$locationModel]);
     }
 
     public function getModel()
@@ -138,7 +135,7 @@ class Manager
         return $this->model;
     }
 
-    public function setModel(Location $model)
+    public function setModel(Contracts\LocationInterface $model)
     {
         $this->model = $model;
 
@@ -159,7 +156,7 @@ class Manager
 
     /**
      * Creates a new instance of the location model
-     * @return \Igniter\Flame\Location\Models\Location
+     * @return \Igniter\Flame\Location\Models\AbstractLocation
      */
     public function createLocationModel()
     {
@@ -197,7 +194,7 @@ class Manager
      *
      * @param  mixed $identifier
      *
-     * @return \Igniter\Flame\Location\Models\Location|null
+     * @return \Igniter\Flame\Location\Models\AbstractLocation|null
      */
     public function getById($identifier)
     {
@@ -212,7 +209,7 @@ class Manager
      *
      * @param  string $slug
      *
-     * @return \Igniter\Flame\Location\Models\Location|null
+     * @return \Igniter\Flame\Location\Contracts\LocationInterface|null
      */
     public function getBySlug($slug)
     {
@@ -223,25 +220,25 @@ class Manager
         return $location ?: null;
     }
 
-    public function searchByCoordinates(array $coordinates)
+    public function searchByCoordinates(CoordinatesInterface $coordinates, $limit = 20)
     {
         $query = $this->createLocationModelQuery();
         $query->select('*')->selectDistance(
-            array_get($coordinates, 'latitude', 0),
-            array_get($coordinates, 'longitude', 0)
+            $coordinates->getLatitude(),
+            $coordinates->getLongitude()
         );
 
-        return $query->isEnabled()->get();
+        return $query->isEnabled()->limit($limit)->get();
     }
 
-    public function workingSchedule($type, $days = null, $interval = null)
+    public function workingSchedule($type, $days = null)
     {
         $cacheKey = sprintf('%s.%s', $this->getModel()->getKey(), $type);
 
         if (isset(self::$schedulesCache[$cacheKey]))
             return self::$schedulesCache[$cacheKey];
 
-        $schedule = $this->getModel()->newWorkingSchedule($type, $days, $interval);
+        $schedule = $this->getModel()->newWorkingSchedule($type, $days);
 
         self::$schedulesCache[$cacheKey] = $schedule;
 
@@ -262,7 +259,7 @@ class Manager
      */
     public function getSession($key = null, $default = null)
     {
-        $sessionData = $this->session->get($this->sessionKey);
+        $sessionData = Session::get($this->sessionKey);
 
         return is_null($key) ? $sessionData : array_get($sessionData, $key, $default);
     }
@@ -272,26 +269,20 @@ class Manager
         $sessionData = $this->getSession();
         $sessionData[$key] = $value;
 
-        $this->session->put($this->sessionKey, $sessionData);
+        Session::put($this->sessionKey, $sessionData);
     }
 
-    public function forgetSession($key)
+    public function forgetSession($key = null)
     {
+        if (is_null($key)) {
+            Session::forget($this->sessionKey);
+
+            return;
+        }
+
         $sessionData = $this->getSession();
         unset($sessionData[$key]);
 
-        $this->session->put($this->sessionKey, $sessionData);
-    }
-
-    //
-    // Event
-    //
-
-    protected function fireEvent($name, $payload = null, $halt = FALSE)
-    {
-        if (is_null($payload))
-            return $this->events->fire('cart.'.$name, [$this]);
-
-        $this->events->fire("location.{$name}", [$payload, $this], $halt);
+        Session::put($this->sessionKey, $sessionData);
     }
 }

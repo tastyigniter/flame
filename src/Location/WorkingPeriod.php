@@ -2,13 +2,16 @@
 
 namespace Igniter\Flame\Location;
 
-use Carbon\Carbon;
+use ArrayAccess;
+use ArrayIterator;
+use Countable;
 use DateInterval;
 use DatePeriod;
 use DateTime;
-use InvalidArgumentException;
+use Igniter\Flame\Location\Exceptions\WorkingHourException;
+use IteratorAggregate;
 
-class WorkingPeriod
+class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
 {
     const CLOSED = 'closed';
 
@@ -16,175 +19,249 @@ class WorkingPeriod
 
     const OPENING = 'opening';
 
-    protected $date;
+    /**
+     * @var \Igniter\Flame\Location\WorkingRange[]
+     */
+    protected $ranges = [];
 
-    protected $start;
-
-    protected $end;
-
-    protected $interval;
-
-    protected $status;
-
-    protected $disabled = FALSE;
-
-    public function __construct($date, $start = null, $end = null, int $interval = 15)
+    public static function create($times)
     {
-        $this->date = $this->parseDate($date)->startOfDay();
-        $this->start = $this->parseStart($start);
-        $this->end = $this->parseEnd($end);
-        $this->interval = $interval < 1 ? 1 : $interval;
-        $this->status = self::CLOSED;
+        $period = new static();
+
+        $timeRanges = array_map(function ($times) {
+            return WorkingRange::create($times);
+        }, $times);
+
+        $period->checkWorkingRangesOverlaps($timeRanges);
+
+        $period->ranges = $timeRanges;
+
+        return $period;
     }
 
-    public static function create($date, $start = null, $end = null, $interval = 15)
+    public function isOpenAt(WorkingTime $time)
     {
-        return new static($date, $start, $end, $interval);
+        return !is_null($this->findTimeInRange($time));
+    }
+
+    public function openTimeAt(WorkingTime $time)
+    {
+        if ($range = $this->findTimeInRange($time))
+            return $range->start();
+
+        return optional(current($this->ranges))->start();
+    }
+
+    public function closeTimeAt(WorkingTime $time)
+    {
+        if ($range = $this->findTimeInRange($time))
+            return $range->end();
+
+        return optional(end($this->ranges))->end();
     }
 
     /**
-     * Get the start date & time.
-     *
-     * @return \Carbon\Carbon
+     * @param \Igniter\Flame\Location\WorkingTime $time
+     * @return bool|\Igniter\Flame\Location\WorkingTime
      */
-    public function date()
+    public function nextOpenAt(WorkingTime $time)
     {
-        return $this->date;
+        foreach ($this->ranges as $range) {
+            if ($range->containsTime($time)
+                AND (next($range) !== $range)
+                AND $nextOpenTime = next($range)
+            ) {
+                reset($range);
+
+                return $nextOpenTime;
+            }
+
+            if ($nextOpenTime = $this->findNextTimeInFreeTime('start', $time, $range)) {
+                reset($range);
+
+                return $nextOpenTime;
+            }
+        }
+
+        return FALSE;
     }
 
     /**
-     * Get the start date & time.
-     *
-     * @return \Carbon\Carbon
+     * @param \Igniter\Flame\Location\WorkingTime $time
+     * @return bool|\Igniter\Flame\Location\WorkingTime
      */
-    public function start()
+    public function nextCloseAt(WorkingTime $time)
     {
-        return $this->start;
+        foreach ($this->ranges as $range) {
+            if ($range->containsTime($time) AND $nextCloseTime = next($range)) {
+                reset($range);
+
+                return $nextCloseTime;
+            }
+
+            if ($nextCloseTime = $this->findNextTimeInFreeTime('end', $time, $range)) {
+                reset($range);
+
+                return $nextCloseTime;
+            }
+        }
+
+        return FALSE;
     }
 
-    /**
-     * Get the end date & time.
-     *
-     * @return \Carbon\Carbon
-     */
-    public function end()
+    public function opensAllDay()
     {
-        return $this->end;
-    }
-
-    public function interval()
-    {
-        return $this->interval;
-    }
-
-    public function status()
-    {
-        return $this->status;
-    }
-
-    public function disabled()
-    {
-        return $this->disabled;
-    }
-
-    public function setDisabled($disabled)
-    {
-        $this->disabled = $disabled;
-    }
-
-    public function openAllDay()
-    {
-        if (!$this->start OR !$this->end)
-            return null;
-
-        $diffInHours = $this->start()->diffInHours($this->end());
+        $diffInHours = 0;
+        foreach ($this->ranges as $range) {
+            $interval = $range->start()->diff($range->end());
+            $diffInHours += (int)$interval->format('%H');
+        }
 
         return $diffInHours >= 23 OR $diffInHours == 0;
     }
 
-    public function openLate()
+    public function closesLate()
     {
-        return $this->start()->gt($this->end());
+        foreach ($this->ranges as $range) {
+            if ($range->endsNextDay())
+                return TRUE;
+        }
+
+        return FALSE;
     }
 
-    public function opening(Carbon $datetime)
+    public function timeslot(DateInterval $interval)
     {
-        return $this->start()->gte($datetime) AND $this->end()->gte($datetime);
+        $timeslot = [];
+        foreach ($this->ranges as $range) {
+            $start = new DateTime($range->start());
+            $end = new DateTime($range->end());
+            $datePeriod = new DatePeriod($start, $interval, $end);
+            foreach ($datePeriod as $dateTime) {
+                $timeslot[] = WorkingTime::fromDateTime($dateTime);
+            }
+        }
+
+        return collect($timeslot);
     }
 
-    public function timeslot()
+    protected function findTimeInRange(WorkingTime $time)
     {
-        $interval = new DateInterval('PT'.$this->interval.'M');
-        $dateTimeslot = new DatePeriod($this->start(), $interval, $this->end());
+        foreach ($this->ranges as $range) {
+            if ($range->containsTime($time))
+                return $range;
+        }
+    }
 
-        return collect($dateTimeslot);
+    protected function findNextTimeInFreeTime($type, WorkingTime $time, WorkingRange $timeRange, WorkingRange &$prevTimeRange = null)
+    {
+        $timeOffRange = $prevTimeRange
+            ? WorkingRange::create([$prevTimeRange->end(), $timeRange->start()])
+            : WorkingRange::create(['00:00', $timeRange->start()]);
+
+        if (
+            $timeOffRange->containsTime($time)
+            OR $timeOffRange->start()->isSame($time)
+        ) return $timeRange->{$type}();
+
+        $prevTimeRange = $timeRange;
     }
 
     /**
-     * Return true if the Carbon instance passed as argument is between start
-     * and end date & time.
-     *
-     * @param  Carbon $datetime
-     * @return boolean
+     * @param \Igniter\Flame\Location\WorkingRange[] $ranges
+     * @throws \Igniter\Flame\Location\Exceptions\WorkingHourException
      */
-    public function has(Carbon $datetime)
+    protected function checkWorkingRangesOverlaps($ranges)
     {
-        return $datetime->between($this->start(), $this->end());
+        foreach ($ranges as $index => $range) {
+            $nextRange = $ranges[$index + 1] ?? null;
+            if ($nextRange AND $range->overlaps($nextRange)) {
+                throw new WorkingHourException(sprintf(
+                    'Time ranges %s and %s overlap.',
+                    $range, $nextRange
+                ));
+            }
+        }
     }
 
-    public function check(Carbon $datetime)
+    public function isEmpty(): bool
     {
-        return $this->status = $this->processCheck($datetime);
+        return empty($this->ranges);
     }
 
-    protected function parseDate($date)
+    /**
+     * Retrieve an external iterator
+     */
+    public function getIterator()
     {
-        if (!$date)
-            return Carbon::now();
-
-        if ($date instanceof DateTime)
-            return Carbon::instance($date);
-
-        if (is_string($date))
-            return Carbon::parse($date);
-
-        throw new InvalidArgumentException('The datetime must be an instance of DateTime or a valid datetime string.');
+        return new ArrayIterator($this->ranges);
     }
 
-    protected function parseStart($time)
+    /**
+     * Count elements of an object
+     * @link https://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     * @since 5.1.0
+     */
+    public function count()
     {
-        if (is_null($time) OR !strlen($time))
-            return null;
-
-        return $this->date->copy()->setTimeFromTimeString($time);
+        return count($this->ranges);
     }
 
-    protected function parseEnd($time)
+    /**
+     * Whether a offset exists
+     *
+     * @param mixed $offset
+     * @return boolean true on success or false on failure.
+     */
+    public function offsetExists($offset)
     {
-        if (is_null($time) OR !strlen($time))
-            return null;
-
-        $end = $this->date->copy()->setTimeFromTimeString($time);
-        if ($this->openLate())
-            $end->addDay();
-
-        return $end;
+        return isset($this->ranges[$offset]);
     }
 
-    protected function processCheck(Carbon $datetime)
+    /**
+     * Offset to retrieve
+     *
+     * @param mixed $offset
+     * @return mixed Can return all value types.
+     */
+    public function offsetGet($offset)
     {
-        if ($this->disabled())
-            return self::CLOSED;
+        return $this->ranges[$offset];
+    }
 
-        if ($this->date()->isToday() AND $this->openAllDay())
-            return self::OPEN;
+    /**
+     * Offset to set
+     *
+     * @param mixed $offset
+     * @param mixed $value
+     * @return void
+     */
+    public function offsetSet($offset, $value)
+    {
+        throw new WorkingHourException('Can not set ranges');
+    }
 
-        if ($this->has($datetime))
-            return self::OPEN;
+    /**
+     * Offset to unset
+     *
+     * @param mixed $offset
+     * @return void
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->ranges[$offset]);
+    }
 
-        if ($this->opening($datetime))
-            return self::OPENING;
+    public function __toString()
+    {
+        $values = array_map(function ($range) {
+            return (string)$range;
+        }, $this->ranges);
 
-        return self::CLOSED;
+        return implode(',', $values);
     }
 }
