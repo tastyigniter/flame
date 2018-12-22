@@ -86,7 +86,7 @@ class Application extends BaseApplication
      */
     public function langPath()
     {
-        return $this->path('system/language');
+        return $this->path('language');
     }
 
     /**
