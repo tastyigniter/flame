@@ -26,7 +26,7 @@ return [
                     'geocode' => 'https://maps.googleapis.com/maps/api/geocode/json?address=%s',
                     'reverse' => 'https://maps.googleapis.com/maps/api/geocode/json?latlng=%F,%F',
                 ],
-                'locale' => 'en-US',
+                'locale' => 'en-GB',
                 'region' => 'GB',
                 'apiKey' => null
             ],
@@ -35,7 +35,7 @@ return [
                     'geocode' => 'https://nominatim.openstreetmap.org/search?q=%s&format=json&addressdetails=1&limit=%d',
                     'reverse' => 'https://nominatim.openstreetmap.org/reverse?format=json&lat=%F&lon=%F&addressdetails=1&zoom=%d',
                 ],
-                'locale' => 'en-US',
+                'locale' => 'en-GB',
             ],
         ]
     ],
