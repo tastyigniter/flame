@@ -9,6 +9,7 @@ use Igniter\Flame\Geolite\Exception\GeoliteException;
 use Igniter\Flame\Geolite\Model;
 use Illuminate\Support\Collection;
 use Psr\Http\Message\ResponseInterface;
+use Throwable;
 
 class GoogleProvider extends AbstractProvider
 {
@@ -31,15 +32,27 @@ class GoogleProvider extends AbstractProvider
     public function geocodeQuery(GeoQueryInterface $query): Collection
     {
         $endpoint = array_get($this->config, 'endpoints.geocode');
-        $url = sprintf($endpoint, rawurlencode($query->getText()));
-        $url = $this->prependGeocodeQuery($query, $url);
+        $url = $this->prependGeocodeQuery($query, sprintf($endpoint,
+            rawurlencode($query->getText())
+        ));
 
-        return $this->cacheCallback($url, function () use ($query, $url) {
-            return $this->hydrateResponse(
-                $this->requestUrl($url, $query),
-                $query->getLimit()
-            );
-        });
+        $result = [];
+        try {
+            $result = $this->cacheCallback($url, function () use ($query, $url) {
+                return $this->hydrateResponse(
+                    $this->requestUrl($url, $query),
+                    $query->getLimit()
+                );
+            });
+        }
+        catch (Throwable $ex) {
+            $this->log(sprintf(
+                'Provider "%s" could not geocode address, "%s".',
+                $this->getName(), $ex->getMessage()
+            ));
+        }
+
+        return new Collection($result);
     }
 
     public function reverseQuery(GeoQueryInterface $query): Collection
@@ -47,19 +60,29 @@ class GoogleProvider extends AbstractProvider
         $coordinates = $query->getCoordinates();
 
         $endpoint = array_get($this->config, 'endpoints.reverse');
-        $url = sprintf($endpoint,
+        $url = $this->prependReverseQuery($query, sprintf($endpoint,
             $coordinates->getLatitude(),
             $coordinates->getLongitude()
-        );
+        ));
 
-        $url = $this->prependReverseQuery($query, $url);
+        $result = [];
+        try {
+            $result = $this->cacheCallback($url, function () use ($query, $url) {
+                return $this->hydrateResponse(
+                    $this->requestUrl($url, $query),
+                    $query->getLimit()
+                );
+            });
+        }
+        catch (Throwable $e) {
+            $coordinates = $query->getCoordinates();
+            $this->log(sprintf(
+                'Provider "%s" could not reverse coordinates: "%f %f".',
+                $this->getName(), $coordinates->getLatitude(), $coordinates->getLongitude()
+            ));
+        }
 
-        return $this->cacheCallback($url, function () use ($query, $url) {
-            return $this->hydrateResponse(
-                $this->requestUrl($url, $query),
-                $query->getLimit()
-            );
-        });
+        return new Collection($result);
     }
 
     protected function requestUrl($url, GeoQueryInterface $query)
@@ -105,7 +128,7 @@ class GoogleProvider extends AbstractProvider
             }
         }
 
-        return new Collection($result);
+        return $result;
     }
 
     //

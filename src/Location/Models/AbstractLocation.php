@@ -169,6 +169,22 @@ class AbstractLocation extends Model implements LocationInterface
         return $distance->haversine();
     }
 
+    /**
+     * @return \Igniter\Flame\Geolite\Model\Coordinates
+     */
+    public function getCoordinates()
+    {
+        return app('geolite')->coordinates($this->location_lat, $this->location_lng);
+    }
+
+    /**
+     * @return \Igniter\Flame\Geolite\Contracts\DistanceInterface
+     */
+    public function makeDistance()
+    {
+        return app('geolite')->distance();
+    }
+
     //
     // Scopes
     //
@@ -189,21 +205,5 @@ class AbstractLocation extends Model implements LocationInterface
               ->orderBy('distance', 'asc');
 
         return $query;
-    }
-
-    /**
-     * @return \Igniter\Flame\Geolite\Model\Coordinates
-     */
-    protected function getCoordinates()
-    {
-        return app('geolite')->coordinates($this->location_lat, $this->location_lng);
-    }
-
-    /**
-     * @return \Igniter\Flame\Geolite\Contracts\DistanceInterface
-     */
-    protected function makeDistance()
-    {
-        return app('geolite')->distance();
     }
 }

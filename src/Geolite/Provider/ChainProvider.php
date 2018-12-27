@@ -5,7 +5,6 @@ namespace Igniter\Flame\Geolite\Provider;
 use Igniter\Flame\Geolite\Contracts;
 use Igniter\Flame\Geolite\Contracts\GeoQueryInterface;
 use Illuminate\Support\Collection;
-use Throwable;
 
 class ChainProvider extends Contracts\AbstractProvider
 {
@@ -38,18 +37,9 @@ class ChainProvider extends Contracts\AbstractProvider
     {
         foreach ($this->providers as $name => $config) {
             $provider = $this->geocoder->makeProvider($name);
-
-            try {
-                $result = $provider->geocodeQuery($query);
-                if ($result->isNotEmpty())
-                    return $result;
-            }
-            catch (Throwable $ex) {
-                $this->log(sprintf(
-                    'Provider "%s" could not geocode address, "%s".',
-                    $provider->getName(), $ex->getMessage()
-                ));
-            }
+            $result = $provider->geocodeQuery($query);
+            if ($result->isNotEmpty())
+                return $result;
         }
 
         return new Collection;
@@ -59,21 +49,9 @@ class ChainProvider extends Contracts\AbstractProvider
     {
         foreach ($this->providers as $name => $config) {
             $provider = $this->geocoder->makeProvider($name);
-
-            try {
-                $result = $provider->reverseQuery($query);
-                if ($result->isNotEmpty())
-                    return $result;
-            }
-            catch (Throwable $e) {
-                $coordinates = $query->getCoordinates();
-                $this->log(sprintf(
-                    'Provider "%s" could not reverse coordinates: "%f %f".',
-                    $provider->getName(),
-                    $coordinates->getLatitude(),
-                    $coordinates->getLongitude()
-                ));
-            }
+            $result = $provider->reverseQuery($query);
+            if ($result->isNotEmpty())
+                return $result;
         }
 
         return new Collection;

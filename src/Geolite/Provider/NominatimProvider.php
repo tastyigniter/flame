@@ -9,6 +9,7 @@ use Igniter\Flame\Geolite\Exception\GeoliteException;
 use Igniter\Flame\Geolite\Model;
 use Illuminate\Support\Collection;
 use Psr\Http\Message\ResponseInterface;
+use Throwable;
 
 class NominatimProvider extends AbstractProvider
 {
@@ -51,11 +52,22 @@ class NominatimProvider extends AbstractProvider
             $query->getLimit()
         );
 
-        return $this->cacheCallback($url, function () use ($query, $url) {
-            return $this->hydrateResponse(
-                $this->requestUrl($url, $query)
-            );
-        });
+        $result = [];
+        try {
+            $result = $this->cacheCallback($url, function () use ($query, $url) {
+                return $this->hydrateResponse(
+                    $this->requestUrl($url, $query)
+                );
+            });
+        }
+        catch (Throwable $ex) {
+            $this->log(sprintf(
+                'Provider "%s" could not geocode address, "%s".',
+                $this->getName(), $ex->getMessage()
+            ));
+        }
+
+        return new Collection($result);
     }
 
     /**
@@ -75,11 +87,23 @@ class NominatimProvider extends AbstractProvider
             $query->getData('zoom', 18)
         );
 
-        return $this->cacheCallback($url, function () use ($query, $url) {
-            return $this->hydrateResponse(
-                $this->requestUrl($url, $query)
-            );
-        });
+        $result = [];
+        try {
+            $result = $this->cacheCallback($url, function () use ($query, $url) {
+                return $this->hydrateResponse(
+                    $this->requestUrl($url, $query)
+                );
+            });
+        }
+        catch (Throwable $e) {
+            $coordinates = $query->getCoordinates();
+            $this->log(sprintf(
+                'Provider "%s" could not reverse coordinates: "%f %f".',
+                $this->getName(), $coordinates->getLatitude(), $coordinates->getLongitude()
+            ));
+        }
+
+        return new Collection($result);
     }
 
     protected function requestUrl($url, GeoQueryInterface $query)
@@ -122,7 +146,7 @@ class NominatimProvider extends AbstractProvider
             $result[] = $address;
         }
 
-        return new Collection($result);
+        return $result;
     }
 
     //

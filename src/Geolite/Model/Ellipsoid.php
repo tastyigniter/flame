@@ -264,7 +264,7 @@ class Ellipsoid
      */
     public static function checkCoordinatesEllipsoid(CoordinatesInterface $a, CoordinatesInterface $b)
     {
-        if ($a->getEllipsoid() !== $b->getEllipsoid()) {
+        if ($a->getEllipsoid() != $b->getEllipsoid()) {
             throw new GeoliteException('The ellipsoids for both coordinates must match !');
         }
     }

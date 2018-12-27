@@ -65,4 +65,9 @@ class Geolite
     {
         return new Coordinates($latitude, $longitude);
     }
+
+    public function addressMatch($components)
+    {
+        return new AddressMatch($components);
+    }
 }

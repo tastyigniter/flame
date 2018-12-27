@@ -1,8 +1,11 @@
 <?php namespace Igniter\Flame\Location\Models;
 
+use Geocoder;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Geolite\Contracts\CoordinatesInterface;
+use Igniter\Flame\Geolite\Contracts\LocationInterface;
 use Igniter\Flame\Location\Contracts\AreaInterface;
+use InvalidArgumentException;
 
 abstract class AbstractArea extends Model implements AreaInterface
 {
@@ -30,6 +33,7 @@ abstract class AbstractArea extends Model implements AreaInterface
     public $casts = [
         'boundaries' => 'serialize',
         'conditions' => 'serialize',
+        'is_default' => 'boolean',
     ];
 
     protected $appends = ['vertices', 'circle'];
@@ -102,6 +106,16 @@ abstract class AbstractArea extends Model implements AreaInterface
         return $geolite->circle($coordinate, $this->circle->radius);
     }
 
+    public function isAddressBoundary()
+    {
+        return $this->type === 'address';
+    }
+
+    public function isPolygonBoundary()
+    {
+        return $this->type === 'polygon';
+    }
+
     public function getLocationId()
     {
         return $this->attributes['location_id'];
@@ -132,9 +146,24 @@ abstract class AbstractArea extends Model implements AreaInterface
         return $conditions;
     }
 
-    public function checkBoundary(CoordinatesInterface $coordinate)
+    public function checkBoundary($coordinate)
     {
-        return ($this->type == 'polygon')
+        if (!$coordinate instanceof CoordinatesInterface) {
+            throw new InvalidArgumentException(sprintf(
+                'Invalid class "%s" given, expected: %s',
+                get_class($coordinate), CoordinatesInterface::class
+            ));
+        }
+
+        if ($this->isAddressBoundary()) {
+            $position = Geocoder::reverse(
+                $coordinate->getLatitude(), $coordinate->getLongitude()
+            )->first();
+
+            return $this->matchAddressComponents($position);
+        }
+
+        return $this->isPolygonBoundary()
             ? $this->pointInVertices($coordinate)
             : $this->pointInCircle($coordinate);
     }
@@ -160,9 +189,20 @@ abstract class AbstractArea extends Model implements AreaInterface
         return $circle->pointInRadius($coordinate);
     }
 
+    public function matchAddressComponents(LocationInterface $position)
+    {
+        $components = array_get($this->boundaries, 'components');
+        if (!is_array($components))
+            $components = [];
+
+        $groupedComponents = collect($components)->groupBy('type')->all();
+
+        return app('geolite')->addressMatch($groupedComponents)->matches($position);
+    }
+
     protected function getConditionValue($type, $cartTotal)
     {
-        if (!$condition = $this->filterConditionRules($type, $cartTotal))
+        if (!$condition = $this->filterConditionRules($cartTotal, $type))
             return null;
 
         $condition = (object)$condition;
@@ -178,7 +218,7 @@ abstract class AbstractArea extends Model implements AreaInterface
         return $condition->{$type};
     }
 
-    protected function filterConditionRules($value = 'total', $cartTotal)
+    protected function filterConditionRules($cartTotal, $value = 'total')
     {
         $collection = collect($this->conditions);
 
