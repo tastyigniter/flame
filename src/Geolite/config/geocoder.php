@@ -2,6 +2,15 @@
 
 return [
 
+    /*
+    |---------------------------------------------------------------------------
+    | Default Provider name
+    |---------------------------------------------------------------------------
+    |
+    | The `chain` provider is special, in that it will run all configured
+    | providers in the sequence listed, should the previous provider fail.
+    |
+    */
     'default' => 'chain',
 
     /*
@@ -10,9 +19,7 @@ return [
     |---------------------------------------------------------------------------
     |
     | Here you may specify any number of providers that should be used to
-    | perform geocoding operations. The `chain` provider is special,
-    | in that it will run all available providers in the sequence listed,
-    | should the previous provider fail.
+    | perform geocoding operations.
     |
     | You can explicitly call subsequently listed providers by
     | alias: `app('geocoder')->using('google')`.
@@ -20,24 +27,23 @@ return [
     */
 
     'providers' => [
-        'chain' => [
-            'google' => [
-                'endpoints' => [
-                    'geocode' => 'https://maps.googleapis.com/maps/api/geocode/json?address=%s',
-                    'reverse' => 'https://maps.googleapis.com/maps/api/geocode/json?latlng=%F,%F',
-                ],
-                'locale' => 'en-GB',
-                'region' => 'GB',
-                'apiKey' => null
+        'google' => [
+            'endpoints' => [
+                'geocode' => 'https://maps.googleapis.com/maps/api/geocode/json?address=%s',
+                'reverse' => 'https://maps.googleapis.com/maps/api/geocode/json?latlng=%F,%F',
             ],
-            'nominatim' => [
-                'endpoints' => [
-                    'geocode' => 'https://nominatim.openstreetmap.org/search?q=%s&format=json&addressdetails=1&limit=%d',
-                    'reverse' => 'https://nominatim.openstreetmap.org/reverse?format=json&lat=%F&lon=%F&addressdetails=1&zoom=%d',
-                ],
-                'locale' => 'en-GB',
+            'locale' => 'en-GB',
+            'region' => 'GB',
+            'apiKey' => null
+        ],
+        'nominatim' => [
+            'endpoints' => [
+                'geocode' => 'https://nominatim.openstreetmap.org/search?q=%s&format=json&addressdetails=1&limit=%d',
+                'reverse' => 'https://nominatim.openstreetmap.org/reverse?format=json&lat=%F&lon=%F&addressdetails=1&zoom=%d',
             ],
-        ]
+            'locale' => 'en-GB',
+            'region' => 'GB',
+        ],
     ],
 
     'cache' => [

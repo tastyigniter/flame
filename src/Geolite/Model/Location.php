@@ -171,7 +171,7 @@ class Location implements Contracts\LocationInterface
      */
     public function addAdminLevel(int $level, string $name, string $code = null)
     {
-        $this->adminLevels[] = new AdminLevel($level, $name, $code);
+        $this->adminLevels->put($level, new AdminLevel($level, $name, $code));
 
         return $this;
     }

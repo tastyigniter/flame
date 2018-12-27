@@ -13,5 +13,5 @@ interface GeocoderInterface
 
     public function reverse(float $latitude, float $longitude);
 
-    public function makeProvider($name, array $config = []): AbstractProvider;
+    public function makeProvider($name): AbstractProvider;
 }

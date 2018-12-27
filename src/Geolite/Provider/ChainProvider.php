@@ -21,12 +21,12 @@ class ChainProvider extends Contracts\AbstractProvider
 
     /**
      * @param $geocoder
-     * @param array $config
+     * @param array $providers
      */
-    public function __construct($geocoder, array $config)
+    public function __construct($geocoder, array $providers)
     {
         $this->geocoder = $geocoder;
-        $this->providers = $config;
+        $this->providers = $providers;
     }
 
     public function getName(): string
@@ -37,7 +37,7 @@ class ChainProvider extends Contracts\AbstractProvider
     public function geocodeQuery(GeoQueryInterface $query): Collection
     {
         foreach ($this->providers as $name => $config) {
-            $provider = $this->geocoder->makeProvider($name, $config);
+            $provider = $this->geocoder->makeProvider($name);
 
             try {
                 $result = $provider->geocodeQuery($query);
@@ -58,7 +58,7 @@ class ChainProvider extends Contracts\AbstractProvider
     public function reverseQuery(GeoQueryInterface $query): Collection
     {
         foreach ($this->providers as $name => $config) {
-            $provider = $this->geocoder->makeProvider($name, $config);
+            $provider = $this->geocoder->makeProvider($name);
 
             try {
                 $result = $provider->reverseQuery($query);

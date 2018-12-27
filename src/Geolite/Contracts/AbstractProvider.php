@@ -74,7 +74,7 @@ abstract class AbstractProvider
 
     public function getCacheKey()
     {
-        return sprintf('geocode.%s', $this->getName());
+        return sprintf('geocode.%s', str_slug($this->getName()));
     }
 
     /**

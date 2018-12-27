@@ -293,8 +293,8 @@ class Vertex implements Contracts\VertexInterface
     /**
      * Returns the determinant value between $this (vertex) and another vertex.
      *
-     * @param  Vertex $vertex [description]
-     * @return [type]         [description]
+     * @param  Vertex $vertex
+     * @return string
      */
     public function getDeterminant(Vertex $vertex)
     {

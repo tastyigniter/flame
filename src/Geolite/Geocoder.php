@@ -113,23 +113,20 @@ class Geocoder extends Manager implements Contracts\GeocoderInterface
     {
         $driver = $driver ?: $this->getDefaultDriver();
 
-        $config = $this->app['config']['geocoder.providers.'.$driver];
-
-        return $this->makeProvider($driver, $config);
+        return $this->makeProvider($driver);
     }
 
     /**
      * @param $name
-     * @param array $config
      * @return \Igniter\Flame\Geolite\Contracts\AbstractProvider
      */
-    public function makeProvider($name, array $config = []): AbstractProvider
+    public function makeProvider($name): AbstractProvider
     {
         if (isset($this->drivers[$name])) {
             return $this->drivers[$name];
         }
 
-        return $this->drivers[$name] = $this->createProvider($name, $config);
+        return $this->drivers[$name] = $this->createProvider($name);
     }
 
     /**
@@ -141,7 +138,7 @@ class Geocoder extends Manager implements Contracts\GeocoderInterface
         return $this->app['config']['geocoder.default'] ?? 'nominatim';
     }
 
-    protected function createProvider($name, array $config = [])
+    protected function createProvider($name)
     {
         if (isset($this->customCreators[$name])) {
             return $this->callCustomCreator($name);
@@ -149,24 +146,30 @@ class Geocoder extends Manager implements Contracts\GeocoderInterface
 
         $method = 'create'.studly_case($name).'Provider';
         if (method_exists($this, $method)) {
-            return $this->$method($config);
+            return $this->$method();
         }
 
         throw new InvalidArgumentException("Provider [$name] not supported.");
     }
 
-    protected function createChainProvider($config)
+    protected function createChainProvider()
     {
-        return new Provider\ChainProvider($this, $config);
+        $providers = $this->app['config']['geocoder.providers'];
+
+        return new Provider\ChainProvider($this, $providers);
     }
 
-    protected function createNominatimProvider($config)
+    protected function createNominatimProvider()
     {
+        $config = $this->app['config']['geocoder.providers.nominatim'];
+
         return new Provider\NominatimProvider(new Client, $config);
     }
 
-    protected function createGoogleProvider($config)
+    protected function createGoogleProvider()
     {
+        $config = $this->app['config']['geocoder.providers.google'];
+
         return new Provider\GoogleProvider(new Client, $config);
     }
 }

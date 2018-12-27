@@ -44,8 +44,14 @@ class GoogleProvider extends AbstractProvider
 
     public function reverseQuery(GeoQueryInterface $query): Collection
     {
+        $coordinates = $query->getCoordinates();
+
         $endpoint = array_get($this->config, 'endpoints.reverse');
-        $url = sprintf($endpoint, $query->getCoordinates()->toArray());
+        $url = sprintf($endpoint,
+            $coordinates->getLatitude(),
+            $coordinates->getLongitude()
+        );
+
         $url = $this->prependReverseQuery($query, $url);
 
         return $this->cacheCallback($url, function () use ($query, $url) {
@@ -71,7 +77,7 @@ class GoogleProvider extends AbstractProvider
             'timeout' => $query->getData('timeout', 15)
         ]);
 
-        return $this->parseResponse($url, $response);
+        return $this->parseResponse($response);
     }
 
     protected function hydrateResponse($response, int $limit)
@@ -109,42 +115,37 @@ class GoogleProvider extends AbstractProvider
     /**
      * Decode the response content and validate it to make sure it does not have any errors.
      *
-     * @param string $url
      * @param \Psr\Http\Message\ResponseInterface $response
      * @return mixed result from json_decode()
      *
      * @throws \Igniter\Flame\Geolite\Exception\GeoliteException
      */
-    protected function parseResponse(string $url, ResponseInterface $response)
+    protected function parseResponse(ResponseInterface $response)
     {
         $json = json_decode($response->getBody());
 
         // API error
         if (!$json) {
-            throw new GeoliteException(sprintf(
-                'The geocoder server returned an invalid response for query: "%s".',
-                $url
-            ));
+            throw new GeoliteException(
+                'The geocoder server returned an empty or invalid response.'
+            );
         }
 
         if ($json->status === 'REQUEST_DENIED')
             throw new GeoliteException(sprintf(
-                'API key is invalid for query: %s - Message: %s',
-                $url, $json->error_message
+                'API key is invalid. Message: %s', $json->error_message
             ));
 
         if ($json->status === 'REQUEST_DENIED') {
             throw new GeoliteException(sprintf(
-                'API access denied. Request: %s - Message: %s',
-                $url, $json->error_message
+                'API access denied. Message: %s', $json->error_message
             ));
         }
 
         // you are over your quota
         if ($json->status === 'OVER_QUERY_LIMIT') {
             throw new GeoliteException(sprintf(
-                'Daily quota exceeded %s - Message: %s',
-                $url, $json->error_message
+                'Daily quota exceeded. Message: %s', $json->error_message
             ));
         }
 

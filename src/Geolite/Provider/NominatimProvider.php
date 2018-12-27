@@ -87,6 +87,9 @@ class NominatimProvider extends AbstractProvider
         if ($locale = $query->getLocale())
             $url = sprintf('%s&accept-language=%s', $url, $locale);
 
+        if ($region = $query->getData('countrycodes', array_get($this->config, 'region')))
+            $url = sprintf('%s&countrycodes=%s', $url, $region);
+
         $options['User-Agent'] = $query->getData('userAgent', request()->userAgent());
         $options['Referer'] = $query->getData('referer', request()->get('referer'));
         $options['timeout'] = $query->getData('timeout', 15);
@@ -96,7 +99,7 @@ class NominatimProvider extends AbstractProvider
 
         $response = $this->getHttpClient()->get($url, $options);
 
-        return $this->parseResponse($url, $response);
+        return $this->parseResponse($response);
     }
 
     protected function hydrateResponse($response)
@@ -126,38 +129,35 @@ class NominatimProvider extends AbstractProvider
     //
     //
 
-    protected function parseResponse($url, ResponseInterface $response)
+    protected function parseResponse(ResponseInterface $response)
     {
         $json = json_decode($response->getBody());
 
         if (empty($json)) {
-            throw new GeoliteException(sprintf(
-                'The geocoder server returned an invalid response for query: "%s".',
-                $url
-            ));
+            throw new GeoliteException(
+                'The geocoder server returned an empty or invalid response.'
+            );
         }
 
         $statusCode = $response->getStatusCode();
         if ($statusCode === 401 OR $statusCode === 403)
             throw new GeoliteException(sprintf(
-                'API access denied. Request: %s - Message: %s',
-                $url, $json->error_message
+                'API access denied. Message: %s', $json->error_message
             ));
 
         if ($statusCode === 429)
             throw new GeoliteException(sprintf(
-                'Daily quota exceeded %s - Message: %s',
-                $url, $json->error_message
+                'Daily quota exceeded. Message: %s', $json->error_message
             ));
 
         if ($statusCode >= 300) {
             throw new GeoliteException(sprintf(
-                'The geocoder server returned [%s] an invalid response for query: "%s" - Message: %s.',
-                $statusCode, $url, $json->error_message
+                'The geocoder server returned [%s] an invalid response for query. Message: %s.',
+                $statusCode, $json->error_message
             ));
         }
 
-        return $json;
+        return is_array($json) ? $json : [$json];
     }
 
     protected function parseCoordinates(Model\Location $address, $location)
