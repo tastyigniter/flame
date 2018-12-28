@@ -3,6 +3,7 @@
 namespace Igniter\Flame\Auth\Models;
 
 use Carbon\Carbon;
+use Exception;
 use Hash;
 use Igniter\Flame\Database\Model;
 
@@ -93,15 +94,15 @@ class User extends Model
         return static::REMEMBER_TOKEN_NAME;
     }
 
-    //
-    //
-    //
-
     public function updateRememberToken($token)
     {
         $this->setRememberToken($token);
         $this->save();
     }
+
+    //
+    // Password
+    //
 
     public function hasShaPassword($plainPassword)
     {
@@ -123,6 +124,10 @@ class User extends Model
 
         return $this->save();
     }
+
+    //
+    // Reset
+    //
 
     /**
      * Generate a unique hash for this order.
@@ -197,5 +202,52 @@ class User extends Model
     public function getReminderEmail()
     {
         return $this->email;
+    }
+
+    //
+    // Activation
+    //
+
+    public function getActivationCode()
+    {
+        $this->activation_code = $activationCode = $this->generateActivationCode();
+
+        $this->save();
+
+        return $activationCode;
+    }
+
+    /**
+     * Attempts to activate the given user by checking the activate code. If the user is activated already, an Exception is thrown.
+     * @param string $activationCode
+     * @return bool
+     */
+    public function completeActivation($activationCode)
+    {
+        if ($this->is_activated) {
+            throw new Exception('User is already active!');
+        }
+
+        if ($activationCode == $this->activation_code) {
+            $this->activation_code = null;
+            $this->status = TRUE;
+            $this->is_activated = TRUE;
+            $this->date_activated = $this->freshTimestamp();
+            $this->save();
+
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+
+    protected function generateActivationCode()
+    {
+        $random = str_random(42);
+        while ($this->newQuery()->where('activation_code', $random)->count() > 0) {
+            $random = str_random(42);
+        }
+
+        return $random;
     }
 }
