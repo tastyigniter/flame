@@ -45,13 +45,6 @@ class AbstractLocation extends Model implements LocationInterface
         'options' => 'serialize',
     ];
 
-    /**
-     * @var array The location working hours.
-     */
-    protected $workingSchedule;
-
-    protected $coveredArea;
-
     public function getName()
     {
         return $this->attributes['location_name'];

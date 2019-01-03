@@ -242,20 +242,14 @@ class WorkingSchedule
 
     public function getOpenTime($format = null)
     {
-        $dateTime = new DateTime();
-        $time = $this->forDate($dateTime)->openTimeAt(
-            WorkingTime::fromDateTime($dateTime)
-        );
+        $time = $this->nextOpenAt(new DateTime());
 
         return ($time AND $format) ? $time->format($format) : $time;
     }
 
     public function getCloseTime($format = null)
     {
-        $dateTime = new DateTime();
-        $time = $this->forDate($dateTime)->closeTimeAt(
-            WorkingTime::fromDateTime($dateTime)
-        );
+        $time = $this->nextCloseAt(new DateTime());
 
         return ($time AND $format) ? $time->format($format) : $time;
     }
@@ -352,11 +346,13 @@ class WorkingSchedule
         $parsedPeriods = [];
         foreach ($periods as $day => $period) {
             if ($period instanceof Contracts\WorkingHourInterface) {
+                if (!$period->isEnabled()) continue;
+
                 $day = WorkingDay::normalizeName($period->getDay());
-                $parsedPeriods[$day][] = $period->isEnabled() ? [
+                $parsedPeriods[$day][] = [
                     $period->getOpen(),
                     $period->getClose(),
-                ] : [];
+                ];
             }
             else if (is_array($period)) {
                 $day = WorkingDay::normalizeName($day);

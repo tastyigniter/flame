@@ -67,7 +67,6 @@ class Extension extends BaseExtension
         return [
 //            '{{title_author}}.{{studly_name}}.SomePermission' => [
 //                'description' => 'Some permission',
-//                'action' => ['access', 'add', 'manage', 'delete'],
 //            ],
         ];
     }

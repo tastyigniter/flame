@@ -11,7 +11,7 @@ class CartConditions extends Collection
     {
         $result = [];
         foreach ($conditions as $config) {
-            if (!array_get($config, 'status', FALSE))
+            if (!array_get($config, 'status', TRUE))
                 continue;
 
             $name = array_get($config, 'name');
@@ -28,11 +28,6 @@ class CartConditions extends Collection
         $this->items = $result;
 
         return $result;
-    }
-
-    public function all()
-    {
-
     }
 
     public function applied($subtotal)
