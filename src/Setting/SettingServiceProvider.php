@@ -7,6 +7,8 @@ use Illuminate\Support\ServiceProvider;
 
 class SettingServiceProvider extends ServiceProvider
 {
+    protected $defer = TRUE;
+
     /**
      * Register the service provider.
      * @return void
