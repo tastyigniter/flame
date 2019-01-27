@@ -12,6 +12,8 @@ use InvalidArgumentException;
 
 class WorkingSchedule
 {
+    protected $type;
+
     protected $timezone;
 
     /**
@@ -83,6 +85,13 @@ class WorkingSchedule
 
         $this->setPeriods($periods);
         $this->setExceptions($exceptions);
+
+        return $this;
+    }
+
+    public function setType($type)
+    {
+        $this->type = $type;
 
         return $this;
     }
@@ -182,10 +191,13 @@ class WorkingSchedule
         );
 
         while ($nextOpenAt === FALSE) {
-            $dateTime = $dateTime->modify('+1 day')->setTime(0, 0, 0);
-            $nextOpenAt = $this->forDate($dateTime)->nextOpenAt(
-                WorkingTime::fromDateTime($dateTime)
-            );
+            $dateTime = $dateTime->modify('+1 day')->setTime(0, 0);
+            $workingTime = WorkingTime::fromDateTime($dateTime);
+
+            $forDate = $this->forDate($dateTime);
+            $nextOpenAt = !$forDate->isEmpty()
+                ? $forDate->nextOpenAt($workingTime)
+                : $workingTime;
         }
 
         $dateTime = $dateTime->setTime(
@@ -212,10 +224,13 @@ class WorkingSchedule
         );
 
         while ($nextCloseAt === FALSE) {
-            $dateTime = $dateTime->modify('+1 day')->setTime(0, 0, 0);
-            $nextCloseAt = $this->forDate($dateTime)->nextCloseAt(
-                WorkingTime::fromDateTime($dateTime)
-            );
+            $dateTime = $dateTime->modify('+1 day')->setTime(0, 0);
+            $workingTime = WorkingTime::fromDateTime($dateTime);
+
+            $forDate = $this->forDate($dateTime);
+            $nextCloseAt = !$forDate->isEmpty()
+                ? $forDate->nextCloseAt($workingTime)
+                : $workingTime;
         }
 
         $dateTime = $dateTime->setTime(
