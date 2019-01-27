@@ -102,10 +102,9 @@ abstract class Manager
             $model = $this->getBySlug($slug);
 
         if (!$model) {
-            if (!$id = $this->getSession('id'))
-                $id = $this->defaultLocation;
-
-            $model = $this->getById($id);
+            $id = $this->getSession('id');
+            if (!$id OR !$model = $this->getById($id))
+                $model = $this->getById($this->defaultLocation);
         }
 
         if ($model)

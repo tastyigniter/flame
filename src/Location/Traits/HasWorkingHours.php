@@ -115,8 +115,134 @@ trait HasWorkingHours
             $this->getWorkingHoursByType($type) ?? new Collection([])
         );
 
+        $schedule->setType($type);
         $schedule->setNow($this->getCurrentTime());
 
         return $schedule;
+    }
+
+    //
+    //
+    //
+
+    /**
+     * Create a new or update existing location working hours
+     *
+     * @param array $data
+     *
+     * @return bool
+     */
+    public function addOpeningHours($data = [])
+    {
+        $created = FALSE;
+
+        $this->working_hours()->delete();
+
+        if (!$data)
+            return FALSE;
+
+        foreach ($data as $type => $hours) {
+            $hoursArray = [];
+
+            $hourType = $hours['type'] ?? '24_7';
+
+            switch ($hourType) {
+                case '24_7':
+                    $hoursArray = $this->createWorkingHoursArray($hourType, $hours);
+                    break;
+                case 'daily':
+                    $hoursArray = $this->createWorkingHoursArray($hourType, $hours);
+                    break;
+                case 'flexible':
+                    $hoursArray = $this->createWorkingHoursArray($hourType, $hours);
+                    break;
+            }
+
+            foreach ($hoursArray as $hourValue) {
+                $created = $this->working_hours()->create([
+                    'location_id' => $this->getKey(),
+                    'weekday' => $hourValue['day'],
+                    'type' => $type,
+                    'opening_time' => mdate('%H:%i', strtotime($hourValue['open'])),
+                    'closing_time' => mdate('%H:%i', strtotime($hourValue['close'])),
+                    'status' => $hourValue['status'],
+                ]);
+            }
+        }
+
+        return $created;
+    }
+
+    /**
+     * Build working hours array
+     *
+     * @param $type
+     * @param $data
+     *
+     * @return array
+     */
+    public function createWorkingHoursArray($type, $data)
+    {
+        $hours = ['open' => '00:00', 'close' => '23:59', 'status' => 1];
+        if ($type != '24_7')
+            $hours = ['open' => $data['open'], 'close' => $data['close']];
+
+        $days = isset($data['days']) ? $data['days'] : [];
+
+        $workingHours = [];
+
+        for ($day = 0; $day <= 6; $day++) {
+            $_hours = ($type == 'flexible' AND isset($data['flexible'][$day])) ? $data['flexible'][$day] : $hours;
+            $workingHours[] = [
+                'day' => $day,
+                'type' => $type,
+                'open' => $_hours['open'],
+                'close' => $_hours['close'],
+                'status' => isset($_hours['status']) ? $_hours['status'] : (int)in_array($day, $days),
+            ];
+        }
+
+        return $workingHours;
+    }
+
+    protected function parseHoursFromOptions(&$value)
+    {
+        // Rename options array index 'opening_hours' to 'hours'
+        if (isset($value['opening_hours'])) {
+            $hours = $value['opening_hours'];
+            foreach (['opening', 'daily', 'delivery', 'collection'] as $type) {
+                foreach (['type', 'days', 'hours'] as $suffix) {
+                    if (isset($hours["{$type}_{$suffix}"])) {
+                        $valueItem = $hours["{$type}_{$suffix}"];
+                        if ($suffix == 'type')
+                            $valueItem = $valueItem != '24_7' ? $valueItem : '24_7';
+
+                        $typeIndex = $type == 'daily' ? 'opening' : $type;
+
+                        if ($suffix == 'hours') {
+                            $value['hours'][$typeIndex]['open'] = $valueItem['open'] ?? '00:00';
+                            $value['hours'][$typeIndex]['close'] = $valueItem['close'] ?? '23:59';
+                        }
+                        else {
+                            $value['hours'][$typeIndex][$suffix] = $valueItem;
+                        }
+                    }
+                }
+            }
+
+            if (isset($hours['flexible_hours']) AND is_array($hours['flexible_hours'])) {
+                foreach (['opening', 'delivery', 'collection'] as $type) {
+                    $value['hours'][$type]['flexible'] = $hours['flexible_hours'];
+                }
+            }
+
+            unset($value['opening_hours']);
+        }
+
+        // Ensures form checkbox is unchecked when value is empty
+        foreach (['opening', 'delivery', 'collection'] as $type) {
+            if (!isset($value['hours'][$type]['days']))
+                $value['hours'][$type]['days'] = [];
+        }
     }
 }

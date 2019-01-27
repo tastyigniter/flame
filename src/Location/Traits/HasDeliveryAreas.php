@@ -94,4 +94,56 @@ trait HasDeliveryAreas
     {
         return strtolower($this->distanceUnit ?? setting('distance_unit'));
     }
+
+    //
+    //
+    //
+
+    /**
+     * Create a new or update existing location areas
+     *
+     * @param array $deliveryAreas
+     *
+     * @return bool
+     */
+    public function addLocationAreas($deliveryAreas)
+    {
+        $locationId = $this->getKey();
+        if (!is_numeric($locationId))
+            return FALSE;
+
+        if (!is_array($deliveryAreas))
+            return FALSE;
+
+        foreach ($deliveryAreas as $area) {
+            $locationArea = $this->delivery_areas()->firstOrNew([
+                'area_id' => $area['area_id'] ?? null,
+            ])->fill(array_except($area, ['area_id']));
+
+            $locationArea->save();
+            $idsToKeep[] = $locationArea->getKey();
+        }
+
+        $this->delivery_areas()->whereNotIn('area_id', $idsToKeep)->delete();
+
+        return count($idsToKeep);
+    }
+
+    protected function parseAreasFromOptions(&$value)
+    {
+        // Rename options array index ['delivery_areas']['charge']
+        // to ['delivery_areas']['conditions']
+        if (isset($value['delivery_areas'])) {
+            foreach ($value['delivery_areas'] as &$area) {
+                if (!isset($charge['charge'])) continue;
+                $area['conditions'] = is_array($area['charge']) ? $area['charge'] : [];
+                foreach ($area['conditions'] as $id => &$charge) {
+                    if (!isset($charge['condition'])) continue;
+                    $charge['type'] = $charge['condition'];
+                    unset($charge['condition']);
+                }
+                unset($area['charge']);
+            }
+        }
+    }
 }
