@@ -39,4 +39,9 @@ class SettingServiceProvider extends ServiceProvider
             return $app['setting.manager']->driver('prefs');
         });
     }
+
+    public function provides()
+    {
+        return ['setting.manager', 'system.setting', 'system.parameter', SaveSetting::class];
+    }
 }
