@@ -77,7 +77,7 @@ trait CartConditionHelper
             if ($this->actionHasReachedMax($actionMax, $result))
                 $result = $actionMax;
 
-            return $result;
+            return max($result, 0);
         }, $total);
 
         return $result;

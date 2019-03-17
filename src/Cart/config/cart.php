@@ -28,4 +28,5 @@ return [
 
     'conditions' => [],
 
+    'abandonedCart' => FALSE,
 ];

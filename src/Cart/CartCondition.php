@@ -10,10 +10,6 @@ use Serializable;
 
 /**
  * CartCondition class
- * Usage:
- **
- *   $condition = new CartCondition($code, $name, $target, $action, $priority);
- *   Cart::condition($condition);
  */
 abstract class CartCondition implements Arrayable, Jsonable, Serializable
 {
@@ -113,7 +109,7 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
             $this->whenValid();
         }
         else {
-            $this->whenValid();
+            $this->whenInvalid();
         }
 
         $this->passed = $passed;
@@ -137,26 +133,6 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     //
 
     /**
-     * Returns the rules for this cart condition.
-     *
-     * @return array
-     */
-    public function getRules()
-    {
-        return [];
-    }
-
-    /**
-     * Returns the actions for this cart condition.
-     *
-     * @return array
-     */
-    public function getActions()
-    {
-        return [];
-    }
-
-    /**
      * Called before condition is loaded into cart session
      */
     public function onLoad()
@@ -175,6 +151,26 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
      */
     public function afterApply()
     {
+    }
+
+    /**
+     * Returns the rules for this cart condition.
+     *
+     * @return array
+     */
+    public function getRules()
+    {
+        return [];
+    }
+
+    /**
+     * Returns the actions for this cart condition.
+     *
+     * @return array
+     */
+    public function getActions()
+    {
+        return [];
     }
 
     /**
@@ -204,6 +200,7 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
 
     public function getCartContent()
     {
+        return $this->cartContent;
     }
 
     public function getLabel()

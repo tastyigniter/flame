@@ -49,6 +49,8 @@ class Cart
         $this->events = $events;
 
         $this->instance(self::DEFAULT_INSTANCE);
+
+        $this->loadConditions();
     }
 
     /**
@@ -248,7 +250,7 @@ class Cart
      */
     public function total()
     {
-        return $this->getConditions()->total($this->subtotal());
+        return $this->conditions()->total($this->subtotal());
     }
 
     /**
@@ -363,7 +365,7 @@ class Cart
     public function condition($condition)
     {
         // Extensibility
-        $this->fireEvent('condition.loading');
+        $this->fireEvent('condition.loading', $condition);
 
         $condition->setCartContent($this->getContent());
 
@@ -372,26 +374,48 @@ class Cart
         $allConditions = $this->getConditions();
         $allConditions->put($condition->name, $condition);
 
-        $this->fireEvent('condition.loaded');
+        $this->fireEvent('condition.loaded', $condition);
 
         $this->putSession('conditions', $allConditions);
     }
 
-    public function loadConditions()
+    protected function loadConditions()
     {
         if ($this->conditionsLoaded)
             return;
 
-        $allConditions = $this->getConditions();
+        $conditions = new CartConditions;
+        $definitions = config('cart.conditions', []);
+        foreach ($definitions as $definition) {
+            if (!array_get($definition, 'status', TRUE))
+                continue;
 
-        $allConditions->load(config('cart.conditions', []));
-
-        $this->clearConditions();
-        foreach ($allConditions as $condition) {
-            $this->condition($condition);
+            $name = array_get($definition, 'name');
+            $condition = $this->loadCondition($name, $definition);
+            $conditions->put($condition->name, $condition);
         }
 
-        $this->conditionsDefined = TRUE;
+        $this->putSession('conditions', $conditions);
+
+        $this->conditionsLoaded = TRUE;
+    }
+
+    protected function loadCondition($name, $config)
+    {
+        if ($condition = $this->getCondition($name)) {
+            $condition->fillFromConfig($config);
+        }
+        else {
+            $className = array_get($config, 'className');
+            if (!class_exists($className))
+                throw new Exception(sprintf("The Cart Condition class name '%s' has not been registered", $className));
+
+            $condition = new $className($config);
+        }
+
+        $this->condition($condition);
+
+        return $condition;
     }
 
     //
@@ -474,12 +498,12 @@ class Cart
     {
         $cartStore = $this->createModel()->firstOrCreate([
             'identifier' => $identifier,
-            'instance' => $this->currentInstance()
+            'instance' => $this->currentInstance(),
         ]);
 
         $cartStore->data = serialize([
             'content' => $this->getContent(),
-            'conditions' => $this->getConditions()
+            'conditions' => $this->getConditions(),
         ]);
 
         $cartStore->save();
