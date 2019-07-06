@@ -17,11 +17,8 @@ class Localization
      */
     public function handle($request, Closure $next)
     {
-        // Don't redirect the console
         // Check for a user defined language and set user language
-        if (!app()->runningInConsole()) {
-            app('translator.localization')->loadLocale();
-        }
+        app('translator.localization')->loadLocale();
 
         return $next($request);
     }

@@ -38,7 +38,7 @@ class LoadTranslation
         });
 
         $app->singleton('translator.localization', function ($app) {
-            $locale = $app['config']['app.locale'];
+            $locale = setting('default_language', $app['config']['app.locale']);
             $config['supportedLocales'] = setting('supported_languages', []);
             $config['detectBrowserLocale'] = setting('detect_language', []);
 
