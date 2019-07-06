@@ -1,7 +1,9 @@
 <?php namespace Igniter\Flame\ActivityLog;
 
-use Exception;
+use Event;
+use Igniter\Flame\ActivityLog\Contracts\ActivityInterface;
 use Igniter\Flame\ActivityLog\Models\Activity;
+use Igniter\Flame\Auth\Models\User;
 use Igniter\Flame\Database\Model;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Traits\Macroable;
@@ -13,7 +15,7 @@ class ActivityLogger
     public $authDriver;
 
     /** @var \Igniter\Flame\Auth\Manager */
-    protected $auth;
+    protected $sendTo;
 
     protected $logName = '';
 
@@ -31,14 +33,16 @@ class ActivityLogger
 
     public function __construct(Application $app)
     {
-        $this->auth = $app->runningInAdmin()
-            ? $app['admin.auth'] : $app['auth'];
-
-        $this->causedBy = $this->auth->user();
-
         $this->properties = collect();
         $this->logName = $app['config']->get('system.activityLogName', 'default');
         $this->logEnabled = $app['config']->get('system.activityLogEnabled', TRUE);
+    }
+
+    public function sendTo(User $user)
+    {
+        $this->sendTo = $user;
+
+        return $this;
     }
 
     /**
@@ -54,14 +58,12 @@ class ActivityLogger
     }
 
     /**
-     * @param Model|int|string $modelOrId
+     * @param Model $model
      *
      * @return $this
      */
-    public function causedBy($modelOrId)
+    public function causedBy($model)
     {
-        $model = $this->normalizeCauser($modelOrId);
-
         $this->causedBy = $model;
 
         return $this;
@@ -99,33 +101,58 @@ class ActivityLogger
         return $this;
     }
 
+    public function logAs($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
     /**
-     * @param string $message
-     *
      * @return null|mixed
      */
-    public function log($message)
+    public function log()
     {
-        if (!$this->logEnabled) {
+        if (!$this->logEnabled)
             return FALSE;
-        }
 
         $activity = $this->getModelInstance();
 
-        if ($this->performedOn) {
+        if ($this->sendTo)
+            $activity->user()->associate($this->sendTo);
+
+        if ($this->performedOn)
             $activity->subject()->associate($this->performedOn);
-        }
 
-        if ($this->causedBy) {
+        if ($this->causedBy)
             $activity->causer()->associate($this->causedBy);
-        }
 
-        $activity->properties = $this->properties;
-        $activity->message = $this->replacePlaceholders($message, $activity);
+        $activity->type = $this->type;
         $activity->log_name = $this->logName;
+        $activity->properties = $this->properties;
         $activity->save();
 
         return $activity;
+    }
+
+    public function pushLog(ActivityInterface $activity, array $recipients)
+    {
+        Event::fire('notification.sending', [$activity, $recipients]);
+
+        $type = $activity::getType();
+        $causer = $activity->getCauser();
+        $subject = $activity->getSubject();
+        $properties = $activity->getProperties();
+
+        foreach ($recipients as $user) {
+            if (!$user instanceof User)
+                continue;
+
+            $this->logAs($type)
+                 ->causedBy($causer)->performedOn($subject)
+                 ->withProperties($properties)
+                 ->sendTo($user)->log();
+        }
     }
 
     /**
@@ -134,26 +161,6 @@ class ActivityLogger
     public function getModelInstance()
     {
         return new Activity;
-    }
-
-    /**
-     * @param Model|int|string $modelOrId
-     *
-     * @return \Illuminate\Database\Eloquent\Model
-     */
-    protected function normalizeCauser($modelOrId)
-    {
-        if ($modelOrId instanceof Model) {
-            return $modelOrId;
-        }
-
-        $model = $this->auth->getById($modelOrId);
-
-        if ($model) {
-            return $model;
-        }
-
-        throw new Exception("Could not determine a user with identifier '{$modelOrId}''.");
     }
 
     public function replacePlaceholders($message, Activity $activity)
