@@ -177,12 +177,12 @@ class Activity extends Model
      */
     public function registerActivityTypes(array $definitions)
     {
-        foreach ($definitions as $className => $enabled) {
-            $this->registerActivityType($className, $enabled);
+        foreach ($definitions as $className) {
+            $this->registerActivityType($className);
         }
     }
 
-    public function registerActivityType($className, $channels)
+    public function registerActivityType($className)
     {
         if (!(new ReflectionClass($className))->implementsInterface(ActivityInterface::class))
             throw new InvalidArgumentException('Activity type '.$className.' must implement '.ActivityInterface::class);
@@ -190,7 +190,6 @@ class Activity extends Model
         static::$activityTypes[$className] = (object)[
             'type' => $className::getType(),
             'className' => $className,
-            'channel' => $channels,
             'subjectModel' => $className::getSubjectModel(),
         ];
     }
