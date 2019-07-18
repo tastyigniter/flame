@@ -29,7 +29,7 @@ trait CartConditionHelper
             $actionValue = array_get($action, 'value', 0);
 
             if ($this->valueIsPercentage($actionValue)) {
-                $cleanValue = $this->cleanValue($actionValue);
+                $cleanValue = $this->cleanValue($actionValue, '-');
                 $value = ($total * ($cleanValue / 100));
             }
             else {
@@ -37,7 +37,7 @@ trait CartConditionHelper
             }
 
             $this->calculatedValue += $value;
-            $action['cleanValue'] = (float)$this->cleanValue($actionValue, '-');
+            $action['cleanValue'] = $value;
 
             return $action;
         });

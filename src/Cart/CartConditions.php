@@ -41,11 +41,9 @@ class CartConditions extends Collection
 
     public function total(float $subtotal)
     {
-        return $this->reduce(
-            function ($total, CartCondition $condition) {
-                return $condition->calculateTotal($total);
-            }, $subtotal
-        );
+        return $this->reduce(function ($total, CartCondition $condition) {
+            return $condition->calculateTotal($total);
+        }, $subtotal);
     }
 
     public function getFrom($config)
