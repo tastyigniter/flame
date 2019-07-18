@@ -26,7 +26,6 @@ class StringParser
      */
     public function parse($template, $data)
     {
-//        dump($template, $data);
         if (!is_array($data))
             $data = ['' => $data];
 
