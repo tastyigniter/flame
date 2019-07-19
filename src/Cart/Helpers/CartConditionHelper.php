@@ -29,7 +29,7 @@ trait CartConditionHelper
             $actionValue = array_get($action, 'value', 0);
 
             if ($this->valueIsPercentage($actionValue)) {
-                $cleanValue = $this->cleanValue($actionValue, '-');
+                $cleanValue = $this->cleanValue($actionValue);
                 $value = ($total * ($cleanValue / 100));
             }
             else {
@@ -96,13 +96,9 @@ trait CartConditionHelper
      *
      * @return mixed
      */
-    protected function cleanValue($value, $include = null)
+    protected function cleanValue($value)
     {
-        $search = ['%', '+', '*', '/'];
-        if ($include)
-            $search[] = $include;
-
-        return str_replace($search, '', $value);
+        return str_replace(['%', '-', '+', '*', '/'], '', $value);
     }
 
     protected function operandValue($key)
