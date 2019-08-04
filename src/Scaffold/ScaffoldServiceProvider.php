@@ -14,10 +14,11 @@ class ScaffoldServiceProvider extends ServiceProvider
      * @var array
      */
     protected $commands = [
-        'CreateExtension'  => 'command.create.extension',
-        'CreateComponent'  => 'command.create.component',
+        'CreateExtension' => 'command.create.extension',
+        'CreateComponent' => 'command.create.component',
         'CreateController' => 'command.create.controller',
-        'CreateModel'      => 'command.create.model',
+        'CreateModel' => 'command.create.model',
+        'CreateCommand' => 'command.create.command',
     ];
 
     /**
@@ -71,6 +72,13 @@ class ScaffoldServiceProvider extends ServiceProvider
     {
         $this->app->singleton($command, function ($app) {
             return new Console\CreateModel($app['files']);
+        });
+    }
+
+    protected function registerCreateCommandCommand($command)
+    {
+        $this->app->singleton($command, function ($app) {
+            return new Console\CreateCommand($app['files']);
         });
     }
 
