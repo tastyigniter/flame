@@ -176,17 +176,21 @@ class Builder extends BuilderBase
      *
      * @return array
      */
-    public function pluckDates($column, $keyFormat = '%Y-%m', $valueFormat = '%F %Y')
+    public function pluckDates($column, $keyFormat = 'Y-m', $valueFormat = 'F Y')
     {
         $dates = [];
 
         $collection = $this->selectRaw("{$column}, MONTH({$column}) as month, YEAR({$column}) as year")
-                           ->groupBy([$column, 'month', 'year'])->get();
+                           ->groupBy([$column, 'month', 'year'])->orderBy($column, 'desc')->get();
 
         if ($collection) {
-            foreach ($collection as $date) {
-                $key = mdate($keyFormat, strtotime($date[$column]));
-                $value = mdate($valueFormat, strtotime($date[$column]));
+            foreach ($collection as $model) {
+                $date = $model[$column];
+                if (!($date instanceof \Carbon\Carbon))
+                    $date = \Carbon\Carbon::parse($date);
+
+                $key = $date->format($keyFormat);
+                $value = $date->format($valueFormat);
                 $dates[$key] = $value;
             }
         }
@@ -221,7 +225,7 @@ class Builder extends BuilderBase
             : $this->model->newCollection();
 
         return new LengthAwarePaginator($results, $total, $perPage, $page, [
-            'path'     => Paginator::resolveCurrentPath(),
+            'path' => Paginator::resolveCurrentPath(),
             'pageName' => $pageName,
         ]);
     }
