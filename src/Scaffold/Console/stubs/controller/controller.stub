@@ -19,7 +19,7 @@ class {{studly_name}} extends \Admin\Classes\AdminController
             'model'        => '{{studly_author}}\{{studly_extension}}\Models\{{studly_singular_name}}',
             'title'        => '{{title_name}}',
             'emptyMessage' => 'lang:admin::lang.list.text_empty',
-            'defaultSort'  => ['order_id', 'DESC'],
+            'defaultSort'  => ['id', 'DESC'],
             'configFile'   => '{{snake_singular_name}}',
         ],
     ];
@@ -46,6 +46,8 @@ class {{studly_name}} extends \Admin\Classes\AdminController
         ],
         'configFile' => '{{snake_singular_name}}',
     ];
+
+    protected $requiredPermissions = '{{studly_author}}.{{studly_extension}}';
 
     public function __construct()
     {

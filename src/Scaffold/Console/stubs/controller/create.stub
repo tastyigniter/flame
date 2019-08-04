@@ -1,10 +1,11 @@
 <div class="row-fluid">
-    <form
-        role="form"
-        id="form-widget"
-        accept-charset="utf-8"
-        method="POST"
-        action="<?= current_url(); ?>">
+    <?= form_open(current_url(),
+        [
+            'id'     => 'form-widget',
+            'role'   => 'form',
+            'method' => 'POST',
+        ]
+    ); ?>
 
         <?= $this->renderForm(); ?>
 

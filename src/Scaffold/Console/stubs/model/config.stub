@@ -14,7 +14,6 @@ return [
 //                    'label' => 'lang:admin::lang.button_delete',
 //                    'class' => 'btn btn-danger',
 //                    'data-request-form' => '#list-form',
-//                    'data-request-submit' => 'true',
 //                    'data-request' => 'onDelete',
 //                    'data-request-data' => "_method:'DELETE'",
 //                    'data-request-confirm' => 'lang:admin::lang.alert_warning_confirm'

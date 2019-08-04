@@ -19,6 +19,8 @@ class {{studly_name}} extends Model
      */
     protected $fillable = [];
 
+    public $timestamps = TRUE;
+
     /**
      * @var array Relations
      */
