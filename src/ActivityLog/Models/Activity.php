@@ -1,5 +1,6 @@
 <?php namespace Igniter\Flame\ActivityLog\Models;
 
+use Carbon\Carbon;
 use Igniter\Flame\ActivityLog\ActivityLogger;
 use Igniter\Flame\ActivityLog\Contracts\ActivityInterface;
 use Igniter\Flame\Database\Builder;
@@ -125,6 +126,16 @@ class Activity extends Model
         return $query
             ->where('subject_type', $subject->getMorphClass())
             ->where('subject_id', $subject->getKey());
+    }
+
+    public function isRead()
+    {
+        return $this->read_at AND $this->read_at->lte(Carbon::now());
+    }
+
+    public function isUnread()
+    {
+        return !$this->isRead();
     }
 
     //

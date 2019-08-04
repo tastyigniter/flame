@@ -31,8 +31,14 @@ class ActivityLogger
     /** @var \Illuminate\Support\Collection */
     protected $properties;
 
+    /**
+     * @var \Illuminate\Events\Dispatcher
+     */
+    protected $events;
+
     public function __construct(Application $app)
     {
+        $this->events = $app['events'];
         $this->properties = collect();
         $this->logName = $app['config']->get('system.activityLogName', 'default');
         $this->logEnabled = $app['config']->get('system.activityLogEnabled', TRUE);
@@ -131,6 +137,8 @@ class ActivityLogger
         $activity->log_name = $this->logName;
         $activity->properties = $this->properties;
         $activity->save();
+
+        $this->events->fire('activityLogger.logCreated', [$activity]);
 
         return $activity;
     }
