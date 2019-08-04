@@ -32,9 +32,7 @@ class Kernel extends BaseKernel
      *
      * @var array
      */
-    protected $commands = [
-        //
-    ];
+    protected $commands = [];
 
     /**
      * Define the application's command schedule.
@@ -45,19 +43,7 @@ class Kernel extends BaseKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
-    }
-
-    /**
-     * Register the commands for the application.
-     *
-     * @return void
-     */
-    protected function commands()
-    {
-//        $this->load(__DIR__.'/Commands');
-//
-//        require base_path('routes/console.php');
+        $this->bootstrap();
+        $this->app['events']->fire('console.schedule', [$schedule]);
     }
 }
