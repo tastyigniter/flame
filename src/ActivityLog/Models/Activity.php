@@ -128,6 +128,20 @@ class Activity extends Model
             ->where('subject_id', $subject->getKey());
     }
 
+    public function scopeWhereIsRead($query)
+    {
+        return $query->whereNotNull('read_at')->whereDate('read_at', '<=', Carbon::now());
+    }
+
+    public function scopeWhereIsUnread($query)
+    {
+        return $query->whereNull('read_at');
+    }
+
+    //
+    // Helpers
+    //
+
     public function isRead()
     {
         return $this->read_at AND $this->read_at->lte(Carbon::now());
@@ -136,6 +150,20 @@ class Activity extends Model
     public function isUnread()
     {
         return !$this->isRead();
+    }
+
+    public function markAsRead()
+    {
+        $this->read_at = Carbon::now();
+
+        return $this;
+    }
+
+    public function markAsUnread()
+    {
+        $this->read_at = null;
+
+        return $this;
     }
 
     //
