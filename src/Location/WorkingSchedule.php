@@ -197,7 +197,7 @@ class WorkingSchedule
             $forDate = $this->forDate($dateTime);
             $nextOpenAt = !$forDate->isEmpty()
                 ? $forDate->nextOpenAt($workingTime)
-                : $workingTime;
+                : FALSE;
         }
 
         $dateTime = $dateTime->setTime(
@@ -230,7 +230,7 @@ class WorkingSchedule
             $forDate = $this->forDate($dateTime);
             $nextCloseAt = !$forDate->isEmpty()
                 ? $forDate->nextCloseAt($workingTime)
-                : $workingTime;
+                : FALSE;
         }
 
         $dateTime = $dateTime->setTime(
