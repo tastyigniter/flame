@@ -3,11 +3,14 @@
 use App;
 use Exception;
 use File;
+use Igniter\Flame\Pagic\Contracts\TemplateLoader;
+use Igniter\Flame\Pagic\Contracts\TemplateSource;
+use Illuminate\View\Compilers\CompilerInterface;
 
 /**
  * Loader class
  */
-class Loader
+class Loader implements TemplateLoader
 {
     /**
      * @var string Expected file extension
@@ -23,6 +26,42 @@ class Loader
      * @var array Cache
      */
     protected $cache = [];
+
+    /**
+     * @var \Main\Template\Model A object to load the template from.
+     */
+    protected $source;
+
+    protected $compiler;
+
+    /**
+     * Sets a object to load the template from.
+     *
+     * @param \Igniter\Flame\Pagic\Contracts\TemplateSource $source Specifies the Template object.
+     */
+    public function setSource(TemplateSource $source)
+    {
+        $this->source = $source;
+    }
+
+    public function getSource()
+    {
+        return $this->source;
+    }
+
+    /**
+     * Gets the markup section of a template, given its name.
+     *
+     * @param string $name The name of the template to load
+     *
+     * @return string The template source code
+     *
+     * @throws Exception When $name is not found
+     */
+    public function getMarkup($name)
+    {
+        return $this->getContents($name);
+    }
 
     public function getContents($name)
     {
@@ -79,8 +118,27 @@ class Loader
             $this->findTemplate($name);
 
             return TRUE;
-        } catch (Exception $exception) {
+        }
+        catch (Exception $exception) {
             return FALSE;
         }
+    }
+
+    public function setCompiler(CompilerInterface $compiler)
+    {
+        $this->compiler = $compiler;
+    }
+
+    public function getCompiler()
+    {
+        if (is_null($this->compiler))
+            $this->compiler = App::make('blade.compiler');
+
+        return $this->compiler;
+    }
+
+    public function getFilePath()
+    {
+        return $this->getSource()->getFilePath();
     }
 }

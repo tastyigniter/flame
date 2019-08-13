@@ -37,6 +37,12 @@ class PagicServiceProvider extends ServiceProvider
             return new SourceResolver;
         });
 
+        $this->app->singleton('pagic.environment', function ($app) {
+            return new Environment(new Loader, [
+                'cache' => new FileCache(storage_path().'/system/templates'),
+            ]);
+        });
+
         FileParser::setCache(new FileCache(config('system.parsedTemplateCachePath')));
     }
 }

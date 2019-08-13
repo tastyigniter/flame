@@ -4,7 +4,7 @@ namespace Igniter\Flame\Pagic;
 
 use File;
 use LogicException;
-use Main\Contracts\TemplateLoader;
+use View;
 
 class Environment
 {
@@ -40,34 +40,36 @@ class Environment
      *  * cache: An absolute path where to store the compiled templates,
      *           or false to disable compilation cache.
      *
-     * @param TemplateLoader $loader
+     * @param Contracts\TemplateLoader $loader
      * @param array $options An array of options
      */
-    public function __construct(TemplateLoader $loader, $options = [])
+    public function __construct(Contracts\TemplateLoader $loader, $options = [])
     {
         $this->setLoader($loader);
 
         $options = array_merge([
-            'debug'         => FALSE,
-            'charset'       => 'UTF-8',
+            'debug' => FALSE,
+            'charset' => 'UTF-8',
             'templateClass' => 'Igniter\Flame\Pagic\Template',
-            'cache'         => FALSE,
+            'cache' => FALSE,
         ], $options);
 
         $this->debug = (bool)$options['debug'];
-        $this->charset = strtoupper($options['charset']);
         $this->templateClass = $options['templateClass'];
+        $this->setCharset($options['charset']);
         $this->setCache($options['cache']);
+
+        View::share('___env', $this);
     }
 
-    public function setLoader(TemplateLoader $loader)
+    public function setLoader(Contracts\TemplateLoader $loader)
     {
         $this->loader = $loader;
     }
 
     /**
      * Gets the Loader instance.
-     * @return TemplateLoader
+     * @return Loader
      */
     public function getLoader()
     {
@@ -147,25 +149,61 @@ class Environment
      */
     public function load($name)
     {
-        $fileCache = $this->getCache();
-        $key = $fileCache->getCacheKey($name, TRUE);
+        return $this->loadTemplate($name, $this->getCache()->getCacheKey($name, TRUE));
+    }
 
-        if (isset($this->loadedTemplates[$key])) {
-            return $this->loadedTemplates[$key];
+    /**
+     * Loads a template internal representation.
+     *
+     * @param string $name The template path
+     * @param string $path The template cache path
+     *
+     * @return Template
+     */
+    public function loadTemplate($name, $path)
+    {
+        if (isset($this->loadedTemplates[$name])) {
+            return $this->loadedTemplates[$name];
         }
 
-        $isFresh = $this->isTemplateFresh($name, $fileCache->getTimestamp($key));
+        $fileCache = $this->getCache();
+        $isFresh = $this->isTemplateFresh($name, $fileCache->getTimestamp($path));
 
-        if (!$isFresh OR !File::isFile($key)) {
+        if (!$isFresh OR !File::isFile($path)) {
             $loader = $this->getLoader();
             $content = $loader->getMarkup($name);
 
-            $fileCache->write($key, $content);
+            $fileCache->write($path, $content);
         }
 
         $class = $this->getTemplateClass();
 
-        return $this->loadedTemplates[$name] = new $class($this, $key);
+        return $this->loadedTemplates[$name] = new $class($this, $path);
+    }
+
+    /**
+     * Creates a template from source.
+     *
+     * @param string $template The template name
+     *
+     * @return Template
+     */
+    public function createTemplate($template)
+    {
+        $name = hash('sha256', $template, FALSE);
+        $key = $this->getCache()->getCacheKey($name, TRUE);
+
+        $loader = new ArrayLoader([$name => $template]);
+
+        $current = $this->getLoader();
+        $this->setLoader($loader);
+
+        try {
+            return $this->loadTemplate($name, $key);
+        }
+        finally {
+            $this->setLoader($current);
+        }
     }
 
     /**
