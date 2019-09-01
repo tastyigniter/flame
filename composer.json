@@ -2,7 +2,12 @@
   "name": "tastyigniter/flame",
   "description": "TastyIgniter Flame core library of TastyIgniter, add some flame to laravel",
   "homepage": "https://tastyigniter.com",
-  "keywords": ["tastyigniter", "igniter", "flame", "laravel"],
+  "keywords": [
+    "tastyigniter",
+    "igniter",
+    "flame",
+    "laravel"
+  ],
   "license": "MIT",
   "authors": [
     {
@@ -15,14 +20,13 @@
     "fideloper/proxy": "~3.3",
     "filp/whoops": "~2.0",
     "doctrine/instantiator": "~1.0",
+    "october/rain": "~1.0",
     "guzzlehttp/guzzle": "~6.3",
     "symfony/yaml": "~3.2",
-    "october/rain": "~1.0",
     "kalnoy/nestedset": "~4.3",
     "watson/validating": "~3.1",
     "natxet/CssMin": "~3.0",
     "leafo/scssphp": "~0.7",
-    "kriswallsmith/assetic": "^1.4",
     "league/glide": "^1.2"
   },
   "require-dev": {

@@ -3,9 +3,8 @@
 namespace Igniter\Flame\Mail;
 
 use InvalidArgumentException;
-use October\Rain\Mail\Mailer as BaseMailer;
 
-class Mailer extends BaseMailer
+class Mailer extends \October\Rain\Mail\Mailer
 {
     public function sendToMany($recipients, $view, array $data = [], $callback = null, $queue = FALSE)
     {

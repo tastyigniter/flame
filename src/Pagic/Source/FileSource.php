@@ -2,11 +2,11 @@
 
 use Exception;
 use Igniter\Flame\Filesystem\Filesystem;
+use Igniter\Flame\Pagic\Exception\CreateDirectoryException;
+use Igniter\Flame\Pagic\Exception\CreateFileException;
+use Igniter\Flame\Pagic\Exception\DeleteFileException;
+use Igniter\Flame\Pagic\Exception\FileExistsException;
 use Igniter\Flame\Pagic\Processors\Processor;
-use October\Rain\Halcyon\Exception\CreateDirectoryException;
-use October\Rain\Halcyon\Exception\CreateFileException;
-use October\Rain\Halcyon\Exception\DeleteFileException;
-use October\Rain\Halcyon\Exception\FileExistsException;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -62,10 +62,11 @@ class FileSource extends AbstractSource implements SourceInterface
 
             return [
                 'fileName' => $fileName.'.'.$extension,
-                'mTime'    => $this->files->lastModified($path),
-                'content'  => $this->files->get($path),
+                'mTime' => $this->files->lastModified($path),
+                'content' => $this->files->get($path),
             ];
-        } catch (Exception $ex) {
+        }
+        catch (Exception $ex) {
             return null;
         }
     }
@@ -82,9 +83,9 @@ class FileSource extends AbstractSource implements SourceInterface
     public function selectAll($dirName, array $options = [])
     {
         extract(array_merge([
-            'columns'    => null,  // Only return specific columns (fileName, mTime, content)
+            'columns' => null,  // Only return specific columns (fileName, mTime, content)
             'extensions' => null,  // Match specified extensions
-            'fileMatch'  => null,  // Match the file name using fnmatch()
+            'fileMatch' => null,  // Match the file name using fnmatch()
         ], $options));
 
         $result = [];
@@ -163,7 +164,8 @@ class FileSource extends AbstractSource implements SourceInterface
 
         try {
             return $this->files->put($path, $content);
-        } catch (Exception $ex) {
+        }
+        catch (Exception $ex) {
             throw (new CreateFileException)->setInvalidPath($path);
         }
     }
@@ -209,7 +211,8 @@ class FileSource extends AbstractSource implements SourceInterface
 
         try {
             return $this->files->put($path, $content);
-        } catch (Exception $ex) {
+        }
+        catch (Exception $ex) {
             throw (new CreateFileException)->setInvalidPath($path);
         }
     }
@@ -229,7 +232,8 @@ class FileSource extends AbstractSource implements SourceInterface
 
         try {
             return $this->files->delete($path);
-        } catch (Exception $ex) {
+        }
+        catch (Exception $ex) {
             throw (new DeleteFileException)->setInvalidPath($path);
         }
     }
@@ -249,7 +253,8 @@ class FileSource extends AbstractSource implements SourceInterface
             $path = $this->makeFilePath($dirName, $fileName, $extension);
 
             return $this->files->lastModified($path);
-        } catch (Exception $ex) {
+        }
+        catch (Exception $ex) {
             return null;
         }
     }

@@ -4,12 +4,11 @@ namespace Igniter\Flame\Exception;
 
 use Config;
 use Exception;
-use October\Rain\Exception\ErrorHandler as OctoberErrorHandler;
 
 /**
  * System Error Handler, this class handles application exception events.
  */
-class ErrorHandler extends OctoberErrorHandler
+class ErrorHandler extends \October\Rain\Exception\ErrorHandler
 {
     /**
      * Returns a more descriptive error message if application

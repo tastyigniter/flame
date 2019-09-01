@@ -3,13 +3,13 @@
 namespace Igniter\Flame\Pagic;
 
 use BadMethodCallException;
+use Igniter\Flame\Pagic\Exception\InvalidExtensionException;
+use Igniter\Flame\Pagic\Exception\InvalidFileNameException;
+use Igniter\Flame\Pagic\Exception\MissingFileNameException;
 use Igniter\Flame\Pagic\Processors\Processor;
 use Igniter\Flame\Pagic\Source\MemorySource;
 use Igniter\Flame\Pagic\Source\SourceInterface;
 use Illuminate\Support\Collection;
-use October\Rain\Halcyon\Exception\InvalidExtensionException;
-use October\Rain\Halcyon\Exception\InvalidFileNameException;
-use October\Rain\Halcyon\Exception\MissingFileNameException;
 
 class Finder
 {
@@ -389,7 +389,7 @@ class Finder
         }
 
         return $this->source->selectAll($this->in, [
-            'columns'    => $this->columns,
+            'columns' => $this->columns,
             'extensions' => $this->extensions,
         ]);
     }
