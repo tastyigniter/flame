@@ -49,6 +49,8 @@ class Template
         $this->env = $env;
         $this->loader = $env->getLoader();
         $this->path = $path;
+
+        $env->initExtensions();
     }
 
     /**

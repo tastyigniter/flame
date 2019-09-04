@@ -3,18 +3,15 @@
 namespace Igniter\Flame\Pagic;
 
 use File;
+use Igniter\Flame\Pagic\Extension\AbstractExtension;
 use LogicException;
 use View;
 
 class Environment
 {
-    protected $globals;
-
-    protected $runtimeInitialized = FALSE;
+    protected $extensionInitialized = FALSE;
 
     protected $loadedTemplates;
-
-    protected $staging;
 
     public $loader;
 
@@ -27,7 +24,7 @@ class Environment
 
     protected $templateClassPrefix = '__PagicTemplate_';
 
-    public $optionsHash;
+    protected $extensions = [];
 
     /**
      * Constructor.
@@ -262,5 +259,49 @@ class Environment
         }
 
         return $context;
+    }
+
+    public function addExtension(AbstractExtension $extension)
+    {
+        $class = get_class($extension);
+
+        if (isset($this->extensions[$class])) {
+            throw new LogicException(sprintf('Unable to register extension "%s" as it is already registered.', $class));
+        }
+
+        $this->extensions[$class] = $extension;
+    }
+
+    public function initExtensions()
+    {
+        if ($this->extensionInitialized)
+            return;
+
+        foreach ($this->extensions as $extension) {
+            $this->initExtension($extension);
+        }
+
+        $this->extensionInitialized = TRUE;
+    }
+
+    protected function initExtension(AbstractExtension $extension)
+    {
+        foreach ($extension->getDirectives() as $name => $callback) {
+            $this->addDirective($name, $callback);
+        }
+    }
+
+    protected function addDirective($name, $callback)
+    {
+        $compiler = $this->getLoader()->getCompiler();
+
+        if (is_array($callback) AND is_callable($callback)) {
+            $compiler->directive($name, $callback);
+        }
+        else {
+            $compiler->directive($name, function ($expression) use ($callback) {
+                return $callback;
+            });
+        }
     }
 }
