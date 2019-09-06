@@ -14,7 +14,7 @@ if (!function_exists('current_url')) {
      */
     function current_url()
     {
-        return app(UrlGenerator::class)->full();
+        return app(UrlGenerator::class)->current();
     }
 }
 
@@ -60,6 +60,7 @@ if (!function_exists('image_url')) {
     function image_url($uri = null, $protocol = null)
     {
         traceLog('image_url() has been deprecated, use assets_url() instead.');
+
         return app(UrlGenerator::class)->asset('assets/images/'.$uri, $protocol);
     }
 }
@@ -75,6 +76,7 @@ if (!function_exists('image_path')) {
     function image_path($path = '')
     {
         traceLog('image_path() has been deprecated, use assets_path() instead.');
+
         return assets_path('images').($path ? DIRECTORY_SEPARATOR.$path : $path);
     }
 }
