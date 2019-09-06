@@ -2,6 +2,7 @@
 
 namespace Igniter\Flame\Foundation\Providers;
 
+use Igniter\Flame\Foundation\Console\KeyGenerateCommand;
 use Illuminate\Console\Scheduling\ScheduleFinishCommand;
 use Illuminate\Console\Scheduling\ScheduleRunCommand;
 use Illuminate\Foundation\Providers\ArtisanServiceProvider as BaseServiceProvider;
@@ -87,4 +88,16 @@ class ArtisanServiceProvider extends BaseServiceProvider
 //        'TestMake' => 'command.test.make',
         'VendorPublish' => 'command.vendor.publish',
     ];
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerKeyGenerateCommand()
+    {
+        $this->app->singleton('command.key.generate', function ($app) {
+            return new KeyGenerateCommand($app['files']);
+        });
+    }
 }
