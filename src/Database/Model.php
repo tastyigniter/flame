@@ -26,6 +26,11 @@ class Model extends EloquentModel
     use EventEmitter;
 
     /**
+     * @var array Behaviors implemented by this model.
+     */
+    public $implement;
+
+    /**
      * @var array Make the model's attributes public so actions can modify them.
      */
     public $attributes = [];
