@@ -2,35 +2,28 @@
 
 namespace Igniter\Flame\Translation;
 
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Http\Request;
 
 class Localization
 {
-    protected static $authLocalResolver;
-
     protected $request;
 
-    protected $locale;
-
-    protected $supportedLocales;
-
-    public $detectBrowserLocale;
+    protected $config;
 
     protected $sessionKey = 'igniter.translation.locale';
 
-    public function __construct(Request $request, $locale, array $config = [])
+    public function __construct(Request $request, Repository $config)
     {
         $this->request = $request;
-        $this->locale = $locale;
-        $this->supportedLocales = array_get($config, 'supportedLocales');
-        $this->detectBrowserLocale = array_get($config, 'detectBrowserLocale');
+        $this->config = $config;
     }
 
     public function loadLocale()
     {
         $locale = $this->getLocale();
 
-        if ($this->locale != $locale)
+        if ($this->config['app.locale'] != $locale)
             app()->setLocale($locale);
     }
 
@@ -49,19 +42,24 @@ class Localization
         }
 
         // Get locale from user browser
-        if ($this->detectBrowserLocale) {
+        if ($this->detectBrowserLocale()) {
             $browserLocale = $this->getBrowserLocale();
             if ($browserLocale AND $this->isValid($browserLocale)) {
                 return $browserLocale;
             }
         }
 
-        return $this->locale;
+        return $this->getConfig('locale');
     }
 
     public function supportedLocales()
     {
-        return $this->supportedLocales;
+        return $this->getConfig('supportedLocales', []);
+    }
+
+    public function detectBrowserLocale()
+    {
+        return (bool)$this->getConfig('detectBrowserLocale', FALSE);
     }
 
     public function isValid($locale)
@@ -89,5 +87,10 @@ class Localization
     protected function getBrowserLocale()
     {
         return substr($this->request->server('HTTP_ACCEPT_LANGUAGE'), 0, 2);
+    }
+
+    protected function getConfig(string $string)
+    {
+        return $this->config['localization.'.$string];
     }
 }

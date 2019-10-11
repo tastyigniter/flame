@@ -38,11 +38,7 @@ class LoadTranslation
         });
 
         $app->singleton('translator.localization', function ($app) {
-            $locale = setting('default_language', $app['config']['app.locale']);
-            $config['supportedLocales'] = setting('supported_languages', []);
-            $config['detectBrowserLocale'] = setting('detect_language', []);
-
-            return new Localization($app['request'], $locale, $config);
+            return new Localization($app['request'], $app['config']);
         });
     }
 }
