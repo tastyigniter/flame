@@ -25,7 +25,7 @@
     "symfony/yaml": "~3.2",
     "kalnoy/nestedset": "~4.3",
     "watson/validating": "~3.1",
-    "natxet/CssMin": "~3.0",
+    "natxet/cssmin": "~3.0",
     "leafo/scssphp": "~0.7",
     "league/glide": "^1.2"
   },
