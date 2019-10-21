@@ -32,6 +32,11 @@ class Translation extends Model
      */
     protected $fillable = ['locale', 'namespace', 'group', 'item', 'text', 'unstable'];
 
+    public $casts = [
+        'unstable' => 'boolean',
+        'locked' => 'boolean',
+    ];
+
     public static function boot()
     {
         parent::boot();
@@ -47,14 +52,6 @@ class Translation extends Model
     public static function getCacheKey($locale, $group, $namespace)
     {
         return static::$cacheKey.".{$locale}.{$namespace}.{$group}";
-    }
-
-    /**
-     *  Each translation belongs to a language.
-     */
-    public function language()
-    {
-        return $this->belongsTo(Language::class, 'locale', 'code');
     }
 
     /**
@@ -125,14 +122,16 @@ class Translation extends Model
     {
         return Cache::rememberForever(static::getCacheKey($locale, $group, $namespace),
             function () use ($locale, $group, $namespace) {
-                $result = static::getFresh($locale, $group, $namespace)
-                                ->reduce(function ($lines, Translation $model) {
-                                    array_set($lines, $model->item, $model->text);
+                $result = static::getFresh($locale, $group, $namespace)->reduce(
+                    function ($lines, Translation $model) {
+                        array_set($lines, $model->item, $model->text);
 
-                                    return $lines;
-                                });
+                        return $lines;
+                    }
+                );
 
                 return $result ?: [];
-            });
+            }
+        );
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Igniter\Flame\Translation\Models;
 
-use File;
 use Igniter\Flame\Database\Model;
 use Lang;
 
@@ -25,39 +24,9 @@ class Language extends Model
      */
     protected $fillable = ['code', 'name'];
 
-    /**
-     *  Each language may have several translations.
-     */
-    public function translations()
-    {
-        return $this->hasMany(Translation::class, 'locale', 'code');
-    }
-
-    public function listAllFiles()
-    {
-        $result = [];
-        if (!$this->idiom)
-            return $result;
-
-        $namespaces = $this->getLoaderManager()->namespaces();
-        foreach ($namespaces as $namespace => $folder) {
-            foreach (File::glob($folder.'/'.$this->code.'/*.php') as $filePath) {
-                $path = pathinfo($filePath, PATHINFO_FILENAME);
-                $key = in_array(ucfirst($namespace), config('system.modules', [])) ? $namespace : 'Other';
-
-                $result[$key][] = (object)[
-                    'path'      => $path,
-                    'namespace' => $namespace,
-                ];
-            }
-        }
-
-        return $result;
-    }
-
     public function getTranslations($group, $namespace = null)
     {
-        $lines = $this->getLoaderManager()->load($this->code, $group, $namespace);
+        $lines = $this->getTranslationLoader()->load($this->code, $group, $namespace);
 
         ksort($lines);
 
@@ -67,24 +36,29 @@ class Language extends Model
     public function updateTranslations($group, $namespace = null, array $lines = [])
     {
         return collect($lines)->map(function ($text, $key) use ($group, $namespace) {
-            $oldText = Lang::get("{$namespace}::{$group}.{$key}");
-
-            if (strcmp($text, $oldText) === 0)
-                return FALSE;
-
-            $this->translations()->updateOrCreate([
-                'group'     => $group,
-                'namespace' => $namespace,
-                'item'      => $key,
-            ], [
-                'text' => $text,
-            ]);
+            $this->updateTranslation($group, $namespace, $key, $text);
 
             return $text;
         })->filter()->toArray();
     }
 
-    protected function getLoaderManager()
+    public function updateTranslation($group, $namespace, $key, $text)
+    {
+        $oldText = Lang::get("{$namespace}::{$group}.{$key}");
+
+        if (strcmp($text, $oldText) === 0)
+            return FALSE;
+
+        $translation = $this->translations()->firstOrNew([
+            'group' => $group,
+            'namespace' => $namespace,
+            'item' => $key,
+        ]);
+
+        $translation->updateAndLock($text);
+    }
+
+    protected function getTranslationLoader()
     {
         return app('translation.loader');
     }
