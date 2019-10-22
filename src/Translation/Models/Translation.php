@@ -44,6 +44,7 @@ class Translation extends Model
         static::saved(function (Translation $model) {
             $model->flushCache();
         });
+
         static::deleted(function (Translation $model) {
             $model->flushCache();
         });
