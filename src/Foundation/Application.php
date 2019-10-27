@@ -4,8 +4,8 @@ namespace Igniter\Flame\Foundation;
 
 use Exception;
 use Igniter\Flame\Foundation\Providers\LogServiceProvider;
+use Igniter\Flame\Events\EventServiceProvider;
 use Igniter\Flame\Router\RoutingServiceProvider;
-use Illuminate\Events\EventServiceProvider;
 use Illuminate\Foundation\Application as BaseApplication;
 
 /**
@@ -312,7 +312,7 @@ class Application extends BaseApplication
             'filesystem.cloud' => [\Illuminate\Contracts\Filesystem\Cloud::class],
             'hash' => [\Illuminate\Contracts\Hashing\Hasher::class],
             'translator' => [\Illuminate\Translation\Translator::class, \Illuminate\Contracts\Translation\Translator::class],
-            'log' => [\Illuminate\Log\Writer::class, \Illuminate\Contracts\Logging\Log::class, \Psr\Log\LoggerInterface::class],
+            'log' => [\Illuminate\Log\Logger::class, \Psr\Log\LoggerInterface::class],
             'mailer' => [\Illuminate\Mail\Mailer::class, \Illuminate\Contracts\Mail\Mailer::class, \Illuminate\Contracts\Mail\MailQueue::class],
 //            'auth.password'        => [\Illuminate\Auth\Passwords\PasswordBrokerManager::class, \Illuminate\Contracts\Auth\PasswordBrokerFactory::class],
 //            'auth.password.broker' => [\Illuminate\Auth\Passwords\PasswordBroker::class, \Illuminate\Contracts\Auth\PasswordBroker::class],

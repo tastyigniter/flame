@@ -86,10 +86,10 @@ class Finder
     protected $cacheKey;
 
     /**
-     * The number of minutes to cache the query.
+     * The number of seconds to cache the query.
      * @var int
      */
-    protected $cacheMinutes;
+    protected $cacheSeconds;
 
     /**
      * The tags for the query cache.
@@ -233,7 +233,7 @@ class Finder
      */
     public function get($columns = ['*'])
     {
-        if (!is_null($this->cacheMinutes)) {
+        if (!is_null($this->cacheSeconds)) {
             $results = $this->getCached($columns);
         }
         else {
@@ -277,7 +277,7 @@ class Finder
 
         $this->validateFileName();
 
-        list($name, $extension) = $this->model->getFileNameParts();
+        [$name, $extension] = $this->model->getFileNameParts();
 
         $result = $this->processor->processInsert($this, $values);
 
@@ -300,14 +300,14 @@ class Finder
     {
         $this->validateFileName();
 
-        list($name, $extension) = $this->model->getFileNameParts();
+        [$name, $extension] = $this->model->getFileNameParts();
 
         $result = $this->processor->processUpdate($this, $values);
 
         $oldName = $oldExtension = null;
 
         if ($this->model->isDirty('fileName')) {
-            list($oldName, $oldExtension) = $this->model->getFileNameParts(
+            [$oldName, $oldExtension] = $this->model->getFileNameParts(
                 $this->model->getOriginal('fileName')
             );
         }
@@ -331,7 +331,7 @@ class Finder
     {
         $this->validateFileName();
 
-        list($name, $extension) = $this->model->getFileNameParts();
+        [$name, $extension] = $this->model->getFileNameParts();
 
         return $this->source->delete(
             $this->model->getTypeDirName(),
@@ -349,7 +349,7 @@ class Finder
     {
         $this->validateFileName();
 
-        list($name, $extension) = $this->model->getFileNameParts();
+        [$name, $extension] = $this->model->getFileNameParts();
 
         return $this->source->lastModified(
             $this->model->getTypeDirName(),
@@ -383,7 +383,7 @@ class Finder
     protected function runSelect()
     {
         if ($this->select) {
-            list($name, $extension) = $this->select;
+            [$name, $extension] = $this->select;
 
             return $this->source->select($this->in, $name, $extension);
         }
@@ -535,14 +535,14 @@ class Finder
     /**
      * Indicate that the query results should be cached.
      *
-     * @param  \DateTime|int $minutes
+     * @param  \DateTime|int $seconds
      * @param  string $key
      *
      * @return $this
      */
-    public function remember($minutes, $key = null)
+    public function remember($seconds, $key = null)
     {
-        list($this->cacheMinutes, $this->cacheKey) = [$minutes, $key];
+        [$this->cacheSeconds, $this->cacheKey] = [$seconds, $key];
 
         return $this;
     }
@@ -606,19 +606,19 @@ class Finder
             return MemorySource::$cache[$key];
         }
 
-        $minutes = $this->cacheMinutes;
+        $seconds = $this->cacheSeconds;
         $cache = $this->getCache();
         $callback = $this->getCacheCallback($columns);
         $isNewCache = !$cache->has($key);
 
-        // If the "minutes" value is less than zero, we will use that as the indicator
+        // If the "seconds" value is less than zero, we will use that as the indicator
         // that the value should be remembered values should be stored indefinitely
-        // and if we have minutes we will use the typical remember function here.
-        if ($minutes < 0) {
+        // and if we have seconds we will use the typical remember function here.
+        if ($seconds < 0) {
             $result = $cache->rememberForever($key, $callback);
         }
         else {
-            $result = $cache->remember($key, $minutes, $callback);
+            $result = $cache->remember($key, $seconds, $callback);
         }
 
         // If this is an old cache record, we can check if the cache has been busted
@@ -628,11 +628,11 @@ class Finder
             $cache->forget($key);
             $isNewCache = TRUE;
 
-            if ($minutes < 0) {
+            if ($seconds < 0) {
                 $result = $cache->rememberForever($key, $callback);
             }
             else {
-                $result = $cache->remember($key, $minutes, $callback);
+                $result = $cache->remember($key, $seconds, $callback);
             }
         }
 
@@ -657,7 +657,7 @@ class Finder
 
         $mTime = $result ? array_get(reset($result), 'mTime') : null;
 
-        list($name, $extension) = $this->select;
+        [$name, $extension] = $this->select;
 
         $lastMTime = $this->source->lastModified(
             $this->in,

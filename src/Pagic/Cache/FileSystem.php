@@ -107,6 +107,6 @@ class FileSystem
         $cached = $this->getCached() ?: [];
         $cached[$filePath] = $cacheItem;
 
-        Cache::put($this->dataCacheKey, base64_encode(serialize($cached)), 1440);
+        Cache::put($this->dataCacheKey, base64_encode(serialize($cached)), now()->addDay());
     }
 }

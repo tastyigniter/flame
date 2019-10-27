@@ -2,7 +2,9 @@
 
 namespace Igniter\Flame\Foundation\Exceptions;
 
-use ApplicationException;
+use Igniter\Flame\Exception\AjaxException;
+use Igniter\Flame\Exception\ApplicationException;
+use Igniter\Flame\Exception\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use October\Rain\Foundation\Exception\Handler as OctoberHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -15,10 +17,11 @@ class Handler extends OctoberHandler
      * @var array
      */
     protected $dontReport = [
-//        AjaxException::class,
+        AjaxException::class,
         ApplicationException::class,
         ModelNotFoundException::class,
         HttpException::class,
+        ValidationException::class,
     ];
 
     /**

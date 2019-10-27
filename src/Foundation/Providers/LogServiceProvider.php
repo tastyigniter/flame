@@ -1,18 +1,18 @@
 <?php namespace Igniter\Flame\Foundation\Providers;
 
 use Illuminate\Log\LogServiceProvider as BaseLogServiceProvider;
-use Illuminate\Log\Writer;
+use Psr\Log\LoggerInterface;
 
 class LogServiceProvider extends BaseLogServiceProvider
 {
     /**
      * Configure the Monolog handlers for the application.
      *
-     * @param  \Illuminate\Log\Writer $log
+     * @param  \Psr\Log\LoggerInterface $log
      *
      * @return void
      */
-    protected function configureSingleHandler(Writer $log)
+    protected function configureSingleHandler(LoggerInterface $log)
     {
         $log->useFiles(
             $this->app->storagePath().'/logs/system.log',
@@ -23,11 +23,11 @@ class LogServiceProvider extends BaseLogServiceProvider
     /**
      * Configure the Monolog handlers for the application.
      *
-     * @param  \Illuminate\Log\Writer $log
+     * @param  \Psr\Log\LoggerInterface $log
      *
      * @return void
      */
-    protected function configureDailyHandler(Writer $log)
+    protected function configureDailyHandler(LoggerInterface $log)
     {
         $log->useDailyFiles(
             $this->app->storagePath().'/logs/system.log', $this->maxFiles(),
