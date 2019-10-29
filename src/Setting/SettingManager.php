@@ -12,7 +12,7 @@ class SettingManager extends Manager
      */
     public function getDefaultDriver()
     {
-        return $this->app->hasDatabase() ? 'config' : 'memory';
+        return 'config';
     }
 
     public function createConfigDriver()

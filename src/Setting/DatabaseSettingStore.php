@@ -316,7 +316,7 @@ class DatabaseSettingStore extends SettingStore
         $this->cacheKey = $cacheKey;
     }
 
-    protected function flushCache()
+    public function flushCache()
     {
         if ($cacheKey = $this->getCacheKey()) {
             $this->cache->forget($this->getCacheKey());
