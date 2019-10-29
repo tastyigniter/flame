@@ -2,6 +2,7 @@
 
 namespace Igniter\Flame\Setting;
 
+use Exception;
 use Illuminate\Cache\Repository;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Arr;
@@ -146,6 +147,9 @@ class DatabaseSettingStore extends SettingStore
      */
     protected function write(array $data)
     {
+        if (!$this->hasDatabase())
+            return;
+
         $keysQuery = $this->newQuery();
 
         $keys = $keysQuery->pluck($this->valueColumn, $this->keyColumn);
@@ -219,6 +223,9 @@ class DatabaseSettingStore extends SettingStore
      */
     protected function read()
     {
+        if (!$this->hasDatabase())
+            return [];
+
         $collection = $this->cacheCallback(function () {
             return $this->newQuery()->get();
         });
@@ -330,5 +337,15 @@ class DatabaseSettingStore extends SettingStore
             return $this->cache->rememberForever($cacheKey, $callback);
 
         return $callback();
+    }
+
+    protected function hasDatabase()
+    {
+        try {
+            return $this->db->getSchemaBuilder()->hasTable($this->table);
+        }
+        catch (Exception $ex) {
+            return FALSE;
+        }
     }
 }
