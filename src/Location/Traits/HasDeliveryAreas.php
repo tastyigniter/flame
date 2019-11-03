@@ -15,6 +15,8 @@ trait HasDeliveryAreas
 
     public static function bootHasDeliveryAreas()
     {
+        traceLog('Traits \Igniter\Flame\Location\Traits\HasWorkingHours has been deprecated, use \Admin\Traits\HasWorkingHours instead.');
+
         static::saving(function (Model $model) {
             $model->geocodeAddressOnSave();
         });

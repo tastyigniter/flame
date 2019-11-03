@@ -6,14 +6,9 @@ use DB;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Geolite\Contracts\CoordinatesInterface;
 use Igniter\Flame\Location\Contracts\LocationInterface;
-use Igniter\Flame\Location\Traits\HasDeliveryAreas;
-use Igniter\Flame\Location\Traits\HasWorkingHours;
 
 class AbstractLocation extends Model implements LocationInterface
 {
-    use HasWorkingHours;
-    use HasDeliveryAreas;
-
     const KM_UNIT = 111.13384;
 
     const M_UNIT = 69.05482;

@@ -22,6 +22,11 @@ trait HasWorkingHours
 
     protected $currentTime;
 
+    public static function bootHasWorkingHours()
+    {
+        traceLog('Traits \Igniter\Flame\Location\Traits\HasWorkingHours has been deprecated, use \Admin\Traits\HasWorkingHours instead.');
+    }
+
     /**
      * @return Carbon
      */
