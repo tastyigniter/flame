@@ -20,6 +20,6 @@ class LocationServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        trace_log('Deprecated. See Igniter\Flame\Geolite\GeoliteServiceProvider or Igniter\Local\Extension');
+        traceLog('Deprecated. See Igniter\Flame\Geolite\GeoliteServiceProvider or Igniter\Local\Extension');
     }
 }

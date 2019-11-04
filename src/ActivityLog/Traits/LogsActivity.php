@@ -1,6 +1,6 @@
 <?php namespace Igniter\Flame\ActivityLog\Traits;
 
-trace_log('Deprecated. Use activity()->pushLog()');
+traceLog('LogsActivity traits has been Deprecated. Use activity()->pushLog() instead');
 
 use App;
 use Igniter\Flame\ActivityLog\ActivityLogger;
@@ -41,7 +41,6 @@ trait LogsActivity
 
     protected static function bootLogsActivity()
     {
-        return;
         static::eventsToBeRecorded()->each(function ($eventName) {
             return static::$eventName(function (Model $model) use ($eventName) {
 

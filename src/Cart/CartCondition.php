@@ -205,7 +205,7 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
 
     public function getLabel()
     {
-        return (sscanf($this->label, 'lang:%s', $line) === 1) ? lang($line) : $this->label;
+        return is_lang_key($this->label) ? lang($this->label) : $this->label;
     }
 
     public function getValue()
