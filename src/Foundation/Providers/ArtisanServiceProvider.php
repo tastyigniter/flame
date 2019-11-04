@@ -3,6 +3,7 @@
 namespace Igniter\Flame\Foundation\Providers;
 
 use Igniter\Flame\Foundation\Console\KeyGenerateCommand;
+use Igniter\Flame\Foundation\Console\SeedCommand;
 use Illuminate\Console\Scheduling\ScheduleFinishCommand;
 use Illuminate\Console\Scheduling\ScheduleRunCommand;
 use Illuminate\Foundation\Providers\ArtisanServiceProvider as BaseServiceProvider;
@@ -59,7 +60,7 @@ class ArtisanServiceProvider extends BaseServiceProvider
      * @var array
      */
     protected $devCommands = [
-        'AppName' => 'command.app.name',
+//        'AppName' => 'command.app.name',
 //        'AuthMake' => 'command.auth.make',
         'CacheTable' => 'command.cache.table',
 //        'ConsoleMake' => 'command.console.make',
@@ -86,7 +87,7 @@ class ArtisanServiceProvider extends BaseServiceProvider
 //        'SeederMake' => 'command.seeder.make',
         'SessionTable' => 'command.session.table',
         'Serve' => 'command.serve',
-//        'TestMake' => 'command.test.make',
+        'TestMake' => 'command.test.make',
         'VendorPublish' => 'command.vendor.publish',
     ];
 
@@ -99,6 +100,18 @@ class ArtisanServiceProvider extends BaseServiceProvider
     {
         $this->app->singleton('command.key.generate', function ($app) {
             return new KeyGenerateCommand($app['files']);
+        });
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerSeedCommand()
+    {
+        $this->app->singleton('command.seed', function ($app) {
+            return new SeedCommand($app['db']);
         });
     }
 }
