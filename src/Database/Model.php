@@ -248,6 +248,76 @@ class Model extends EloquentModel
     }
 
     /**
+     * Handle the "creating" model event
+     */
+    protected function beforeCreate()
+    {
+    }
+
+    /**
+     * Handle the "created" model event
+     */
+    protected function afterCreate()
+    {
+    }
+
+    /**
+     * Handle the "updating" model event
+     */
+    protected function beforeUpdate()
+    {
+    }
+
+    /**
+     * Handle the "updated" model event
+     */
+    protected function afterUpdate()
+    {
+    }
+
+    /**
+     * Handle the "saving" model event
+     */
+    protected function beforeSave()
+    {
+    }
+
+    /**
+     * Handle the "saved" model event
+     */
+    protected function afterSave()
+    {
+    }
+
+    /**
+     * Handle the "deleting" model event
+     */
+    protected function beforeDelete()
+    {
+    }
+
+    /**
+     * Handle the "deleted" model event
+     */
+    protected function afterDelete()
+    {
+    }
+
+    /**
+     * Handle the "fetching" model event
+     */
+    protected function beforeFetch()
+    {
+    }
+
+    /**
+     * Handle the "fetched" model event
+     */
+    protected function afterFetch()
+    {
+    }
+
+    /**
      * Create a new native event for handling beforeFetch().
      *
      * @param Closure|string $callback

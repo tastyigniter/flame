@@ -152,7 +152,7 @@ class Media extends Model
     // Events
     //
 
-    public function beforeSave()
+    protected function beforeSave()
     {
         if (!is_null($this->fileToAdd)) {
             if ($this->fileToAdd instanceof UploadedFile) {
@@ -170,7 +170,7 @@ class Media extends Model
      * After model is deleted
      * - clean up it's thumbnails
      */
-    public function afterDelete()
+    protected function afterDelete()
     {
         try {
             $this->deleteThumbs();
@@ -339,6 +339,7 @@ class Media extends Model
         $ext = strtolower($this->getExtension());
 
         $name = str_replace('.', '', uniqid(null, TRUE));
+
         return $this->name = $name.(strlen($ext) ? '.'.$ext : '');
     }
 
@@ -434,6 +435,7 @@ class Media extends Model
     protected function isDirectoryEmpty($directory)
     {
         $path = $this->getStorageDisk()->path($directory);
+
         return !(new FilesystemIterator($path))->valid();
     }
 
@@ -445,6 +447,7 @@ class Media extends Model
     protected function hasFile($fileName = null)
     {
         $filePath = $this->getStoragePath().$fileName;
+
         return $this->getStorageDisk()->exists($filePath);
     }
 
@@ -674,6 +677,7 @@ class Media extends Model
     public function getStorageDirectory()
     {
         $mediaFolder = config('system.assets.attachment.folder', 'attachments');
+
         return $this->isPublic() ? $mediaFolder.'/public/' : $mediaFolder.'/protected/';
     }
 
