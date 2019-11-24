@@ -88,7 +88,7 @@ class CartItem implements Arrayable, Jsonable
         $this->id = $id;
         $this->name = $name;
         $this->price = (float)$price;
-        $this->options = new CartItemOptions($options);
+        $this->options = $this->makeCartOptions($options);
         $this->comment = $comment;
         $this->rowId = $this->generateRowId($id, $options);
     }
@@ -126,8 +126,8 @@ class CartItem implements Arrayable, Jsonable
 
     public function hasOptionValue($valueIndex)
     {
-        return $this->options->search(function ($option, $key) use ($valueIndex) {
-            return array_key_exists($valueIndex, $option['values']);
+        return $this->options->search(function ($option) use ($valueIndex) {
+            return in_array($valueIndex, $option->values->pluck('id')->all());
         });
     }
 
@@ -183,7 +183,7 @@ class CartItem implements Arrayable, Jsonable
         $this->name = array_get($attributes, 'name', $this->name);
         $this->price = array_get($attributes, 'price', $this->price);
         $this->qty = array_get($attributes, 'qty', $this->qty);
-        $this->options = new CartItemOptions(array_get($attributes, 'options', $this->options));
+        $this->options = $this->makeCartOptions(array_get($attributes, 'options', $this->options));
         $this->comment = array_get($attributes, 'comment', $this->comment);
 
         $this->rowId = $this->generateRowId($this->id, $this->options->all());
@@ -274,6 +274,16 @@ class CartItem implements Arrayable, Jsonable
         ksort($options);
 
         return md5($id.serialize($options).$this->comment);
+    }
+
+    protected function makeCartOptions($items)
+    {
+        if ($items instanceof CartItemOptions)
+            return $items;
+
+        return new CartItemOptions(array_map(function ($item) {
+            return CartItemOption::fromArray($item);
+        }, $items));
     }
 
     /**
