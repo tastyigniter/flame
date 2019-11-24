@@ -40,6 +40,9 @@ class Activity extends Model
 
     public $casts = [
         'properties' => 'collection',
+        'subject_id' => 'integer',
+        'causer_id' => 'integer',
+        'read_at' => 'datetime',
     ];
 
     public $dates = ['read_at', 'deleted_at'];
