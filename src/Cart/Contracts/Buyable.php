@@ -11,7 +11,7 @@ interface Buyable
      *
      * @return int|string
      */
-    public function getBuyableIdentifier($options = null);
+    public function getBuyableIdentifier();
 
     /**
      * Get the description or title of the Buyable item.
@@ -20,7 +20,7 @@ interface Buyable
      *
      * @return string
      */
-    public function getBuyableName($options = null);
+    public function getBuyableName();
 
     /**
      * Get the price of the Buyable item.
@@ -29,5 +29,5 @@ interface Buyable
      *
      * @return float
      */
-    public function getBuyablePrice($options = null);
+    public function getBuyablePrice();
 }
