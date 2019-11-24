@@ -48,6 +48,9 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     // Object properties
     //
 
+    /**
+     * @var \Igniter\Flame\Cart\CartContent
+     */
     protected $cartContent;
 
     protected $passed = FALSE;
@@ -142,14 +145,14 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     /**
      * Called before the applying of condition on cart total.
      */
-    public function beforeApply()
+    protected function beforeApply()
     {
     }
 
     /**
      * Called after the applying of condition on cart total.
      */
-    public function afterApply()
+    protected function afterApply()
     {
     }
 
@@ -176,14 +179,14 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     /**
      * Called once when the condition validation passes.
      */
-    public function whenValid()
+    protected function whenValid()
     {
     }
 
     /**
      * Called once when the condition validation fails.
      */
-    public function whenInvalid()
+    protected function whenInvalid()
     {
     }
 
@@ -246,7 +249,7 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
         return Arr::get($this->metaData, $key, $default);
     }
 
-    public function setMetaData($key, $value)
+    public function setMetaData($key, $value = null)
     {
         if (is_array($key)) {
             foreach ($key as $k => $v) {
