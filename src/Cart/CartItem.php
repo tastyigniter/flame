@@ -76,13 +76,13 @@ class CartItem implements Arrayable, Jsonable
     public function __construct($id, $name, $price, array $options = [], $comment = null)
     {
         if (!strlen($id)) {
-            throw new \InvalidArgumentException('Please supply a valid identifier.');
+            throw new \InvalidArgumentException('Please supply a valid cart item identifier.');
         }
         if (!strlen($name)) {
-            throw new \InvalidArgumentException('Please supply a valid name.');
+            throw new \InvalidArgumentException('Please supply a valid cart item name.');
         }
         if (strlen($price) < 0 OR !is_numeric($price)) {
-            throw new \InvalidArgumentException('Please supply a valid price.');
+            throw new \InvalidArgumentException('Please supply a valid cart item price.');
         }
 
         $this->id = $id;

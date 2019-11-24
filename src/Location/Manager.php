@@ -227,7 +227,7 @@ abstract class Manager
             $coordinates->getLongitude()
         );
 
-        return $query->isEnabled()->limit($limit)->get();
+        return $query->orderBy('distance', 'asc')->isEnabled()->limit($limit)->get();
     }
 
     public function workingSchedule($type, $days = null)

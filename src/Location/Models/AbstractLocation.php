@@ -189,8 +189,7 @@ class AbstractLocation extends Model implements LocationInterface
         $sql .= ' cos( radians( location_lng ) - radians(?) ) + sin( radians(?) ) *';
         $sql .= ' sin( radians( location_lat ) ) ) ) AS distance';
 
-        $query->selectRaw(DB::raw($sql), [$latitude, $longitude, $latitude])
-              ->orderBy('distance', 'asc');
+        $query->selectRaw(DB::raw($sql), [$latitude, $longitude, $latitude]);
 
         return $query;
     }

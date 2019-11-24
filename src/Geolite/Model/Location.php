@@ -98,7 +98,7 @@ class Location implements Contracts\LocationInterface
         return $this->hasCoordinates();
     }
 
-    public function format(string $mapping = '%n %S, %L %z')
+    public function format(string $mapping = '%n %S %L %z')
     {
         return (new StringFormatter)->format($this, $mapping);
     }
@@ -447,7 +447,7 @@ class Location implements Contracts\LocationInterface
 
         $noBounds = [
             'south' => null, 'west' => null,
-            'north' => null, 'east' => null
+            'north' => null, 'east' => null,
         ];
 
         return [

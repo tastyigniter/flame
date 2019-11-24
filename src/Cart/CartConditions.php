@@ -7,29 +7,6 @@ use Illuminate\Support\Collection;
 
 class CartConditions extends Collection
 {
-    public function load($conditions)
-    {
-        $result = [];
-        foreach ($conditions as $config) {
-            if (!array_get($config, 'status', TRUE))
-                continue;
-
-            $name = array_get($config, 'name');
-            if ($condition = $this->get($name)) {
-                $condition->fillFromConfig($config);
-            }
-            else {
-                $condition = $this->makeCondition($config);
-            }
-
-            $result[$condition->name] = $condition;
-        }
-
-        $this->items = $result;
-
-        return $result;
-    }
-
     public function applied($subtotal)
     {
         return $this->sortBy(function ($condition) {

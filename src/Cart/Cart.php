@@ -336,7 +336,7 @@ class Cart
     public function removeCondition($name)
     {
         $cartCondition = $this->getCondition($name);
-        if (!$cartCondition->removeable)
+        if (!$cartCondition OR !$cartCondition->removeable)
             return FALSE;
 
         $this->fireEvent('condition.removing', $cartCondition);
@@ -364,6 +364,12 @@ class Cart
      */
     public function condition($condition)
     {
+        traceLog('Deprecated. Use Cart::loadCondition($condition) instead');
+        $this->loadCondition($condition);
+    }
+
+    public function loadCondition(CartCondition $condition)
+    {
         // Extensibility
         $this->fireEvent('condition.loading', $condition);
 
@@ -371,27 +377,34 @@ class Cart
 
         $condition->onLoad();
 
+        $this->fireEvent('condition.loaded', $condition);
+
         $allConditions = $this->getConditions();
         $allConditions->put($condition->name, $condition);
-
-        $this->fireEvent('condition.loaded', $condition);
 
         $this->putSession('conditions', $allConditions);
     }
 
-    protected function loadConditions()
+    public function loadConditions()
     {
         if ($this->conditionsLoaded)
             return;
 
         $conditions = new CartConditions;
-        $definitions = config('cart.conditions', []);
-        foreach ($definitions as $definition) {
+        foreach (config('cart.conditions', []) as $definition) {
             if (!array_get($definition, 'status', TRUE))
                 continue;
 
             $name = array_get($definition, 'name');
-            $condition = $this->loadCondition($name, $definition);
+            if ($condition = $this->getCondition($name)) {
+                $condition->fillFromConfig($definition);
+            }
+            else {
+                $condition = $this->makeCondition($definition);
+            }
+
+            $this->loadCondition($condition);
+
             $conditions->put($condition->name, $condition);
         }
 
@@ -400,22 +413,13 @@ class Cart
         $this->conditionsLoaded = TRUE;
     }
 
-    protected function loadCondition($name, $config)
+    protected function makeCondition($config)
     {
-        if ($condition = $this->getCondition($name)) {
-            $condition->fillFromConfig($config);
-        }
-        else {
-            $className = array_get($config, 'className');
-            if (!class_exists($className))
-                throw new Exception(sprintf("The Cart Condition class name '%s' has not been registered", $className));
+        $className = array_get($config, 'className');
+        if (!class_exists($className))
+            throw new Exception(sprintf("The Cart Condition class name '%s' has not been registered", $className));
 
-            $condition = new $className($config);
-        }
-
-        $this->condition($condition);
-
-        return $condition;
+        return new $className($config);
     }
 
     //
