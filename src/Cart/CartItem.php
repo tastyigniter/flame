@@ -111,7 +111,11 @@ class CartItem implements Arrayable, Jsonable
      */
     public function subtotal()
     {
-        return $this->qty * $this->price;
+        $price = $this->options->reduce(function ($subtotal, CartItemOption $option) {
+            return $subtotal + $option->subtotal();
+        }, $this->price);
+
+        return $this->qty * $price;
     }
 
     public function comment()
@@ -213,7 +217,7 @@ class CartItem implements Arrayable, Jsonable
     public function __get($attribute)
     {
         if ($attribute === 'subtotal') {
-            return $this->qty * $this->price;
+            return $this->subtotal();
         }
 
         if ($attribute === 'model' AND !is_null($this->associatedModel)) {
