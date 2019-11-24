@@ -15,9 +15,13 @@ class CartServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app->bind('cart', \Igniter\Flame\Cart\Cart::class);
-
         $this->mergeConfigFrom(__DIR__.'/config/cart.php', 'cart');
+
+        $this->app->singleton('cart', function ($app) {
+            $this->app['events']->fire('cart.beforeRegister', [$this]);
+
+            return $app->make(\Igniter\Flame\Cart\Cart::class);
+        });
     }
 
     /**
