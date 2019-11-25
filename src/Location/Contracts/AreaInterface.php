@@ -11,8 +11,6 @@ interface AreaInterface
 
     public function minimumOrderTotal($cartTotal);
 
-    public function listConditions();
-
     public function checkBoundary($position);
 
     public function pointInVertices(CoordinatesInterface $coordinate);

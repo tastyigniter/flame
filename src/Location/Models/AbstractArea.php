@@ -45,20 +45,6 @@ abstract class AbstractArea extends Model implements AreaInterface
         '#F16745', '#FFC65D',
     ];
 
-    public function getChargeSummaryTrans($name)
-    {
-        $trans = [
-            'all' => '{amount} on all orders',
-            'above' => '{amount} above {total}',
-            'below' => '{amount} below {total}',
-        ];
-
-        if (is_null($name))
-            return $trans;
-
-        return $trans[$name] ?? null;
-    }
-
     //
     // Accessors & Mutators
     //
@@ -66,13 +52,13 @@ abstract class AbstractArea extends Model implements AreaInterface
     public function getVerticesAttribute()
     {
         return isset($this->boundaries['vertices']) ?
-            json_decode($this->boundaries['vertices']) : [];
+            json_decode($this->boundaries['vertices'], FALSE) : [];
     }
 
     public function getCircleAttribute()
     {
         return isset($this->boundaries['circle']) ?
-            json_decode($this->boundaries['circle']) : null;
+            json_decode($this->boundaries['circle'], FALSE) : null;
     }
 
     //
@@ -129,21 +115,6 @@ abstract class AbstractArea extends Model implements AreaInterface
     public function minimumOrderTotal($cartTotal)
     {
         return $this->getConditionValue('total', $cartTotal);
-    }
-
-    public function listConditions()
-    {
-        $conditions = [];
-        if (!$this->conditions)
-            return $conditions;
-
-        foreach ($this->conditions as $condition) {
-            $condition['label'] = $this->getChargeSummaryTrans($condition['type']);
-
-            $conditions[] = $condition;
-        }
-
-        return $conditions;
     }
 
     public function checkBoundary($coordinate)
