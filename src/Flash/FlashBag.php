@@ -145,7 +145,7 @@ class FlashBag
     {
         // If no message was provided, we should update
         // the most recently added message.
-        if (!$message) {
+        if (is_null($message)) {
             return $this->updateLastMessage(compact('level'));
         }
 
