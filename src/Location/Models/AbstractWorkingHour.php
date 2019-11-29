@@ -49,7 +49,7 @@ abstract class AbstractWorkingHour extends Model implements Contracts\WorkingHou
 
     public function getDayAttribute()
     {
-        return Carbon::now()->startOfWeek()->addDay($this->weekday)->format('l');
+        return Carbon::now()->startOfWeek()->addDay($this->weekday);
     }
 
     public function getOpenAttribute()
@@ -102,7 +102,7 @@ abstract class AbstractWorkingHour extends Model implements Contracts\WorkingHou
 
     public function getDay()
     {
-        return $this->day;
+        return $this->day->format('l');
     }
 
     public function getOpen()

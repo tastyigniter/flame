@@ -2,6 +2,7 @@
 
 namespace Igniter\Flame\Translation;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Http\Request;
 
@@ -23,8 +24,10 @@ class Localization
     {
         $locale = $this->getLocale();
 
-        if ($this->config['app.locale'] != $locale)
+        if ($this->config['app.locale'] != $locale) {
             app()->setLocale($locale);
+            Carbon::setLocale($locale);
+        }
     }
 
     public function getLocale()
