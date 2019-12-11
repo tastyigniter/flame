@@ -74,11 +74,25 @@ interface SourceInterface
     public function lastModified($dirName, $fileName, $extension);
 
     /**
-     * Generate a cache key unique to this datasource.
+     * Generate a cache key unique to this source.
      *
      * @param  string $name
      *
      * @return string
      */
     public function makeCacheKey($name = '');
+
+    /**
+     * Generate a paths cache key unique to this source
+     *
+     * @return string
+     */
+    public function getPathsCacheKey();
+
+    /**
+     * Get all available paths within this source
+     *
+     * @return array $paths ['path/to/file1.md' => true (path can be handled and exists), 'path/to/file2.md' => false (path can be handled but doesn't exist)]
+     */
+    public function getAvailablePaths();
 }

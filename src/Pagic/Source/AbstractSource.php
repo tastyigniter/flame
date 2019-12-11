@@ -21,7 +21,7 @@ abstract class AbstractSource
     }
 
     /**
-     * Generate a cache key unique to this datasource.
+     * Generate a cache key unique to this source.
      *
      * @param string $name
      *

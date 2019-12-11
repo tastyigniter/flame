@@ -36,6 +36,7 @@ class FileSource extends AbstractSource implements SourceInterface
      *
      * @param $basePath
      * @param \Igniter\Flame\Filesystem\Filesystem $files
+     * @param $fallbackPath
      */
     public function __construct($basePath, Filesystem $files)
     {
@@ -82,11 +83,9 @@ class FileSource extends AbstractSource implements SourceInterface
      */
     public function selectAll($dirName, array $options = [])
     {
-        extract(array_merge([
-            'columns' => null,  // Only return specific columns (fileName, mTime, content)
-            'extensions' => null,  // Match specified extensions
-            'fileMatch' => null,  // Match the file name using fnmatch()
-        ], $options));
+        $columns = array_get($options, 'columns', null);  // Only return specific columns (fileName, mTime, content)
+        $extensions = array_get($options, 'extensions', null);  // Match specified extensions
+        $fileMatch = array_get($options, 'fileMatch', null);  // Match the file name using fnmatch()
 
         $result = [];
         $dirPath = $this->basePath.'/'.$dirName;
@@ -102,13 +101,13 @@ class FileSource extends AbstractSource implements SourceInterface
             $columns = array_flip($columns);
         }
 
-        $finder = $this->finder->create()
-                               ->files()
-                               ->ignoreVCS(TRUE)
-                               ->ignoreDotFiles(TRUE)
-                               ->depth('<= 1');  // Support only a single level of subdirectories
+        $iterator = $this->finder->create()
+                                 ->files()
+                                 ->ignoreVCS(TRUE)
+                                 ->ignoreDotFiles(TRUE)
+                                 ->depth('<= 1');  // Support only a single level of subdirectories
 
-        $finder->filter(function (\SplFileInfo $file) use ($extensions, $fileMatch) {
+        $iterator->filter(function (\SplFileInfo $file) use ($extensions, $fileMatch) {
             // Filter by extension
             $fileExt = $file->getExtension();
             if (!is_null($extensions) AND !in_array($fileExt, $extensions))
@@ -119,7 +118,7 @@ class FileSource extends AbstractSource implements SourceInterface
                 return FALSE;
         });
 
-        $files = iterator_to_array($finder->in($dirPath), FALSE);
+        $files = iterator_to_array($iterator->in($dirPath), FALSE);
 
         foreach ($files as $file) {
             $item = [];
@@ -327,5 +326,34 @@ class FileSource extends AbstractSource implements SourceInterface
     public function getBasePath()
     {
         return $this->basePath;
+    }
+
+    /**
+     * Generate a paths cache key unique to this source
+     *
+     * @return string
+     */
+    public function getPathsCacheKey()
+    {
+        return 'pagic-source-file-'.$this->basePath;
+    }
+
+    /**
+     * Get all available paths within this source
+     *
+     * @return array $paths
+     */
+    public function getAvailablePaths()
+    {
+        $iterator = $this->finder->create();
+        $iterator->files();
+        $iterator->ignoreVCS(TRUE);
+        $iterator->ignoreDotFiles(TRUE);
+        $iterator->exclude('node_modules');
+        $iterator->in($this->basePath);
+
+        return collect($iterator)->map(function (\SplFileInfo $fileInfo) {
+            return $fileInfo->getRelativePathName();
+        })->values()->all();
     }
 }

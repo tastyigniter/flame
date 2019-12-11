@@ -53,27 +53,31 @@ class FileParser
         $count = count($doc);
 
         $result = [
-            'data'   => [],
-            'code'   => null,
+            'settings' => [],
+            'code' => null,
             'markup' => null,
         ];
 
-        // Only markup
-        if ($count <= 2) {
-            $result['markup'] = implode($separator, array_slice($doc, 1));
+        // Data, code and markup
+        if ($count === 4) {
+            $frontMatter = trim($doc[1]);
+            $result['settings'] = Yaml::parse($frontMatter);
+            $result['code'] = trim($doc[2]);
+            $result['markup'] = $doc[3];
         }
         // Data and markup
         elseif ($count === 3) {
-            $frontmatter = trim($doc[1]);
-            $result['data'] = Yaml::parse($frontmatter);
-            $result['markup'] = implode($separator, array_slice($doc, 2));
+            $frontMatter = trim($doc[1]);
+            $result['settings'] = Yaml::parse($frontMatter);
+            $result['markup'] = $doc[2];
         }
-        // Data, code and markup
-        else {
-            $frontmatter = trim($doc[1]);
-            $result['data'] = Yaml::parse($frontmatter);
-            $result['code'] = trim($doc[2]);
-            $result['markup'] = implode($separator, array_slice($doc, 3));
+        // Only markup
+        elseif ($count === 2) {
+            $result['markup'] = $doc[1];
+        }
+        // Only markup, no separator
+        elseif ($count === 1) {
+            $result['markup'] = $doc[0];
         }
 
         return $result;
@@ -90,19 +94,13 @@ class FileParser
     {
         $code = trim(array_get($data, 'code'));
         $markup = trim(array_get($data, 'markup'));
-        $settings = array_get($data, 'data', []);
+        $settings = array_get($data, 'settings', []);
 
         // Build content
         $content = [];
 
         if ($settings) {
-            $frontMatter = Yaml::dump(array_except($settings, 'components'));
-            if ($components = array_get($settings, 'components')) {
-                foreach ($components as $key => $component) {
-                    $frontMatter .= PHP_EOL.Yaml::dump([$key => $component]);
-                }
-            }
-            $content[] = $frontMatter;
+            $content[] = trim(Yaml::dump($settings), PHP_EOL);
         }
 
         if ($code) {
@@ -127,8 +125,8 @@ class FileParser
         $path = $fileCache->getCacheKey($filePath);
 
         $result = [
-            'filePath'  => $path,
-            'mTime'     => $this->object->mTime,
+            'filePath' => $path,
+            'mTime' => $this->object->mTime,
             'className' => null,
         ];
 
@@ -246,6 +244,7 @@ class FileParser
         if (!class_exists($className)) {
             $path = array_get($data, 'filePath', $fileCache->getCacheKey($className));
             if (is_file($path)) {
+                $fileCache->load($path);
                 if ($className = $this->extractClassFromFile($path)) {
                     return new $className($page, $layout, $controller);
                 }

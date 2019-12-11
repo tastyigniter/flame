@@ -64,14 +64,14 @@ class Processor
 
         $content = [
             'fileName' => $fileName,
-            'mTime'    => array_get($result, 'mTime'),
-            'content'  => $content,
-            'markup'   => $processed['markup'],
-            'code'     => $processed['code'],
+            'mTime' => array_get($result, 'mTime'),
+            'content' => $content,
+            'markup' => $processed['markup'],
+            'code' => $processed['code'],
         ];
 
-        if (!empty($processed['data']))
-            $content = $content + $processed['data'];
+        if (!empty($processed['settings']))
+            $content = $content + $processed['settings'];
 
         return $content;
     }

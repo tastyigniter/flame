@@ -112,13 +112,13 @@ trait HasAttributes
      */
     protected function getArrayableAppends()
     {
+        $defaults = ['settings'];
+
         if (!count($this->appends)) {
-            return [];
+            return $defaults;
         }
 
-        return $this->getArrayableItems(
-            array_combine($this->appends, $this->appends)
-        );
+        return array_merge($defaults, $this->appends);
     }
 
     /**
