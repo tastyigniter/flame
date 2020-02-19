@@ -266,12 +266,12 @@ if (!function_exists('input')) {
     function input($name = null, $default = null)
     {
         if ($name === null)
-            return Input::all();
+            return Request::all();
 
         // Array field name, eg: field[key][key2][key3]
         $name = implode('.', name_to_array($name));
 
-        return Input::get($name, $default);
+        return Request::get($name, $default);
     }
 }
 
