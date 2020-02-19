@@ -17,29 +17,46 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | API Key for OpenExchangeRates.org
+    | Default Currency Converter
     |--------------------------------------------------------------------------
-    |
-    | Only required if you with to use the Open Exchange Rates api. You can
-    | always just use Yahoo, the current default.
     |
     */
 
-    'api_key' => '',
+    'converter' => 'openexchangerates',
 
     /*
     |--------------------------------------------------------------------------
-    | Default Storage Driver
+    | Converters Specific Configuration
     |--------------------------------------------------------------------------
     |
-    | Here you may specify the default storage driver that should be used
-    | by the framework.
-    |
-    | Supported: "database", "filesystem"
+    | Here you may configure as many converters as you wish.
     |
     */
 
-    'driver' => 'database',
+    'converters' => [
+
+        'fixerio' => [
+            'class' => \Igniter\Flame\Currency\Converters\FixerIO::class,
+            'apiKey' => '',
+        ],
+
+        'openexchangerates' => [
+            'class' => \Igniter\Flame\Currency\Converters\OpenExchangeRates::class,
+            'apiKey' => '',
+        ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Storage Model
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the model that should be used.
+    |
+    */
+
+    'model' => \Igniter\Flame\Currency\Models\Currency::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -56,29 +73,17 @@ return [
     'cache_driver' => null,
 
     /*
-    |--------------------------------------------------------------------------
-    | Storage Specific Configuration
-    |--------------------------------------------------------------------------
+    |-----------------------------------------------------------------------
+    | Cache Duration
+    |-----------------------------------------------------------------------
     |
-    | Here you may configure as many storage drivers as you wish.
+    | Specify the exchange rates cache duration in hours.
+    |
+    | Default: 1 hour
     |
     */
 
-    'drivers' => [
-
-        'database' => [
-            'class'      => \Igniter\Flame\Currency\Drivers\Database::class,
-            'connection' => null,
-            'table'      => 'currencies',
-        ],
-
-        'filesystem' => [
-            'class' => \Igniter\Flame\Currency\Drivers\Filesystem::class,
-            'disk'  => null,
-            'path'  => 'currencies.json',
-        ],
-
-    ],
+    'ratesCacheDuration' => 4320,
 
     /*
     |--------------------------------------------------------------------------

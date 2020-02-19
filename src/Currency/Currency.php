@@ -2,6 +2,8 @@
 
 namespace Igniter\Flame\Currency;
 
+use Carbon\Carbon;
+use Igniter\Flame\Currency\Contracts\CurrencyInterface;
 use Illuminate\Contracts\Cache\Factory as FactoryContract;
 use Illuminate\Support\Arr;
 
@@ -22,18 +24,11 @@ class Currency
     protected $cache;
 
     /**
-     * User's currency
+     * Currency model instance.
      *
-     * @var string
+     * @var Contracts\CurrencyInterface
      */
-    protected $userCurrency;
-
-    /**
-     * Currency driver instance.
-     *
-     * @var Contracts\DriverInterface
-     */
-    protected $driver;
+    protected $model;
 
     /**
      * Formatter instance.
@@ -43,11 +38,25 @@ class Currency
     protected $formatter;
 
     /**
+     * User's currency
+     *
+     * @var string
+     */
+    protected $userCurrency;
+
+    /**
      * Cached currencies
      *
-     * @var array
+     * @var \Illuminate\Support\Collection
      */
     protected $currenciesCache;
+
+    /**
+     * Loaded currencies
+     *
+     * @var \Illuminate\Support\Collection
+     */
+    protected $loadedCurrencies;
 
     /**
      * Create a new instance.
@@ -77,17 +86,20 @@ class Currency
         $from = $from ?: $this->config('default');
         $to = $to ?: $this->getUserCurrency();
 
+        // Ensure exchange rates is fresh
+        $this->updateRates();
+
         // Get exchange rates
-        $from_rate = $this->getCurrencyProp($from, 'currency_rate');
-        $to_rate = $this->getCurrencyProp($to, 'currency_rate');
+        $fromRate = optional($this->getCurrency($from))->getRate();
+        $toRate = optional($this->getCurrency($to))->getRate();
 
         // Skip invalid to currency rates
-        if ($to_rate === null) {
+        if ($toRate === null) {
             return null;
         }
 
         // Convert amount
-        $value = $amount * $to_rate * (1 / $from_rate);
+        $value = $amount * $toRate * (1 / $fromRate);
 
         // Should the result be formatted?
         if ($format === TRUE) {
@@ -103,11 +115,11 @@ class Currency
      *
      * @param float $value
      * @param string $code
-     * @param bool $include_symbol
+     * @param bool $includeSymbol
      *
      * @return string
      */
-    public function format($value, $code = null, $include_symbol = TRUE)
+    public function format($value, $code = null, $includeSymbol = TRUE)
     {
         // Get default currency if one is not set
         $code = $code ?: $this->config('default');
@@ -121,7 +133,7 @@ class Currency
         }
 
         // Get the measurement format
-        $format = $this->getCurrencyProp($code, 'format');
+        $format = optional($this->getCurrency($code))->getFormat();
 
         // Value Regex
         $valRegex = '/([0-9].*|)[0-9]/';
@@ -129,10 +141,8 @@ class Currency
         // Match decimal and thousand separators
         preg_match_all('/[\s\',.!]/', $format, $separators);
 
-        if ($thousand = array_get($separators, '0.0', null)) {
-            if ($thousand == '!') {
-                $thousand = '';
-            }
+        if (($thousand = array_get($separators, '0.0', null)) AND $thousand == '!') {
+            $thousand = '';
         }
 
         $decimal = array_get($separators, '0.1', null);
@@ -147,14 +157,14 @@ class Currency
 
         // Do we have a negative value?
         if ($negative = $value < 0 ? '-' : '') {
-            $value = $value * -1;
+            $value *= -1;
         }
 
         // Format the value
         $value = number_format($value, $decimals, $decimal, $thousand);
 
         // Apply the formatted measurement
-        if ($include_symbol) {
+        if ($includeSymbol) {
             $value = preg_replace($valRegex, $value, $format);
         }
 
@@ -187,11 +197,11 @@ class Currency
      *
      * @param string $code
      *
-     * @return array|null
+     * @return bool
      */
     public function hasCurrency($code)
     {
-        return array_key_exists(strtoupper($code), $this->getCurrencies());
+        return (bool)$this->getCurrency(strtoupper($code));
     }
 
     /**
@@ -203,7 +213,7 @@ class Currency
      */
     public function isActive($code)
     {
-        return $code && (bool)Arr::get($this->getCurrency($code), 'currency_status', FALSE);
+        return $code AND (bool)optional($this->getCurrency($code))->isEnabled();
     }
 
     /**
@@ -212,67 +222,53 @@ class Currency
      *
      * @param string $code
      *
-     * @return array|null
+     * @return \Igniter\Flame\Currency\Contracts\CurrencyInterface
      */
     public function getCurrency($code = null)
     {
+        if (isset($this->currenciesCache[$code])) {
+            return $this->currenciesCache[$code];
+        }
+
         $code = $code ?: $this->getUserCurrency();
 
-        return Arr::get($this->getCurrencies(), strtoupper($code));
+        $currency = $this->getCurrencies()->first(function (CurrencyInterface $currency) use ($code) {
+            return $currency->isEnabled() AND ((int)$code === $currency->getId()) OR ($code === $currency->getCode());
+        });
+
+        return $this->currenciesCache[$code] = $currency;
     }
 
     /**
      * Return all currencies.
      *
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
     public function getCurrencies()
     {
-        if ($this->currenciesCache === null) {
-            if (config('app.debug', FALSE) === TRUE) {
-                $this->currenciesCache = $this->getDriver()->all();
-            }
-            else {
-                $this->currenciesCache = $this->cache->rememberForever('igniter.currency', function () {
-                    return $this->getDriver()->all();
-                });
-            }
+        if ($this->loadedCurrencies === null) {
+            $this->loadCurrencies();
         }
 
-        return $this->currenciesCache;
+        return $this->loadedCurrencies;
     }
 
     /**
-     * Return all active currencies.
+     * Get currency model.
      *
-     * @return array
+     * @return \Igniter\Flame\Currency\Contracts\CurrencyInterface|\Illuminate\Database\Eloquent\Model
      */
-    public function getActiveCurrencies()
+    public function getModel()
     {
-        return array_filter($this->getCurrencies(), function ($currency) {
-            return $currency['currency_status'] == TRUE;
-        });
-    }
+        if ($this->model === null) {
+            // Get model class
+            $model = $this->config('model', Models\Currency::class);
 
-    /**
-     * Get storage driver.
-     *
-     * @return \Igniter\Flame\Currency\Contracts\DriverInterface
-     */
-    public function getDriver()
-    {
-        if ($this->driver === null) {
-            // Get driver configuration
-            $config = $this->config('drivers.'.$this->config('driver'), []);
-
-            // Get driver class
-            $driver = Arr::pull($config, 'class');
-
-            // Create driver instance
-            $this->driver = new $driver($config);
+            // Create model instance
+            $this->model = new $model();
         }
 
-        return $this->driver;
+        return $this->model;
     }
 
     /**
@@ -321,18 +317,43 @@ class Currency
         return Arr::get($this->config, $key, $default);
     }
 
-    /**
-     * Get the given property value from provided currency.
-     *
-     * @param string $code
-     * @param string $key
-     * @param mixed $default
-     *
-     * @return array
-     */
-    protected function getCurrencyProp($code, $key, $default = null)
+    protected function loadCurrencies()
     {
-        return Arr::get($this->getCurrency($code), $key, $default);
+        $currencies = $this->cache->rememberForever('igniter.currency', function () {
+            return $this->getModel()->get();
+        });
+
+        $this->loadedCurrencies = $currencies;
+    }
+
+    //
+    //
+    //
+
+    public function updateRates($skipCache = FALSE)
+    {
+        $base = $this->config('default');
+
+        $rates = $this->getRates($base, $skipCache);
+
+        $this->getCurrencies()->each(function (CurrencyInterface $currency) use ($rates) {
+            if ($rate = array_get($rates, $currency->getCode()))
+                $currency->updateRate($rate);
+        });
+    }
+
+    protected function getRates($base, $skipCache = FALSE)
+    {
+        $duration = Carbon::now()->addHours($this->config('ratesCacheDuration', 0));
+
+        $currencies = $this->getCurrencies();
+
+        if ($skipCache)
+            return app('currency.converter')->getExchangeRates($base, $currencies);
+
+        return $this->cache->remember('igniter.currency.rates', $duration, function () use ($base, $currencies) {
+            return app('currency.converter')->getExchangeRates($base, $currencies);
+        });
     }
 
     /**
@@ -344,19 +365,19 @@ class Currency
      */
     public function __get($key)
     {
-        return Arr::get($this->getCurrency(), $key);
+        return $this->getCurrency()->$$key;
     }
 
     /**
      * Dynamically call the default driver instance.
      *
-     * @param  string $method
-     * @param  array $parameters
+     * @param string $method
+     * @param array $parameters
      *
      * @return mixed
      */
     public function __call($method, $parameters)
     {
-        return call_user_func_array([$this->getDriver(), $method], $parameters);
+        return call_user_func_array([$this->getModel(), $method], $parameters);
     }
 }

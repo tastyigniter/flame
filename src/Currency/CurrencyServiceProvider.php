@@ -24,6 +24,8 @@ class CurrencyServiceProvider extends ServiceProvider
 
         $this->registerCurrency();
         $this->registerCurrencyCommands();
+
+        $this->registerConverter();
     }
 
     protected function registerMiddlewareAlias()
@@ -67,5 +69,12 @@ class CurrencyServiceProvider extends ServiceProvider
     public function provides()
     {
         return ['currency', Currency::class];
+    }
+
+    protected function registerConverter()
+    {
+        $this->app->singleton('currency.converter', function ($app) {
+            return new Converter($app);
+        });
     }
 }
