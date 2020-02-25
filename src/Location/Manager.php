@@ -25,7 +25,7 @@ abstract class Manager
 
     protected $defaultLocation;
 
-    protected $locationModel;
+    protected $locationModel = 'Igniter\Flame\Location\Models\AbstractLocation';
 
     protected $loaded;
 
@@ -63,7 +63,7 @@ abstract class Manager
     /**
      * Set the location route parameter resolver callback.
      *
-     * @param  \Closure $resolver
+     * @param \Closure $resolver
      * @return void
      */
     public function locationSlugResolver(Closure $resolver)
@@ -104,7 +104,7 @@ abstract class Manager
         if (!$model) {
             $id = $this->getSession('id');
             if (!$id OR !$model = $this->getById($id))
-                $model = $this->getById($this->defaultLocation);
+                $model = $this->getById($this->getDefaultLocation());
         }
 
         if ($model)
@@ -191,7 +191,7 @@ abstract class Manager
     /**
      * Retrieve a location by their unique identifier.
      *
-     * @param  mixed $identifier
+     * @param mixed $identifier
      *
      * @return \Igniter\Flame\Location\Models\AbstractLocation|null
      */
@@ -206,7 +206,7 @@ abstract class Manager
     /**
      * Retrieve a location by their unique slug.
      *
-     * @param  string $slug
+     * @param string $slug
      *
      * @return \Igniter\Flame\Location\Contracts\LocationInterface|null
      */
