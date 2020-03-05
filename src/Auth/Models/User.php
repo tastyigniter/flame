@@ -6,8 +6,9 @@ use Carbon\Carbon;
 use Exception;
 use Hash;
 use Igniter\Flame\Database\Model;
+use Illuminate\Contracts\Auth\Authenticatable;
 
-class User extends Model
+class User extends Model implements Authenticatable
 {
     const REMEMBER_TOKEN_NAME = 'remember_token';
 
@@ -98,6 +99,25 @@ class User extends Model
     {
         $this->setRememberToken($token);
         $this->save();
+    }
+
+    /**
+     * Checks the given remember token.
+     * @param string $token
+     * @return bool
+     */
+    public function checkRememberToken($token)
+    {
+        if (!$token OR !$this->remember_token) {
+            return FALSE;
+        }
+
+        return $token == $this->remember_token;
+    }
+
+    public function updateLastSeen($expireAt)
+    {
+        return $this->update(['last_seen' => $expireAt]);
     }
 
     //

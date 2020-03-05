@@ -2,11 +2,12 @@
 
 namespace Igniter\Flame\Auth;
 
-use Carbon\Carbon;
 use Cookie;
 use Exception;
 use Hash;
+use Igniter\Flame\Auth\Models\User;
 use Igniter\Flame\Auth\Models\User as UserModel;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Str;
 use Session;
 
@@ -22,8 +23,6 @@ class Manager
 
     protected $sessionKey;
 
-    protected $hasher;
-
     /**
      * @var \Igniter\Flame\Auth\Models\User The currently authenticated user.
      */
@@ -34,34 +33,17 @@ class Manager
      */
     protected $model;
 
-    /**
-     * @var string The user group model to use
-     */
-    protected $groupModel;
-
-    /**
-     * @var string The model identifier column (username or email)
-     */
-    protected $identifier;
-
-    /**
-     * @var bool Indicates if the logout method has been called.
-     */
-    protected $loggedOut;
-
-    /**
-     * Indicates if a token user retrieval has been attempted.
-     * @var bool
-     */
-    protected $tokenRetrievalAttempted = FALSE;
-
-    /**
-     * @var string Number of seconds the reset password request expires,
-     * Set to 0 to next expire
-     **/
-    protected $resetExpiration;
-
     protected $requireApproval = FALSE;
+
+    /**
+     * @var bool Internal flag to toggle using the session for the current authentication request
+     */
+    protected $useSession = TRUE;
+
+    /**
+     * @var bool Indicates if the user was authenticated via a recaller cookie.
+     */
+    protected $viaRemember = FALSE;
 
     /**
      * Determine if the current user is authenticated.
@@ -69,21 +51,29 @@ class Manager
     public function check()
     {
         if (is_null($this->user)) {
-            $user = null;
-            $sessionUserId = $this->getSessionUserId();
-            $rememberCookie = $this->getRememberCookie();
-
             // Load the user using session identifier
-            if ($sessionUserId) {
-                $user = $this->getById($sessionUserId);
+            if ($sessionData = Session::get($this->sessionKey)) {
+                $userData = $sessionData;
             }
             // If no user is found in session,
             // load the user using cookie token
-            else if ($rememberCookie AND $user = $this->getUserByRememberCookie($rememberCookie)) {
-                $this->updateSession($user);
+            elseif ($cookieData = Cookie::get($this->sessionKey)) {
+                $this->viaRemember = TRUE;
+                $userData = @json_decode($cookieData, TRUE);
+            }
+            else {
+                return FALSE;
             }
 
-            if (is_null($user))
+            if (!is_array($userData) OR count($userData) !== 2)
+                return FALSE;
+
+            [$userId, $rememberToken] = $userData;
+
+            if (!$user = $this->getById($userId))
+                return FALSE;
+
+            if (!$user->checkRememberToken($rememberToken))
                 return FALSE;
 
             $this->user = $user;
@@ -123,12 +113,7 @@ class Manager
      */
     public function id()
     {
-        $id = $this->getSessionUserId();
-        if (is_null($id) AND $this->user()) {
-            $id = $this->user()->getAuthIdentifier();
-        }
-
-        return $id;
+        return $this->user()->getAuthIdentifier();
     }
 
     /**
@@ -143,11 +128,11 @@ class Manager
     /**
      * Set the current user model
      *
-     * @param $userModel
+     * @param $user
      */
-    public function setUser($userModel)
+    public function setUser($user)
     {
-        $this->user = $userModel;
+        $this->user = $user;
     }
 
     /**
@@ -157,65 +142,92 @@ class Manager
      * @param bool $remember
      * @param bool $login
      *
-     * @return bool
+     * @return \Igniter\Flame\Auth\Models\User|bool
      * @throws \Exception
      */
     public function authenticate(array $credentials = [], $remember = FALSE, $login = TRUE)
     {
-        $userModel = $this->getByCredentials($credentials);
+        $user = $this->getByCredentials($credentials);
 
         // Validate the user against the given credentials,
         // if valid log the user into the application
-        if (!is_null($userModel) AND $this->validateCredentials($userModel, $credentials)) {
-            if ($login)
-                $this->login($userModel, $remember);
-
-            return TRUE;
+        if (is_null($user) OR !$this->validateCredentials($user, $credentials)) {
+            return FALSE;
         }
 
-        return FALSE;
+        $user->clearResetPasswordCode();
+
+        if ($login) $this->login($user, $remember);
+
+        return $this->user;
     }
 
     /**
      * Log a user into the application without sessions or cookies.
      *
      * @param array $credentials
+     * @return bool
      */
-    public function loginOnce($credentials = [])
+    public function once($credentials = [])
     {
-        // @todo: implement
+        $this->useSession = FALSE;
+
+        $user = $this->authenticate($credentials);
+
+        $this->useSession = TRUE;
+
+        return (bool)$user;
+    }
+
+    /**
+     * Log the given user ID into the application without sessions or cookies.
+     *
+     * @param mixed $id
+     * @return \Illuminate\Contracts\Auth\Authenticatable|false
+     */
+    public function onceUsingId($id)
+    {
+        if (!is_null($user = $this->getById($id))) {
+            $this->setUser($user);
+
+            return $user;
+        }
+
+        return FALSE;
     }
 
     /**
      * Log a user into the application.
      *
-     * @param \Igniter\Flame\Auth\Models\User $userModel
+     * @param \Illuminate\Contracts\Auth\Authenticatable $user
      * @param bool $remember
      *
      * @throws \Exception
      */
-    public function login($userModel, $remember = FALSE)
+    public function login(Authenticatable $user, $remember = FALSE)
     {
-        $userModel->beforeLogin();
+        $user->beforeLogin();
 
         // Approval is required, user not approved
-        if ($this->requireApproval AND !$userModel->is_activated) {
+        if ($this->requireApproval AND !$user->is_activated) {
             throw new Exception(sprintf(
-                'Cannot login user "%s" until activated.', $userModel->getAuthIdentifier()
+                'Cannot login user "%s" until activated.', $user->getAuthIdentifier()
             ));
         }
 
-        $this->setUser($userModel);
+        $this->setUser($user);
 
-        // If the user should be permanently "remembered" by the application.
-        if ($remember) {
-            $this->createRememberToken($userModel);
-            $this->rememberUser($userModel);
+        if ($this->useSession) {
+            $toPersist = $this->getPersistData($user);
+            Session::put($this->sessionKey, $toPersist);
+
+            // If the user should be permanently "remembered" by the application.
+            if ($remember) {
+                Cookie::queue(Cookie::forever($this->sessionKey, json_encode($toPersist)));
+            }
         }
 
-        $this->updateSession($userModel);
-
-        $userModel->afterLogin();
+        $user->afterLogin();
     }
 
     /**
@@ -229,10 +241,13 @@ class Manager
      */
     public function loginUsingId($id, $remember = FALSE)
     {
-        $userModel = $this->getById($id);
-        $this->login($userModel, $remember);
+        if (!is_null($user = $this->getById($id))) {
+            $this->login($user, $remember);
 
-        return $userModel;
+            return $user;
+        }
+
+        return FALSE;
     }
 
     /**
@@ -241,41 +256,45 @@ class Manager
      **/
     public function logout()
     {
-        $user = $this->user();
+        if (is_null($this->user) AND !$this->check())
+            return;
 
-        // delete the remember me cookies if they exist
-        if (!is_null($this->user))
-            $this->refreshRememberToken($user, null);
+        if ($this->isImpersonator()) {
+            $this->user = $this->getImpersonator();
+            $this->stopImpersonate();
+
+            return;
+        }
+
+        if ($this->user)
+            $this->user->updateRememberToken(null);
 
         $this->user = null;
 
-        $this->clearUserDataFromStore();
+        Session::flush();
 
-        $this->loggedOut = TRUE;
+        // delete the remember me cookies if they exist
+        Cookie::queue(Cookie::forget($this->sessionKey));
     }
 
     /**
-     * @todo: Check whether authenticated user belongs to a group
+     * Determine if the user was authenticated via "remember me" cookie.
      *
-     * @param mixed $groupToCheck group(s) to check
-     * @param bool $id user id
-     * @param bool $checkAll if all groups is present, or any of the groups
-     *
-     * @return void
+     * @return bool
      */
-    public function inGroup($groupToCheck, $id = FALSE, $checkAll = FALSE)
+    public function viaRemember()
     {
-        // @todo: implement
+        return $this->viaRemember;
     }
 
     //
-    // Providers
+    // User
     //
 
     /**
      * @param $identifier
      *
-     * @return mixed
+     * @return \Illuminate\Contracts\Auth\Authenticatable|\Igniter\Flame\Auth\Models\User
      */
     public function getById($identifier)
     {
@@ -323,21 +342,17 @@ class Manager
         return $query->first();
     }
 
-    public function validateCredentials(UserModel $userModel, $credentials)
+    public function validateCredentials(UserModel $user, $credentials)
     {
         $plain = $credentials['password'];
 
         // Backward compatibility to turn SHA1 passwords to BCrypt
-        if ($userModel->hasShaPassword($plain)) {
-            $userModel->updateHashPassword($plain);
+        if ($user->hasShaPassword($plain)) {
+            $user->updateHashPassword($plain);
         }
 
-        return Hash::check($plain, $userModel->getAuthPassword());
+        return Hash::check($plain, $user->getAuthPassword());
     }
-
-    //
-    // Model
-    //
 
     /**
      * Create a new instance of the model
@@ -345,7 +360,7 @@ class Manager
      * @return mixed
      * @throws \Exception
      */
-    protected function createModel()
+    public function createModel()
     {
         if (!isset($this->model))
             throw new Exception(sprintf('Required property [model] missing in %s', get_called_class()));
@@ -381,47 +396,6 @@ class Manager
     }
 
     /**
-     * Create a new instance of the group model
-     * if it does not already exist.
-     * @return mixed
-     * @throws \Exception
-     */
-    protected function createGroupModel()
-    {
-        if (!isset($this->groupModel))
-            throw new Exception(sprintf('Required property [groupModel] missing in %s', get_called_class()));
-
-        $modelClass = $this->groupModel;
-        if (!class_exists($modelClass))
-            throw new Exception(sprintf('Missing model [%s] in %s', $modelClass, get_called_class()));
-
-        return new $modelClass();
-    }
-
-    /**
-     * Prepares a query derived from the user group model.
-     */
-    protected function createGroupModelQuery()
-    {
-        $model = $this->createGroupModel();
-        $query = $model->newQuery();
-        $this->extendUserGroupQuery($query);
-
-        return $query;
-    }
-
-    /**
-     * Extend the query used for finding the user group.
-     *
-     * @param \Igniter\Flame\Database\Builder $query
-     *
-     * @return void
-     */
-    public function extendUserGroupQuery($query)
-    {
-    }
-
-    /**
      * Gets the name of the user model
      * @return string
      */
@@ -444,141 +418,74 @@ class Manager
         return $this;
     }
 
-    //
-    // Session & Cookie
-    //
-
-    /**
-     * @return mixed
-     */
-    public function getSessionUserId()
-    {
-        $sessionData = Session::get($this->sessionKey);
-
-        return array_get($sessionData, static::AUTH_KEY_NAME.'.id', null);
-    }
-
-    protected function updateSession(UserModel $userModel)
-    {
-        $id = $userModel->getAuthIdentifier();
-        $identityName = $userModel->getAuthIdentifierName();
-
-        $sessionData = Session::get($this->sessionKey);
-        $sessionData[static::AUTH_KEY_NAME] = [
-            'id' => $id,
-            $identityName => $id,
-            $this->identifier => $userModel->{$this->identifier},
-            'last_check' => Carbon::now(),
-        ];
-
-        Session::put($this->sessionKey, $sessionData);
-    }
-
-    /**
-     * @param \Igniter\Flame\Auth\Models\User $userModel
-     * @param null $token
-     */
-    protected function refreshRememberToken(UserModel $userModel, $token = null)
-    {
-        $userModel->updateRememberToken($token);
-    }
-
     /**
      * Create a new "remember me" token for the user
-     * if one doesn't already exist.
      *
-     * @param $userModel
+     * @param \Illuminate\Contracts\Auth\Authenticatable|\Igniter\Flame\Auth\Models\User $user
+     * @return array
      */
-    protected function createRememberToken(UserModel $userModel)
+    protected function getPersistData($user)
     {
-        if (empty($userModel->getRememberToken())) {
-            $this->refreshRememberToken($userModel, Str::random(60));
-        }
+        $user->updateRememberToken(Str::random(42));
+
+        return [$user->getKey(), $user->getRememberToken()];
     }
 
-    /**
-     * Get the decrypted remember cookie for the request.
-     * @return string|null
-     */
-    protected function getRememberCookie()
-    {
-        return Cookie::get($this->getRememberCookieName());
-    }
+    //
+    // Impersonation
+    //
 
     /**
-     * Get the user ID from the remember cookie.
-     * @return string|null
-     */
-    protected function getRememberCookieId()
-    {
-        if ($this->validateRememberCookie($rememberCookie = $this->getRememberCookie())) {
-            return reset(explode('|', $rememberCookie));
-        }
-    }
-
-    /**
-     * Determine if the remember cookie is in a valid format.
+     * Impersonates the given user and sets properties
+     * in the session but not the cookie.
      *
-     * @param  string $cookie
+     * @param \Igniter\Flame\Auth\Models\User $user
      *
-     * @return bool
-     */
-    protected function validateRememberCookie($cookie)
-    {
-        if (!is_string($cookie) OR strpos($cookie, '|') === FALSE)
-            return FALSE;
-
-        $segments = explode('|', $cookie);
-
-        return count($segments) == 2 AND !empty(trim($segments[0])) AND !empty(trim($segments[1]));
-    }
-
-    /**
-     * Pull a user from the repository by its recaller ID.
-     *
-     * @param  string $rememberCookie
-     *
-     * @return mixed
      * @throws \Exception
      */
-    protected function getUserByRememberCookie($rememberCookie)
+    public function impersonate($user)
     {
-        if ($this->validateRememberCookie($rememberCookie) AND !$this->tokenRetrievalAttempted) {
-            $this->tokenRetrievalAttempted = TRUE;
-            list($id, $token) = explode('|', $rememberCookie, 2);
-            $user = $this->getByToken($id, $token);
+        $oldSession = Session::get($this->sessionKey);
+        $oldUser = !empty($oldSession[0]) ? $this->getById($oldSession[0]) : FALSE;
 
-            return $user;
+        $user->fireEvent('model.auth.beforeImpersonate', [$oldUser]);
+        $this->login($user, FALSE);
+
+        if (!$this->isImpersonator()) {
+            Session::put($this->sessionKey.'_impersonate', $oldSession);
         }
     }
 
-    protected function getRememberCookieName()
+    public function stopImpersonate()
     {
-        return 'remember_'.$this->sessionKey;
-    }
+        $currentSession = Session::get($this->sessionKey);
+        $currentUser = !empty($currentSession[0]) ? $this->getById($currentSession[0]) : FALSE;
 
-    /**
-     * Create a "remember me" cookie for a given ID.
-     *
-     * @param  object $userModel
-     */
-    protected function rememberUser($userModel)
-    {
-        $value = $userModel->getAuthIdentifier().'|'.$userModel->getRememberToken();
-        Cookie::queue(Cookie::forever($this->getRememberCookieName(), $value));
-    }
+        $oldSession = Session::pull($this->sessionKey.'_impersonate');
+        $oldUser = !empty($oldSession[0]) ? $this->getById($oldSession[0]) : FALSE;
 
-    /**
-     * Remove the user data from the session and cookies.
-     * @return void
-     */
-    protected function clearUserDataFromStore()
-    {
-        Session::forget($this->sessionKey);
-
-        if (!is_null($this->getRememberCookie())) {
-            $rememberCookie = $this->getRememberCookieName();
-            Cookie::forget($rememberCookie);
+        if ($currentUser) {
+            $currentUser->fireEvent('model.auth.afterImpersonate', [$oldUser]);
         }
+
+        Session::put($this->sessionKey, $oldSession);
+    }
+
+    public function isImpersonator()
+    {
+        return Session::has($this->sessionKey.'_impersonate');
+    }
+
+    public function getImpersonator()
+    {
+        $impersonateArray = Session::get($this->sessionKey.'_impersonate');
+
+        // Check supplied session/cookie is an array (user id, persist code)
+        if (!is_array($impersonateArray) OR count($impersonateArray) !== 2)
+            return FALSE;
+
+        $id = $impersonateArray[0];
+
+        return $this->createModel()->find($id);
     }
 }
