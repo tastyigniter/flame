@@ -145,7 +145,12 @@ class ActivityLogger
 
     public function pushLog(ActivityInterface $activity, array $recipients)
     {
-        Event::fire('notification.sending', [$activity, $recipients]);
+        $this->logActivity($activity, $recipients);
+    }
+
+    public function logActivity(ActivityInterface $activity, array $recipients)
+    {
+        Event::fire('activityLogger.beforeLogActivity', [$activity, $recipients]);
 
         $type = $activity::getType();
         $causer = $activity->getCauser();
@@ -161,6 +166,8 @@ class ActivityLogger
                  ->withProperties($properties)
                  ->sendTo($user)->log();
         }
+
+        Event::fire('activityLogger.activityLogged', [$activity, $recipients]);
     }
 
     /**

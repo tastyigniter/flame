@@ -1,6 +1,6 @@
 <?php namespace Igniter\Flame\ActivityLog\Traits;
 
-traceLog('LogsActivity traits has been Deprecated. Use activity()->pushLog() instead');
+traceLog('LogsActivity traits has been Deprecated. Use activity()->logActivity() instead');
 
 use App;
 use Igniter\Flame\ActivityLog\ActivityLogger;
@@ -220,7 +220,7 @@ trait LogsActivity
             throw new \Exception("Invalid attribute passed to {$attribute}");
         }
 
-        list($relatedModelName, $relatedAttribute) = explode('.', $attribute);
+        [$relatedModelName, $relatedAttribute] = explode('.', $attribute);
         $relatedModel = isset($model->$relatedModelName) ? $model->$relatedModelName : $model->$relatedModelName();
 
         return ["{$relatedModelName}.{$relatedAttribute}" => $relatedModel->$relatedAttribute];
