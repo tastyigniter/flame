@@ -42,18 +42,18 @@ class PermalinkMaker
 
         if ($defaultConfig === null) {
             $defaultConfig = [
-                'source'           => null,
+                'source' => null,
                 // The controller name used when building the permalink
                 // each permalink are unique to controllers
-                'controller'       => 'pages',
-                'maximumLength'    => 250,
-                'separator'        => '-',
-                'generateUnique'   => TRUE,
+                'controller' => 'pages',
+                'maximumLength' => 250,
+                'separator' => '-',
+                'generateUnique' => TRUE,
                 'generateOnCreate' => TRUE,
                 'generateOnUpdate' => FALSE,
-                'reserved'         => [],
-                'uniqueSuffix'     => null,
-                'includeTrashed'   => FALSE,
+                'reserved' => [],
+                'uniqueSuffix' => null,
+                'includeTrashed' => FALSE,
             ];
         }
 
@@ -131,7 +131,7 @@ class PermalinkMaker
             return (is_bool($value)) ? (int)$value : $value;
         }, (array)$from);
 
-        return implode($sourceStrings, ' ');
+        return implode(' ', $sourceStrings);
     }
 
     /**
