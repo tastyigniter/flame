@@ -368,9 +368,17 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
      */
     public function setSettingsAttribute($value)
     {
-        if (is_array($value)) {
-            $this->attributes = array_merge($this->attributes, $value);
-        }
+        $only = [
+            'fileName',
+            'components',
+            'content',
+            'markup',
+            'mTime',
+            'code',
+        ];
+
+        $attributes = array_only($this->attributes, array_merge($only, $this->purgeable));
+        $this->attributes = array_merge($attributes, (array)$value);
     }
 
     /**
