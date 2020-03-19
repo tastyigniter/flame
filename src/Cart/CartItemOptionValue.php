@@ -22,6 +22,13 @@ class CartItemOptionValue implements Arrayable, Jsonable
     public $name;
 
     /**
+     * The quantity for this cart item option value.
+     *
+     * @var int|float
+     */
+    public $qty = 1;
+
+    /**
      * The price of the cart item option value.
      *
      * @var float
@@ -65,6 +72,30 @@ class CartItemOptionValue implements Arrayable, Jsonable
     }
 
     /**
+     * Returns the subtotal.
+     * Subtotal is price for whole CartItem with options
+     *
+     * @return string
+     */
+    public function subtotal()
+    {
+        return $this->qty * $this->price;
+    }
+
+    /**
+     * Set the quantity for this cart item.
+     *
+     * @param int|float $qty
+     */
+    public function setQuantity($qty)
+    {
+        if (!is_numeric($qty))
+            throw new \InvalidArgumentException('Please supply a valid item option quantity.');
+
+        $this->qty = $qty;
+    }
+
+    /**
      * Update the cart item option value from an array.
      *
      * @param array $attributes
@@ -76,6 +107,7 @@ class CartItemOptionValue implements Arrayable, Jsonable
         $this->id = array_get($attributes, 'id', $this->id);
         $this->name = array_get($attributes, 'name', $this->name);
         $this->price = array_get($attributes, 'price', $this->price);
+        $this->qty = array_get($attributes, 'qty', $this->qty);
     }
 
     /**
@@ -87,11 +119,15 @@ class CartItemOptionValue implements Arrayable, Jsonable
      */
     public static function fromArray(array $attributes)
     {
-        return new self(
+        $instance = new self(
             $attributes['id'],
             $attributes['name'],
             $attributes['price']
         );
+
+        $instance->qty = array_get($attributes, 'qty', $instance->qty);
+
+        return $instance;
     }
 
     /**
@@ -104,14 +140,16 @@ class CartItemOptionValue implements Arrayable, Jsonable
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'qty' => $this->qty,
             'price' => $this->price,
+            'subtotal' => $this->subtotal(),
         ];
     }
 
     /**
      * Convert the object to its JSON representation.
      *
-     * @param  int $options
+     * @param int $options
      * @return string
      */
     public function toJson($options = 0)

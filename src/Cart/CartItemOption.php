@@ -57,7 +57,9 @@ class CartItemOption implements Arrayable, Jsonable
      */
     public function subtotal()
     {
-        return $this->values->sum('price');
+        return $this->values->reduce(function ($subtotal, CartItemOptionValue $optionValue) {
+            return $subtotal + $optionValue->subtotal();
+        }, 0);
     }
 
     /**
@@ -111,13 +113,14 @@ class CartItemOption implements Arrayable, Jsonable
             'id' => $this->id,
             'name' => $this->name,
             'values' => $this->values,
+            'subtotal' => $this->subtotal(),
         ];
     }
 
     /**
      * Convert the object to its JSON representation.
      *
-     * @param  int $options
+     * @param int $options
      * @return string
      */
     public function toJson($options = 0)
