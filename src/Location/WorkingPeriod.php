@@ -68,8 +68,8 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
     {
         foreach ($this->ranges as $range) {
             if ($range->containsTime($time)
-                AND (next($range) !== $range)
                 AND $nextOpenTime = next($range)
+                AND ($nextOpenTime !== $range)
             ) {
                 reset($range);
 
