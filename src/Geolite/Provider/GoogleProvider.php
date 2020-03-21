@@ -97,7 +97,7 @@ class GoogleProvider extends AbstractProvider
             $url = sprintf('%s&key=%s', $url, $apiKey);
 
         $response = $this->getHttpClient()->get($url, [
-            'timeout' => $query->getData('timeout', 15)
+            'timeout' => $query->getData('timeout', 15),
         ]);
 
         return $this->parseResponse($response);
@@ -145,7 +145,7 @@ class GoogleProvider extends AbstractProvider
      */
     protected function parseResponse(ResponseInterface $response)
     {
-        $json = json_decode($response->getBody());
+        $json = json_decode($response->getBody()->getContents(), FALSE);
 
         // API error
         if (!$json) {
@@ -153,11 +153,6 @@ class GoogleProvider extends AbstractProvider
                 'The geocoder server returned an empty or invalid response.'
             );
         }
-
-        if ($json->status === 'REQUEST_DENIED')
-            throw new GeoliteException(sprintf(
-                'API key is invalid. Message: %s', $json->error_message
-            ));
 
         if ($json->status === 'REQUEST_DENIED') {
             throw new GeoliteException(sprintf(

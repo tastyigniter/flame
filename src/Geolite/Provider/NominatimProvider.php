@@ -155,7 +155,7 @@ class NominatimProvider extends AbstractProvider
 
     protected function parseResponse(ResponseInterface $response)
     {
-        $json = json_decode($response->getBody());
+        $json = json_decode($response->getBody()->getContents(), FALSE);
 
         if (empty($json)) {
             throw new GeoliteException(
@@ -189,7 +189,7 @@ class NominatimProvider extends AbstractProvider
         $address->setCoordinates($location->lat, $location->lon);
 
         if (isset($location->boundingbox)) {
-            list($south, $north, $west, $east) = $location->boundingbox;
+            [$south, $north, $west, $east] = $location->boundingbox;
             $address->setBounds($south, $west, $north, $east);
         }
     }

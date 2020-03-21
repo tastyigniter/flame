@@ -63,4 +63,15 @@ class ChainProvider extends Contracts\AbstractProvider
 
         return $this;
     }
+
+    public function getLogs()
+    {
+        $logs = [];
+        foreach ($this->providers as $name => $config) {
+            $provider = $this->geocoder->makeProvider($name);
+            $logs[] = $provider->getLogs();
+        }
+
+        return array_merge(...$logs);
+    }
 }
