@@ -98,7 +98,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Create a new Halcyon model instance.
      *
-     * @param  array $attributes
+     * @param array $attributes
      */
     public function __construct(array $attributes = [])
     {
@@ -182,7 +182,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     }
 
     /**
-     * @param  string|null $source
+     * @param string|null $source
      *
      * @return \Igniter\Flame\Pagic\Source\SourceInterface
      */
@@ -203,7 +203,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Set the source resolver instance.
      *
-     * @param  \Igniter\Flame\Pagic\Source\SourceResolverInterface $resolver
+     * @param \Igniter\Flame\Pagic\Source\SourceResolverInterface $resolver
      *
      * @return void
      */
@@ -224,8 +224,8 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Create a collection of models from plain arrays.
      *
-     * @param  array $items
-     * @param  string|null $source
+     * @param array $items
+     * @param string|null $source
      *
      * @return \Illuminate\Support\Collection
      */
@@ -244,7 +244,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Save a new model and return the instance.
      *
-     * @param  array $attributes
+     * @param array $attributes
      *
      * @return static
      */
@@ -282,7 +282,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Fill the model with an array of attributes.
      *
-     * @param  array $attributes
+     * @param array $attributes
      *
      * @return $this
      *
@@ -450,7 +450,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Create a new Collection instance.
      *
-     * @param  array $models
+     * @param array $models
      *
      * @return \Illuminate\Support\Collection
      */
@@ -462,8 +462,8 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Create a new instance of the given model.
      *
-     * @param  array $attributes
-     * @param  bool $exists
+     * @param array $attributes
+     * @param bool $exists
      *
      * @return static
      */
@@ -482,8 +482,8 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Create a new model instance that is existing.
      *
-     * @param  array $attributes
-     * @param  string|null $source
+     * @param array $attributes
+     * @param string|null $source
      *
      * @return static
      */
@@ -503,7 +503,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Update the model in the database.
      *
-     * @param  array $attributes
+     * @param array $attributes
      *
      * @return bool|int
      */
@@ -519,7 +519,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Save the model to the source.
      *
-     * @param  array $options
+     * @param array $options
      *
      * @return bool
      */
@@ -568,7 +568,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Finish processing on a successful save operation.
      *
-     * @param  array $options
+     * @param array $options
      *
      * @return void
      */
@@ -584,8 +584,8 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Perform a model update operation.
      *
-     * @param  \Igniter\Flame\Pagic\Finder $query
-     * @param  array $options
+     * @param \Igniter\Flame\Pagic\Finder $query
+     * @param array $options
      *
      * @return bool
      */
@@ -616,8 +616,8 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Perform a model insert operation.
      *
-     * @param  \Igniter\Flame\Pagic\Finder $query
-     * @param  array $options
+     * @param \Igniter\Flame\Pagic\Finder $query
+     * @param array $options
      *
      * @return bool
      */
@@ -696,7 +696,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Dynamically retrieve attributes on the model.
      *
-     * @param  string $key
+     * @param string $key
      *
      * @return mixed
      */
@@ -708,8 +708,8 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Dynamically set attributes on the model.
      *
-     * @param  string $key
-     * @param  mixed $value
+     * @param string $key
+     * @param mixed $value
      *
      * @return void
      */
@@ -721,8 +721,8 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Handle dynamic method calls into the model.
      *
-     * @param  string $method
-     * @param  array $parameters
+     * @param string $method
+     * @param array $parameters
      *
      * @return mixed
      */
@@ -730,7 +730,8 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     {
         try {
             return parent::__call($method, $parameters);
-        } catch (BadMethodCallException $ex) {
+        }
+        catch (BadMethodCallException $ex) {
             $finder = $this->newFinder();
 
             return call_user_func_array([$finder, $method], $parameters);
@@ -740,8 +741,8 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Handle dynamic static method calls into the method.
      *
-     * @param  string $method
-     * @param  array $parameters
+     * @param string $method
+     * @param array $parameters
      *
      * @return mixed
      */
@@ -755,7 +756,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Determine if an attribute exists on the model.
      *
-     * @param  string $key
+     * @param string $key
      *
      * @return bool
      */
@@ -771,7 +772,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Unset an attribute on the model.
      *
-     * @param  string $key
+     * @param string $key
      *
      * @return void
      */
@@ -783,7 +784,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Determine if the given attribute exists.
      *
-     * @param  mixed $offset
+     * @param mixed $offset
      *
      * @return bool
      */
@@ -795,7 +796,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Get the value for a given offset.
      *
-     * @param  mixed $offset
+     * @param mixed $offset
      *
      * @return mixed
      */
@@ -807,8 +808,8 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Set the value for a given offset.
      *
-     * @param  mixed $offset
-     * @param  mixed $value
+     * @param mixed $offset
+     * @param mixed $value
      *
      * @return void
      */
@@ -820,7 +821,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Unset the value for a given offset.
      *
-     * @param  mixed $offset
+     * @param mixed $offset
      *
      * @return void
      */
@@ -841,7 +842,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Convert the model instance to JSON.
      *
-     * @param  int $options
+     * @param int $options
      *
      * @return string
      */

@@ -169,8 +169,6 @@ class WorkingSchedule
 
     public function isOpenAt(DateTimeInterface $dateTime): bool
     {
-        $dateTime = $this->applyTimezone($dateTime);
-
         return $this->forDate($dateTime)->isOpenAt(
             WorkingTime::fromDateTime($dateTime)
         );
