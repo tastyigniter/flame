@@ -236,27 +236,31 @@ class FileParser
         $data = $this->process();
         $className = $data['className'];
 
-        $fileCache = self::$fileCache;
         if (!class_exists($className)) {
-            $fileCache->load($data['filePath']);
+            self::$fileCache->load($data['filePath']);
         }
 
-        if (!class_exists($className)) {
-            $path = array_get($data, 'filePath', $fileCache->getCacheKey($className));
-            if (is_file($path)) {
-                $fileCache->load($path);
-                if ($className = $this->extractClassFromFile($path)) {
-                    return new $className($page, $layout, $controller);
-                }
-
-                @unlink($path);
-            }
-
-            $data = $this->process();
+        if (!class_exists($className) AND $data = $this->handleCorruptCache($data)) {
             $className = $data['className'];
         }
 
         return new $className($page, $layout, $controller);
+    }
+
+    protected function handleCorruptCache($data)
+    {
+        $path = array_get($data, 'filePath', self::$fileCache->getCacheKey($data['className']));
+        if (is_file($path)) {
+            if ($className = $this->extractClassFromFile($path) AND class_exists($className)) {
+                $data['className'] = $className;
+
+                return $data;
+            }
+
+            @unlink($path);
+        }
+
+        return $this->process();
     }
 
     /**
