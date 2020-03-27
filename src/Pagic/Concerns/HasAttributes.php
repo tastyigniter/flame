@@ -13,7 +13,7 @@ trait HasAttributes
      *
      * @var array
      */
-    protected $attributes = [];
+    public $attributes = [];
 
     /**
      * The model attribute's original state.
@@ -69,8 +69,8 @@ trait HasAttributes
     /**
      * Add the mutated attributes to the attributes array.
      *
-     * @param  array $attributes
-     * @param  array $mutatedAttributes
+     * @param array $attributes
+     * @param array $mutatedAttributes
      *
      * @return array
      */
@@ -124,7 +124,7 @@ trait HasAttributes
     /**
      * Get an attribute array of all arrayable values.
      *
-     * @param  array $values
+     * @param array $values
      *
      * @return array
      */
@@ -144,7 +144,7 @@ trait HasAttributes
     /**
      * Get an attribute from the model.
      *
-     * @param  string $key
+     * @param string $key
      *
      * @return mixed
      */
@@ -180,7 +180,7 @@ trait HasAttributes
     /**
      * Get a plain attribute (not a relationship).
      *
-     * @param  string $key
+     * @param string $key
      *
      * @return mixed
      */
@@ -201,7 +201,7 @@ trait HasAttributes
     /**
      * Get an attribute from the $attributes array.
      *
-     * @param  string $key
+     * @param string $key
      *
      * @return mixed
      */
@@ -215,7 +215,7 @@ trait HasAttributes
     /**
      * Determine if a get mutator exists for an attribute.
      *
-     * @param  string $key
+     * @param string $key
      *
      * @return bool
      */
@@ -227,8 +227,8 @@ trait HasAttributes
     /**
      * Get the value of an attribute using its mutator.
      *
-     * @param  string $key
-     * @param  mixed $value
+     * @param string $key
+     * @param mixed $value
      *
      * @return mixed
      */
@@ -240,8 +240,8 @@ trait HasAttributes
     /**
      * Get the value of an attribute using its mutator for array conversion.
      *
-     * @param  string $key
-     * @param  mixed $value
+     * @param string $key
+     * @param mixed $value
      *
      * @return mixed
      */
@@ -255,8 +255,8 @@ trait HasAttributes
     /**
      * Set a given attribute on the model.
      *
-     * @param  string $key
-     * @param  mixed $value
+     * @param string $key
+     * @param mixed $value
      *
      * @return $this
      */
@@ -279,7 +279,7 @@ trait HasAttributes
     /**
      * Determine if a set mutator exists for an attribute.
      *
-     * @param  string $key
+     * @param string $key
      *
      * @return bool
      */
@@ -301,8 +301,8 @@ trait HasAttributes
     /**
      * Set the array of model attributes. No checking is done.
      *
-     * @param  array $attributes
-     * @param  bool $sync
+     * @param array $attributes
+     * @param bool $sync
      *
      * @return $this
      */
@@ -320,8 +320,8 @@ trait HasAttributes
     /**
      * Get the model's original attribute values.
      *
-     * @param  string|null $key
-     * @param  mixed $default
+     * @param string|null $key
+     * @param mixed $default
      *
      * @return mixed|array
      */
@@ -333,7 +333,7 @@ trait HasAttributes
     /**
      * Get a subset of the model's attributes.
      *
-     * @param  array|mixed $attributes
+     * @param array|mixed $attributes
      *
      * @return array
      */
@@ -363,7 +363,7 @@ trait HasAttributes
     /**
      * Sync a single original attribute with its current value.
      *
-     * @param  string $attribute
+     * @param string $attribute
      *
      * @return $this
      */
@@ -389,7 +389,7 @@ trait HasAttributes
     /**
      * Determine if the model or given attribute(s) have been modified.
      *
-     * @param  array|string|null $attributes
+     * @param array|string|null $attributes
      *
      * @return bool
      */
@@ -403,7 +403,7 @@ trait HasAttributes
     /**
      * Determine if the model or given attribute(s) have remained the same.
      *
-     * @param  array|string|null $attributes
+     * @param array|string|null $attributes
      *
      * @return bool
      */
@@ -415,7 +415,7 @@ trait HasAttributes
     /**
      * Determine if the model or given attribute(s) have been modified.
      *
-     * @param  array|string|null $attributes
+     * @param array|string|null $attributes
      *
      * @return bool
      */
@@ -429,8 +429,8 @@ trait HasAttributes
     /**
      * Determine if the given attributes were changed.
      *
-     * @param  array $changes
-     * @param  array|string|null $attributes
+     * @param array $changes
+     * @param array|string|null $attributes
      *
      * @return bool
      */
@@ -486,8 +486,8 @@ trait HasAttributes
     /**
      * Determine if the new and old values for a given key are equivalent.
      *
-     * @param  string $key
-     * @param  mixed $current
+     * @param string $key
+     * @param mixed $current
      *
      * @return bool
      */
@@ -529,7 +529,7 @@ trait HasAttributes
     /**
      * Extract and cache all the mutated attributes of a class.
      *
-     * @param  string $class
+     * @param string $class
      *
      * @return void
      */
@@ -543,7 +543,7 @@ trait HasAttributes
     /**
      * Get all of the attribute mutator methods.
      *
-     * @param  mixed $class
+     * @param mixed $class
      *
      * @return array
      */

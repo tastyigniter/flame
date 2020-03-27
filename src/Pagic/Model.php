@@ -73,12 +73,6 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     public $exists = FALSE;
 
     /**
-     * Indicates if the model was inserted during the current request lifecycle.
-     * @var bool
-     */
-    public $wasRecentlyCreated = FALSE;
-
-    /**
      * @var array Allowable file extensions.
      */
     protected $allowedExtensions = ['php'];
