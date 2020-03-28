@@ -562,7 +562,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     {
         $this->fireModelEvent('saved', FALSE);
 
-        $this->mtime = $this->newFinder()->lastModified();
+        $this->mTime = $this->newFinder()->lastModified();
 
         $this->syncOriginal();
     }
