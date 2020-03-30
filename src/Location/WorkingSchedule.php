@@ -179,7 +179,7 @@ class WorkingSchedule
         return !$this->isOpenAt($dateTime);
     }
 
-    public function nextOpenAt(DateTimeInterface $dateTime): DateTimeInterface
+    public function nextOpenAt(DateTimeInterface $dateTime)
     {
         if (!$dateTime instanceof DateTimeImmutable)
             $dateTime = clone $dateTime;
@@ -187,6 +187,9 @@ class WorkingSchedule
         $nextOpenAt = $this->forDate($dateTime)->nextOpenAt(
             WorkingTime::fromDateTime($dateTime)
         );
+
+        if (!$this->hasPeriod())
+            return null;
 
         while ($nextOpenAt === FALSE) {
             $dateTime = $dateTime->modify('+1 day')->setTime(0, 0);
@@ -212,7 +215,7 @@ class WorkingSchedule
      * @param \DateTimeInterface $dateTime
      * @return \DateTimeInterface
      */
-    public function nextCloseAt(DateTimeInterface $dateTime): DateTimeInterface
+    public function nextCloseAt(DateTimeInterface $dateTime)
     {
         if (!$dateTime instanceof DateTimeImmutable)
             $dateTime = clone $dateTime;
@@ -220,6 +223,9 @@ class WorkingSchedule
         $nextCloseAt = $this->forDate($dateTime)->nextCloseAt(
             WorkingTime::fromDateTime($dateTime)
         );
+
+        if (!$this->hasPeriod())
+            return null;
 
         while ($nextCloseAt === FALSE) {
             $dateTime = $dateTime->modify('+1 day')->setTime(0, 0);
@@ -393,5 +399,18 @@ class WorkingSchedule
         })->filter(function (DateTime $dateTime) use ($checkDateTime) {
             return Carbon::instance($checkDateTime)->lte($dateTime);
         })->values();
+    }
+
+    protected function hasPeriod()
+    {
+        foreach ($this->periods as $period) {
+            if (!$period->isEmpty())
+                return TRUE;
+        }
+
+        if (!empty($this->exceptions))
+            return TRUE;
+
+        return FALSE;
     }
 }
