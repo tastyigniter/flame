@@ -2,8 +2,11 @@
 
 namespace Igniter\Flame\Notifications;
 
+use Illuminate\Contracts\Notifications\Dispatcher as DispatcherContract;
+use Illuminate\Contracts\Notifications\Factory as FactoryContract;
 use Illuminate\Notifications\ChannelManager;
 use Illuminate\Notifications\NotificationServiceProvider as BaseNotificationServiceProvider;
+use Illuminate\Support\Facades\Notification;
 
 class NotificationServiceProvider extends BaseNotificationServiceProvider
 {
@@ -30,10 +33,24 @@ class NotificationServiceProvider extends BaseNotificationServiceProvider
      */
     public function register()
     {
-        parent::register();
+        $this->app->singleton(ChannelManager::class, function ($app) {
+            $this->app['events']->fire('notification.beforeRegister', [$this]);
 
-        $this->app->make(ChannelManager::class)->extend('mail', function () {
-            return $this->app->make(Channels\MailChannel::class);
+            return new ChannelManager($app);
+        });
+
+        $this->app->alias(
+            ChannelManager::class, DispatcherContract::class
+        );
+
+        $this->app->alias(
+            ChannelManager::class, FactoryContract::class
+        );
+
+        Notification::resolved(function (ChannelManager $service) {
+            $service->extend('mail', function ($app) {
+                return $this->app->make(Channels\MailChannel::class);
+            });
         });
     }
 }
