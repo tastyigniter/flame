@@ -20,7 +20,11 @@ class CartServiceProvider extends ServiceProvider
         $this->app->singleton('cart', function ($app) {
             $this->app['events']->fire('cart.beforeRegister', [$this]);
 
-            return $app->make(\Igniter\Flame\Cart\Cart::class);
+            $instance = $app->make(\Igniter\Flame\Cart\Cart::class);
+
+            $this->app['events']->fire('cart.afterRegister', [$instance, $this]);
+
+            return $instance;
         });
     }
 
