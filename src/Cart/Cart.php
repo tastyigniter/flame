@@ -38,6 +38,13 @@ class Cart
     protected $conditionsLoaded;
 
     /**
+     * Instance of the cart condition.
+     *
+     * @var \Igniter\Flame\Cart\CartConditions
+     */
+    protected $conditions;
+
+    /**
      * Cart constructor.
      *
      * @param \Illuminate\Session\SessionManager $session
@@ -48,9 +55,7 @@ class Cart
         $this->session = $session;
         $this->events = $events;
 
-        $this->instance(self::DEFAULT_INSTANCE);
-
-        $this->loadConditions();
+        $this->instance = self::DEFAULT_INSTANCE;
     }
 
     /**
@@ -62,9 +67,9 @@ class Cart
      */
     public function instance($instance = null)
     {
-        $instance = $instance ?: self::DEFAULT_INSTANCE;
+        $instance = $instance ?: $this->instance;
 
-        $this->instance = sprintf('%s.%s', 'cart', $instance);
+        $this->instance = $instance;
 
         $this->fireEvent('created', $instance);
 
@@ -217,7 +222,8 @@ class Cart
     {
         $this->fireEvent('clearing');
 
-        $this->session->remove($this->instance);
+        $this->clearContent();
+        $this->clearConditions();
         $this->deleteStored($identifier);
 
         $this->fireEvent('cleared');
@@ -336,25 +342,24 @@ class Cart
     public function removeCondition($name)
     {
         $cartCondition = $this->getCondition($name);
-        if (!$cartCondition OR !$cartCondition->removeable)
-            return FALSE;
 
         $this->fireEvent('condition.removing', $cartCondition);
 
-        $allConditions = $this->getConditions();
+        if (!$cartCondition OR !$cartCondition->removeable)
+            return FALSE;
 
-        $allConditions->pull($name);
+        $this->conditions->pull($name);
 
         $this->fireEvent('condition.removed', $cartCondition);
-
-        $this->putSession('conditions', $allConditions);
     }
 
     public function clearConditions()
     {
         $this->fireEvent('condition.clearing');
 
-        $this->putSession('conditions', null);
+        $this->conditions->each(function (CartCondition $condition) {
+            $condition->clearMetaData();
+        });
 
         $this->fireEvent('condition.cleared');
     }
@@ -378,11 +383,6 @@ class Cart
         $condition->onLoad();
 
         $this->fireEvent('condition.loaded', $condition);
-
-        $allConditions = $this->getConditions();
-        $allConditions->put($condition->name, $condition);
-
-        $this->putSession('conditions', $allConditions);
     }
 
     public function loadConditions()
@@ -390,25 +390,17 @@ class Cart
         if ($this->conditionsLoaded)
             return;
 
-        $conditions = new CartConditions;
+        $this->conditions = new CartConditions;
         foreach (config('cart.conditions', []) as $definition) {
             if (!array_get($definition, 'status', TRUE))
                 continue;
 
-            $name = array_get($definition, 'name');
-            if ($condition = $this->getCondition($name)) {
-                $condition->fillFromConfig($definition);
-            }
-            else {
-                $condition = $this->makeCondition($definition);
-            }
+            $condition = $this->makeCondition($definition);
 
             $this->loadCondition($condition);
 
-            $conditions->put($condition->name, $condition);
+            $this->conditions->put($condition->name, $condition);
         }
-
-        $this->putSession('conditions', $conditions);
 
         $this->conditionsLoaded = TRUE;
     }
@@ -425,6 +417,15 @@ class Cart
     //
     //
     //
+
+    public function clearContent()
+    {
+        $this->fireEvent('content.clearing');
+
+        $this->session->pull(sprintf('cart.%s.%s', $this->instance, 'content'));
+
+        $this->fireEvent('content.cleared');
+    }
 
     /**
      * Get the carts content, if there is no cart content set yet, return a new empty Collection
@@ -446,10 +447,7 @@ class Cart
      */
     protected function getConditions()
     {
-        if (!$conditions = $this->getSession('conditions'))
-            $conditions = new CartConditions;
-
-        return $conditions;
+        return $this->conditions;
     }
 
     /**
@@ -530,7 +528,6 @@ class Cart
         $storedData = unserialize($stored->data);
 
         $content = $this->getContent();
-        $conditions = $this->getConditions();
 
         $storedContent = array_get($storedData, 'content');
         foreach ($storedContent as $cartItem) {
@@ -539,11 +536,10 @@ class Cart
 
         $storedConditions = array_get($storedData, 'conditions');
         foreach ($storedConditions as $cartCondition) {
-            $conditions->put($cartCondition->name, $cartCondition);
+            $this->conditions->put($cartCondition->name, $cartCondition);
         }
 
         $this->putSession('content', $content);
-        $this->putSession('conditions', $conditions);
 
         $this->fireEvent('restored');
 
@@ -593,19 +589,14 @@ class Cart
     // Session
     //
 
-    protected function hasSession($key)
-    {
-        return $this->session->has(sprintf('%s.%s', $this->instance, $key));
-    }
-
     protected function getSession($key, $default = null)
     {
-        return $this->session->get(sprintf('%s.%s', $this->instance, $key), $default);
+        return $this->session->get(sprintf('cart.%s.%s', $this->instance, $key), $default);
     }
 
     protected function putSession($key, $content)
     {
-        $this->session->put(sprintf('%s.%s', $this->instance, $key), $content);
+        $this->session->put(sprintf('cart.%s.%s', $this->instance, $key), $content);
     }
 
     //

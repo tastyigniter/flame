@@ -6,6 +6,7 @@ use Igniter\Flame\Cart\Helpers\CartConditionHelper;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Session;
 use Serializable;
 
 /**
@@ -48,6 +49,8 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     // Object properties
     //
 
+    protected $sessionKey = 'cart.conditions.%s';
+
     /**
      * @var \Igniter\Flame\Cart\CartContent
      */
@@ -66,8 +69,6 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
      */
     protected $config = [];
 
-    protected $metaData = [];
-
     /**
      * CartItem constructor.
      *
@@ -85,7 +86,9 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
         $this->name = array_get($config, 'name', $this->name);
         $this->priority = array_get($config, 'priority', $this->priority);
         $this->removeable = array_get($config, 'removeable', $this->removeable);
-        $this->metaData = array_get($config, 'metaData', $this->metaData);
+
+        if ($metaData = array_get($config, 'metaData'))
+            Session::put($this->getSessionKey(), $metaData);
     }
 
     public function isValid()
@@ -248,32 +251,46 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
 
     public function getMetaData($key = null, $default = null)
     {
+        $metaData = Session::get($this->getSessionKey(), []);
         if (is_null($key))
-            return $this->metaData;
+            return $metaData;
 
-        return Arr::get($this->metaData, $key, $default);
+        return Arr::get($metaData, $key, $default);
     }
 
     public function setMetaData($key, $value = null)
     {
+        $metaData = Session::get($this->getSessionKey(), []);
+
         if (is_array($key)) {
             foreach ($key as $k => $v) {
-                Arr::set($this->metaData, $k, $v);
+                Arr::set($metaData, $k, $v);
             }
         }
         else {
-            Arr::set($this->metaData, $key, $value);
+            Arr::set($metaData, $key, $value);
         }
+
+        Session::put($this->getSessionKey(), $metaData);
     }
 
     public function removeMetaData($key = null)
     {
+        $metaData = Session::get($this->getSessionKey(), []);
+
         if (is_null($key)) {
-            $this->metaData = [];
+            $metaData = [];
         }
         else {
-            return Arr::pull($this->metaData, $key);
+            Arr::pull($metaData, $key);
         }
+
+        Session::put($this->getSessionKey(), $metaData);
+    }
+
+    public function clearMetaData()
+    {
+        Session::pull($this->getSessionKey());
     }
 
     //
@@ -291,7 +308,7 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
             'name' => $this->name,
             'label' => $this->label,
             'priority' => $this->priority,
-            'metaData' => $this->metaData,
+            'metaData' => Session::get($this->getSessionKey(), []),
             'removeable' => $this->removeable,
         ];
     }

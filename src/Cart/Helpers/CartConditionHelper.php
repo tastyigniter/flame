@@ -115,7 +115,7 @@ trait CartConditionHelper
 
     protected function ruleIsValid($rule)
     {
-        list($leftOperand, $operator, $rightOperand) = $this->parseRule($rule);
+        [$leftOperand, $operator, $rightOperand] = $this->parseRule($rule);
         $leftOperand = $this->operandValue($leftOperand);
         $rightOperand = $this->operandValue($rightOperand);
 
@@ -225,5 +225,14 @@ trait CartConditionHelper
     protected function valueIsToBeDivided($value)
     {
         return (preg_match('/\\//', $value) == 1);
+    }
+
+    //
+    // Session
+    //
+
+    protected function getSessionKey()
+    {
+        return sprintf($this->sessionKey, $this->name);
     }
 }
