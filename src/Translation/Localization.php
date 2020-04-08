@@ -32,6 +32,14 @@ class Localization
 
     public function getLocale()
     {
+        // Get locale from user browser
+        if ($this->detectBrowserLocale()) {
+            $browserLocale = $this->getBrowserLocale();
+            if ($browserLocale AND $this->isValid($browserLocale)) {
+                return $browserLocale;
+            }
+        }
+
         // Check request for locale
         $routeLocale = $this->getRouteLocale();
         if ($routeLocale AND $this->isValid($routeLocale)) {
@@ -42,14 +50,6 @@ class Localization
         $sessionLocale = $this->getSessionLocale();
         if ($sessionLocale AND $this->isValid($sessionLocale)) {
             return $sessionLocale;
-        }
-
-        // Get locale from user browser
-        if ($this->detectBrowserLocale()) {
-            $browserLocale = $this->getBrowserLocale();
-            if ($browserLocale AND $this->isValid($browserLocale)) {
-                return $browserLocale;
-            }
         }
 
         return $this->getConfig('locale');
