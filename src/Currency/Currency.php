@@ -189,7 +189,9 @@ class Currency
      */
     public function getUserCurrency()
     {
-        return $this->userCurrency ?: $this->config('default');
+        $code = $this->userCurrency ?: $this->config('default');
+
+        return optional($this->getCurrency($code))->currency_code;
     }
 
     /**
