@@ -226,7 +226,7 @@ class Model extends EloquentModel
     /**
      * Create a new model instance that is existing.
      *
-     * @param  array $attributes
+     * @param array $attributes
      *
      * @param null $connection
      *
@@ -378,7 +378,7 @@ class Model extends EloquentModel
     /**
      * Fill the model with an array of attributes.
      *
-     * @param  array $attributes
+     * @param array $attributes
      *
      * @return \Illuminate\Database\Eloquent\Model
      * @throws \Illuminate\Database\Eloquent\MassAssignmentException
@@ -392,8 +392,8 @@ class Model extends EloquentModel
      * Cast an attribute to a native PHP type.
      * Cast an attribute to a native PHP type.
      *
-     * @param  string $key
-     * @param  mixed $value
+     * @param string $key
+     * @param mixed $value
      *
      * @return mixed
      */
@@ -456,8 +456,8 @@ class Model extends EloquentModel
     /**
      * Set a given attribute on the model.
      *
-     * @param  string $key
-     * @param  mixed $value
+     * @param string $key
+     * @param mixed $value
      *
      * @return self
      */
@@ -477,9 +477,6 @@ class Model extends EloquentModel
         // the connection grammar's date format. We will auto set the values.
         elseif ($value && (in_array($key, $this->getDates()) || $this->isDateCastable($key))) {
             $value = $this->fromDateTime($value);
-//        }
-//        elseif ($value && $this->isTimeCastable($key)) {
-//            $value = $this->fromTime($value);
         }
 
         if (!is_null($value) && $this->isSerializedCastable($key)) {
@@ -572,7 +569,7 @@ class Model extends EloquentModel
     /**
      * Convert a Carbon Time to a storable string.
      *
-     * @param  \Carbon\Carbon|int $value
+     * @param \Carbon\Carbon|int $value
      *
      * @return string
      */
@@ -589,7 +586,7 @@ class Model extends EloquentModel
     /**
      * Determine whether a value is Time castable for inbound manipulation.
      *
-     * @param  string $key
+     * @param string $key
      *
      * @return bool
      */
@@ -610,7 +607,7 @@ class Model extends EloquentModel
     /**
      * Set the time format used by the model.
      *
-     * @param  string $format
+     * @param string $format
      *
      * @return self
      */
@@ -624,7 +621,7 @@ class Model extends EloquentModel
     /**
      * Determine if the model or given attribute(s) have been modified.
      *
-     * @param  array|string|null $attributes
+     * @param array|string|null $attributes
      *
      * @return bool
      */
@@ -652,7 +649,7 @@ class Model extends EloquentModel
     /**
      * Create a new Eloquent query builder for the model.
      *
-     * @param  \Illuminate\Database\Query\Builder $query
+     * @param \Illuminate\Database\Query\Builder $query
      *
      * @return \Igniter\Flame\Database\Builder
      */
@@ -688,7 +685,7 @@ class Model extends EloquentModel
      * Allows models to access CI's loaded classes using the same
      * syntax as controllers.
      *
-     * @param    string $key
+     * @param string $key
      *
      * @return mixed
      */
@@ -705,7 +702,7 @@ class Model extends EloquentModel
     /**
      * Handle dynamic method calls into the model.
      *
-     * @param  string $method
+     * @param string $method
      * @param $params
      *
      * @return mixed
@@ -721,8 +718,8 @@ class Model extends EloquentModel
     /**
      * Handle dynamic static method calls into the method.
      *
-     * @param  string $method
-     * @param  array $parameters
+     * @param string $method
+     * @param array $parameters
      *
      * @return mixed
      */
@@ -793,7 +790,7 @@ class Model extends EloquentModel
     /**
      * Get a relationship.
      *
-     * @param  string $key
+     * @param string $key
      *
      * @return mixed
      */
@@ -833,7 +830,7 @@ class Model extends EloquentModel
      * Determines whether the specified relation should be saved
      * when push() is called instead of save() on the model. Default: true.
      *
-     * @param  string $name Relation name
+     * @param string $name Relation name
      *
      * @return boolean
      */
