@@ -26,7 +26,7 @@ class UrlServiceProvider extends ServiceProvider
      */
     public function forceUrlGeneratorPolicy()
     {
-        $policy = $this->app['config']->get('system.urlPolicy', 'detect');
+        $policy = $this->app['config']->get('system.urlPolicy', 'force');
 
         switch (strtolower($policy)) {
             case 'force':
