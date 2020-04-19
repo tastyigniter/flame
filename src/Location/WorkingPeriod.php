@@ -67,13 +67,14 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
     public function nextOpenAt(WorkingTime $time)
     {
         foreach ($this->ranges as $range) {
-            if ($range->containsTime($time)
-                AND $nextOpenTime = next($range)
-                AND ($nextOpenTime !== $range)
-            ) {
-                reset($range);
-
-                return $nextOpenTime;
+	    if($range->containsTime($time)){
+                if(count($this->ranges) === 1){
+                    return $range->start();
+                }
+                if(next($range) !== $range AND $nextOpenTime = next($range)){
+                    reset($range);
+                    return $nextOpenTime;
+                }
             }
 
             if ($nextOpenTime = $this->findNextTimeInFreeTime('start', $time, $range)) {
