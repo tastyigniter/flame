@@ -107,16 +107,6 @@ abstract class AbstractArea extends Model implements AreaInterface
         return $this->attributes['location_id'];
     }
 
-    public function deliveryAmount($cartTotal)
-    {
-        return $this->getConditionValue('amount', $cartTotal);
-    }
-
-    public function minimumOrderTotal($cartTotal)
-    {
-        return $this->getConditionValue('total', $cartTotal);
-    }
-
     public function checkBoundary($coordinate)
     {
         if (!$coordinate instanceof CoordinatesInterface) {
@@ -169,42 +159,5 @@ abstract class AbstractArea extends Model implements AreaInterface
         $groupedComponents = collect($components)->groupBy('type')->all();
 
         return app('geolite')->addressMatch($groupedComponents)->matches($position);
-    }
-
-    protected function getConditionValue($type, $cartTotal)
-    {
-        if (!$condition = $this->filterConditionRules($cartTotal, $type))
-            return null;
-
-        $condition = (object)$condition;
-
-        // Delivery is unavailable when delivery charge from the matched rule is -1
-        if ($condition->amount < 0)
-            return $type == 'total' ? $condition->total : null;
-
-        // At this stage, minimum total is 0 when the matched condition is a below rule
-        if ($type == 'total' AND $condition->type == 'below')
-            return 0;
-
-        return $condition->{$type};
-    }
-
-    protected function filterConditionRules($cartTotal, $value = 'total')
-    {
-        $collection = collect($this->conditions);
-
-        if ($value == 'total')
-            return $collection->sortBy($value)->first();
-
-        return $collection->first(function ($condition) use ($cartTotal) {
-            switch ($condition['type']) {
-                case 'all':
-                    return TRUE;
-                case 'below':
-                    return $cartTotal < $condition['total'];
-                case 'above':
-                    return $cartTotal > $condition['total'];
-            }
-        });
     }
 }
