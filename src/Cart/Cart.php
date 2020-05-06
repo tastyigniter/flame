@@ -348,6 +348,7 @@ class Cart
         if (!$cartCondition OR !$cartCondition->removeable)
             return FALSE;
 
+        $cartCondition->clearMetaData();
         $this->conditions->pull($name);
 
         $this->fireEvent('condition.removed', $cartCondition);
