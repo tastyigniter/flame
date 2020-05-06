@@ -2,7 +2,6 @@
 
 namespace Igniter\Flame\Exception;
 
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Model;
 
 class ValidationException extends \October\Rain\Exception\ValidationException
@@ -17,11 +16,11 @@ class ValidationException extends \October\Rain\Exception\ValidationException
     /**
      * Create a new validation exception instance.
      *
-     * @param  \Illuminate\Contracts\Validation\Validator $validator
-     * @param  \Illuminate\Database\Eloquent\Model $model
+     * @param \Illuminate\Contracts\Validation\Validator $validator
+     * @param \Illuminate\Database\Eloquent\Model $model
      * @return void
      */
-    public function __construct(Validator $validator, Model $model = null)
+    public function __construct($validator, Model $model = null)
     {
         parent::__construct($validator);
 
