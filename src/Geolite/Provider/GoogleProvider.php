@@ -156,21 +156,21 @@ class GoogleProvider extends AbstractProvider
 
         if ($json->status === 'REQUEST_DENIED') {
             throw new GeoliteException(sprintf(
-                'API access denied. Message: %s', $json->error_message
+                'API access denied. Message: %s', $json->error_message ?? 'empty error message'
             ));
         }
 
         // you are over your quota
         if ($json->status === 'OVER_QUERY_LIMIT') {
             throw new GeoliteException(sprintf(
-                'Daily quota exceeded. Message: %s', $json->error_message
+                'Daily quota exceeded. Message: %s', $json->error_message ?? 'empty error message'
             ));
         }
 
         if (!isset($json->results)
             OR !count($json->results)
             OR $json->status !== 'OK'
-        ) throw new GeoliteException($json->error_message);
+        ) throw new GeoliteException($json->error_message ?? 'empty error message');
 
         return $json;
     }
