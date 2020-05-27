@@ -7,6 +7,13 @@ use Igniter\Flame\ActivityLog\Models\Activity;
 interface ActivityInterface
 {
     /**
+     * Get the type of this activity.
+     *
+     * @return string
+     */
+    public function getType();
+
+    /**
      * Get the user that triggered the activity.
      *
      * @return mixed
@@ -26,13 +33,6 @@ interface ActivityInterface
      * @return array|null
      */
     public function getProperties();
-
-    /**
-     * Get the type of this activity.
-     *
-     * @return string
-     */
-    public static function getType();
 
     public static function getUrl(Activity $activity);
 
