@@ -34,6 +34,8 @@ interface ActivityInterface
      */
     public function getProperties();
 
+    public static function getTitle(Activity $activity);
+
     public static function getUrl(Activity $activity);
 
     public static function getMessage(Activity $activity);

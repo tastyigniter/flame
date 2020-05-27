@@ -62,25 +62,31 @@ class Activity extends Model
     // Accessors & Mutators
     //
 
+    public function getTitleAttribute()
+    {
+        $className = $this->getActivityTypeClass();
+        if ($className AND method_exists($className, 'getTitle'))
+            return $className::getTitle($this);
+
+        return '';
+    }
+
     public function getUrlAttribute()
     {
-        $activity = self::getActivityTypeByType($this->type);
+        $className = $this->getActivityTypeClass();
+        if ($className AND method_exists($className, 'getUrl'))
+            return $className::getUrl($this);
 
-        if (!$activity OR !class_exists($activity->className))
-            return '';
-
-        return $activity->className::getUrl($this);
-
+        return '';
     }
 
     public function getMessageAttribute()
     {
-        $activity = self::getActivityTypeByType($this->type);
-
-        if (!$activity OR !class_exists($activity->className))
+        $className = $this->getActivityTypeClass();
+        if (!($className AND method_exists($className, 'getMessage')))
             return '';
 
-        $message = $activity->className::getMessage($this);
+        $message = $className::getMessage($this);
 
         return app(ActivityLogger::class)->replacePlaceholders($message, $this);
     }
