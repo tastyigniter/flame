@@ -158,13 +158,14 @@ class ActivityLogger
         $properties = $activity->getProperties();
 
         foreach ($recipients as $user) {
-            if (!$user instanceof User)
-                continue;
-
             $this->logAs($type)
-                 ->causedBy($causer)->performedOn($subject)
-                 ->withProperties($properties)
-                 ->sendTo($user)->log();
+                ->causedBy($causer)->performedOn($subject)
+                ->withProperties($properties);
+
+            if ($user instanceof User)
+                $this->sendTo($user);
+
+            $this->log();
         }
 
         Event::fire('activityLogger.activityLogged', [$activity, $recipients]);
