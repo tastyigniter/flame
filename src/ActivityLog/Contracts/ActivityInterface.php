@@ -39,11 +39,4 @@ interface ActivityInterface
     public static function getUrl(Activity $activity);
 
     public static function getMessage(Activity $activity);
-
-    /**
-     * Get the name of the model class for the subject of this activity.
-     *
-     * @return string
-     */
-    public static function getSubjectModel();
 }
