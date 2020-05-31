@@ -82,14 +82,26 @@ class AbstractLocation extends Model implements LocationInterface
         return $address_data;
     }
 
-    public function getReservationInterval()
+    public function setOption($key, $value)
     {
-        return $this->reservation_time_interval;
+        $options = $this->options;
+        array_set($options, $key, $value);
+        $this->options = $options;
     }
 
-    public function getReservationStayTime()
+    public function getOption($key = null, $default = null)
     {
-        return $this->reservation_stay_time;
+        return array_get($this->options, $key, $default);
+    }
+
+    public function getReservationInterval()
+    {
+        return (int)$this->getOption('reservation_time_interval', 0);
+    }
+
+    public function getReservationLeadTime()
+    {
+        return (int)$this->getOption('reservation_lead_time', 0);
     }
 
     public function getOrderTimeInterval($orderType)
@@ -99,39 +111,36 @@ class AbstractLocation extends Model implements LocationInterface
 
     public function deliveryMinutes()
     {
-        return $this->delivery_time ?: 15;
+        return (int)$this->getOption('delivery_time_interval') ?: 15;
     }
 
     public function collectionMinutes()
     {
-        return $this->collection_time ?: 15;
-    }
-
-    public function lastOrderMinutes()
-    {
-        return $this->last_order_time;
+        return (int)$this->getOption('collection_time_interval') ?: 15;
     }
 
     public function hasDelivery()
     {
-        return $this->offer_delivery == 1;
+        return $this->getOption('offer_delivery') == 1;
     }
 
     public function hasCollection()
     {
-        return $this->offer_collection == 1;
+        return $this->getOption('offer_collection') == 1;
     }
 
-    public function hasFutureOrder()
+    public function hasFutureOrder($orderType = null)
     {
-        return (bool)array_get($this->options, 'future_orders', FALSE);
+        $orderType = $orderType ?: static::DELIVERY;
+
+        return (bool)$this->getOption("future_orders.{$orderType}_days", 0);
     }
 
     public function futureOrderDays($orderType = null)
     {
         $orderType = $orderType ?: static::DELIVERY;
 
-        return array_get($this->options, "future_order_days.{$orderType}", 0);
+        return (int)$this->getOption("future_orders.{$orderType}_days", 0);
     }
 
     public function availableOrderTypes()
