@@ -9,16 +9,24 @@ class CartConditions extends Collection
 {
     public function applied($subtotal)
     {
-        return $this->sortBy(function ($condition) {
+        $items = $this->sortBy(function ($condition) {
             return $condition->priority;
-        })->filter(function (CartCondition $condition) use ($subtotal) {
-            return $condition->apply($subtotal)->isValid();
+        });
+
+        $items->reduce(function ($total, CartCondition $condition) {
+            return $condition->apply($total)->calculateTotal($total);
+        }, $subtotal);
+
+        return $items->filter(function (CartCondition $condition) {
+            return $condition->isValid();
         });
     }
 
     public function total(float $subtotal)
     {
-        return $this->reduce(function ($total, CartCondition $condition) {
+        return $this->sortBy(function ($condition) {
+            return $condition->priority;
+        })->reduce(function ($total, CartCondition $condition) {
             return $condition->calculateTotal($total);
         }, $subtotal);
     }
