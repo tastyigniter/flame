@@ -1,7 +1,7 @@
 <?php
 
 use Igniter\Flame\ActivityLog\ActivityLogger;
-use Igniter\Flame\Support\StrHelper;
+use Igniter\Flame\Support\Str;
 use Igniter\Flame\Support\StringParser;
 use Illuminate\Routing\UrlGenerator;
 
@@ -38,7 +38,7 @@ if (!function_exists('uploads_path')) {
     /**
      * Get the path to the uploads folder.
      *
-     * @param  string $path
+     * @param string $path
      * @return string
      */
     function uploads_path($path = '')
@@ -69,7 +69,7 @@ if (!function_exists('image_path')) {
     /**
      * Get the path to the assets image folder.
      *
-     * @param    string $path The path to prepend
+     * @param string $path The path to prepend
      *
      * @return    string
      */
@@ -87,8 +87,8 @@ if (!function_exists('theme_url')) {
      * Create a local URL based on your theme path.
      * Segments can be passed in as a string.
      *
-     * @param    string $uri
-     * @param    string $secure
+     * @param string $uri
+     * @param string $secure
      *
      * @return    string
      */
@@ -104,7 +104,7 @@ if (!function_exists('theme_path')) {
      * Create a local URL based on your theme path.
      * Segments can be passed in as a string.
      *
-     * @param    string $path
+     * @param string $path
      *
      * @return    string
      */
@@ -133,8 +133,8 @@ if (!function_exists('root_url')) {
      * Create a local URL based on your root path.
      * Segments can be passed in as a string.
      *
-     * @param    string $uri
-     * @param    array $params
+     * @param string $uri
+     * @param array $params
      *
      * @return    string
      */
@@ -148,7 +148,7 @@ if (!function_exists('extension_path')) {
     /**
      * Get the path to the extensions folder.
      *
-     * @param    string $path The path to prepend
+     * @param string $path The path to prepend
      *
      * @return    string
      */
@@ -162,7 +162,7 @@ if (!function_exists('assets_path')) {
     /**
      * Get the path to the assets folder.
      *
-     * @param    string $path The path to prepend
+     * @param string $path The path to prepend
      *
      * @return    string
      */
@@ -176,7 +176,7 @@ if (!function_exists('temp_path')) {
     /**
      * Get the path to the downloads temp folder.
      *
-     * @param    string $path The path to prepend
+     * @param string $path The path to prepend
      *
      * @return    string
      */
@@ -226,8 +226,8 @@ if (!function_exists('parse_values')) {
     /**
      * Determine if a given string contains a given substring.
      *
-     * @param  array $columns Expected key names to parse
-     * @param  string $string URL template
+     * @param array $columns Expected key names to parse
+     * @param string $string URL template
      *
      * @return bool
      */
@@ -344,7 +344,7 @@ if (!function_exists('get_class_id')) {
      */
     function get_class_id($name)
     {
-        return StrHelper::getClassId($name);
+        return Str::getClassId($name);
     }
 }
 
@@ -358,7 +358,7 @@ if (!function_exists('normalize_class_name')) {
      */
     function normalize_class_name($name)
     {
-        return StrHelper::normalizeClassName($name);
+        return Str::normalizeClassName($name);
     }
 }
 
@@ -403,8 +403,8 @@ if (!function_exists('flash')) {
     /**
      * Arrange for a flash message.
      *
-     * @param  string|null $message
-     * @param  string $level
+     * @param string|null $message
+     * @param string $level
      *
      * @return \Igniter\Flame\Flash\FlashBag
      */
@@ -436,7 +436,7 @@ if (!function_exists('collect')) {
     /**
      * Create a collection from the given value.
      *
-     * @param  mixed $value
+     * @param mixed $value
      * @return \Illuminate\Support\Collection
      */
     function collect($value = null)
