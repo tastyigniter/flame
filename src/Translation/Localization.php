@@ -5,6 +5,8 @@ namespace Igniter\Flame\Translation;
 use Carbon\Carbon;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Request as RequestFacade;
+use Illuminate\Support\Facades\Session;
 
 class Localization
 {
@@ -25,33 +27,78 @@ class Localization
         $locale = $this->getLocale();
 
         if ($this->config['app.locale'] != $locale) {
-            app()->setLocale($locale);
-            Carbon::setLocale($locale);
+            $this->setLocale($locale);
+        }
+    }
+
+    public function loadLocaleFromBrowser()
+    {
+        if (!$this->detectBrowserLocale())
+            return FALSE;
+
+        $locale = $this->getBrowserLocale();
+        if (!$locale OR !$this->isValid($locale))
+            return FALSE;
+
+        $remember = $this->getLocale() != $locale;
+
+        $this->setLocale($locale, $remember);
+
+        return TRUE;
+    }
+
+    public function loadLocaleFromRequest()
+    {
+        $locale = $this->getRequestLocale();
+        if (!$locale OR !$this->isValid($locale))
+            return FALSE;
+
+        $remember = $this->getLocale() != $locale;
+
+        $this->setLocale($locale, $remember);
+
+        return TRUE;
+    }
+
+    public function loadLocaleFromSession()
+    {
+        $locale = $this->getSessionLocale();
+        if (!$locale OR !$this->isValid($locale))
+            return FALSE;
+
+        $remember = $this->getLocale() != $locale;
+
+        $this->setLocale($locale, $remember);
+
+        return TRUE;
+    }
+
+    public function setLocale($locale, $remember = TRUE)
+    {
+        if (!$this->isValid($locale)) {
+            return FALSE;
+        }
+
+        app()->setLocale($locale);
+        Carbon::setLocale($locale);
+
+        if ($remember) {
+            $this->setSessionLocale($locale);
         }
     }
 
     public function getLocale()
     {
-        // Get locale from user browser
-        if ($this->detectBrowserLocale()) {
-            $browserLocale = $this->getBrowserLocale();
-            if ($browserLocale AND $this->isValid($browserLocale)) {
-                return $browserLocale;
-            }
-        }
-
-        // Check request for locale
-        $routeLocale = $this->getRouteLocale();
-        if ($routeLocale AND $this->isValid($routeLocale)) {
-            return $routeLocale;
-        }
-
-        // Get locale from session
         $sessionLocale = $this->getSessionLocale();
         if ($sessionLocale AND $this->isValid($sessionLocale)) {
             return $sessionLocale;
         }
 
+        return $this->getConfig('locale');
+    }
+
+    public function getDefaultLocale()
+    {
         return $this->getConfig('locale');
     }
 
@@ -72,22 +119,20 @@ class Localization
 
     public function setSessionLocale($locale)
     {
-        return $this->request->getSession()->put([$this->sessionKey => $locale]);
+        return Session::put($this->sessionKey, $locale);
     }
 
     public function getSessionLocale()
     {
-        return $this->request->getSession()->get($this->sessionKey);
+        return Session::get($this->sessionKey);
     }
 
-    protected function getRouteLocale()
+    public function getRequestLocale()
     {
-        $paths = explode('/', $this->request->path());
-
-        return $paths[0] ?? null;
+        return RequestFacade::segment(1);
     }
 
-    protected function getBrowserLocale()
+    public function getBrowserLocale()
     {
         return substr($this->request->server('HTTP_ACCEPT_LANGUAGE'), 0, 2);
     }
