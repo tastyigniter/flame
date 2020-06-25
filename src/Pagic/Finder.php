@@ -513,8 +513,9 @@ class Finder
         if (strpos($filePath, './') !== FALSE || strpos($filePath, '//') !== FALSE) {
             return FALSE;
         }
-        
-        if(windows_os()) $filePath = str_replace("\\","/",$filePath);
+
+        // @todo: A different approach to fix the file path issue.
+        if (windows_os()) $filePath = str_replace("\\", "/", $filePath);
         $segments = explode('/', $filePath);
         if ($maxNesting !== null AND count($segments) > $maxNesting) {
             return FALSE;
