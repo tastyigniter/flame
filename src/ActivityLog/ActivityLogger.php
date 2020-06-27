@@ -152,7 +152,7 @@ class ActivityLogger
     {
         Event::fire('activityLogger.beforeLogActivity', [$activity, $recipients]);
 
-        $type = $activity::getType();
+        $type = $activity->getType();
         $causer = $activity->getCauser();
         $subject = $activity->getSubject();
         $properties = $activity->getProperties();
