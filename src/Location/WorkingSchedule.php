@@ -297,14 +297,16 @@ class WorkingSchedule
     /**
      * @param int $interval
      * @param \DateTime|null $dateTime
+     * @param int $leadTime
      * @return Collection
      * @throws \Exception
      */
-    public function getTimeslot(int $interval = 15, DateTime $dateTime = null)
+    public function getTimeslot(int $interval = 15, DateTime $dateTime = null, int $leadTime = 25)
     {
         $dateTime = Carbon::instance($this->parseDate($dateTime));
-        $checkDateTime = $dateTime->copy()->addMinutes($interval);
-        $dateInterval = new DateInterval('PT'.($interval ?: 15).'M');
+        $checkDateTime = $dateTime->copy()->addMinutes($leadTime * 2);
+        $interval = new DateInterval('PT'.($interval ?: 15).'M');
+        $leadTime = new DateInterval('PT'.($leadTime ?: 25).'M');
 
         $start = $dateTime->copy()->startOfDay()->subDay();
         $end = $dateTime->copy()->startOfDay()->addDay($this->days);
@@ -312,16 +314,16 @@ class WorkingSchedule
         $result = [];
         for ($date = $start; $date->lte($end); $date->addDay()) {
             $indexValue = $date->toDateString();
-            $timeslot = $this->filterTimeslot(
-                $this->forDate($date)->timeslot($dateInterval),
-                $indexValue, $checkDateTime
-            );
 
-            if ($timeslot->isEmpty())
+            $timeslot = $this->forDate($date)->timeslot($interval, $leadTime);
+
+            $filteredTimeslot = $this->filterTimeslot($timeslot, $indexValue, $checkDateTime);
+
+            if ($filteredTimeslot->isEmpty())
                 continue;
 
             // Use date string as array key to allow range to span over a week.
-            $result[$indexValue] = $timeslot;
+            $result[$indexValue] = $filteredTimeslot;
         }
 
         return collect($result)->sort();
@@ -373,7 +375,7 @@ class WorkingSchedule
                     $period->getClose(),
                 ];
             }
-            else if (is_array($period)) {
+            elseif (is_array($period)) {
                 $day = WorkingDay::normalizeName($day);
                 $parsedPeriods[$day] = array_merge(
                     $parsedPeriods[$day] ?? [], $period

@@ -7,10 +7,6 @@ interface AreaInterface
 {
     public function getLocationId();
 
-    public function deliveryAmount($cartTotal);
-
-    public function minimumOrderTotal($cartTotal);
-
     public function checkBoundary($position);
 
     public function pointInVertices(CoordinatesInterface $coordinate);

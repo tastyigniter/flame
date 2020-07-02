@@ -132,12 +132,21 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
         return FALSE;
     }
 
-    public function timeslot(DateInterval $interval)
+    public function timeslot(DateInterval $interval, DateInterval $leadTime = null)
     {
+        if (is_null($leadTime))
+            $leadTime = $interval;
+
         $timeslot = [];
         foreach ($this->ranges as $range) {
             $start = new DateTime($range->start());
             $end = new DateTime($range->end());
+
+            if (!is_null($leadTime)) {
+                $start = $start->add($leadTime);
+                $end = $end->sub($leadTime);
+            }
+
             $datePeriod = new DatePeriod($start, $interval, $end);
             foreach ($datePeriod as $dateTime) {
                 $timeslot[] = WorkingTime::fromDateTime($dateTime);

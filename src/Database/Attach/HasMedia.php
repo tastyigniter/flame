@@ -36,8 +36,8 @@ trait HasMedia
 
     /**
      * Query scope to detect the presence of one or more attached media for a given tag.
-     * @param  \Illuminate\Database\Eloquent\Builder $query
-     * @param  string|string[] $tags
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string|string[] $tags
      * @return void
      */
     public function scopeWhereHasMedia(Builder $query, $tags)
@@ -189,6 +189,7 @@ trait HasMedia
 
         $tag = $tag ?? $this->getDefaultTagName();
         $newMediaIds = $this->parseIds($media);
+
         return collect($newMediaIds)
             ->map(function (array $newMedia) use ($tag) {
                 $foundMedia = Media::findOrFail($newMedia['id']);
@@ -205,7 +206,7 @@ trait HasMedia
 
     /**
      * Detach a media item from the model.
-     * @param  mixed $mediaId
+     * @param mixed $mediaId
      * @return void
      */
     public function deleteMedia($mediaId)
@@ -238,7 +239,7 @@ trait HasMedia
     /**
      * Remove all media with the given tag.
      *
-     * @param  string $tag
+     * @param string $tag
      * @return void
      */
     public function clearMediaTag($tag = null)
@@ -322,12 +323,12 @@ trait HasMedia
     /**
      * Get all of the IDs from the given mixed value.
      *
-     * @param  mixed $value
+     * @param mixed $value
      * @return array
      */
     protected function parseIds($value)
     {
-        if ($value instanceof Model) {
+        if ($value instanceof \Illuminate\Database\Eloquent\Model) {
             return [$value->{$this->relatedKey}];
         }
 

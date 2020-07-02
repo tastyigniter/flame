@@ -38,6 +38,10 @@ class AddressMatch
                 return $this->evalComponentValue(
                     $value, $position->getStreetName()
                 );
+            case 'sub_locality':
+                return $this->evalComponentValue(
+                    $value, $position->getSubLocality()
+                );
             case 'locality':
                 return $this->evalComponentValue(
                     $value, $position->getLocality()

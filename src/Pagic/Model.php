@@ -368,6 +368,21 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     }
 
     /**
+     * File name should always contain an extension.
+     * @param mixed $value
+     */
+    public function setFileNameAttribute($value)
+    {
+        $fileName = trim($value);
+
+        if (strlen($fileName) && !strlen(pathinfo($value, PATHINFO_EXTENSION))) {
+            $fileName .= '.'.$this->defaultExtension;
+        }
+
+        $this->attributes['fileName'] = $fileName;
+    }
+
+    /**
      * Returns the directory name corresponding to the object type.
      * For pages the directory name is "_pages", for layouts - "_layouts", etc.
      * @return string

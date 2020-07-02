@@ -7,7 +7,7 @@ class RegisterTastyIgniter
     /**
      * Register specifics for TastyIgniter.
      *
-     * @param  \Illuminate\Contracts\Foundation\Application $app
+     * @param \Illuminate\Contracts\Foundation\Application $app
      *
      * @return void
      */
@@ -20,7 +20,7 @@ class RegisterTastyIgniter
 
         // Register singletons
         $app->singleton('string', function () {
-            return new \Igniter\Flame\Support\StrHelper;
+            return new \Igniter\Flame\Support\Str;
         });
 
         // Change extensions and themes paths based on config

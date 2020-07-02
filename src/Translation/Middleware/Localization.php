@@ -10,15 +10,32 @@ class Localization
     /**
      * Handle an incoming request.
      *
-     * @param  Request $request
-     * @param  Closure $next
+     * @param Request $request
+     * @param Closure $next
      *
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
-        // Check for a user defined language and set user language
-        app('translator.localization')->loadLocale();
+        $localization = app('translator.localization');
+
+        if (app()->runningInAdmin()) {
+            if (!$localization->loadLocaleFromSession()) {
+                $staff = app('admin.auth')->isLogged() ? app('admin.auth')->staff() : null;
+                if ($staff AND $staffLocale = $staff->language) {
+                    $localization->setLocale($staffLocale->code, TRUE);
+                }
+            }
+        }
+        else {
+            if (!$localization->loadLocaleFromRequest()) {
+                if (!$localization->loadLocaleFromBrowser()) {
+                    if (!$localization->loadLocaleFromSession()) {
+                        $localization->setLocale($localization->getDefaultLocale());
+                    }
+                }
+            }
+        }
 
         return $next($request);
     }

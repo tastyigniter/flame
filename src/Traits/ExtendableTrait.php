@@ -3,6 +3,8 @@
 namespace Igniter\Flame\Traits;
 
 use BadMethodCallException;
+use Exception;
+use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionMethod;
 use SystemException;
@@ -25,6 +27,7 @@ trait ExtendableTrait
         'extensions' => [],
         'methods' => [],
         'dynamicMethods' => [],
+        'dynamicProperties' => [],
     ];
 
     /**
@@ -69,13 +72,19 @@ trait ExtendableTrait
             $uses = $this->implement;
         }
         else {
-            throw new SystemException(sprintf('Class %s contains an invalid $implement value', get_class($this)));
+            throw new Exception(sprintf('Class %s contains an invalid $implement value', get_class($this)));
         }
 
         foreach ($uses as $use) {
-            // modified the basename($use) to $use in trim to avoid file separator confusion in Wamp
-            // Need to double check this in Xampp (mac)
             $useClass = str_replace('.', '\\', trim($use));
+
+            // Soft implement
+            if (Str::startsWith($useClass, '?')) {
+                $useClass = substr($useClass, 1);
+                if (!class_exists($useClass)) {
+                    continue;
+                }
+            }
 
             $this->extendClassWith($useClass);
         }
@@ -84,7 +93,7 @@ trait ExtendableTrait
     /**
      * Helper method for ::extend() static method
      *
-     * @param  callable $callback
+     * @param callable $callback
      *
      * @return void
      */
@@ -113,7 +122,7 @@ trait ExtendableTrait
     /**
      * Dynamically extend a class with a specified behavior
      *
-     * @param  string $extensionName
+     * @param string $extensionName
      *
      * @return void|self
      * @throws \SystemException
@@ -122,6 +131,8 @@ trait ExtendableTrait
     {
         if (!strlen($extensionName))
             return $this;
+
+        $extensionName = str_replace('.', '\\', trim($extensionName));
 
         if (isset($this->extensionData['extensions'][$extensionName])) {
             throw new SystemException(sprintf(
@@ -133,19 +144,27 @@ trait ExtendableTrait
 
         $this->extensionData['extensions'][$extensionName] = $extensionObject = new $extensionName($this);
         $this->extensionExtractMethods($extensionName, $extensionObject);
+        $extensionObject->extensionApplyInitCallbacks();
     }
 
     /**
      * Extracts the available methods from a behavior and adds it to the
      * list of callable methods.
      *
-     * @param  string $extensionName
-     * @param  object $extensionObject
+     * @param string $extensionName
+     * @param object $extensionObject
      *
      * @return void
      */
     protected function extensionExtractMethods($extensionName, $extensionObject)
     {
+        if (!method_exists($extensionObject, 'extensionIsHiddenMethod')) {
+            throw new Exception(sprintf(
+                'Extension %s should inherit October\Rain\Extension\ExtensionBase or implement October\Rain\Extension\ExtensionTrait.',
+                $extensionName
+            ));
+        }
+
         $extensionMethods = get_class_methods($extensionName);
         foreach ($extensionMethods as $methodName) {
             if ($methodName == '__construct' OR $methodName == '__remap'
@@ -192,13 +211,15 @@ trait ExtendableTrait
             $this->{$dynamicName} = $value;
         }
 
+        $this->extensionData['dynamicProperties'][] = $dynamicName;
+
         self::$extendableGuardProperties = TRUE;
     }
 
     /**
      * Check if extendable class is extended with a behavior object
      *
-     * @param  string $name Fully qualified behavior name
+     * @param string $name Fully qualified behavior name
      *
      * @return boolean
      */
@@ -214,7 +235,7 @@ trait ExtendableTrait
      *
      *   $this->getClassExtension('Admin.Actions.FormController')
      *
-     * @param  string $name Fully qualified behavior name
+     * @param string $name Fully qualified behavior name
      *
      * @return mixed
      */
@@ -222,9 +243,7 @@ trait ExtendableTrait
     {
         $name = str_replace('.', '\\', trim($name));
 
-        return (isset($this->extensionData['extensions'][$name]))
-            ? $this->extensionData['extensions'][$name]
-            : null;
+        return $this->extensionData['extensions'][$name] ?? null;
     }
 
     /**
@@ -233,7 +252,7 @@ trait ExtendableTrait
      *
      *   $this->asExtension('FormController')
      *
-     * @param  string $shortName
+     * @param string $shortName
      *
      * @return mixed
      */
@@ -254,7 +273,7 @@ trait ExtendableTrait
     /**
      * Checks if a method exists, extension equivalent of method_exists()
      *
-     * @param  string $name
+     * @param string $name
      *
      * @return boolean
      */
@@ -268,9 +287,37 @@ trait ExtendableTrait
     }
 
     /**
+     * Get a list of class methods, extension equivalent of get_class_methods()
+     * @return array
+     */
+    public function getClassMethods()
+    {
+        return array_values(array_unique(array_merge(
+            get_class_methods($this),
+            array_keys($this->extensionData['methods']),
+            array_keys($this->extensionData['dynamicMethods'])
+        )));
+    }
+
+    /**
+     * Returns all dynamic properties and their values
+     * @return array ['property' => 'value']
+     */
+    public function getDynamicProperties()
+    {
+        $result = [];
+        $propertyNames = $this->extensionData['dynamicProperties'];
+        foreach ($propertyNames as $propName) {
+            $result[$propName] = $this->{$propName};
+        }
+
+        return $result;
+    }
+
+    /**
      * Checks if a property exists, extension equivalent of property_exists()
      *
-     * @param  string $name
+     * @param string $name
      *
      * @return boolean
      */
@@ -295,8 +342,8 @@ trait ExtendableTrait
     /**
      * Checks if a property is accessible, property equivalent of is_callabe()
      *
-     * @param  mixed $class
-     * @param  string $propertyName
+     * @param mixed $class
+     * @param string $propertyName
      *
      * @return boolean
      */
@@ -311,7 +358,7 @@ trait ExtendableTrait
     /**
      * Magic method for __get()
      *
-     * @param  string $name
+     * @param string $name
      *
      * @return string
      */
@@ -335,8 +382,8 @@ trait ExtendableTrait
     /**
      * Magic method for __set()
      *
-     * @param  string $name
-     * @param  string $value
+     * @param string $name
+     * @param string $value
      *
      * @return string
      */
@@ -369,8 +416,8 @@ trait ExtendableTrait
     /**
      * Magic method for __call()
      *
-     * @param  string $name
-     * @param  array $params
+     * @param string $name
+     * @param array $params
      *
      * @return mixed
      */
@@ -408,18 +455,16 @@ trait ExtendableTrait
     /**
      * Magic method for __callStatic()
      *
-     * @param  string $name
-     * @param  array $params
+     * @param string $name
+     * @param array $params
      *
      * @return mixed
-     * @throws \SystemException
      */
     public static function extendableCallStatic($name, $params = null)
     {
         $className = get_called_class();
 
         if (!array_key_exists($className, self::$extendableStaticMethods)) {
-
             self::$extendableStaticMethods[$className] = [];
 
             $class = new ReflectionClass($className);
@@ -438,7 +483,7 @@ trait ExtendableTrait
                     $uses = $implement;
                 }
                 else {
-                    throw new SystemException(sprintf('Class %s contains an invalid $implement value', $className));
+                    throw new Exception(sprintf('Class %s contains an invalid $implement value', $className));
                 }
 
                 foreach ($uses as $use) {

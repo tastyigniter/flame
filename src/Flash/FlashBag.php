@@ -64,7 +64,7 @@ class FlashBag
     /**
      * Flash a generic message.
      *
-     * @param  string|null $message
+     * @param string|null $message
      *
      * @return $this
      */
@@ -76,7 +76,7 @@ class FlashBag
     /**
      * Flash an information message.
      *
-     * @param  string|null $message
+     * @param string|null $message
      *
      * @return $this
      */
@@ -88,7 +88,7 @@ class FlashBag
     /**
      * Flash a success message.
      *
-     * @param  string|null $message
+     * @param string|null $message
      *
      * @return $this
      */
@@ -100,7 +100,7 @@ class FlashBag
     /**
      * Flash an error message.
      *
-     * @param  string|null $message
+     * @param string|null $message
      *
      * @return $this
      */
@@ -112,7 +112,7 @@ class FlashBag
     /**
      * Flash an error message.
      *
-     * @param  string|null $message
+     * @param string|null $message
      *
      * @return $this
      */
@@ -124,7 +124,7 @@ class FlashBag
     /**
      * Flash a warning message.
      *
-     * @param  string|null $message
+     * @param string|null $message
      *
      * @return $this
      */
@@ -136,8 +136,8 @@ class FlashBag
     /**
      * Flash a general message.
      *
-     * @param  string|null $message
-     * @param  string|null $level
+     * @param string|null $message
+     * @param string|null $level
      *
      * @return $this
      */
@@ -161,7 +161,7 @@ class FlashBag
     /**
      * Modify the most recently added message.
      *
-     * @param  array $overrides
+     * @param array $overrides
      *
      * @return $this
      */
@@ -175,20 +175,20 @@ class FlashBag
     /**
      * Flash an overlay modal.
      *
-     * @param  string|null $message
-     * @param  string $title
+     * @param string|null $message
+     * @param string $title
      *
      * @return $this
      */
     public function overlay($message = null, $title = '')
     {
         if (!$message) {
-            return $this->updateLastMessage(['title' => $title, 'overlay' => TRUE]);
+            return $this->updateLastMessage(['title' => $title, 'overlay' => TRUE, 'important' => TRUE]);
         }
 
         return $this->message(
             new OverlayMessage(compact('title', 'message'))
-        );
+        )->important();
     }
 
     /**

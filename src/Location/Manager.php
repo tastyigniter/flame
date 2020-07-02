@@ -230,6 +230,11 @@ abstract class Manager
         return $query->orderBy('distance', 'asc')->isEnabled()->limit($limit)->get();
     }
 
+    /**
+     * @param $type
+     * @param null $days
+     * @return \Igniter\Flame\Location\WorkingSchedule
+     */
     public function workingSchedule($type, $days = null)
     {
         $cacheKey = sprintf('%s.%s', $this->getModel()->getKey(), $type);

@@ -1,6 +1,8 @@
 <?php namespace Igniter\Flame\Support;
 
-class StrHelper extends \Illuminate\Support\Str
+use Illuminate\Support\Str as StrHelper;
+
+class Str extends StrHelper
 {
     /**
      * Converts number to its ordinal English form.

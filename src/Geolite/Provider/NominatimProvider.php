@@ -166,18 +166,18 @@ class NominatimProvider extends AbstractProvider
         $statusCode = $response->getStatusCode();
         if ($statusCode === 401 OR $statusCode === 403)
             throw new GeoliteException(sprintf(
-                'API access denied. Message: %s', $json->error_message
+                'API access denied. Message: %s', $json->error_message ?? 'empty error message'
             ));
 
         if ($statusCode === 429)
             throw new GeoliteException(sprintf(
-                'Daily quota exceeded. Message: %s', $json->error_message
+                'Daily quota exceeded. Message: %s', $json->error_message ?? 'empty error message'
             ));
 
         if ($statusCode >= 300) {
             throw new GeoliteException(sprintf(
                 'The geocoder server returned [%s] an invalid response for query. Message: %s.',
-                $statusCode, $json->error_message
+                $statusCode, $json->error_message ?? 'empty error message'
             ));
         }
 

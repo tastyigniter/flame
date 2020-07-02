@@ -4,6 +4,7 @@ use Carbon\Carbon;
 use Igniter\Flame\ActivityLog\ActivityLogger;
 use Igniter\Flame\ActivityLog\Contracts\ActivityInterface;
 use Igniter\Flame\Database\Builder;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Model;
 use ReflectionClass;
@@ -55,31 +56,48 @@ class Activity extends Model
         ],
     ];
 
+    public $class_name;
+
     //
     // Accessors & Mutators
     //
 
+    public function getTitleAttribute()
+    {
+        $className = $this->getActivityTypeClass();
+        if ($className AND method_exists($className, 'getTitle'))
+            return $className::getTitle($this);
+
+        return '';
+    }
+
     public function getUrlAttribute()
     {
-        $activity = self::getActivityTypeByType($this->type);
+        $className = $this->getActivityTypeClass();
+        if ($className AND method_exists($className, 'getUrl'))
+            return $className::getUrl($this);
 
-        if (!$activity OR !class_exists($activity->className))
-            return '';
-
-        return $activity->className::getUrl($this);
-
+        return '';
     }
 
     public function getMessageAttribute()
     {
-        $activity = self::getActivityTypeByType($this->type);
-
-        if (!$activity OR !class_exists($activity->className))
+        $className = $this->getActivityTypeClass();
+        if (!($className AND method_exists($className, 'getMessage')))
             return '';
 
-        $message = $activity->className::getMessage($this);
+        $message = $className::getMessage($this);
 
         return app(ActivityLogger::class)->replacePlaceholders($message, $this);
+    }
+
+    //
+    // Events
+    //
+
+    protected function afterFetch()
+    {
+        $this->applyActivityTypeClassName();
     }
 
     //
@@ -169,6 +187,24 @@ class Activity extends Model
         return $this;
     }
 
+    public function applyActivityTypeClassName($type = null)
+    {
+        if (is_null($type))
+            $type = $this->type;
+
+        $className = self::getActivityType($type);
+        if (!class_exists($className)) {
+            $className = null;
+        }
+
+        $this->class_name = $className;
+    }
+
+    public function getActivityTypeClass()
+    {
+        return $this->class_name;
+    }
+
     //
     // Registration
     //
@@ -189,13 +225,14 @@ class Activity extends Model
     /**
      * Returns a registered activity types.
      * @param string $type
-     * @return object
+     * @return string
      */
-    protected static function getActivityTypeByType($type)
+    public static function getActivityType($type)
     {
-        return collect(self::getActivityTypes())->first(function ($activityType) use ($type) {
-            return $activityType->type == $type;
-        });
+        foreach (self::getActivityTypes() as $className => $types) {
+            if (in_array($type, $types))
+                return $className;
+        }
     }
 
     /**
@@ -219,21 +256,25 @@ class Activity extends Model
      */
     public function registerActivityTypes(array $definitions)
     {
-        foreach ($definitions as $className) {
-            $this->registerActivityType($className);
+        foreach ($definitions as $className => $types) {
+            if (!is_string($className)) {
+                Log::error('Registering activityTypes using array of class names has been deprecated, use activityTypeClassName => activityTypeName or activityTypeClassName => [activityTypeName]');
+                continue;
+            }
+
+            $this->registerActivityType($className, $types);
         }
     }
 
-    public function registerActivityType($className)
+    public function registerActivityType($className, $types)
     {
         if (!(new ReflectionClass($className))->implementsInterface(ActivityInterface::class))
             throw new InvalidArgumentException('Activity type '.$className.' must implement '.ActivityInterface::class);
 
-        static::$activityTypes[$className] = (object)[
-            'type' => $className::getType(),
-            'className' => $className,
-            'subjectModel' => $className::getSubjectModel(),
-        ];
+        if (!is_array($types))
+            $types = [$types];
+
+        static::$activityTypes[$className] = $types;
     }
 
     /**
