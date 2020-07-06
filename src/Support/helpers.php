@@ -444,3 +444,18 @@ if (!function_exists('collect')) {
         return new \Illuminate\Support\Collection($value);
     }
 }
+
+if (!function_exists('trans')) {
+    /**
+     * Translate the given message.
+     *
+     * @param string $id
+     * @param array $parameters
+     * @param string $locale
+     * @return string
+     */
+    function trans($id = null, $parameters = [], $locale = null)
+    {
+        return app('translator')->get($id, $parameters, $locale);
+    }
+}
