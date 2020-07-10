@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Database\Migrations;
+<?php
+
+namespace Igniter\Flame\Database\Migrations;
 
 use Illuminate\Database\Migrations\DatabaseMigrationRepository as BaseDatabaseMigrationRepository;
 use Illuminate\Database\Schema\Blueprint;
@@ -9,6 +11,7 @@ class DatabaseMigrationRepository extends BaseDatabaseMigrationRepository
 
     /**
      * Get the ran migrations.
+     *
      * @return array
      */
     public function getRan()
@@ -37,6 +40,7 @@ class DatabaseMigrationRepository extends BaseDatabaseMigrationRepository
 
     /**
      * Create the migration repository data store.
+     *
      * @return void
      */
     public function createRepository()
@@ -65,6 +69,7 @@ class DatabaseMigrationRepository extends BaseDatabaseMigrationRepository
 
     /**
      * Delete the migration repository data store.
+     *
      * @return void
      */
     public function deleteRepository()
@@ -75,6 +80,7 @@ class DatabaseMigrationRepository extends BaseDatabaseMigrationRepository
 
     /**
      * Get a query builder for the migration table.
+     *
      * @return \Illuminate\Database\Query\Builder
      */
     protected function table()

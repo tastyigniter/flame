@@ -9,7 +9,6 @@ use Illuminate\Support\ServiceProvider;
 
 /**
  * Class PagicServiceProvider
- * @package Igniter\Flame\Pagic
  */
 class PagicServiceProvider extends ServiceProvider
 {
@@ -29,6 +28,7 @@ class PagicServiceProvider extends ServiceProvider
 
     /**
      * Register the service provider.
+     *
      * @return void
      */
     public function register()

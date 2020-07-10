@@ -8,6 +8,7 @@ class Language extends Model
 {
     /**
      *  Table name in the database.
+     *
      * @var string
      */
     protected $table = 'languages';

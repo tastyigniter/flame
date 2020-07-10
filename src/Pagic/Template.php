@@ -39,6 +39,7 @@ class Template
     /**
      * This method is for internal use only and should never be called
      * directly (use Environment::load() instead).
+     *
      * @internal
      *
      * @param \Igniter\Flame\Pagic\Environment $env
@@ -58,9 +59,10 @@ class Template
      *
      * @param array $data An array of parameters to pass to the template
      *
-     * @return string The rendered template
      * @throws \Exception
      * @throws \Throwable
+     *
+     * @return string The rendered template
      */
     public function render($data = [])
     {
@@ -104,6 +106,7 @@ class Template
      * Get the data bound to the view instance.
      *
      * @param $data
+     *
      * @return array
      */
     protected function gatherData($data)
@@ -156,6 +159,7 @@ class Template
      * Get the exception message for an exception.
      *
      * @param  \Exception $e
+     *
      * @return string
      */
     protected function getMessage(Exception $e)

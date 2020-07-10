@@ -13,9 +13,9 @@ interface TemplateLoader
      *
      * @param string $name The name of the template to load
      *
-     * @return string The template source code
-     *
      * @throws Exception When $name is not found
+     *
+     * @return string The template source code
      */
     public function getMarkup($name);
 
@@ -24,9 +24,9 @@ interface TemplateLoader
      *
      * @param string $name The name of the template to load
      *
-     * @return string The template source code
-     *
      * @throws Exception When $name is not found
+     *
+     * @return string The template source code
      */
     public function getContents($name);
 
@@ -35,9 +35,9 @@ interface TemplateLoader
      *
      * @param string $name The name of the template to load
      *
-     * @return string The cache key
-     *
      * @throws Exception When $name is not found
+     *
+     * @return string The cache key
      */
     public function getCacheKey($name);
 
@@ -48,9 +48,9 @@ interface TemplateLoader
      * @param int $time Timestamp of the last modification time of the
      *                     cached template
      *
-     * @return bool true if the template is fresh, false otherwise
-     *
      * @throws Exception When $name is not found
+     *
+     * @return bool true if the template is fresh, false otherwise
      */
     public function isFresh($name, $time);
 

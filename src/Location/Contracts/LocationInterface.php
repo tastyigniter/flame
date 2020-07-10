@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Location\Contracts;
+<?php
+
+namespace Igniter\Flame\Location\Contracts;
 
 use Igniter\Flame\Geolite\Contracts\CoordinatesInterface;
 

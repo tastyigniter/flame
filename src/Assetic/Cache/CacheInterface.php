@@ -23,7 +23,7 @@ interface CacheInterface
      *
      * @param string $key A unique key
      *
-     * @return Boolean Whether the cache has a value for this key
+     * @return bool Whether the cache has a value for this key
      */
     public function has($key);
 

@@ -18,6 +18,7 @@ class Converter extends Manager
      * Get a driver instance.
      *
      * @param string $driver
+     *
      * @return mixed
      */
     public function driver($driver = null)
@@ -28,7 +29,7 @@ class Converter extends Manager
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getDefaultDriver()
     {

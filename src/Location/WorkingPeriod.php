@@ -62,6 +62,7 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
 
     /**
      * @param \Igniter\Flame\Location\WorkingTime $time
+     *
      * @return bool|\Igniter\Flame\Location\WorkingTime
      */
     public function nextOpenAt(WorkingTime $time)
@@ -90,6 +91,7 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
 
     /**
      * @param \Igniter\Flame\Location\WorkingTime $time
+     *
      * @return bool|\Igniter\Flame\Location\WorkingTime
      */
     public function nextCloseAt(WorkingTime $time)
@@ -180,6 +182,7 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
 
     /**
      * @param \Igniter\Flame\Location\WorkingRange[] $ranges
+     *
      * @throws \Igniter\Flame\Location\Exceptions\WorkingHourException
      */
     protected function checkWorkingRangesOverlaps($ranges)
@@ -189,7 +192,8 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
             if ($nextRange AND $range->overlaps($nextRange)) {
                 throw new WorkingHourException(sprintf(
                     'Time ranges %s and %s overlap.',
-                    $range, $nextRange
+                    $range,
+                    $nextRange
                 ));
             }
         }
@@ -210,11 +214,14 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
 
     /**
      * Count elements of an object
+     *
      * @link https://php.net/manual/en/countable.count.php
+     *
      * @return int The custom count as an integer.
      * </p>
      * <p>
      * The return value is cast to an integer.
+     *
      * @since 5.1.0
      */
     public function count()
@@ -226,7 +233,8 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
      * Whether a offset exists
      *
      * @param mixed $offset
-     * @return boolean true on success or false on failure.
+     *
+     * @return bool true on success or false on failure.
      */
     public function offsetExists($offset)
     {
@@ -237,6 +245,7 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
      * Offset to retrieve
      *
      * @param mixed $offset
+     *
      * @return mixed Can return all value types.
      */
     public function offsetGet($offset)
@@ -249,6 +258,7 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
      *
      * @param mixed $offset
      * @param mixed $value
+     *
      * @return void
      */
     public function offsetSet($offset, $value)
@@ -260,6 +270,7 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
      * Offset to unset
      *
      * @param mixed $offset
+     *
      * @return void
      */
     public function offsetUnset($offset)

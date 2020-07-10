@@ -17,6 +17,7 @@ class Translation extends Model
 
     /**
      *  Table name in the database.
+     *
      * @var string
      */
     protected $table = 'language_translations';
@@ -28,6 +29,7 @@ class Translation extends Model
 
     /**
      *  List of variables that can be mass assigned
+     *
      * @var array
      */
     protected $fillable = ['locale', 'namespace', 'group', 'item', 'text', 'unstable'];
@@ -41,11 +43,11 @@ class Translation extends Model
     {
         parent::boot();
 
-        static::saved(function (Translation $model) {
+        static::saved(function (self $model) {
             $model->flushCache();
         });
 
-        static::deleted(function (Translation $model) {
+        static::deleted(function (self $model) {
             $model->flushCache();
         });
     }
@@ -57,6 +59,7 @@ class Translation extends Model
 
     /**
      *  Returns the full translation code for an entry: namespace.group.item
+     *
      * @return string
      */
     public function getCodeAttribute()
@@ -66,6 +69,7 @@ class Translation extends Model
 
     /**
      *  Flag this entry as Reviewed
+     *
      * @return \Igniter\Flame\Translation\Models\Translation
      */
     public function flagAsReviewed()
@@ -87,6 +91,7 @@ class Translation extends Model
 
     /**
      *  Set the translation to the locked state
+     *
      * @return \Igniter\Flame\Translation\Models\Translation
      */
     public function lockState()
@@ -98,11 +103,12 @@ class Translation extends Model
 
     /**
      *  Check if the translation is locked
-     * @return boolean
+     *
+     * @return bool
      */
     public function isLocked()
     {
-        return (boolean)$this->locked;
+        return (bool)$this->locked;
     }
 
     protected function flushCache()
@@ -121,10 +127,11 @@ class Translation extends Model
 
     public static function getCached($locale, $group, $namespace = null)
     {
-        return Cache::rememberForever(static::getCacheKey($locale, $group, $namespace),
+        return Cache::rememberForever(
+            static::getCacheKey($locale, $group, $namespace),
             function () use ($locale, $group, $namespace) {
                 $result = static::getFresh($locale, $group, $namespace)->reduce(
-                    function ($lines, Translation $model) {
+                    function ($lines, self $model) {
                         array_set($lines, $model->item, $model->text);
 
                         return $lines;

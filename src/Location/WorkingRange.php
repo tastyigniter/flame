@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Location;
+<?php
+
+namespace Igniter\Flame\Location;
 
 use Igniter\Flame\Location\Exceptions\WorkingHourException;
 
@@ -28,14 +30,15 @@ class WorkingRange
 
     /**
      * @param \Igniter\Flame\Location\WorkingRange[] $ranges
-     * @return \Igniter\Flame\Location\WorkingRange
+     *
      * @throws \Igniter\Flame\Location\Exceptions\WorkingHourException
+     *
+     * @return \Igniter\Flame\Location\WorkingRange
      */
     public static function fromRanges(array $ranges): self
     {
         if (count($ranges) === 0)
             throw new WorkingHourException('The given ranges must contain at least one range.');
-
         array_walk($ranges, function ($range) {
             if (!$range instanceof self)
                 throw new WorkingHourException('The given ranges is not a valid list of TimeRange instance containing.');

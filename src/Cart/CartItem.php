@@ -151,7 +151,6 @@ class CartItem implements Arrayable, Jsonable
     {
         if (!is_numeric($qty))
             throw new \InvalidArgumentException('Please supply a valid quantity.');
-
         $this->qty = $qty;
     }
 

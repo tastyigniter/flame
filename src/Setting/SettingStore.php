@@ -8,19 +8,22 @@ abstract class SettingStore
 {
     /**
      * The settings items.
+     *
      * @var array
      */
     protected $items = [];
 
     /**
      * Whether the store has changed since it was last loaded.
-     * @var boolean
+     *
+     * @var bool
      */
     protected $unsaved = FALSE;
 
     /**
      * Whether the settings data are loaded.
-     * @var boolean
+     *
+     * @var bool
      */
     protected $loaded = FALSE;
 
@@ -44,7 +47,7 @@ abstract class SettingStore
      *
      * @param  string $key
      *
-     * @return boolean
+     * @return bool
      */
     public function has($key)
     {
@@ -92,6 +95,7 @@ abstract class SettingStore
 
     /**
      * Unset all keys in the settings data.
+     *
      * @return void
      */
     public function forgetAll()
@@ -102,6 +106,7 @@ abstract class SettingStore
 
     /**
      * Get all settings data.
+     *
      * @return array
      */
     public function all()
@@ -113,6 +118,7 @@ abstract class SettingStore
 
     /**
      * Save any changes done to the settings data.
+     *
      * @return void
      */
     public function save()
@@ -142,6 +148,7 @@ abstract class SettingStore
 
     /**
      * Read the data from the store.
+     *
      * @return array
      */
     abstract protected function read();

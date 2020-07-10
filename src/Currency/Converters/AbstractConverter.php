@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Currency\Converters;
+<?php
+
+namespace Igniter\Flame\Currency\Converters;
 
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
@@ -23,6 +25,7 @@ abstract class AbstractConverter
      *
      * @param $base
      * @param array $currencies
+     *
      * @return array
      */
     abstract public function getExchangeRates($base, array $currencies);

@@ -14,6 +14,7 @@ use Igniter\Flame\Traits\ExtendableTrait;
  *     public $implement = ['Path\To\Some\Namespace\Class'];
  *
  * Based on october\extension Extendable Class
+ *
  * @link https://github.com/octobercms/library/tree/master/src/Extension/Extendable.php
  */
 class Extendable

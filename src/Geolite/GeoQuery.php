@@ -46,10 +46,10 @@ class GeoQuery implements Contracts\GeoQueryInterface
         if ($text instanceof Model\Coordinates) {
             $this->coordinates = $text;
         }
-        else if (!empty($text) AND is_string($text)) {
+        elseif (!empty($text) AND is_string($text)) {
             $this->text = $text;
         }
-        else if (empty($text)) {
+        elseif (empty($text)) {
             throw new InvalidArgumentException('Geocode query cannot be empty');
         }
     }

@@ -1,9 +1,12 @@
-<?php namespace Igniter\Flame\Pagic;
+<?php
+
+namespace Igniter\Flame\Pagic;
 
 use Exception;
 
 /**
  * Loads a template from an array.
+ *
  * @method \Igniter\Flame\Pagic\Contracts\TemplateSource getSource()
  */
 class ArrayLoader extends Loader
@@ -39,9 +42,9 @@ class ArrayLoader extends Loader
      *
      * @param string $name The name of the template to load
      *
-     * @return string The template source code
-     *
      * @throws Exception When $name is not found
+     *
+     * @return string The template source code
      */
     public function getMarkup($name)
     {
@@ -53,9 +56,9 @@ class ArrayLoader extends Loader
      *
      * @param string $name The name of the template to load
      *
-     * @return string The template source code
-     *
      * @throws Exception When $name is not found
+     *
+     * @return string The template source code
      */
     public function getContents($name)
     {

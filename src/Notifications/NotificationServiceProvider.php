@@ -40,11 +40,13 @@ class NotificationServiceProvider extends BaseNotificationServiceProvider
         });
 
         $this->app->alias(
-            ChannelManager::class, DispatcherContract::class
+            ChannelManager::class,
+            DispatcherContract::class
         );
 
         $this->app->alias(
-            ChannelManager::class, FactoryContract::class
+            ChannelManager::class,
+            FactoryContract::class
         );
 
         Notification::resolved(function (ChannelManager $service) {

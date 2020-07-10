@@ -27,9 +27,9 @@ class AssetManager
      *
      * @param string $name The asset name
      *
-     * @return AssetInterface The asset
-     *
      * @throws \InvalidArgumentException If there is no asset by that name
+     *
+     * @return AssetInterface The asset
      */
     public function get($name)
     {
@@ -45,7 +45,7 @@ class AssetManager
      *
      * @param string $name an asset name
      *
-     * @return Boolean True if the asset has been set, false if not
+     * @return bool True if the asset has been set, false if not
      */
     public function has($name)
     {

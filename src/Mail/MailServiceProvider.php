@@ -18,7 +18,9 @@ class MailServiceProvider extends BaseMailServiceProvider
             // on the mailer. This allows us to resolve mailer classes via containers
             // for maximum testability on said classes instead of passing Closures.
             $mailer = new Mailer(
-                $app['view'], $app['swift.mailer'], $app['events']
+                $app['view'],
+                $app['swift.mailer'],
+                $app['events']
             );
 
             if ($app->bound('queue')) {

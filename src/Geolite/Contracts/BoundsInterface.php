@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Geolite\Contracts;
+<?php
+
+namespace Igniter\Flame\Geolite\Contracts;
 
 interface BoundsInterface
 {
@@ -29,7 +31,8 @@ interface BoundsInterface
 
     /**
      * @param  \Igniter\Flame\Geolite\Contracts\BoundsInterface $bounds
+     *
      * @return BoundsInterface
      */
-    public function merge(BoundsInterface $bounds);
+    public function merge(self $bounds);
 }

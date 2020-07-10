@@ -15,6 +15,7 @@ interface SourceResolverInterface
 
     /**
      * Get the default source name.
+     *
      * @return string
      */
     public function getDefaultSourceName();

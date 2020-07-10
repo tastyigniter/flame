@@ -7,8 +7,6 @@ namespace Igniter\Flame\Traits;
  *
  * Allows a simple interface for treating a class as a singleton.
  * Usage: myObject::instance()
- *
- * @package Igniter\Traits
  */
 trait Singleton
 {

@@ -38,7 +38,7 @@ class Builder extends BuilderBase
         $query->where($this->model->getKeyName(), '=', $id);
 
         $data = $query->first([$this->model->getLftName(),
-            $this->model->getRgtName()]);
+            $this->model->getRgtName(), ]);
 
         if (!$data && $required) {
             throw new ModelNotFoundException;
@@ -81,7 +81,6 @@ class Builder extends BuilderBase
      *
      * @param mixed $id
      * @param bool $andSelf
-     *
      * @param string $boolean
      *
      * @return $this
@@ -101,7 +100,7 @@ class Builder extends BuilderBase
             $valueQuery = $this->model
                 ->newQuery()
                 ->toBase()
-                ->select("_.".$this->model->getRgtName())
+                ->select('_.'.$this->model->getRgtName())
                 ->from($this->model->getTable().' as _')
                 ->where($keyName, '=', $id)
                 ->limit(1);
@@ -215,7 +214,10 @@ class Builder extends BuilderBase
      *
      * @return $this
      */
-    public function whereDescendantOf($id, $boolean = 'and', $not = FALSE,
+    public function whereDescendantOf(
+        $id,
+        $boolean = 'and',
+        $not = FALSE,
         $andSelf = FALSE
     )
     {
@@ -229,7 +231,7 @@ class Builder extends BuilderBase
 
         // Don't include the node
         if (!$andSelf) {
-            ++$data[0];
+            $data[0]++;
         }
 
         return $this->whereNodeBetween($data, $boolean, $not);
@@ -335,7 +337,7 @@ class Builder extends BuilderBase
             $value = '('.$valueQuery->toSql().')';
         }
 
-        list($lft,) = $this->wrappedColumns();
+        list($lft) = $this->wrappedColumns();
 
         $this->query->whereRaw("{$lft} {$operator} {$value}", [], $boolean);
 
@@ -656,7 +658,8 @@ class Builder extends BuilderBase
         /** @var int $to */
         if ($distance > 0) $distance = '+'.$distance;
 
-        return new Expression("case ".
+        return new Expression(
+            'case '.
             "when {$col} between {$lft} and {$rgt} then {$col}{$distance} ". // Move the node
             "when {$col} between {$from} and {$to} then {$col}{$height} ". // Move other nodes
             "else {$col} end"
@@ -896,8 +899,11 @@ class Builder extends BuilderBase
      *
      * @return int
      */
-    protected static function reorderNodes(array &$dictionary, &$fixed,
-        $parentId = null, $cut = 1
+    protected static function reorderNodes(
+        array &$dictionary,
+        &$fixed,
+        $parentId = null,
+        $cut = 1
     )
     {
         if (!isset($dictionary[$parentId])) {
@@ -908,10 +914,12 @@ class Builder extends BuilderBase
         foreach ($dictionary[$parentId] as $model) {
             $lft = $cut;
 
-            $cut = self::reorderNodes($dictionary,
+            $cut = self::reorderNodes(
+                $dictionary,
                 $fixed,
                 $model->getKey(),
-                $cut + 1);
+                $cut + 1
+            );
 
             $rgt = $cut;
 
@@ -921,7 +929,7 @@ class Builder extends BuilderBase
                 $fixed++;
             }
 
-            ++$cut;
+            $cut++;
         }
 
         unset($dictionary[$parentId]);
@@ -982,7 +990,8 @@ class Builder extends BuilderBase
      * @param array $existing
      * @param mixed $parentId
      */
-    protected function buildRebuildDictionary(array &$dictionary,
+    protected function buildRebuildDictionary(
+        array &$dictionary,
         array $data,
         array &$existing,
         $parentId = null
@@ -1013,10 +1022,12 @@ class Builder extends BuilderBase
 
             if (!isset($itemData['children'])) continue;
 
-            $this->buildRebuildDictionary($dictionary,
+            $this->buildRebuildDictionary(
+                $dictionary,
                 $itemData['children'],
                 $existing,
-                $model->getKey());
+                $model->getKey()
+            );
         }
     }
 

@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Pagic\Processors;
+<?php
+
+namespace Igniter\Flame\Pagic\Processors;
 
 use Igniter\Flame\Pagic\Finder;
 use Igniter\Flame\Pagic\Parsers\FileParser;

@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Foundation\Console;
+<?php
+
+namespace Igniter\Flame\Foundation\Console;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Console\KeyGenerateCommand as BaseKeyGenerateCommand;
@@ -9,6 +11,7 @@ class KeyGenerateCommand extends BaseKeyGenerateCommand
      * Create a new key generator command.
      *
      * @param  \Illuminate\Filesystem\Filesystem $files
+     *
      * @return void
      */
     public function __construct(Filesystem $files)
@@ -47,6 +50,7 @@ class KeyGenerateCommand extends BaseKeyGenerateCommand
      * Set the application key in the config file.
      *
      * @param  string $key
+     *
      * @return bool
      */
     protected function setKeyInConfigFile($key)

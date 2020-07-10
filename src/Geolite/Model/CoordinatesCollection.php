@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Geolite\Model;
+<?php
+
+namespace Igniter\Flame\Geolite\Model;
 
 use Illuminate\Support\Collection;
 

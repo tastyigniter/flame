@@ -160,7 +160,9 @@ if (!function_exists('form_multiselect')) {
      * @return    string
      */
     function form_multiselect(
-        $name, $list = [], $selected = [],
+        $name,
+        $list = [],
+        $selected = [],
         array $selectAttributes = [],
         array $optionAttributes = []
     )
@@ -379,6 +381,7 @@ if (!function_exists('form_prep')) {
     /**
      * Form Prep
      * Formats text so that it can be safely placed in a form field in the event it has HTML tags.
+     *
      * @deprecated    3.0.0    An alias for html_escape()
      *
      * @param    string|string[] $str Value to escape
@@ -477,7 +480,7 @@ if (!function_exists('set_checkbox')) {
 
             return '';
         }
-        else if (is_string($input)) {
+        elseif (is_string($input)) {
             return ($input === $value) ? ' checked="checked"' : '';
         }
 
@@ -515,7 +518,7 @@ if (!function_exists('set_radio')) {
 
             return '';
         }
-        else if (is_string($input)) {
+        elseif (is_string($input)) {
             return ($input === $value) ? ' checked="checked"' : '';
         }
 

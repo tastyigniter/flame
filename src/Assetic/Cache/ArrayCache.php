@@ -50,6 +50,7 @@ class ArrayCache implements CacheInterface
 
     /**
      * @see CacheInterface::remove()
+     *
      * @param $key
      */
     public function remove($key)

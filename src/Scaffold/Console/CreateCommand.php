@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Scaffold\Console;
+<?php
+
+namespace Igniter\Flame\Scaffold\Console;
 
 use Igniter\Flame\Scaffold\GeneratorCommand;
 use Symfony\Component\Console\Input\InputArgument;

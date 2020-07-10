@@ -27,6 +27,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
 
     /**
      * The source resolver instance.
+     *
      * @var \Igniter\Flame\Pagic\Source\SourceResolverInterface
      */
     protected static $resolver;
@@ -68,6 +69,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
 
     /**
      * Indicates if the model exists.
+     *
      * @var bool
      */
     public $exists = FALSE;
@@ -187,6 +189,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
 
     /**
      * Get the source resolver instance.
+     *
      * @return \Igniter\Flame\Pagic\Source\SourceResolverInterface
      */
     public static function getSourceResolver()
@@ -208,6 +211,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
 
     /**
      * Unset the source resolver for models.
+     *
      * @return void
      */
     public static function unsetSourceResolver()
@@ -278,9 +282,9 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
      *
      * @param array $attributes
      *
-     * @return $this
-     *
      * @throws \Illuminate\Database\Eloquent\MassAssignmentException
+     *
+     * @return $this
      */
     public function fill(array $attributes)
     {
@@ -315,6 +319,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
 
     /**
      * Get the current source name for the model.
+     *
      * @return string
      */
     public function getSourceName()
@@ -324,6 +329,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
 
     /**
      * Returns the file name without the extension.
+     *
      * @return string
      */
     public function getBaseFileNameAttribute()
@@ -339,6 +345,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * The settings is attribute contains everything that should
      * be saved to the settings area.
+     *
      * @return array
      */
     public function getSettingsAttribute()
@@ -369,6 +376,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
 
     /**
      * File name should always contain an extension.
+     *
      * @param mixed $value
      */
     public function setFileNameAttribute($value)
@@ -385,6 +393,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Returns the directory name corresponding to the object type.
      * For pages the directory name is "_pages", for layouts - "_layouts", etc.
+     *
      * @return string
      */
     public function getTypeDirName()
@@ -394,6 +403,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
 
     /**
      * Returns the allowable file extensions supported by this model.
+     *
      * @return array
      */
     public function getAllowedExtensions()
@@ -403,6 +413,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
 
     /**
      * Returns the maximum directory nesting allowed by this template.
+     *
      * @return int
      */
     public function getMaxNesting()
@@ -437,6 +448,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
 
     /**
      * Get a new file finder for the object
+     *
      * @return \Igniter\Flame\Pagic\Finder
      */
     public function newFinder()
@@ -647,9 +659,9 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     /**
      * Delete the model from the database.
      *
-     * @return bool|null
-     *
      * @throws \Exception
+     *
+     * @return bool|null
      */
     public function delete()
     {
@@ -687,6 +699,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
 
     /**
      * Convert the model to its string representation.
+     *
      * @return string
      */
     public function __toString()
@@ -833,6 +846,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
 
     /**
      * Get the instance as an array.
+     *
      * @return array
      */
     public function toArray()

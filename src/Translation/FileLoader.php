@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Translation;
+<?php
+
+namespace Igniter\Flame\Translation;
 
 use Illuminate\Translation\FileLoader as FileLoaderBase;
 
@@ -53,8 +55,9 @@ class FileLoader extends FileLoaderBase
      * @param  string $group
      * @param  string $namespace
      *
-     * @return array
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     *
+     * @return array
      */
     protected function loadNamespaceOverrides(array $lines, $locale, $group, $namespace)
     {

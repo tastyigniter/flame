@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Geolite;
+<?php
+
+namespace Igniter\Flame\Geolite;
 
 use Igniter\Flame\Geolite\Contracts;
 use Igniter\Flame\Geolite\Model;
@@ -20,17 +22,17 @@ class Vertex implements Contracts\VertexInterface
     protected $to;
 
     /**
-     * @var double
+     * @var float
      */
     protected $gradient;
 
     /**
-     * @var double
+     * @var float
      */
     protected $ordinateIntercept;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $precision = 8;
 
@@ -45,11 +47,11 @@ class Vertex implements Contracts\VertexInterface
         'E', 'ESE', 'SE', 'SSE',
         'S', 'SSW', 'SW', 'WSW',
         'W', 'WNW', 'NW', 'NNW',
-        'N'
+        'N',
     ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setFrom(Contracts\CoordinatesInterface $from)
     {
@@ -72,7 +74,7 @@ class Vertex implements Contracts\VertexInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFrom()
     {
@@ -80,7 +82,7 @@ class Vertex implements Contracts\VertexInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setTo(Contracts\CoordinatesInterface $to)
     {
@@ -103,7 +105,7 @@ class Vertex implements Contracts\VertexInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getTo()
     {
@@ -111,7 +113,7 @@ class Vertex implements Contracts\VertexInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getGradient()
     {
@@ -119,7 +121,7 @@ class Vertex implements Contracts\VertexInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getOrdinateIntercept()
     {
@@ -127,7 +129,7 @@ class Vertex implements Contracts\VertexInterface
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getPrecision()
     {
@@ -135,7 +137,8 @@ class Vertex implements Contracts\VertexInterface
     }
 
     /**
-     * @param  integer $precision
+     * @param  int $precision
+     *
      * @return $this
      */
     public function setPrecision($precision)
@@ -184,25 +187,27 @@ class Vertex implements Contracts\VertexInterface
     /**
      * Returns the initial cardinal point / direction from the origin coordinate to
      * the destination coordinate.
+     *
      * @see http://en.wikipedia.org/wiki/Cardinal_direction
      *
      * @return string The initial cardinal point / direction
      */
     public function initialCardinal()
     {
-        return static::$cardinalPoints[(integer)round($this->initialBearing() / 22.5)];
+        return static::$cardinalPoints[(int)round($this->initialBearing() / 22.5)];
     }
 
     /**
      * Returns the final cardinal point / direction from the origin coordinate to
      * the destination coordinate.
+     *
      * @see http://en.wikipedia.org/wiki/Cardinal_direction
      *
      * @return string The final cardinal point / direction
      */
     public function finalCardinal()
     {
-        return static::$cardinalPoints[(integer)round($this->finalBearing() / 22.5)];
+        return static::$cardinalPoints[(int)round($this->finalBearing() / 22.5)];
     }
 
     /**
@@ -231,8 +236,8 @@ class Vertex implements Contracts\VertexInterface
      * Returns the destination point with a given bearing in degrees travelling along a
      * (shortest distance) great circle arc and a distance in meters.
      *
-     * @param integer $bearing The bearing of the origin in degrees.
-     * @param integer $distance The distance from the origin in meters.
+     * @param int $bearing The bearing of the origin in degrees.
+     * @param int $distance The distance from the origin in meters.
      *
      * @return \Igniter\Flame\Geolite\Model\Coordinates
      */
@@ -245,8 +250,10 @@ class Vertex implements Contracts\VertexInterface
 
         $endLat = asin(sin($lat) * cos($distance / $this->from->getEllipsoid()->getA()) + cos($lat) *
             sin($distance / $this->from->getEllipsoid()->getA()) * cos($bearing));
-        $endLon = $lng + atan2(sin($bearing) * sin($distance / $this->from->getEllipsoid()->getA()) * cos($lat),
-                cos($distance / $this->from->getEllipsoid()->getA()) - sin($lat) * sin($endLat));
+        $endLon = $lng + atan2(
+            sin($bearing) * sin($distance / $this->from->getEllipsoid()->getA()) * cos($lat),
+            cos($distance / $this->from->getEllipsoid()->getA()) - sin($lat) * sin($endLat)
+        );
 
         return new Model\Coordinates(rad2deg($endLat), rad2deg($endLon));
     }
@@ -255,20 +262,20 @@ class Vertex implements Contracts\VertexInterface
      * Returns true if the vertex passed on argument is on the same line as this object
      *
      * @param  Vertex $vertex The vertex to compare
-     * @return boolean
+     *
+     * @return bool
      */
-    public function isOnSameLine(Vertex $vertex)
+    public function isOnSameLine(self $vertex)
     {
         if (is_null($this->getGradient()) AND is_null($vertex->getGradient()) AND $this->from->getLongitude() == $vertex->getFrom()->getLongitude()) {
             return TRUE;
         }
 
         if (!is_null($this->getGradient()) AND !is_null($vertex->getGradient())) {
-            return (
+            return
                 bccomp($this->getGradient(), $vertex->getGradient(), $this->getPrecision()) === 0
                 AND
-                bccomp($this->getOrdinateIntercept(), $vertex->getOrdinateIntercept(), $this->getPrecision()) === 0
-            );
+                bccomp($this->getOrdinateIntercept(), $vertex->getOrdinateIntercept(), $this->getPrecision()) === 0;
         }
 
         return FALSE;
@@ -276,7 +283,9 @@ class Vertex implements Contracts\VertexInterface
 
     /**
      * Returns the other coordinate who is not the coordinate passed on argument
+     *
      * @param  Contracts\CoordinatesInterface $coordinate
+     *
      * @return null|Contracts\CoordinatesInterface
      */
     public function getOtherCoordinate(Contracts\CoordinatesInterface $coordinate)
@@ -294,9 +303,10 @@ class Vertex implements Contracts\VertexInterface
      * Returns the determinant value between $this (vertex) and another vertex.
      *
      * @param  Vertex $vertex
+     *
      * @return string
      */
-    public function getDeterminant(Vertex $vertex)
+    public function getDeterminant(self $vertex)
     {
         $abscissaVertexOne = $this->to->getLatitude() - $this->from->getLatitude();
         $ordinateVertexOne = $this->to->getLongitude() - $this->from->getLongitude();
@@ -309,5 +319,4 @@ class Vertex implements Contracts\VertexInterface
             $this->precision
         );
     }
-
 }

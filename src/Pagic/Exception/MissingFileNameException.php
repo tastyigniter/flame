@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Pagic\Exception;
+<?php
+
+namespace Igniter\Flame\Pagic\Exception;
 
 use RuntimeException;
 
@@ -15,6 +17,7 @@ class MissingFileNameException extends RuntimeException
      * Set the affected Halcyon model.
      *
      * @param  string $model
+     *
      * @return $this
      */
     public function setModel($model)

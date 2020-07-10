@@ -42,6 +42,7 @@ class NominatimProvider extends AbstractProvider
      * Handle the geocoder request.
      *
      * @param \Igniter\Flame\Geolite\Contracts\GeoQueryInterface $query
+     *
      * @return \Illuminate\Support\Collection
      */
     public function geocodeQuery(GeoQueryInterface $query): Collection
@@ -53,6 +54,7 @@ class NominatimProvider extends AbstractProvider
         );
 
         $result = [];
+
         try {
             $result = $this->cacheCallback($url, function () use ($query, $url) {
                 return $this->hydrateResponse(
@@ -63,7 +65,8 @@ class NominatimProvider extends AbstractProvider
         catch (Throwable $ex) {
             $this->log(sprintf(
                 'Provider "%s" could not geocode address, "%s".',
-                $this->getName(), $ex->getMessage()
+                $this->getName(),
+                $ex->getMessage()
             ));
         }
 
@@ -74,6 +77,7 @@ class NominatimProvider extends AbstractProvider
      * Handle the reverse geocoding request.
      *
      * @param \Igniter\Flame\Geolite\Contracts\GeoQueryInterface $query
+     *
      * @return \Illuminate\Support\Collection
      */
     public function reverseQuery(GeoQueryInterface $query): Collection
@@ -88,6 +92,7 @@ class NominatimProvider extends AbstractProvider
         );
 
         $result = [];
+
         try {
             $result = $this->cacheCallback($url, function () use ($query, $url) {
                 return $this->hydrateResponse(
@@ -99,7 +104,9 @@ class NominatimProvider extends AbstractProvider
             $coordinates = $query->getCoordinates();
             $this->log(sprintf(
                 'Provider "%s" could not reverse coordinates: "%f %f".',
-                $this->getName(), $coordinates->getLatitude(), $coordinates->getLongitude()
+                $this->getName(),
+                $coordinates->getLatitude(),
+                $coordinates->getLongitude()
             ));
         }
 
@@ -120,7 +127,6 @@ class NominatimProvider extends AbstractProvider
 
         if (empty($options['User-Agent']))
             throw new GeoliteException('The User-Agent must be set to use the Nominatim provider.');
-
         $response = $this->getHttpClient()->get($url, $options);
 
         return $this->parseResponse($response);
@@ -166,18 +172,21 @@ class NominatimProvider extends AbstractProvider
         $statusCode = $response->getStatusCode();
         if ($statusCode === 401 OR $statusCode === 403)
             throw new GeoliteException(sprintf(
-                'API access denied. Message: %s', $json->error_message ?? 'empty error message'
+                'API access denied. Message: %s',
+                $json->error_message ?? 'empty error message'
             ));
 
         if ($statusCode === 429)
             throw new GeoliteException(sprintf(
-                'Daily quota exceeded. Message: %s', $json->error_message ?? 'empty error message'
+                'Daily quota exceeded. Message: %s',
+                $json->error_message ?? 'empty error message'
             ));
 
         if ($statusCode >= 300) {
             throw new GeoliteException(sprintf(
                 'The geocoder server returned [%s] an invalid response for query. Message: %s.',
-                $statusCode, $json->error_message ?? 'empty error message'
+                $statusCode,
+                $json->error_message ?? 'empty error message'
             ));
         }
 

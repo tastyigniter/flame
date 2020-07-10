@@ -14,8 +14,8 @@ use Session;
 /**
  * Auth Manager Class
  * Adapted from Ion Auth.
+ *
  * @link https://github.com/benedmunds/CodeIgniter-Ion-Auth
- * @package        Igniter\Flame\Auth\Manager.php
  */
 class Manager
 {
@@ -109,6 +109,7 @@ class Manager
 
     /**
      * Get the ID for the currently authenticated user.
+     *
      * @return int|null
      */
     public function id()
@@ -118,6 +119,7 @@ class Manager
 
     /**
      * Get the currently authenticated user model.
+     *
      * @return \Igniter\Flame\Auth\Models\User
      */
     public function getUser()
@@ -142,8 +144,9 @@ class Manager
      * @param bool $remember
      * @param bool $login
      *
-     * @return \Igniter\Flame\Auth\Models\User|bool
      * @throws \Exception
+     *
+     * @return \Igniter\Flame\Auth\Models\User|bool
      */
     public function authenticate(array $credentials = [], $remember = FALSE, $login = TRUE)
     {
@@ -166,6 +169,7 @@ class Manager
      * Log a user into the application without sessions or cookies.
      *
      * @param array $credentials
+     *
      * @return bool
      */
     public function once($credentials = [])
@@ -183,6 +187,7 @@ class Manager
      * Log the given user ID into the application without sessions or cookies.
      *
      * @param mixed $id
+     *
      * @return \Illuminate\Contracts\Auth\Authenticatable|false
      */
     public function onceUsingId($id)
@@ -211,7 +216,8 @@ class Manager
         // Approval is required, user not approved
         if ($this->requireApproval AND !$user->is_activated) {
             throw new Exception(sprintf(
-                'Cannot login user "%s" until activated.', $user->getAuthIdentifier()
+                'Cannot login user "%s" until activated.',
+                $user->getAuthIdentifier()
             ));
         }
 
@@ -236,8 +242,9 @@ class Manager
      * @param $id
      * @param bool $remember
      *
-     * @return mixed
      * @throws \Exception
+     *
+     * @return mixed
      */
     public function loginUsingId($id, $remember = FALSE)
     {
@@ -252,6 +259,7 @@ class Manager
 
     /**
      * Log the user out of the application.
+     *
      * @return void
      **/
     public function logout()
@@ -307,8 +315,9 @@ class Manager
      * @param $identifier
      * @param $token
      *
-     * @return mixed
      * @throws \Exception
+     *
+     * @return mixed
      */
     public function getByToken($identifier, $token)
     {
@@ -357,14 +366,15 @@ class Manager
     /**
      * Create a new instance of the model
      * if it does not already exist.
-     * @return mixed
+     *
      * @throws \Exception
+     *
+     * @return mixed
      */
     public function createModel()
     {
         if (!isset($this->model))
             throw new Exception(sprintf('Required property [model] missing in %s', get_called_class()));
-
         $modelClass = $this->model;
         if (!class_exists($modelClass))
             throw new Exception(sprintf('Missing model [%s] in %s', $modelClass, get_called_class()));
@@ -397,6 +407,7 @@ class Manager
 
     /**
      * Gets the name of the user model
+     *
      * @return string
      */
     public function getModel()
@@ -422,6 +433,7 @@ class Manager
      * Create a new "remember me" token for the user
      *
      * @param \Illuminate\Contracts\Auth\Authenticatable|\Igniter\Flame\Auth\Models\User $user
+     *
      * @return array
      */
     protected function getPersistData($user)

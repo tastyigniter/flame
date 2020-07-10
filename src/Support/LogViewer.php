@@ -7,7 +7,6 @@ use Exception;
 /**
  * Class LogViewer
  * Based on Rap2hpoutre\LaravelLogViewer
- * @package Igniter\Flame\Support
  */
 class LogViewer
 {
@@ -45,6 +44,7 @@ class LogViewer
 
     /**
      * Log levels that are used
+     *
      * @var array
      */
     protected static $levels = [
@@ -72,8 +72,9 @@ class LogViewer
     /**
      * @param string $file
      *
-     * @return string
      * @throws \Exception
+     *
+     * @return string
      */
     public static function pathToLogFile($file)
     {
@@ -139,7 +140,9 @@ class LogViewer
 
                         preg_match(
                             '/^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\](?:.*?(\w+)\.|.*?)'
-                            .$level.': (.*?)( in .*?:[0-9]+)?$/i', $h[$i], $current
+                            .$level.': (.*?)( in .*?:[0-9]+)?$/i',
+                            $h[$i],
+                            $current
                         );
 
                         if (!isset($current[3])) continue;

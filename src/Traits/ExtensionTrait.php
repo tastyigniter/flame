@@ -8,6 +8,7 @@ namespace Igniter\Flame\Traits;
  * Allows for "Private traits"
  *
  * Adapted from the October ExtendableTrait
+ *
  * @link https://github.com/octobercms/library/tree/master/src/Extension/ExtendableTrait.php
  */
 trait ExtensionTrait
@@ -16,7 +17,6 @@ trait ExtensionTrait
      * @var array Used to extend the constructor of an extension class. Eg:
      *
      *     BehaviorClass::extend(function($obj) { })
-     *
      */
     protected static $extensionCallbacks = [];
 

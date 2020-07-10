@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Router;
+<?php
+
+namespace Igniter\Flame\Router;
 
 use Illuminate\Routing\RoutingServiceProvider as BaseRoutingServiceProvider;
 use October\Rain\Router\CoreRouter;

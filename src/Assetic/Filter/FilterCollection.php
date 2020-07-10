@@ -34,6 +34,7 @@ class FilterCollection implements FilterInterface, \IteratorAggregate, \Countabl
      *
      * If the supplied filter is another filter collection, each of its
      * filters will be checked.
+     *
      * @param \Igniter\Flame\Assetic\Filter\FilterInterface $filter
      */
     public function ensure(FilterInterface $filter)

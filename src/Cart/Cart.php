@@ -216,6 +216,7 @@ class Cart
      * Destroy the current cart instance.
      *
      * @param mixed $identifier
+     *
      * @return void
      */
     public function destroy($identifier = null)
@@ -516,6 +517,7 @@ class Cart
 
     /**
      * Restore the cart with the given identifier.
+     *
      * @param mixed $identifier
      */
     public function restore($identifier)
@@ -574,8 +576,10 @@ class Cart
 
     /**
      * Create a new instance of the model
-     * @return mixed
+     *
      * @throws Exception
+     *
+     * @return mixed
      */
     protected function createModel()
     {

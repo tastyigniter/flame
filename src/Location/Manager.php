@@ -10,7 +10,6 @@ use Session;
 
 /**
  * Location Manager Class
- * @package        Igniter\Flame\Location\Manager.php
  */
 abstract class Manager
 {
@@ -64,6 +63,7 @@ abstract class Manager
      * Set the location route parameter resolver callback.
      *
      * @param \Closure $resolver
+     *
      * @return void
      */
     public function locationSlugResolver(Closure $resolver)
@@ -155,6 +155,7 @@ abstract class Manager
 
     /**
      * Creates a new instance of the location model
+     *
      * @return \Igniter\Flame\Location\Models\AbstractLocation
      */
     public function createLocationModel()
@@ -233,6 +234,7 @@ abstract class Manager
     /**
      * @param $type
      * @param null $days
+     *
      * @return \Igniter\Flame\Location\WorkingSchedule
      */
     public function workingSchedule($type, $days = null)

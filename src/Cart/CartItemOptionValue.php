@@ -91,7 +91,6 @@ class CartItemOptionValue implements Arrayable, Jsonable
     {
         if (!is_numeric($qty))
             throw new \InvalidArgumentException('Please supply a valid item option quantity.');
-
         $this->qty = $qty;
     }
 
@@ -150,6 +149,7 @@ class CartItemOptionValue implements Arrayable, Jsonable
      * Convert the object to its JSON representation.
      *
      * @param int $options
+     *
      * @return string
      */
     public function toJson($options = 0)

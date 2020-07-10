@@ -22,6 +22,7 @@ class Geocoder extends Manager implements Contracts\GeocoderInterface
 
     /**
      * @param mixed $limit
+     *
      * @return Geocoder
      */
     public function limit($limit)
@@ -33,6 +34,7 @@ class Geocoder extends Manager implements Contracts\GeocoderInterface
 
     /**
      * @param string $locale
+     *
      * @return Geocoder
      */
     public function locale($locale)
@@ -96,6 +98,7 @@ class Geocoder extends Manager implements Contracts\GeocoderInterface
 
     /**
      * @param $name
+     *
      * @return \Igniter\Flame\Geolite\Contracts\AbstractProvider
      */
     public function using($name)
@@ -107,6 +110,7 @@ class Geocoder extends Manager implements Contracts\GeocoderInterface
      * Get a driver instance.
      *
      * @param  string $driver
+     *
      * @return mixed
      */
     public function driver($driver = null)
@@ -118,6 +122,7 @@ class Geocoder extends Manager implements Contracts\GeocoderInterface
 
     /**
      * @param $name
+     *
      * @return \Igniter\Flame\Geolite\Contracts\AbstractProvider
      */
     public function makeProvider($name): AbstractProvider
@@ -131,6 +136,7 @@ class Geocoder extends Manager implements Contracts\GeocoderInterface
 
     /**
      * Get the default driver name.
+     *
      * @return string
      */
     public function getDefaultDriver()

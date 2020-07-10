@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\ActivityLog\Models;
+<?php
+
+namespace Igniter\Flame\ActivityLog\Models;
 
 use Carbon\Carbon;
 use Igniter\Flame\ActivityLog\ActivityLogger;
@@ -11,8 +13,6 @@ use ReflectionClass;
 
 /**
  * Activity Model Class
- *
- * @package        Igniter\Flame\ActivityLog\Models
  */
 class Activity extends Model
 {
@@ -211,6 +211,7 @@ class Activity extends Model
 
     /**
      * Returns a list of the registered activity types.
+     *
      * @return array
      */
     public static function getActivityTypes()
@@ -224,7 +225,9 @@ class Activity extends Model
 
     /**
      * Returns a registered activity types.
+     *
      * @param string $type
+     *
      * @return string
      */
     public static function getActivityType($type)
@@ -237,6 +240,7 @@ class Activity extends Model
 
     /**
      * Loads registered activity types from extensions
+     *
      * @return void
      */
     public function loadActivityTypes()
@@ -252,6 +256,7 @@ class Activity extends Model
 
     /**
      * Registers the activity types.
+     *
      * @param array $definitions
      */
     public function registerActivityTypes(array $definitions)
@@ -270,7 +275,6 @@ class Activity extends Model
     {
         if (!(new ReflectionClass($className))->implementsInterface(ActivityInterface::class))
             throw new InvalidArgumentException('Activity type '.$className.' must implement '.ActivityInterface::class);
-
         if (!is_array($types))
             $types = [$types];
 

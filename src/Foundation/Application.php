@@ -3,15 +3,13 @@
 namespace Igniter\Flame\Foundation;
 
 use Exception;
-use Igniter\Flame\Foundation\Providers\LogServiceProvider;
 use Igniter\Flame\Events\EventServiceProvider;
+use Igniter\Flame\Foundation\Providers\LogServiceProvider;
 use Igniter\Flame\Router\RoutingServiceProvider;
 use Illuminate\Foundation\Application as BaseApplication;
 
 /**
  * Igniter Application Class
- *
- * @package        System\Classes\BaseController.php
  */
 class Application extends BaseApplication
 {
@@ -62,6 +60,7 @@ class Application extends BaseApplication
      * Get the path to the database directory.
      *
      * @param  string $path Optionally, a path to append to the database path
+     *
      * @return string
      */
     public function databasePath($path = '')
@@ -270,7 +269,8 @@ class Application extends BaseApplication
 
     /**
      * Returns true if a database connection is present.
-     * @return boolean
+     *
+     * @return bool
      */
     public function hasDatabase()
     {
@@ -294,9 +294,9 @@ class Application extends BaseApplication
     public function registerCoreContainerAliases()
     {
         $aliases = [
-            'app' => [\Igniter\Flame\Foundation\Application::class, \Illuminate\Contracts\Container\Container::class, \Illuminate\Contracts\Foundation\Application::class, \Psr\Container\ContainerInterface::class],
-//            'auth'                 => [\Illuminate\Auth\AuthManager::class, \Illuminate\Contracts\Auth\Factory::class],
-//            'auth.driver'          => [\Illuminate\Contracts\Auth\Guard::class],
+            'app' => [self::class, \Illuminate\Contracts\Container\Container::class, \Illuminate\Contracts\Foundation\Application::class, \Psr\Container\ContainerInterface::class],
+            //            'auth'                 => [\Illuminate\Auth\AuthManager::class, \Illuminate\Contracts\Auth\Factory::class],
+            //            'auth.driver'          => [\Illuminate\Contracts\Auth\Guard::class],
             'blade.compiler' => [\Illuminate\View\Compilers\BladeCompiler::class],
             'cache' => [\Illuminate\Cache\CacheManager::class, \Illuminate\Contracts\Cache\Factory::class],
             'cache.store' => [\Illuminate\Cache\Repository::class, \Illuminate\Contracts\Cache\Repository::class],
@@ -314,8 +314,8 @@ class Application extends BaseApplication
             'translator' => [\Illuminate\Translation\Translator::class, \Illuminate\Contracts\Translation\Translator::class],
             'log' => [\Illuminate\Log\Logger::class, \Psr\Log\LoggerInterface::class],
             'mailer' => [\Illuminate\Mail\Mailer::class, \Illuminate\Contracts\Mail\Mailer::class, \Illuminate\Contracts\Mail\MailQueue::class],
-//            'auth.password'        => [\Illuminate\Auth\Passwords\PasswordBrokerManager::class, \Illuminate\Contracts\Auth\PasswordBrokerFactory::class],
-//            'auth.password.broker' => [\Illuminate\Auth\Passwords\PasswordBroker::class, \Illuminate\Contracts\Auth\PasswordBroker::class],
+            //            'auth.password'        => [\Illuminate\Auth\Passwords\PasswordBrokerManager::class, \Illuminate\Contracts\Auth\PasswordBrokerFactory::class],
+            //            'auth.password.broker' => [\Illuminate\Auth\Passwords\PasswordBroker::class, \Illuminate\Contracts\Auth\PasswordBroker::class],
             'queue' => [\Illuminate\Queue\QueueManager::class, \Illuminate\Contracts\Queue\Factory::class, \Illuminate\Contracts\Queue\Monitor::class],
             'queue.connection' => [\Illuminate\Contracts\Queue\Queue::class],
             'queue.failer' => [\Illuminate\Queue\Failed\FailedJobProviderInterface::class],

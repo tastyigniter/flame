@@ -13,6 +13,7 @@ abstract class AbstractSource
 
     /**
      * Get the query post processor used by the connection.
+     *
      * @return \Igniter\Flame\Pagic\Processors\Processor
      */
     public function getProcessor()

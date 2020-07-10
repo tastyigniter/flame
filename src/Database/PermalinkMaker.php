@@ -105,7 +105,7 @@ class PermalinkMaker
         if ($this->model->isDirty($attribute))
             return FALSE;
 
-        return ($config['generateOnCreate'] === TRUE AND !$this->model->exists);
+        return $config['generateOnCreate'] === TRUE AND !$this->model->exists;
     }
 
     /**
@@ -164,8 +164,9 @@ class PermalinkMaker
      * @param array $config
      * @param string $attribute
      *
-     * @return string
      * @throws \UnexpectedValueException
+     *
+     * @return string
      */
     protected function makeSlugUnique($slug, array $config, $attribute)
     {

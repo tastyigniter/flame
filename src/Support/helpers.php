@@ -10,6 +10,7 @@ if (!function_exists('current_url')) {
      * Current URL
      * Returns the full URL (including segments and query string) of the page where this
      * function is placed
+     *
      * @return    string
      */
     function current_url()
@@ -39,6 +40,7 @@ if (!function_exists('uploads_path')) {
      * Get the path to the uploads folder.
      *
      * @param string $path
+     *
      * @return string
      */
     function uploads_path($path = '')
@@ -119,6 +121,7 @@ if (!function_exists('referrer_url')) {
      * Referrer URL
      * Returns the full URL (including segments) of the page where this
      * function is placed
+     *
      * @return    string
      */
     function referrer_url()
@@ -437,6 +440,7 @@ if (!function_exists('collect')) {
      * Create a collection from the given value.
      *
      * @param mixed $value
+     *
      * @return \Illuminate\Support\Collection
      */
     function collect($value = null)
@@ -452,6 +456,7 @@ if (!function_exists('trans')) {
      * @param string $id
      * @param array $parameters
      * @param string $locale
+     *
      * @return string
      */
     function trans($id = null, $parameters = [], $locale = null)

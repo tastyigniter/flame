@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Geolite\Model;
+<?php
+
+namespace Igniter\Flame\Geolite\Model;
 
 use Igniter\Flame\Geolite\Contracts;
 use Igniter\Flame\Geolite\Formatter\StringFormatter;
@@ -486,6 +488,7 @@ class Location implements Contracts\LocationInterface
 
     /**
      * @param $data
+     *
      * @return Coordinates|null
      */
     protected function createCoordinates($data)
@@ -502,6 +505,7 @@ class Location implements Contracts\LocationInterface
 
     /**
      * @param $data
+     *
      * @return Bounds|null
      */
     protected function createBounds($data)

@@ -105,6 +105,7 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
      * Apply condition to cart content
      *
      * @param $subTotal
+     *
      * @return \Igniter\Flame\Cart\CartCondition
      */
     public function apply($subTotal)

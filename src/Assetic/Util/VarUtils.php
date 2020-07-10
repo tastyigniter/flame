@@ -25,9 +25,9 @@ abstract class VarUtils
      * @param array $vars Variable names
      * @param array $values Variable values
      *
-     * @return string The resolved string
-     *
      * @throws \InvalidArgumentException If there is a variable with no value
+     *
+     * @return string The resolved string
      */
     public static function resolve($template, array $vars, array $values)
     {

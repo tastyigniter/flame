@@ -18,7 +18,6 @@ use InvalidArgumentException;
 
 /**
  * Model Class
- * @package        Igniter\Flame\Database\Model.php
  */
 class Model extends EloquentModel
 {
@@ -39,6 +38,7 @@ class Model extends EloquentModel
 
     /**
      * The storage format of the model's time columns.
+     *
      * @var string
      */
     protected $timeFormat;
@@ -76,11 +76,12 @@ class Model extends EloquentModel
      * @var array Excepted relationship types, used to cycle and verify relationships.
      */
     protected static $relationTypes = ['hasOne', 'hasMany', 'belongsTo', 'belongsToMany', 'morphTo', 'morphOne',
-        'morphMany', 'morphToMany', 'morphedByMany', 'hasManyThrough'];
+        'morphMany', 'morphToMany', 'morphedByMany', 'hasManyThrough', ];
 
     /**
      * The attributes that should be cast to native types.
      * New Custom types: serialize, time
+     *
      * @var array
      */
     public $casts = [];
@@ -116,8 +117,9 @@ class Model extends EloquentModel
      * @param array $attributes
      * @param string $sessionKey
      *
-     * @return \Illuminate\Database\Eloquent\Model|static
      * @throws \Exception
+     *
+     * @return \Illuminate\Database\Eloquent\Model|static
      */
     public static function create(array $attributes = [], $sessionKey = null)
     {
@@ -129,6 +131,7 @@ class Model extends EloquentModel
 
     /**
      * Reloads the model attributes from the database.
+     *
      * @return \Illuminate\Database\Eloquent\Model|static
      */
     public function reload()
@@ -191,7 +194,7 @@ class Model extends EloquentModel
                 $method = $hook.ucfirst($radical); // beforeSave / afterSave
                 if ($radical != 'fetch') $method .= 'e';
 
-                self::$eventMethod(function (Model $model) use ($method) {
+                self::$eventMethod(function (self $model) use ($method) {
                     $model->fireEvent('model.'.$method);
 
                     if ($model->methodExists($method))
@@ -201,7 +204,7 @@ class Model extends EloquentModel
         }
 
         // Hook to boot events
-        static::registerModelEvent('booted', function (Model $model) {
+        static::registerModelEvent('booted', function (self $model) {
             $model->fireEvent('model.afterBoot');
             if ($model->methodExists('afterBoot'))
                 return $model->afterBoot();
@@ -214,7 +217,9 @@ class Model extends EloquentModel
      * Remove all of the event listeners for the model
      * Also flush registry of models that had events booted
      * Allows painless unit testing.
+     *
      * @override
+     *
      * @return void
      */
     public static function flushEventListeners()
@@ -227,7 +232,6 @@ class Model extends EloquentModel
      * Create a new model instance that is existing.
      *
      * @param array $attributes
-     *
      * @param null $connection
      *
      * @return \Illuminate\Database\Eloquent\Model|static
@@ -361,6 +365,7 @@ class Model extends EloquentModel
 
     /**
      * Get the observable event names.
+     *
      * @return array
      */
     public function getObservableEvents()
@@ -380,8 +385,9 @@ class Model extends EloquentModel
      *
      * @param array $attributes
      *
-     * @return \Illuminate\Database\Eloquent\Model
      * @throws \Illuminate\Database\Eloquent\MassAssignmentException
+     *
+     * @return \Illuminate\Database\Eloquent\Model
      */
     public function fill(array $attributes)
     {
@@ -542,7 +548,8 @@ class Model extends EloquentModel
         // when checking the field. We will just return the DateTime right away.
         if ($value instanceof DateTimeInterface) {
             return new Carbon(
-                $value->format('H:i:s.u'), $value->getTimezone()
+                $value->format('H:i:s.u'),
+                $value->getTimezone()
             );
         }
 
@@ -597,6 +604,7 @@ class Model extends EloquentModel
 
     /**
      * Get the format for database stored times.
+     *
      * @return string
      */
     protected function getTimeFormat()
@@ -660,6 +668,7 @@ class Model extends EloquentModel
 
     /**
      * Get a new query builder instance for the connection.
+     *
      * @return \Igniter\Flame\Database\Query\Builder
      */
     protected function newBaseQueryBuilder()
@@ -667,12 +676,15 @@ class Model extends EloquentModel
         $connection = $this->getConnection();
 
         return new QueryBuilder(
-            $connection, $connection->getQueryGrammar(), $connection->getPostProcessor()
+            $connection,
+            $connection->getQueryGrammar(),
+            $connection->getPostProcessor()
         );
     }
 
     /**
      * Get the default foreign key name for the model.
+     *
      * @return string
      */
     public function getForeignKey()
@@ -749,6 +761,7 @@ class Model extends EloquentModel
 
     /**
      * Returns relationship details for all relations defined on this model.
+     *
      * @return array
      */
     public function getRelationDefinitions()
@@ -832,7 +845,7 @@ class Model extends EloquentModel
      *
      * @param string $name Relation name
      *
-     * @return boolean
+     * @return bool
      */
     public function isRelationPushable($name)
     {
@@ -870,40 +883,49 @@ class Model extends EloquentModel
 
         if (!isset($relation[0]) && $relationType != 'morphTo')
             throw new InvalidArgumentException(sprintf(
-                "Relation '%s' on model '%s' should have at least a classname.", $relationName, get_called_class()
+                "Relation '%s' on model '%s' should have at least a classname.",
+                $relationName,
+                get_called_class()
             ));
 
         if (isset($relation[0]) && $relationType == 'morphTo')
             throw new InvalidArgumentException(sprintf(
-                "Relation '%s' on model '%s' is a morphTo relation and should not contain additional arguments.", $relationName, get_called_class()
+                "Relation '%s' on model '%s' is a morphTo relation and should not contain additional arguments.",
+                $relationName,
+                get_called_class()
             ));
 
         switch ($relationType) {
             case 'hasOne':
             case 'hasMany':
-                $relation = $this->validateRelationArgs($relationName,
+                $relation = $this->validateRelationArgs(
+                    $relationName,
                     ['foreignKey', 'otherKey']
                 );
                 $relationObj = $this->$relationType(
                     $relation[0],
                     $relation['foreignKey'],
                     $relation['otherKey'],
-                    $relationName);
+                    $relationName
+                );
                 break;
 
             case 'belongsTo':
-                $relation = $this->validateRelationArgs($relationName,
+                $relation = $this->validateRelationArgs(
+                    $relationName,
                     ['foreignKey', 'otherKey']
                 );
                 $relationObj = $this->$relationType(
                     $relation[0],
                     $relation['foreignKey'],
                     $relation['otherKey'],
-                    $relationName);
+                    $relationName
+                );
                 break;
 
             case 'belongsToMany':
-                $relation = $this->validateRelationArgs($relationName,
+                $relation = $this->validateRelationArgs(
+                    $relationName,
                     ['table', 'foreignKey', 'otherKey', 'parentKey', 'relatedKey', 'pivot', 'timestamps']
                 );
 
@@ -914,11 +936,13 @@ class Model extends EloquentModel
                     $relation['otherKey'],
                     $relation['parentKey'],
                     $relation['relatedKey'],
-                    $relationName);
+                    $relationName
+                );
                 break;
 
             case 'morphTo':
-                $relation = $this->validateRelationArgs($relationName,
+                $relation = $this->validateRelationArgs(
+                    $relationName,
                     ['name', 'type', 'id']
                 );
                 $relationObj = $this->$relationType($relation['name'] ?: $relationName, $relation['type'], $relation['id']);
@@ -926,20 +950,26 @@ class Model extends EloquentModel
 
             case 'morphOne':
             case 'morphMany':
-                $relation = $this->validateRelationArgs($relationName,
-                    ['type', 'id', 'foreignKey'], ['name']
+                $relation = $this->validateRelationArgs(
+                    $relationName,
+                    ['type', 'id', 'foreignKey'],
+                    ['name']
                 );
                 $relationObj = $this->$relationType(
                     $relation[0],
                     $relation['name'],
                     $relation['type'],
                     $relation['id'],
-                    $relation['foreignKey'], $relationName);
+                    $relation['foreignKey'],
+                    $relationName
+                );
                 break;
 
             case 'morphToMany':
-                $relation = $this->validateRelationArgs($relationName,
-                    ['table', 'foreignKey', 'otherKey', 'pivot', 'timestamps'], ['name']
+                $relation = $this->validateRelationArgs(
+                    $relationName,
+                    ['table', 'foreignKey', 'otherKey', 'pivot', 'timestamps'],
+                    ['name']
                 );
                 $relationObj = $this->$relationType(
                     $relation[0],
@@ -947,19 +977,26 @@ class Model extends EloquentModel
                     $relation['table'],
                     $relation['pivot'],
                     $relation['foreignKey'],
-                    $relation['otherKey'], null, FALSE);
+                    $relation['otherKey'],
+                    null,
+                    FALSE
+                );
                 break;
 
             case 'morphedByMany':
-                $relation = $this->validateRelationArgs($relationName,
-                    ['table', 'foreignKey', 'otherKey', 'pivot', 'timestamps'], ['name']
+                $relation = $this->validateRelationArgs(
+                    $relationName,
+                    ['table', 'foreignKey', 'otherKey', 'pivot', 'timestamps'],
+                    ['name']
                 );
                 $relationObj = $this->$relationType(
                     $relation[0],
                     $relation['name'],
                     $relation['table'],
                     $relation['foreignKey'],
-                    $relation['otherKey'], $relationName);
+                    $relation['otherKey'],
+                    $relationName
+                );
                 break;
 
             case 'hasManyThrough':
@@ -969,7 +1006,8 @@ class Model extends EloquentModel
                     $relation['through'],
                     $relation['foreignKey'],
                     $relation['throughKey'],
-                    $relation['otherKey']);
+                    $relation['otherKey']
+                );
                 break;
 
             default:
@@ -1009,7 +1047,8 @@ class Model extends EloquentModel
         }
 
         if ($missingRequired) {
-            throw new InvalidArgumentException(sprintf('Relation "%s" on model "%s" should contain the following key(s): %s',
+            throw new InvalidArgumentException(sprintf(
+                'Relation "%s" on model "%s" should contain the following key(s): %s',
                 $relationName,
                 get_called_class(),
                 implode(', ', $missingRequired)
@@ -1034,13 +1073,23 @@ class Model extends EloquentModel
         $otherKey = $otherKey ?: $instance->getKeyName();
 
         return new BelongsTo(
-            $instance->newQuery(), $this, $foreignKey, $otherKey, $relation
+            $instance->newQuery(),
+            $this,
+            $foreignKey,
+            $otherKey,
+            $relation
         );
     }
 
-    public function belongsToMany($related,
-                                  $table = null, $foreignPivotKey = null, $relatedPivotKey = null,
-                                  $parentKey = null, $relatedKey = null, $relation = null)
+    public function belongsToMany(
+        $related,
+        $table = null,
+        $foreignPivotKey = null,
+        $relatedPivotKey = null,
+        $parentKey = null,
+        $relatedKey = null,
+        $relation = null
+    )
     {
         // If no relationship name was passed, we will pull backtraces to get the
         // name of the calling function. We will use that function name as the
@@ -1066,9 +1115,14 @@ class Model extends EloquentModel
         }
 
         return new BelongsToMany(
-            $instance->newQuery(), $this, $table, $foreignPivotKey,
-            $relatedPivotKey, $parentKey ?: $this->getKeyName(),
-            $relatedKey ?: $instance->getKeyName(), $relation
+            $instance->newQuery(),
+            $this,
+            $table,
+            $foreignPivotKey,
+            $relatedPivotKey,
+            $parentKey ?: $this->getKeyName(),
+            $relatedKey ?: $instance->getKeyName(),
+            $relation
         );
     }
 
@@ -1081,8 +1135,9 @@ class Model extends EloquentModel
      *
      * @param array $options
      *
-     * @return bool
      * @throws \Exception
+     *
+     * @return bool
      */
     protected function saveInternal($options = [])
     {
@@ -1115,8 +1170,9 @@ class Model extends EloquentModel
      * @param array $options
      * @param null $sessionKey
      *
-     * @return bool
      * @throws \Exception
+     *
+     * @return bool
      */
     public function save(array $options = null, $sessionKey = null)
     {
@@ -1129,8 +1185,9 @@ class Model extends EloquentModel
      * @param array $options
      * @param null $sessionKey
      *
-     * @return bool
      * @throws \Exception
+     *
+     * @return bool
      */
     public function push($options = null, $sessionKey = null)
     {
@@ -1181,6 +1238,7 @@ class Model extends EloquentModel
 
     /**
      * Perform the actual delete query on this model instance.
+     *
      * @return void
      */
     protected function performDeleteOnModel()
@@ -1191,6 +1249,7 @@ class Model extends EloquentModel
 
     /**
      * Locates relations with delete flag and cascades the delete event.
+     *
      * @return void
      */
     protected function performDeleteOnRelations()

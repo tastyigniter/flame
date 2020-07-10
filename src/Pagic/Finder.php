@@ -15,96 +15,112 @@ class Finder
 {
     /**
      * The source instance.
+     *
      * @var \Igniter\Flame\Pagic\Source\SourceInterface
      */
     protected $source;
 
     /**
      * The source query processor instance.
+     *
      * @var \Igniter\Flame\Pagic\Processors\Processor
      */
     protected $processor;
 
     /**
      * The model being queried.
+     *
      * @var \Igniter\Flame\Pagic\Model
      */
     protected $model;
 
     /**
      * Filter by these file extensions.
+     *
      * @var array
      */
     public $extensions;
 
     /**
      * The columns that should be returned.
+     *
      * @var array
      */
     public $columns;
 
     /**
      * The directory name which the finder is targeting.
+     *
      * @var string
      */
     public $in;
 
     /**
      * Query should pluck a single record.
+     *
      * @var bool
      */
     public $select;
 
     /**
      * Match files using the specified pattern.
+     *
      * @var string
      */
     public $fileMatch;
 
     /**
      * The orderings for the query.
+     *
      * @var array
      */
     public $orders;
 
     /**
      * The maximum number of records to return.
+     *
      * @var int
      */
     public $limit;
 
     /**
      * The number of records to skip.
+     *
      * @var int
      */
     public $offset;
 
     /**
      * The key that should be used when caching the query.
+     *
      * @var string
      */
     protected $cacheKey;
 
     /**
      * The number of seconds to cache the query.
+     *
      * @var int
      */
     protected $cacheSeconds;
 
     /**
      * The tags for the query cache.
+     *
      * @var array
      */
     protected $cacheTags;
 
     /**
      * The cache driver to be used.
+     *
      * @var string
      */
     protected $cacheDriver;
 
     /**
      * Internal variable to specify if the record was loaded from cache.
+     *
      * @var bool
      */
     protected $loadedFromCache = FALSE;
@@ -217,6 +233,7 @@ class Finder
 
     /**
      * Execute the query and get the first result.
+     *
      * @return mixed|static
      */
     public function first()
@@ -378,6 +395,7 @@ class Finder
 
     /**
      * Run the query as a "select" statement against the source.
+     *
      * @return array
      */
     protected function runSelect()
@@ -439,6 +457,7 @@ class Finder
 
     /**
      * Get the model instance being queried.
+     *
      * @return \Igniter\Flame\Pagic\Model
      */
     public function getModel()
@@ -500,7 +519,7 @@ class Finder
      * Template directory and file names can contain only alphanumeric symbols, dashes and dots.
      *
      * @param string $filePath Specifies a path to validate
-     * @param integer $maxNesting Specifies the maximum allowed nesting level
+     * @param int $maxNesting Specifies the maximum allowed nesting level
      *
      * @return bool
      */
@@ -515,7 +534,7 @@ class Finder
         }
 
         // @todo: A different approach to fix the file path issue.
-        if (windows_os()) $filePath = str_replace("\\", "/", $filePath);
+        if (windows_os()) $filePath = str_replace('\\', '/', $filePath);
         $segments = explode('/', $filePath);
         if ($maxNesting !== null AND count($segments) > $maxNesting) {
             return FALSE;
@@ -672,6 +691,7 @@ class Finder
 
     /**
      * Get the cache object with tags assigned, if applicable.
+     *
      * @return \Illuminate\Cache\CacheManager
      */
     protected function getCache()
@@ -683,6 +703,7 @@ class Finder
 
     /**
      * Get a unique cache key for the complete query.
+     *
      * @return string
      */
     public function getCacheKey()
@@ -692,6 +713,7 @@ class Finder
 
     /**
      * Generate the unique cache key for the query.
+     *
      * @return string
      */
     public function generateCacheKey()
@@ -754,8 +776,9 @@ class Finder
      * @param  string $method
      * @param  array $parameters
      *
-     * @return mixed
      * @throws \BadMethodCallException
+     *
+     * @return mixed
      */
     public function __call($method, $parameters)
     {

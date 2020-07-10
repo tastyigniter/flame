@@ -32,11 +32,13 @@ class GoogleProvider extends AbstractProvider
     public function geocodeQuery(GeoQueryInterface $query): Collection
     {
         $endpoint = array_get($this->config, 'endpoints.geocode');
-        $url = $this->prependGeocodeQuery($query, sprintf($endpoint,
+        $url = $this->prependGeocodeQuery($query, sprintf(
+            $endpoint,
             rawurlencode($query->getText())
         ));
 
         $result = [];
+
         try {
             $result = $this->cacheCallback($url, function () use ($query, $url) {
                 return $this->hydrateResponse(
@@ -48,7 +50,8 @@ class GoogleProvider extends AbstractProvider
         catch (Throwable $ex) {
             $this->log(sprintf(
                 'Provider "%s" could not geocode address, "%s".',
-                $this->getName(), $ex->getMessage()
+                $this->getName(),
+                $ex->getMessage()
             ));
         }
 
@@ -60,12 +63,14 @@ class GoogleProvider extends AbstractProvider
         $coordinates = $query->getCoordinates();
 
         $endpoint = array_get($this->config, 'endpoints.reverse');
-        $url = $this->prependReverseQuery($query, sprintf($endpoint,
+        $url = $this->prependReverseQuery($query, sprintf(
+            $endpoint,
             $coordinates->getLatitude(),
             $coordinates->getLongitude()
         ));
 
         $result = [];
+
         try {
             $result = $this->cacheCallback($url, function () use ($query, $url) {
                 return $this->hydrateResponse(
@@ -78,7 +83,9 @@ class GoogleProvider extends AbstractProvider
             $coordinates = $query->getCoordinates();
             $this->log(sprintf(
                 'Provider "%s" could not reverse coordinates: "%f %f".',
-                $this->getName(), $coordinates->getLatitude(), $coordinates->getLongitude()
+                $this->getName(),
+                $coordinates->getLatitude(),
+                $coordinates->getLongitude()
             ));
         }
 
@@ -139,9 +146,10 @@ class GoogleProvider extends AbstractProvider
      * Decode the response content and validate it to make sure it does not have any errors.
      *
      * @param \Psr\Http\Message\ResponseInterface $response
-     * @return mixed result from json_decode()
      *
      * @throws \Igniter\Flame\Geolite\Exception\GeoliteException
+     *
+     * @return mixed result from json_decode()
      */
     protected function parseResponse(ResponseInterface $response)
     {
@@ -156,14 +164,16 @@ class GoogleProvider extends AbstractProvider
 
         if ($json->status === 'REQUEST_DENIED') {
             throw new GeoliteException(sprintf(
-                'API access denied. Message: %s', $json->error_message ?? 'empty error message'
+                'API access denied. Message: %s',
+                $json->error_message ?? 'empty error message'
             ));
         }
 
         // you are over your quota
         if ($json->status === 'OVER_QUERY_LIMIT') {
             throw new GeoliteException(sprintf(
-                'Daily quota exceeded. Message: %s', $json->error_message ?? 'empty error message'
+                'Daily quota exceeded. Message: %s',
+                $json->error_message ?? 'empty error message'
             ));
         }
 
@@ -178,14 +188,18 @@ class GoogleProvider extends AbstractProvider
     protected function prependGeocodeQuery(GeoQueryInterface $query, $url): string
     {
         if ($bounds = $query->getBounds()) {
-            $url .= sprintf('&bounds=%s,%s|%s,%s',
-                $bounds->getSouth(), $bounds->getWest(),
-                $bounds->getNorth(), $bounds->getEast()
+            $url .= sprintf(
+                '&bounds=%s,%s|%s,%s',
+                $bounds->getSouth(),
+                $bounds->getWest(),
+                $bounds->getNorth(),
+                $bounds->getEast()
             );
         }
 
         if ($components = $query->getData('components')) {
-            $url .= sprintf('&components=%s',
+            $url .= sprintf(
+                '&components=%s',
                 urlencode($this->serializeComponents($components))
             );
         }

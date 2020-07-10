@@ -11,6 +11,7 @@ class FilesystemServiceProvider extends BaseFilesystemServiceProvider
 {
     /**
      * Register the service provider.
+     *
      * @return void
      */
     public function register()
@@ -22,6 +23,7 @@ class FilesystemServiceProvider extends BaseFilesystemServiceProvider
 
     /**
      * Register the native filesystem implementation.
+     *
      * @return void
      */
     protected function registerNativeFilesystem()
@@ -42,6 +44,7 @@ class FilesystemServiceProvider extends BaseFilesystemServiceProvider
 
     /**
      * Get the services provided by the provider.
+     *
      * @return array
      */
     public function provides()

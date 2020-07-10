@@ -9,36 +9,42 @@ class ClassLoader
 {
     /**
      * The filesystem instance.
+     *
      * @var \Igniter\Flame\Filesystem\Filesystem
      */
     public $files;
 
     /**
      * The base path.
+     *
      * @var string
      */
     public $basePath;
 
     /**
      * The manifest path.
+     *
      * @var string|null
      */
     public $manifestPath;
 
     /**
      * The loaded manifest array.
+     *
      * @var array
      */
     public $manifest;
 
     /**
      * The registered directories.
+     *
      * @var array
      */
     protected $directories = [];
 
     /**
      * Indicates if a loader has been registered.
+     *
      * @var bool
      */
     protected $registered = FALSE;
@@ -54,6 +60,7 @@ class ClassLoader
 
     /**
      * Register loader with SPL autoloader stack.
+     *
      * @return void
      */
     public function register()
@@ -279,8 +286,9 @@ class ClassLoader
      *
      * @param  array $manifest
      *
-     * @return void
      * @throws \Exception
+     *
+     * @return void
      */
     protected function write(array $manifest)
     {
@@ -289,7 +297,8 @@ class ClassLoader
         }
 
         $this->files->put(
-            $this->manifestPath, '<?php return '.var_export($manifest, TRUE).';'
+            $this->manifestPath,
+            '<?php return '.var_export($manifest, TRUE).';'
         );
     }
 }

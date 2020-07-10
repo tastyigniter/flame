@@ -45,7 +45,7 @@ class AssetFactory
      * Constructor.
      *
      * @param string $root The default root directory
-     * @param Boolean $debug Filters prefixed with a "?" will be omitted in debug mode
+     * @param bool $debug Filters prefixed with a "?" will be omitted in debug mode
      */
     public function __construct($root, $debug = FALSE)
     {
@@ -58,7 +58,7 @@ class AssetFactory
     /**
      * Sets debug mode for the current factory.
      *
-     * @param Boolean $debug Debug mode
+     * @param bool $debug Debug mode
      */
     public function setDebug($debug)
     {
@@ -68,7 +68,7 @@ class AssetFactory
     /**
      * Checks if the factory is in debug mode.
      *
-     * @return Boolean Debug mode
+     * @return bool Debug mode
      */
     public function isDebug()
     {

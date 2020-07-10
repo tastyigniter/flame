@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Events;
+<?php
+
+namespace Igniter\Flame\Events;
 
 class Dispatcher extends \Illuminate\Events\Dispatcher
 {
@@ -8,6 +10,7 @@ class Dispatcher extends \Illuminate\Events\Dispatcher
      * @param  string|object $event
      * @param  mixed $payload
      * @param  bool $halt
+     *
      * @return array|null
      */
     public function fire($event, $payload = [], $halt = FALSE)

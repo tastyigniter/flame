@@ -39,7 +39,7 @@ class StringFormatter
             self::TIMEZONE => $location->getTimezone(),
         ];
 
-        for ($level = 1; $level <= AdminLevelCollection::MAX_LEVEL_DEPTH; ++$level) {
+        for ($level = 1; $level <= AdminLevelCollection::MAX_LEVEL_DEPTH; $level++) {
             $adminLevel = $location->getAdminLevels()[$level] ?? null;
             $replace[self::ADMIN_LEVEL.$level] = $adminLevel ? $adminLevel->getName() : null;
             $replace[self::ADMIN_LEVEL_CODE.$level] = $adminLevel ? $adminLevel->getCode() : null;
