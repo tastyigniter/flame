@@ -27,7 +27,7 @@
     "ext-PDO": "*",
     "filp/whoops": "~2.0",
     "doctrine/dbal": "^2.6",
-    "october/rain": "dev-wip/laravel-6 as 1.0",
+    "october/rain": "~1.0",
     "guzzlehttp/guzzle": "~7.0",
     "symfony/yaml": "~3.4",
     "kalnoy/nestedset": "~5.0",
