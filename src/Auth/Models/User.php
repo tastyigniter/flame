@@ -16,12 +16,10 @@ class User extends Model implements Authenticatable
 
     public function beforeLogin()
     {
-
     }
 
     public function afterLogin()
     {
-
     }
 
     public function setPasswordAttribute($value)
@@ -126,11 +124,10 @@ class User extends Model implements Authenticatable
 
     public function hasShaPassword($plainPassword)
     {
-        $salt = $this->attributes['salt'];
-
-        if (is_null($salt))
+        if (!isset($this->attributes['salt']) OR is_null($this->attributes['salt']))
             return FALSE;
 
+        $salt = $this->attributes['salt'];
         $hashedPassword = $this->attributes['password'];
         $shaPassword = sha1($salt.sha1($salt.sha1($plainPassword)));
 
