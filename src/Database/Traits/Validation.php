@@ -3,11 +3,22 @@
 namespace Igniter\Flame\Database\Traits;
 
 use Igniter\Flame\Exception\ValidationException;
+use Igniter\Flame\Support\Facades\Validator;
 use Watson\Validating\ValidatingTrait;
 
 trait Validation
 {
     use ValidatingTrait;
+
+    /**
+     * Get the Validator instance.
+     *
+     * @return \Illuminate\Validation\Factory
+     */
+    public function getValidator()
+    {
+        return $this->validator ?: Validator::getFacadeRoot();
+    }
 
     /**
      * Throw a validation exception.

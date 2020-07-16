@@ -3,8 +3,8 @@
 namespace Igniter\Flame\Foundation;
 
 use Exception;
-use Igniter\Flame\Foundation\Providers\LogServiceProvider;
 use Igniter\Flame\Events\EventServiceProvider;
+use Igniter\Flame\Foundation\Providers\LogServiceProvider;
 use Igniter\Flame\Router\RoutingServiceProvider;
 use Illuminate\Foundation\Application as BaseApplication;
 
@@ -61,7 +61,7 @@ class Application extends BaseApplication
     /**
      * Get the path to the database directory.
      *
-     * @param  string $path Optionally, a path to append to the database path
+     * @param string $path Optionally, a path to append to the database path
      * @return string
      */
     public function databasePath($path = '')
@@ -160,7 +160,7 @@ class Application extends BaseApplication
     /**
      * Set the extensions path for the application.
      *
-     * @param  string $path
+     * @param string $path
      *
      * @return $this
      */
@@ -175,7 +175,7 @@ class Application extends BaseApplication
     /**
      * Set the themes path for the application.
      *
-     * @param  string $path
+     * @param string $path
      *
      * @return $this
      */
@@ -190,7 +190,7 @@ class Application extends BaseApplication
     /**
      * Set the assets path for the application.
      *
-     * @param  string $path
+     * @param string $path
      *
      * @return $this
      */
@@ -225,7 +225,7 @@ class Application extends BaseApplication
     /**
      * Register a "before" application filter.
      *
-     * @param  \Closure|string $callback
+     * @param \Closure|string $callback
      *
      * @return void
      */
@@ -237,7 +237,7 @@ class Application extends BaseApplication
     /**
      * Register an "after" application filter.
      *
-     * @param  \Closure|string $callback
+     * @param \Closure|string $callback
      *
      * @return void
      */
@@ -259,7 +259,7 @@ class Application extends BaseApplication
     /**
      * Sets the execution context
      *
-     * @param  string $context
+     * @param string $context
      *
      * @return void
      */
@@ -326,7 +326,7 @@ class Application extends BaseApplication
             'session' => [\Illuminate\Session\SessionManager::class],
             'session.store' => [\Illuminate\Session\Store::class, \Illuminate\Contracts\Session\Session::class],
             'url' => [\Illuminate\Routing\UrlGenerator::class, \Illuminate\Contracts\Routing\UrlGenerator::class],
-            'validator' => [\Illuminate\Validation\Factory::class, \Illuminate\Contracts\Validation\Factory::class],
+            'validator' => [\Igniter\Flame\Validation\Factory::class, \Illuminate\Contracts\Validation\Factory::class],
             'view' => [\Illuminate\View\Factory::class, \Illuminate\Contracts\View\Factory::class],
         ];
 
