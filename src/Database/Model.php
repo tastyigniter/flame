@@ -70,13 +70,14 @@ class Model extends EloquentModel
         'morphToMany' => [],
         'morphedByMany' => [],
         'hasManyThrough' => [],
+        'hasOneThrough' => [],
     ];
 
     /**
      * @var array Excepted relationship types, used to cycle and verify relationships.
      */
     protected static $relationTypes = ['hasOne', 'hasMany', 'belongsTo', 'belongsToMany', 'morphTo', 'morphOne',
-        'morphMany', 'morphToMany', 'morphedByMany', 'hasManyThrough'];
+        'morphMany', 'morphToMany', 'morphedByMany', 'hasManyThrough', 'hasOneThrough'];
 
     /**
      * The attributes that should be cast to native types.
@@ -186,7 +187,6 @@ class Model extends EloquentModel
 
         foreach ($radicals as $radical) {
             foreach ($hooks as $hook => $event) {
-
                 $eventMethod = $radical.$event; // saving / saved
                 $method = $hook.ucfirst($radical); // beforeSave / afterSave
                 if ($radical != 'fetch') $method .= 'e';
@@ -881,16 +881,6 @@ class Model extends EloquentModel
         switch ($relationType) {
             case 'hasOne':
             case 'hasMany':
-                $relation = $this->validateRelationArgs($relationName,
-                    ['foreignKey', 'otherKey']
-                );
-                $relationObj = $this->$relationType(
-                    $relation[0],
-                    $relation['foreignKey'],
-                    $relation['otherKey'],
-                    $relationName);
-                break;
-
             case 'belongsTo':
                 $relation = $this->validateRelationArgs($relationName,
                     ['foreignKey', 'otherKey']
@@ -962,6 +952,7 @@ class Model extends EloquentModel
                     $relation['otherKey'], $relationName);
                 break;
 
+            case 'hasOneThrough':
             case 'hasManyThrough':
                 $relation = $this->validateRelationArgs($relationName, ['foreignKey', 'throughKey', 'otherKey'], ['through']);
                 $relationObj = $this->$relationType(
