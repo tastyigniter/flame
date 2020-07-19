@@ -34,8 +34,7 @@
     "watson/validating": "~4.0",
     "natxet/cssmin": "~3.0",
     "scssphp/scssphp": "~1.0",
-    "league/glide": "~1.5",
-    "laravel/helpers": "~1.1"
+    "league/glide": "~1.5"
   },
   "require-dev": {
     "phpunit/phpunit": "^8.0",
