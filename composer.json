@@ -57,6 +57,10 @@
   "suggest": {
     "ext-pdo_mysql": "Required to use MySQL databases"
   },
+  "replace": {
+    "kriswallsmith/assetic": "*",
+    "leafo/scssphp": "*"
+  },
   "autoload": {
     "files": [
       "src/Support/helpers.php"
