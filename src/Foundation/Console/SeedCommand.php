@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Foundation\Console;
+<?php
+
+namespace Igniter\Flame\Foundation\Console;
 
 use Illuminate\Database\Console\Seeds\SeedCommand as BaseSeedCommand;
 use Symfony\Component\Console\Input\InputOption;

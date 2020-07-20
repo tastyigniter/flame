@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Translation;
+<?php
+
+namespace Igniter\Flame\Translation;
 
 use Illuminate\Support\Str;
 use Illuminate\Translation\Translator as BaseTranslator;
@@ -22,6 +24,7 @@ class Translator extends BaseTranslator
      * @param  string $key
      * @param  array $replace
      * @param  string $locale
+     *
      * @return string
      */
     protected function getValidationKey($key, $replace, $locale)

@@ -150,9 +150,8 @@ class FormBuilder
         // format the array of attributes. We will also add on the appendage which
         // is used to spoof requests for this PUT, PATCH, etc. methods on forms.
         $attributes = array_merge(
-
-            $attributes, array_except($options, $this->reserved)
-
+            $attributes,
+            array_except($options, $this->reserved)
         );
 
         // Finally, we will concatenate all of the attributes into a single string so
@@ -906,7 +905,7 @@ class FormBuilder
      */
     protected function missingOldAndModel($name)
     {
-        return (is_null($this->old($name)) && is_null($this->getModelValueAttribute($name)));
+        return is_null($this->old($name)) && is_null($this->getModelValueAttribute($name));
     }
 
     /**
@@ -1243,7 +1242,7 @@ class FormBuilder
      */
     public function oldInputIsEmpty()
     {
-        return (isset($this->session) && count($this->session->getOldInput()) == 0);
+        return isset($this->session) && count($this->session->getOldInput()) == 0;
     }
 
     /**
@@ -1300,9 +1299,9 @@ class FormBuilder
      * @param  string $method
      * @param  array $parameters
      *
-     * @return \Illuminate\Contracts\View\View|mixed
-     *
      * @throws \BadMethodCallException
+     *
+     * @return \Illuminate\Contracts\View\View|mixed
      */
     public function __call($method, $parameters)
     {

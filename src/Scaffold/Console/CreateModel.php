@@ -9,7 +9,6 @@ use Symfony\Component\Console\Input\InputOption;
 
 class CreateModel extends GeneratorCommand
 {
-
     /**
      * The console command name.
      *
@@ -51,6 +50,7 @@ class CreateModel extends GeneratorCommand
     {
         if (!$code = $this->getExtensionInput()) {
             $this->error('Invalid extension name, Example name: AuthorName.ExtensionName');
+
             return;
         }
 
@@ -100,7 +100,7 @@ class CreateModel extends GeneratorCommand
     protected function getOptions()
     {
         return [
-            ['force', null, InputOption::VALUE_NONE, 'Overwrite existing files with generated ones.']
+            ['force', null, InputOption::VALUE_NONE, 'Overwrite existing files with generated ones.'],
         ];
     }
 }

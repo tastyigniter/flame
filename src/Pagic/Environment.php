@@ -66,6 +66,7 @@ class Environment
 
     /**
      * Gets the Loader instance.
+     *
      * @return Loader
      */
     public function getLoader()
@@ -89,6 +90,7 @@ class Environment
 
     /**
      * Gets the default template charset.
+     *
      * @return string The default charset
      */
     public function getCharset()
@@ -127,9 +129,10 @@ class Environment
      * @param string $name The template name
      * @param array $context An array of parameters to pass to the template
      *
-     * @return string The rendered template
      * @throws \Exception
      * @throws \Throwable
+     *
+     * @return string The rendered template
      */
     public function render($name, array $context = [])
     {
@@ -141,8 +144,9 @@ class Environment
      *
      * @param string|Template $name The template name
      *
-     * @return Template
      * @throws \Exception
+     *
+     * @return Template
      */
     public function load($name)
     {
@@ -209,8 +213,9 @@ class Environment
      * @param string $name The template name
      * @param int $time The last modification time of the cached template
      *
-     * @return bool true if the template is fresh, false otherwise
      * @throws \Exception
+     *
+     * @return bool true if the template is fresh, false otherwise
      */
     public function isTemplateFresh($name, $time)
     {

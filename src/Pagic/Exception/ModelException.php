@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Pagic\Exception;
+<?php
+
+namespace Igniter\Flame\Pagic\Exception;
 
 use Igniter\Flame\Exception\ValidationException;
 use Igniter\Flame\Pagic\Model;
@@ -6,12 +8,10 @@ use Igniter\Flame\Pagic\Model;
 /**
  * Used when validation fails. Contains the invalid model for easy analysis.
  *
- * @package october\database
  * @author Alexey Bobkov, Samuel Georges
  */
 class ModelException extends ValidationException
 {
-
     /**
      * @var Model The invalid model.
      */
@@ -19,6 +19,7 @@ class ModelException extends ValidationException
 
     /**
      * Receives the invalid model and sets the {@link model} and {@link errors} properties.
+     *
      * @param Model $model The troublesome model.
      */
     public function __construct(Model $model)
@@ -30,11 +31,11 @@ class ModelException extends ValidationException
 
     /**
      * Returns the model with invalid attributes.
+     *
      * @return Model
      */
     public function getModel()
     {
         return $this->model;
     }
-
 }

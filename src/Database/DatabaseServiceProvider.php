@@ -23,6 +23,7 @@ class DatabaseServiceProvider extends BaseDatabaseServiceProvider
 
     /**
      * Register the service provider.
+     *
      * @return void
      */
     public function register()
@@ -40,6 +41,7 @@ class DatabaseServiceProvider extends BaseDatabaseServiceProvider
 
     /**
      * Returns the default database driver, not just the connection name.
+     *
      * @return string
      */
     protected function getDefaultDatabaseDriver()

@@ -66,6 +66,7 @@ class MediaAdder
 
     /**
      * @param \Igniter\Flame\Database\Model $model
+     *
      * @return $this
      */
     public function performedOn(Model $model)
@@ -89,6 +90,7 @@ class MediaAdder
 
     /**
      * @param string $tag
+     *
      * @return \Igniter\Flame\Database\Attach\MediaAdder
      */
     public function useMediaTag($tag = 'default')
@@ -146,7 +148,7 @@ class MediaAdder
 
         $class = get_class($this->performedOn);
         $class::created(function (Model $model) {
-            $model->processUnattachedMedia(function (Media $media, MediaAdder $mediaAdder) {
+            $model->processUnattachedMedia(function (Media $media, self $mediaAdder) {
                 $this->processMediaItem($media, $mediaAdder);
             });
         });
@@ -155,6 +157,7 @@ class MediaAdder
     /**
      * @param Media $media
      * @param $mediaAdder
+     *
      * @return bool
      */
     protected function processMediaItem(Media $media, self $mediaAdder)

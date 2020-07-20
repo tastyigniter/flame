@@ -36,11 +36,11 @@ interface AssetCollectionInterface extends AssetInterface, \Traversable
      * Removes a leaf.
      *
      * @param AssetInterface $leaf The leaf to remove
-     * @param Boolean $graceful Whether the failure should return false or throw an exception
-     *
-     * @return Boolean Whether the asset has been found
+     * @param bool $graceful Whether the failure should return false or throw an exception
      *
      * @throws \InvalidArgumentException If the asset cannot be found
+     *
+     * @return bool Whether the asset has been found
      */
     public function removeLeaf(AssetInterface $leaf, $graceful = FALSE);
 
@@ -49,11 +49,11 @@ interface AssetCollectionInterface extends AssetInterface, \Traversable
      *
      * @param AssetInterface $needle The current asset to replace
      * @param AssetInterface $replacement The new asset
-     * @param Boolean $graceful Whether the failure should return false or throw an exception
-     *
-     * @return Boolean Whether the asset has been found
+     * @param bool $graceful Whether the failure should return false or throw an exception
      *
      * @throws \InvalidArgumentException If the asset cannot be found
+     *
+     * @return bool Whether the asset has been found
      */
     public function replaceLeaf(AssetInterface $needle, AssetInterface $replacement, $graceful = FALSE);
 }

@@ -14,7 +14,7 @@ interface CircleInterface
     /**
      * Returns the precision of the geometry.
      *
-     * @return integer
+     * @return int
      */
     public function getPrecision();
 
@@ -46,7 +46,7 @@ interface CircleInterface
     /**
      * Returns true if the geometry is empty.
      *
-     * @return boolean
+     * @return bool
      */
     public function isEmpty();
 }

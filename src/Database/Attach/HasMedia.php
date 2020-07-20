@@ -36,8 +36,10 @@ trait HasMedia
 
     /**
      * Query scope to detect the presence of one or more attached media for a given tag.
+     *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @param string|string[] $tags
+     *
      * @return void
      */
     public function scopeWhereHasMedia(Builder $query, $tags)
@@ -96,6 +98,7 @@ trait HasMedia
      *
      * @param array $options
      * @param string $tag
+     *
      * @return string
      */
     public function getThumb($options = [], $tag = null)
@@ -139,7 +142,9 @@ trait HasMedia
         if (!$media = $this->media->find($mediaId)) {
             throw new Exception(sprintf(
                 "Media with id '%s' cannot be deleted because it does not exist or does not belong to model %s with id %s",
-                $mediaId, get_class($this), $this->getKey()
+                $mediaId,
+                get_class($this),
+                $this->getKey()
             ));
         }
 
@@ -150,6 +155,7 @@ trait HasMedia
      * Lazy eager load attached media relationships.
      *
      * @param $tag
+     *
      * @return \Illuminate\Support\Collection
      */
     public function loadMedia($tag)
@@ -167,7 +173,9 @@ trait HasMedia
 
     /**
      * Determine if the specified tag contains media.
+     *
      * @param string $tag
+     *
      * @return bool
      */
     public function hasMedia($tag = null)
@@ -196,7 +204,6 @@ trait HasMedia
 
                 if ($tag !== '*' AND $foundMedia->tag !== $tag)
                     throw new Exception("Media id {$foundMedia->getKey()} is not part of collection '{$tag}''");
-
                 $foundMedia->fill($newMedia);
                 $foundMedia->save();
 
@@ -206,7 +213,9 @@ trait HasMedia
 
     /**
      * Detach a media item from the model.
+     *
      * @param mixed $mediaId
+     *
      * @return void
      */
     public function deleteMedia($mediaId)
@@ -240,6 +249,7 @@ trait HasMedia
      * Remove all media with the given tag.
      *
      * @param string $tag
+     *
      * @return void
      */
     public function clearMediaTag($tag = null)
@@ -289,6 +299,7 @@ trait HasMedia
 
     /**
      * Delete media relationships when the model is deleted. Ignore on soft deletes.
+     *
      * @return void
      */
     protected function handleHasMediaDeletion()
@@ -302,7 +313,9 @@ trait HasMedia
 
     /**
      * Convert the given array to a filter closure.
+     *
      * @param $filters
+     *
      * @return \Closure
      */
     protected function buildMediaPropertiesFilter(array $filters)
@@ -324,6 +337,7 @@ trait HasMedia
      * Get all of the IDs from the given mixed value.
      *
      * @param mixed $value
+     *
      * @return array
      */
     protected function parseIds($value)

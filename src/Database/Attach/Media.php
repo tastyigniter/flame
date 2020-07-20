@@ -72,8 +72,10 @@ class Media extends Model
 
     /**
      * Creates a file object from a file an uploaded file.
+     *
      * @param \Symfony\Component\HttpFoundation\File\UploadedFile $uploadedFile
      * @param null $tag
+     *
      * @return self
      */
     public function addFromRequest(UploadedFile $uploadedFile, $tag = null)
@@ -88,8 +90,10 @@ class Media extends Model
 
     /**
      * Creates a file object from a file on the disk.
+     *
      * @param $filePath
      * @param null $tag
+     *
      * @return self|void
      */
     public function addFromFile($filePath, $tag = null)
@@ -110,8 +114,8 @@ class Media extends Model
      *
      * @param $rawData string Raw data
      * @param $filename string Filename
-     *
      * @param null $tag
+     *
      * @return $this|void
      */
     public function addFromRaw($rawData, $filename, $tag = null)
@@ -130,11 +134,14 @@ class Media extends Model
 
     /**
      * Creates a file object from url
+     *
      * @param $url string URL
      * @param $filename string Filename
      * @param null $tag
-     * @return $this
+     *
      * @throws \Exception
+     *
+     * @return $this
      */
     public function addFromUrl($url, $filename = null, $tag = null)
     {
@@ -202,6 +209,7 @@ class Media extends Model
 
     /**
      * Helper attribute for get image width.
+     *
      * @return string
      */
     public function getWidthAttribute()
@@ -215,6 +223,7 @@ class Media extends Model
 
     /**
      * Helper attribute for get image height.
+     *
      * @return string
      */
     public function getHeightAttribute()
@@ -253,6 +262,7 @@ class Media extends Model
 
     /**
      * Returns the last modification date as a UNIX timestamp.
+     *
      * @return int
      */
     public function getLastModified($fileName = null)
@@ -282,6 +292,7 @@ class Media extends Model
 
     /**
      * Returns the path to the file, relative to the storage disk.
+     *
      * @return string
      */
     public function getDiskPath()
@@ -302,6 +313,7 @@ class Media extends Model
 
     /**
      * Returns the file size as string.
+     *
      * @return string Returns the size as string.
      */
     public function sizeToString()
@@ -382,7 +394,9 @@ class Media extends Model
 
     /**
      * Delete file contents from storage device.
+     *
      * @param null $fileName
+     *
      * @return void
      */
     protected function deleteFile($fileName = null)
@@ -404,7 +418,9 @@ class Media extends Model
     /**
      * Checks if directory is empty then deletes it,
      * three levels up to match the partition directory.
+     *
      * @param string $directory
+     *
      * @return void
      */
     protected function deleteEmptyDirectory($directory = null)
@@ -429,7 +445,9 @@ class Media extends Model
 
     /**
      * Returns true if a directory contains no files.
+     *
      * @param $directory
+     *
      * @return bool|null
      */
     protected function isDirectoryEmpty($directory)
@@ -441,7 +459,9 @@ class Media extends Model
 
     /**
      * Check file exists on storage device.
+     *
      * @param string $fileName
+     *
      * @return bool
      */
     protected function hasFile($fileName = null)
@@ -465,9 +485,11 @@ class Media extends Model
 
     /**
      * Generates and returns a thumbnail url.
+     *
      * @param int $width
      * @param int $height
      * @param array $options
+     *
      * @return string
      */
     public function getThumb($options = [])
@@ -501,6 +523,7 @@ class Media extends Model
 
     /**
      * Get image dimensions
+     *
      * @return array|bool
      */
     protected function getImageDimensions()
@@ -510,9 +533,11 @@ class Media extends Model
 
     /**
      * Generates a thumbnail filename.
+     *
      * @param int $width
      * @param int $height
      * @param array $options
+     *
      * @return string
      */
     protected function getThumbFilename($options)
@@ -526,7 +551,9 @@ class Media extends Model
 
     /**
      * Returns the default thumbnail options.
+     *
      * @param array $override
+     *
      * @return array
      */
     protected function getDefaultThumbOptions($override = [])
@@ -553,6 +580,7 @@ class Media extends Model
 
     /**
      * Generate the thumbnail
+     *
      * @param $thumbFile
      * @param array $options
      */
@@ -683,6 +711,7 @@ class Media extends Model
 
     /**
      * Generates a partition for the file.
+     *
      * @return mixed
      */
     public function getPartitionDirectory()
@@ -691,8 +720,9 @@ class Media extends Model
     }
 
     /**
-     * @return \Illuminate\Filesystem\FilesystemAdapter
      * @throws \Exception
+     *
+     * @return \Illuminate\Filesystem\FilesystemAdapter
      */
     protected function getStorageDisk()
     {

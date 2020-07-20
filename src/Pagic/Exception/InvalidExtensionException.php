@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Pagic\Exception;
+<?php
+
+namespace Igniter\Flame\Pagic\Exception;
 
 use RuntimeException;
 
@@ -22,6 +24,7 @@ class InvalidExtensionException extends RuntimeException
      * Set the affected file extension.
      *
      * @param  string $invalidExtension
+     *
      * @return $this
      */
     public function setInvalidExtension($invalidExtension)
@@ -47,6 +50,7 @@ class InvalidExtensionException extends RuntimeException
      * Set the list of allowed extensions.
      *
      * @param  array $allowedExtensions
+     *
      * @return $this
      */
     public function setAllowedExtensions(array $allowedExtensions)

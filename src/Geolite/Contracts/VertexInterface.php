@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Geolite\Contracts;
+<?php
+
+namespace Igniter\Flame\Geolite\Contracts;
 
 interface VertexInterface
 {
@@ -37,14 +39,14 @@ interface VertexInterface
     /**
      * Get the gradient (slope) of the vertex.
      *
-     * @return integer
+     * @return int
      */
     public function getGradient();
 
     /**
      * Get the ordinate (longitude) of the point where vertex intersects with the ordinate-axis (Prime-Meridian) of the coordinate system.
      *
-     * @return integer
+     * @return int
      */
     public function getOrdinateIntercept();
 }

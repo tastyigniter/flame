@@ -101,7 +101,9 @@ class User extends Model implements Authenticatable
 
     /**
      * Checks the given remember token.
+     *
      * @param string $token
+     *
      * @return bool
      */
     public function checkRememberToken($token)
@@ -131,7 +133,7 @@ class User extends Model implements Authenticatable
         $hashedPassword = $this->attributes['password'];
         $shaPassword = sha1($salt.sha1($salt.sha1($plainPassword)));
 
-        return ($hashedPassword === $shaPassword);
+        return $hashedPassword === $shaPassword;
     }
 
     public function updateHashPassword($hashedPassword)
@@ -148,6 +150,7 @@ class User extends Model implements Authenticatable
 
     /**
      * Generate a unique hash for this order.
+     *
      * @return string
      */
     protected function generateResetCode()
@@ -176,8 +179,9 @@ class User extends Model implements Authenticatable
      * @param $code
      * @param $password
      *
-     * @return bool
      * @throws \Exception
+     *
+     * @return bool
      */
     public function completeResetPassword($code, $password)
     {
@@ -236,7 +240,9 @@ class User extends Model implements Authenticatable
 
     /**
      * Attempts to activate the given user by checking the activate code. If the user is activated already, an Exception is thrown.
+     *
      * @param string $activationCode
+     *
      * @return bool
      */
     public function completeActivation($activationCode)

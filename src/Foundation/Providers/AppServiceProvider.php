@@ -21,6 +21,7 @@ abstract class AppServiceProvider extends ServiceProvider
 
     /**
      * Boot the service provider.
+     *
      * @return void
      */
     public function boot()
@@ -35,6 +36,7 @@ abstract class AppServiceProvider extends ServiceProvider
 
     /**
      * Register the service provider.
+     *
      * @return void
      */
     public function register()
@@ -73,6 +75,7 @@ abstract class AppServiceProvider extends ServiceProvider
 
     /**
      * Get the services provided by the provider.
+     *
      * @return array
      */
     public function provides()

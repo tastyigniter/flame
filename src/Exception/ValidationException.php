@@ -18,6 +18,7 @@ class ValidationException extends \October\Rain\Exception\ValidationException
      *
      * @param \Illuminate\Contracts\Validation\Validator $validator
      * @param \Illuminate\Database\Eloquent\Model $model
+     *
      * @return void
      */
     public function __construct($validator, Model $model = null)

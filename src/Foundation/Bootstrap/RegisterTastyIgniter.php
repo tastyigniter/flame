@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Foundation\Bootstrap;
+<?php
+
+namespace Igniter\Flame\Foundation\Bootstrap;
 
 use Illuminate\Contracts\Foundation\Application;
 

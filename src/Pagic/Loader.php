@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Pagic;
+<?php
+
+namespace Igniter\Flame\Pagic;
 
 use App;
 use Exception;
@@ -54,9 +56,9 @@ class Loader implements TemplateLoader
      *
      * @param string $name The name of the template to load
      *
-     * @return string The template source code
-     *
      * @throws Exception When $name is not found
+     *
+     * @return string The template source code
      */
     public function getMarkup($name)
     {

@@ -35,7 +35,8 @@ class AdminLevelCollection extends Collection
         if ($level <= 0 || $level > self::MAX_LEVEL_DEPTH) {
             throw new GeoliteException(sprintf(
                 'Administrative level should be an integer in [1,%d], %d given',
-                self::MAX_LEVEL_DEPTH, $level
+                self::MAX_LEVEL_DEPTH,
+                $level
             ));
         }
     }
@@ -49,7 +50,8 @@ class AdminLevelCollection extends Collection
 
             if ($this->has($level)) {
                 throw new InvalidArgumentException(sprintf(
-                    'Administrative level %d is defined twice', $level
+                    'Administrative level %d is defined twice',
+                    $level
                 ));
             }
 

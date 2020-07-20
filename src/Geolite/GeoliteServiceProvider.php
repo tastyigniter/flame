@@ -22,7 +22,8 @@ class GeoliteServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__.'/config/geocoder.php', 'geocoder'
+            __DIR__.'/config/geocoder.php',
+            'geocoder'
         );
 
         $this->app->singleton('geocoder', function ($app) {
@@ -40,13 +41,14 @@ class GeoliteServiceProvider extends ServiceProvider
 
     /**
      * Get the services provided by the provider.
+     *
      * @return array
      */
     public function provides()
     {
         return [
             'geocoder', Geocoder::class,
-            'geolite', Geolite::class
+            'geolite', Geolite::class,
         ];
     }
 }

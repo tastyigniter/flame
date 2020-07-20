@@ -46,7 +46,7 @@ class AssetCollectionFilterIterator extends \RecursiveFilterIterator
      * De-duplication is performed based on either strict equality or by
      * matching sources.
      *
-     * @return Boolean Returns true if we have not seen this asset yet
+     * @return bool Returns true if we have not seen this asset yet
      */
     public function accept()
     {

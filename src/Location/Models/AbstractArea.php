@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Location\Models;
+<?php
+
+namespace Igniter\Flame\Location\Models;
 
 use Geocoder;
 use Igniter\Flame\Database\Model;
@@ -112,13 +114,15 @@ abstract class AbstractArea extends Model implements AreaInterface
         if (!$coordinate instanceof CoordinatesInterface) {
             throw new InvalidArgumentException(sprintf(
                 'Invalid class "%s" given, expected: %s',
-                get_class($coordinate), CoordinatesInterface::class
+                get_class($coordinate),
+                CoordinatesInterface::class
             ));
         }
 
         if ($this->isAddressBoundary()) {
             $position = Geocoder::reverse(
-                $coordinate->getLatitude(), $coordinate->getLongitude()
+                $coordinate->getLatitude(),
+                $coordinate->getLongitude()
             )->first();
 
             return $this->matchAddressComponents($position);

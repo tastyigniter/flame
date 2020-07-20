@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Setting\Middleware;
+<?php
+
+namespace Igniter\Flame\Setting\Middleware;
 
 use Closure;
 

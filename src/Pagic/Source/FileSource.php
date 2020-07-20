@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Pagic\Source;
+<?php
+
+namespace Igniter\Flame\Pagic\Source;
 
 use Exception;
 use Igniter\Flame\Filesystem\Filesystem;
@@ -16,12 +18,14 @@ class FileSource extends AbstractSource implements SourceInterface
 {
     /**
      * The local path where the source can be found.
+     *
      * @var string
      */
     protected $basePath;
 
     /**
      * The filesystem instance.
+     *
      * @var \Igniter\Flame\Filesystem\Filesystem
      */
     protected $files;
@@ -78,8 +82,9 @@ class FileSource extends AbstractSource implements SourceInterface
      * @param  string $dirName
      * @param array $options
      *
-     * @return array
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     *
+     * @return array
      */
     public function selectAll($dirName, array $options = [])
     {
@@ -321,6 +326,7 @@ class FileSource extends AbstractSource implements SourceInterface
 
     /**
      * Returns the base path for this source.
+     *
      * @return string
      */
     public function getBasePath()

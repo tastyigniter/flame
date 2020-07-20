@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Foundation\Providers;
+<?php
+
+namespace Igniter\Flame\Foundation\Providers;
 
 use Illuminate\Log\LogServiceProvider as BaseLogServiceProvider;
 use Psr\Log\LoggerInterface;
@@ -30,7 +32,8 @@ class LogServiceProvider extends BaseLogServiceProvider
     protected function configureDailyHandler(LoggerInterface $log)
     {
         $log->useDailyFiles(
-            $this->app->storagePath().'/logs/system.log', $this->maxFiles(),
+            $this->app->storagePath().'/logs/system.log',
+            $this->maxFiles(),
             $this->logLevel()
         );
     }

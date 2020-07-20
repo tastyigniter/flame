@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Foundation\Providers;
+<?php
+
+namespace Igniter\Flame\Foundation\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as BaseEventServiceProvider;
 
@@ -10,8 +12,8 @@ class EventServiceProvider extends BaseEventServiceProvider
      * @var array
      */
     protected $listen = [
-//        'App\Events\Event' => [
-//            'App\Listeners\EventListener',
-//        ],
+        //        'App\Events\Event' => [
+        //            'App\Listeners\EventListener',
+        //        ],
     ];
 }

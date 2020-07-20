@@ -8,6 +8,7 @@ class FlashBag
 
     /**
      * The session store.
+     *
      * @var FlashStore
      */
     protected $store;
@@ -193,6 +194,7 @@ class FlashBag
 
     /**
      * Add a "now" flash to the store.
+     *
      * @return $this
      */
     public function now()
@@ -202,6 +204,7 @@ class FlashBag
 
     /**
      * Add an "important" flash to the store.
+     *
      * @return $this
      */
     public function important()
@@ -211,6 +214,7 @@ class FlashBag
 
     /**
      * Clear all registered messages.
+     *
      * @return $this
      */
     public function clear()
@@ -232,4 +236,3 @@ class FlashBag
         return $this;
     }
 }
-

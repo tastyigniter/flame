@@ -12,12 +12,14 @@ class DatabaseSettingStore extends SettingStore
 {
     /**
      * The database connection instance.
+     *
      * @var \Illuminate\Database\DatabaseManager
      */
     protected $db;
 
     /**
      * The cache instance.
+     *
      * @var \Illuminate\Cache\Repository
      */
     protected $cache;
@@ -26,30 +28,35 @@ class DatabaseSettingStore extends SettingStore
 
     /**
      * The table to query from.
+     *
      * @var string
      */
     protected $table = 'settings';
 
     /**
      * The key column name to query from.
+     *
      * @var string
      */
     protected $keyColumn = 'item';
 
     /**
      * The value column name to query from.
+     *
      * @var string
      */
     protected $valueColumn = 'value';
 
     /**
      * Any query constraints that should be applied.
+     *
      * @var \Closure|null
      */
     protected $queryConstraint;
 
     /**
      * Any extra columns that should be added to the rows.
+     *
      * @var array
      */
     protected $extraColumns = [];

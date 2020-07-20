@@ -17,7 +17,8 @@ class CurrencyServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__.'/config/currency.php', 'currency'
+            __DIR__.'/config/currency.php',
+            'currency'
         );
 
         $this->registerMiddlewareAlias();
@@ -31,7 +32,8 @@ class CurrencyServiceProvider extends ServiceProvider
     protected function registerMiddlewareAlias()
     {
         $this->app[\Illuminate\Routing\Router::class]->aliasMiddleware(
-            'currency', CurrencyMiddleware::class
+            'currency',
+            CurrencyMiddleware::class
         );
     }
 

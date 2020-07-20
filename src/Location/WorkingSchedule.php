@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Location;
+<?php
+
+namespace Igniter\Flame\Location;
 
 use Carbon\Carbon;
 use DateInterval;
@@ -51,6 +53,7 @@ class WorkingSchedule
      * @param $days
      * @param $periods
      * @param array $exceptions
+     *
      * @return self
      *
      * $periods = [
@@ -119,8 +122,10 @@ class WorkingSchedule
 
     /**
      * @param string $day
-     * @return \Igniter\Flame\Location\WorkingPeriod
+     *
      * @throws \Igniter\Flame\Location\Exceptions\WorkingHourException
+     *
+     * @return \Igniter\Flame\Location\WorkingPeriod
      */
     public function forDay(string $day): WorkingPeriod
     {
@@ -131,6 +136,7 @@ class WorkingSchedule
 
     /**
      * @param \DateTimeInterface $date
+     *
      * @return \Igniter\Flame\Location\WorkingPeriod
      */
     public function forDate(DateTimeInterface $date): WorkingPeriod
@@ -213,6 +219,7 @@ class WorkingSchedule
      * Returns the next closed time.
      *
      * @param \DateTimeInterface $dateTime
+     *
      * @return \DateTimeInterface
      */
     public function nextCloseAt(DateTimeInterface $dateTime)
@@ -247,6 +254,7 @@ class WorkingSchedule
 
     /**
      * @param DateTime|null $dateTime
+     *
      * @return WorkingPeriod
      */
     public function getPeriod($dateTime = null)
@@ -298,8 +306,10 @@ class WorkingSchedule
      * @param int $interval
      * @param \DateTime|null $dateTime
      * @param int $leadTime
-     * @return Collection
+     *
      * @throws \Exception
+     *
+     * @return Collection
      */
     public function getTimeslot(int $interval = 15, DateTime $dateTime = null, int $leadTime = 25)
     {
@@ -378,7 +388,8 @@ class WorkingSchedule
             elseif (is_array($period)) {
                 $day = WorkingDay::normalizeName($day);
                 $parsedPeriods[$day] = array_merge(
-                    $parsedPeriods[$day] ?? [], $period
+                    $parsedPeriods[$day] ?? [],
+                    $period
                 );
             }
         }

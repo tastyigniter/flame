@@ -36,26 +36,31 @@ class AddressMatch
         switch ($type) {
             case 'street':
                 return $this->evalComponentValue(
-                    $value, $position->getStreetName()
+                    $value,
+                    $position->getStreetName()
                 );
             case 'sub_locality':
                 return $this->evalComponentValue(
-                    $value, $position->getSubLocality()
+                    $value,
+                    $position->getSubLocality()
                 );
             case 'locality':
                 return $this->evalComponentValue(
-                    $value, $position->getLocality()
+                    $value,
+                    $position->getLocality()
                 );
             case 'admin_level_2':
             case 'admin_level_1':
                 $adminLevel = $position->getAdminLevels()->get((int)substr($type, -1));
 
                 return $this->evalComponentValue(
-                    $value, $adminLevel ? $adminLevel->getName() : null
+                    $value,
+                    $adminLevel ? $adminLevel->getName() : null
                 );
             case 'postal_code':
                 return $this->evalComponentValue(
-                    $value, $position->getPostalCode()
+                    $value,
+                    $position->getPostalCode()
                 );
         }
     }

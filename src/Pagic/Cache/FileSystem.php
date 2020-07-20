@@ -46,14 +46,11 @@ class FileSystem
         $dir = dirname($path);
         if (!File::isDirectory($dir) AND !File::makeDirectory($dir, 0777, TRUE))
             throw new RuntimeException(sprintf('Unable to create the cache directory (%s).', $dir));
-
         $tmpFile = tempnam($dir, basename($path));
         if (@file_put_contents($tmpFile, $content) === FALSE)
             throw new RuntimeException(sprintf('Failed to write cache file "%s".', $tmpFile));
-
         if (!@rename($tmpFile, $path))
             throw new RuntimeException(sprintf('Failed to write cache file "%s".', $path));
-
         File::chmod($path);
 
         // Compile cached file into bytecode cache

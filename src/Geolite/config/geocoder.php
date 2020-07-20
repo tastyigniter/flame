@@ -34,7 +34,7 @@ return [
             ],
             'locale' => 'en-GB',
             'region' => 'GB',
-            'apiKey' => null
+            'apiKey' => null,
         ],
         'nominatim' => [
             'endpoints' => [

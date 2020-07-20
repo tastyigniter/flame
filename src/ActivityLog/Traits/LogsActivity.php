@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\ActivityLog\Traits;
+<?php
+
+namespace Igniter\Flame\ActivityLog\Traits;
 
 traceLog('LogsActivity traits has been Deprecated. Use activity()->logActivity() instead');
 
@@ -31,7 +33,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * You can log only the changed attributes :
  *   protected static $logOnlyDirty = true;
- *
  */
 trait LogsActivity
 {

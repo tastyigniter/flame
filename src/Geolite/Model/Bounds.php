@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Geolite\Model;
+<?php
+
+namespace Igniter\Flame\Geolite\Model;
 
 use Igniter\Flame\Geolite\Contracts;
 use Igniter\Flame\Geolite\Polygon;
@@ -26,7 +28,7 @@ class Bounds implements Contracts\BoundsInterface
     protected $east;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $precision = 8;
 
@@ -59,6 +61,7 @@ class Bounds implements Contracts\BoundsInterface
 
     /**
      * @param  float $north
+     *
      * @return $this
      */
     public function setNorth($north)
@@ -70,6 +73,7 @@ class Bounds implements Contracts\BoundsInterface
 
     /**
      * @param  float $east
+     *
      * @return $this
      */
     public function setEast($east)
@@ -81,6 +85,7 @@ class Bounds implements Contracts\BoundsInterface
 
     /**
      * @param  float $south
+     *
      * @return $this
      */
     public function setSouth($south)
@@ -92,6 +97,7 @@ class Bounds implements Contracts\BoundsInterface
 
     /**
      * @param  float $west
+     *
      * @return $this
      */
     public function setWest($west)
@@ -142,7 +148,7 @@ class Bounds implements Contracts\BoundsInterface
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getPrecision()
     {
@@ -150,7 +156,8 @@ class Bounds implements Contracts\BoundsInterface
     }
 
     /**
-     * @param  integer $precision
+     * @param  int $precision
+     *
      * @return $this
      */
     public function setPrecision($precision)
@@ -162,6 +169,7 @@ class Bounds implements Contracts\BoundsInterface
 
     /**
      * @param  Contracts\CoordinatesInterface $coordinate
+     *
      * @return bool
      */
     public function pointInBounds(Contracts\CoordinatesInterface $coordinate)
@@ -185,7 +193,7 @@ class Bounds implements Contracts\BoundsInterface
                 new Coordinates($this->north, $this->east),
                 new Coordinates($this->south, $this->east),
                 new Coordinates($this->south, $this->west),
-                $northWest
+                $northWest,
             ])
         );
     }
@@ -199,6 +207,7 @@ class Bounds implements Contracts\BoundsInterface
 
     /**
      * @param  Contracts\BoundsInterface $bounds
+     *
      * @return Contracts\BoundsInterface
      */
     public function merge(Contracts\BoundsInterface $bounds)

@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Pagic\Exception;
+<?php
+
+namespace Igniter\Flame\Pagic\Exception;
 
 use RuntimeException;
 
@@ -15,6 +17,7 @@ class DeleteFileException extends RuntimeException
      * Set the affected file path.
      *
      * @param $path
+     *
      * @return $this
      */
     public function setInvalidPath($path)

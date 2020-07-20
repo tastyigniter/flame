@@ -27,6 +27,7 @@ class Factory extends \Illuminate\Validation\Factory
      * @param array $rules
      * @param array $messages
      * @param array $customAttributes
+     *
      * @return \Igniter\Flame\Validation\Validator
      */
     protected function resolve(array $data, array $rules, array $messages, array $customAttributes)

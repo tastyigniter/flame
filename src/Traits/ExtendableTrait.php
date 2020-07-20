@@ -14,9 +14,8 @@ use SystemException;
  * Allows for "Private traits"
  *
  * Adapted from the October ExtendableTrait
- * @link https://github.com/octobercms/library/tree/master/src/Extension/ExtendableTrait.php
  *
- * @package Igniter\Traits
+ * @link https://github.com/octobercms/library/tree/master/src/Extension/ExtendableTrait.php
  */
 trait ExtendableTrait
 {
@@ -112,6 +111,7 @@ trait ExtendableTrait
 
     /**
      * Clear the list of extended classes so they will be re-extended.
+     *
      * @return void
      */
     public static function clearExtendedClasses()
@@ -124,8 +124,9 @@ trait ExtendableTrait
      *
      * @param string $extensionName
      *
-     * @return void|self
      * @throws \SystemException
+     *
+     * @return void|self
      */
     public function extendClassWith($extensionName)
     {
@@ -221,7 +222,7 @@ trait ExtendableTrait
      *
      * @param string $name Fully qualified behavior name
      *
-     * @return boolean
+     * @return bool
      */
     public function isClassExtendedWith($name)
     {
@@ -275,19 +276,19 @@ trait ExtendableTrait
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function methodExists($name)
     {
-        return (
+        return
             method_exists($this, $name) ||
             isset($this->extensionData['methods'][$name]) ||
-            isset($this->extensionData['dynamicMethods'][$name])
-        );
+            isset($this->extensionData['dynamicMethods'][$name]);
     }
 
     /**
      * Get a list of class methods, extension equivalent of get_class_methods()
+     *
      * @return array
      */
     public function getClassMethods()
@@ -301,6 +302,7 @@ trait ExtendableTrait
 
     /**
      * Returns all dynamic properties and their values
+     *
      * @return array ['property' => 'value']
      */
     public function getDynamicProperties()
@@ -319,7 +321,7 @@ trait ExtendableTrait
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function propertyExists($name)
     {
@@ -345,7 +347,7 @@ trait ExtendableTrait
      * @param mixed $class
      * @param string $propertyName
      *
-     * @return boolean
+     * @return bool
      */
     protected function extendableIsAccessible($class, $propertyName)
     {

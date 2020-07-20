@@ -19,14 +19,17 @@ trait HasPermalink
 {
     /**
      * Boot the sortable trait for this model.
-     * @return void
+     *
      * @throws \Exception
+     *
+     * @return void
      */
     public static function bootHasPermalink()
     {
         if (!property_exists(get_called_class(), 'permalinkable')) {
             throw new Exception(sprintf(
-                'You must define a $permalinkable property in %s to use the HasPermalink trait.', get_called_class()
+                'You must define a $permalinkable property in %s to use the HasPermalink trait.',
+                get_called_class()
             ));
         }
 
@@ -45,6 +48,7 @@ trait HasPermalink
 
     /**
      * Primary slug column of this model.
+     *
      * @return string
      */
     public function getSlugKeyName()
@@ -67,6 +71,7 @@ trait HasPermalink
 
     /**
      * Primary slug value of this model.
+     *
      * @return string
      */
     public function getSlugKey()

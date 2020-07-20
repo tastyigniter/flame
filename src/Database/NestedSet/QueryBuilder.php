@@ -16,9 +16,9 @@ class QueryBuilder extends QueryBuilderBase
      * @param  string $pageName
      * @param  int|null $page
      *
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function paginate($perPage = null, $page = null, $columns = ['*'], $pageName = 'page')
     {

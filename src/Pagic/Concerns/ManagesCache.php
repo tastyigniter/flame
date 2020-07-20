@@ -6,17 +6,19 @@ trait ManagesCache
 {
     /**
      * The cache manager instance.
+     *
      * @var \Illuminate\Cache\CacheManager
      */
     protected static $cache;
 
     /**
-     * @var boolean Indicated whether the object was loaded from the cache.
+     * @var bool Indicated whether the object was loaded from the cache.
      */
     protected $loadedFromCache = FALSE;
 
     /**
      * Get the cache manager instance.
+     *
      * @return \Illuminate\Cache\CacheManager
      */
     public static function getCacheManager()
@@ -38,6 +40,7 @@ trait ManagesCache
 
     /**
      * Unset the cache manager for models.
+     *
      * @return void
      */
     public static function unsetCacheManager()
@@ -57,7 +60,8 @@ trait ManagesCache
 
     /**
      * Returns true if the object was loaded from the cache.
-     * @return boolean
+     *
+     * @return bool
      */
     public function isLoadedFromCache()
     {

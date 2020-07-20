@@ -53,7 +53,7 @@ abstract class CssUtils
     {
         $pattern = static::REGEX_URLS;
 
-        return static::filterCommentless($content, function ($part) use (& $callback, $pattern) {
+        return static::filterCommentless($content, function ($part) use (&$callback, $pattern) {
             return preg_replace_callback($pattern, $callback, $part);
         });
     }
@@ -63,7 +63,7 @@ abstract class CssUtils
      *
      * @param string $content The CSS
      * @param callable $callback A PHP callable
-     * @param Boolean $includeUrl Whether to include url() in the pattern
+     * @param bool $includeUrl Whether to include url() in the pattern
      *
      * @return string The filtered CSS
      */
@@ -71,7 +71,7 @@ abstract class CssUtils
     {
         $pattern = $includeUrl ? static::REGEX_IMPORTS : static::REGEX_IMPORTS_NO_URLS;
 
-        return static::filterCommentless($content, function ($part) use (& $callback, $pattern) {
+        return static::filterCommentless($content, function ($part) use (&$callback, $pattern) {
             return preg_replace_callback($pattern, $callback, $part);
         });
     }
@@ -88,7 +88,7 @@ abstract class CssUtils
     {
         $pattern = static::REGEX_IE_FILTERS;
 
-        return static::filterCommentless($content, function ($part) use (& $callback, $pattern) {
+        return static::filterCommentless($content, function ($part) use (&$callback, $pattern) {
             return preg_replace_callback($pattern, $callback, $part);
         });
     }

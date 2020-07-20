@@ -21,6 +21,7 @@ trait ValidatesEmail
      * @param string $attribute
      * @param mixed $value
      * @param array $parameters
+     *
      * @return bool
      */
     public function validateEmail($attribute, $value, $parameters)
