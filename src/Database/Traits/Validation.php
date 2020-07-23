@@ -3,7 +3,7 @@
 namespace Igniter\Flame\Database\Traits;
 
 use Igniter\Flame\Exception\ValidationException;
-use Igniter\Flame\Support\Facades\Validator;
+use Illuminate\Support\Facades\Validator;
 use Watson\Validating\ValidatingTrait;
 
 trait Validation
