@@ -9,6 +9,8 @@ use Illuminate\Database\MigrationServiceProvider as BaseServiceProvider;
 
 class MigrationServiceProvider extends BaseServiceProvider
 {
+    protected $commands = [];
+
     /**
      * Override the Laravel repository service.
      *
