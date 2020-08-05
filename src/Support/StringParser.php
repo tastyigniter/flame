@@ -68,7 +68,7 @@ class StringParser
                 $temp = [];
                 foreach ($row as $key => $val) {
                     if (is_array($val)) {
-                        $pair = $this->parsePair($val, $key, $match[1]);
+                        $pair = $this->parsePair($key, $val, $match[1]);
                         if (!empty($pair)) {
                             $temp = array_merge($temp, $pair);
                         }
