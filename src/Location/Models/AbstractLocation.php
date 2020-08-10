@@ -106,22 +106,22 @@ class AbstractLocation extends Model implements LocationInterface
 
     public function getOrderTimeInterval($orderType)
     {
-        return (int)$this->getOption($orderType.'_time_interval') ?: 15;
+        return (int)$this->getOption($orderType.'_time_interval', 15);
     }
 
     public function getOrderLeadTime($orderType)
     {
-        return (int)$this->getOption($orderType.'_lead_time') ?: 15;
+        return (int)$this->getOption($orderType.'_lead_time', 15);
     }
 
     public function deliveryMinutes()
     {
-        return (int)$this->getOption('delivery_lead_time') ?: 15;
+        return (int)$this->getOption('delivery_lead_time', 15);
     }
 
     public function collectionMinutes()
     {
-        return (int)$this->getOption('collection_lead_time') ?: 15;
+        return (int)$this->getOption('collection_lead_time', 15);
     }
 
     public function hasDelivery()
