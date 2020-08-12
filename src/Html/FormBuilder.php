@@ -906,7 +906,7 @@ class FormBuilder
      */
     protected function missingOldAndModel($name)
     {
-        return (is_null($this->old($name)) && is_null($this->getModelValueAttribute($name)));
+        return is_null($this->old($name)) && is_null($this->getModelValueAttribute($name));
     }
 
     /**
@@ -1083,7 +1083,7 @@ class FormBuilder
      */
     protected function getAppendage($method)
     {
-        list($method, $appendage) = [strtoupper($method), ''];
+        [$method, $appendage] = [strtoupper($method), ''];
 
         // If the HTTP method is in this list of spoofed methods, we will attach the
         // method spoofer hidden input to the form. This allows us to use regular
@@ -1243,7 +1243,7 @@ class FormBuilder
      */
     public function oldInputIsEmpty()
     {
-        return (isset($this->session) && count($this->session->getOldInput()) == 0);
+        return isset($this->session) && count($this->session->getOldInput()) == 0;
     }
 
     /**

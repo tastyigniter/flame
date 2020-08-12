@@ -139,7 +139,7 @@ interface AssetInterface
     /**
      * Returns the time the current asset was last modified.
      *
-     * @return integer|null A UNIX timestamp
+     * @return int|null A UNIX timestamp
      */
     public function getLastModified();
 

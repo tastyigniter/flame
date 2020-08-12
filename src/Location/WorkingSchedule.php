@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Location;
+<?php
+
+namespace Igniter\Flame\Location;
 
 use Carbon\Carbon;
 use DateInterval;

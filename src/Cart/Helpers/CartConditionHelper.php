@@ -58,16 +58,16 @@ trait CartConditionHelper
             if ($this->actionIsInclusive($action)) {
                 $result = $total;
             }
-            else if ($this->valueIsToBeSubtracted($actionValue)) {
+            elseif ($this->valueIsToBeSubtracted($actionValue)) {
                 $result = ($total - $calculatedValue);
             }
-            else if ($this->valueIsToBeAdded($actionValue)) {
+            elseif ($this->valueIsToBeAdded($actionValue)) {
                 $result = ($total + $calculatedValue);
             }
-            else if ($this->valueIsToBeMultiplied($actionValue)) {
+            elseif ($this->valueIsToBeMultiplied($actionValue)) {
                 $result = ($total * $calculatedValue);
             }
-            else if ($this->valueIsToBeDivided($actionValue)) {
+            elseif ($this->valueIsToBeDivided($actionValue)) {
                 $result = (float)($total / $calculatedValue);
             }
 
@@ -176,7 +176,7 @@ trait CartConditionHelper
      */
     protected function valueIsPercentage($value)
     {
-        return (preg_match('/%/', $value) == 1);
+        return preg_match('/%/', $value) == 1;
     }
 
     /**
@@ -188,7 +188,7 @@ trait CartConditionHelper
      */
     protected function valueIsToBeSubtracted($value)
     {
-        return (preg_match('/\-/', $value) == 1);
+        return preg_match('/\-/', $value) == 1;
     }
 
     /**
@@ -200,7 +200,7 @@ trait CartConditionHelper
      */
     protected function valueIsToBeAdded($value)
     {
-        return (preg_match('/\+/', $value) == 1);
+        return preg_match('/\+/', $value) == 1;
     }
 
     /**
@@ -212,7 +212,7 @@ trait CartConditionHelper
      */
     protected function valueIsToBeMultiplied($value)
     {
-        return (preg_match('/\*/', $value) == 1);
+        return preg_match('/\*/', $value) == 1;
     }
 
     /**
@@ -224,7 +224,7 @@ trait CartConditionHelper
      */
     protected function valueIsToBeDivided($value)
     {
-        return (preg_match('/\\//', $value) == 1);
+        return preg_match('/\\//', $value) == 1;
     }
 
     //

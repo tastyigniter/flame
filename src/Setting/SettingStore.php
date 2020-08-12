@@ -14,13 +14,13 @@ abstract class SettingStore
 
     /**
      * Whether the store has changed since it was last loaded.
-     * @var boolean
+     * @var bool
      */
     protected $unsaved = FALSE;
 
     /**
      * Whether the settings data are loaded.
-     * @var boolean
+     * @var bool
      */
     protected $loaded = FALSE;
 
@@ -44,7 +44,7 @@ abstract class SettingStore
      *
      * @param  string $key
      *
-     * @return boolean
+     * @return bool
      */
     public function has($key)
     {

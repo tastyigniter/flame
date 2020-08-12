@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Location;
+<?php
+
+namespace Igniter\Flame\Location;
 
 use DateTimeInterface;
 use Igniter\Flame\Location\Exceptions\WorkingHourException;

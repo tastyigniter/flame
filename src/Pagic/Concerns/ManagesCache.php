@@ -11,7 +11,7 @@ trait ManagesCache
     protected static $cache;
 
     /**
-     * @var boolean Indicated whether the object was loaded from the cache.
+     * @var bool Indicated whether the object was loaded from the cache.
      */
     protected $loadedFromCache = FALSE;
 
@@ -57,7 +57,7 @@ trait ManagesCache
 
     /**
      * Returns true if the object was loaded from the cache.
-     * @return boolean
+     * @return bool
      */
     public function isLoadedFromCache()
     {

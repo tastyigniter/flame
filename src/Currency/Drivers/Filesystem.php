@@ -70,7 +70,7 @@ class Filesystem extends AbstractDriver
         // Get contents if file exists
         $contents = $this->filesystem->exists($path)
             ? $this->filesystem->get($path)
-            : "{}";
+            : '{}';
 
         return json_decode($contents, TRUE);
     }

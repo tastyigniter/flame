@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Events;
+<?php
+
+namespace Igniter\Flame\Events;
 
 use Illuminate\Contracts\Queue\Factory as QueueFactoryContract;
 use Illuminate\Support\ServiceProvider;

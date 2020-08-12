@@ -2,8 +2,6 @@
 
 namespace Igniter\Flame\Geolite;
 
-use Igniter\Flame\Geolite\Contracts;
-use Igniter\Flame\Geolite\Model;
 use InvalidArgumentException;
 
 class Circle implements Contracts\CircleInterface
@@ -28,7 +26,7 @@ class Circle implements Contracts\CircleInterface
     protected $unit;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $precision = 8;
 
@@ -41,8 +39,8 @@ class Circle implements Contracts\CircleInterface
         if ($coordinate instanceof Contracts\CoordinatesInterface) {
             $this->coordinate = $coordinate;
         }
-        else if (is_array($coordinate)) {
-            list($latitude, $longitude) = $coordinate;
+        elseif (is_array($coordinate)) {
+            [$latitude, $longitude] = $coordinate;
             $this->coordinate = new Model\Coordinates($latitude, $longitude);
         }
         else {
@@ -70,7 +68,7 @@ class Circle implements Contracts\CircleInterface
     /**
      * Returns the precision of the geometry.
      *
-     * @return integer
+     * @return int
      */
     public function getPrecision()
     {
@@ -78,7 +76,7 @@ class Circle implements Contracts\CircleInterface
     }
 
     /**
-     * @param  integer $precision
+     * @param  int $precision
      * @return $this
      */
     public function setPrecision($precision)
@@ -94,7 +92,7 @@ class Circle implements Contracts\CircleInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getCoordinates()
     {
@@ -102,7 +100,7 @@ class Circle implements Contracts\CircleInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setCoordinates(Model\CoordinatesCollection $coordinates)
     {
@@ -119,7 +117,7 @@ class Circle implements Contracts\CircleInterface
     /**
      * Returns true if the geometry is empty.
      *
-     * @return boolean
+     * @return bool
      */
     public function isEmpty()
     {
@@ -137,7 +135,7 @@ class Circle implements Contracts\CircleInterface
 
     /**
      * @param  Contracts\CoordinatesInterface $coordinate
-     * @return boolean
+     * @return bool
      */
     public function pointInRadius(Contracts\CoordinatesInterface $coordinate)
     {
@@ -148,7 +146,7 @@ class Circle implements Contracts\CircleInterface
 
         $radius = $distance->convertToUserUnit($this->getRadius());
 
-        return ($distance->haversine() <= $radius);
+        return $distance->haversine() <= $radius;
     }
 
     /**

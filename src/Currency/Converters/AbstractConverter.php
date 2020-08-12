@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Currency\Converters;
+<?php
+
+namespace Igniter\Flame\Currency\Converters;
 
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;

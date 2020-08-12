@@ -47,7 +47,7 @@ class Database extends AbstractDriver
             'format'          => '',
             'currency_rate'   => 1,
             'currency_status' => 0,
-//            'created_at' => $created,
+            //            'created_at' => $created,
             'date_modified'   => $created,
         ], $params);
 
@@ -77,7 +77,7 @@ class Database extends AbstractDriver
                                   'currency_rate'   => $item->currency_rate,
                                   'currency_status' => $item->currency_status,
                                   'date_modified'   => $item->date_modified,
-//                    'date_modified' => $item->date_modified,
+                                  //                    'date_modified' => $item->date_modified,
                               ];
                           })
                           ->all();

@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Pagic\Contracts;
+<?php
+
+namespace Igniter\Flame\Pagic\Contracts;
 
 interface TemplateSource
 {

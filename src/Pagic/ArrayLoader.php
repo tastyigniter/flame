@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Pagic;
+<?php
+
+namespace Igniter\Flame\Pagic;
 
 use Exception;
 

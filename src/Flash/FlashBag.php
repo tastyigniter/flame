@@ -232,4 +232,3 @@ class FlashBag
         return $this;
     }
 }
-

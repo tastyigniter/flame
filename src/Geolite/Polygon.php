@@ -1,8 +1,8 @@
-<?php namespace Igniter\Flame\Geolite;
+<?php
 
-use Igniter\Flame\Geolite\Contracts;
+namespace Igniter\Flame\Geolite;
+
 use Igniter\Flame\Geolite\Contracts\PolygonInterface;
-use Igniter\Flame\Geolite\Model;
 
 class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \ArrayAccess, \JsonSerializable
 {
@@ -19,12 +19,12 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
     protected $bounds;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $hasCoordinate = FALSE;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $precision = 8;
 
@@ -36,7 +36,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
         if ($coordinates instanceof Model\CoordinatesCollection) {
             $this->coordinates = $coordinates;
         }
-        else if (is_array($coordinates) OR is_null($coordinates)) {
+        elseif (is_array($coordinates) OR is_null($coordinates)) {
             $this->coordinates = new Model\CoordinatesCollection([]);
         }
         else {
@@ -66,7 +66,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getCoordinates()
     {
@@ -74,7 +74,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setCoordinates(Model\CoordinatesCollection $coordinates)
     {
@@ -85,7 +85,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getPrecision()
     {
@@ -93,7 +93,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
     }
 
     /**
-     * @param  integer $precision
+     * @param  int $precision
      * @return $this
      */
     public function setPrecision($precision)
@@ -146,7 +146,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
 
         foreach ($values as $index => $value) {
             if (!$value instanceof Contracts\CoordinatesInterface) {
-                list($latitude, $longitude) = $value;
+                [$latitude, $longitude] = $value;
                 $value = new Model\Coordinates($latitude, $longitude);
             }
 
@@ -176,7 +176,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
 
     /**
      * @param  Contracts\CoordinatesInterface $coordinate
-     * @return boolean
+     * @return bool
      */
     public function pointInPolygon(Contracts\CoordinatesInterface $coordinate)
     {
@@ -197,7 +197,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
 
     /**
      * @param  Contracts\CoordinatesInterface $coordinate
-     * @return boolean
+     * @return bool
      */
     public function pointOnBoundary(Contracts\CoordinatesInterface $coordinate)
     {
@@ -277,7 +277,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
 
     /**
      * @param  Contracts\CoordinatesInterface $coordinate
-     * @return boolean
+     * @return bool
      */
     public function pointOnVertex(Contracts\CoordinatesInterface $coordinate)
     {
@@ -358,7 +358,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
     //
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isEmpty()
     {
@@ -374,7 +374,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function jsonSerialize()
     {
@@ -382,7 +382,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function offsetExists($offset)
     {
@@ -390,7 +390,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function offsetGet($offset)
     {
@@ -398,7 +398,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function offsetSet($offset, $value)
     {
@@ -407,7 +407,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function offsetUnset($offset)
     {
@@ -418,7 +418,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function count()
     {
@@ -426,7 +426,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getIterator()
     {

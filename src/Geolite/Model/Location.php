@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Geolite\Model;
+<?php
+
+namespace Igniter\Flame\Geolite\Model;
 
 use Igniter\Flame\Geolite\Contracts;
 use Igniter\Flame\Geolite\Formatter\StringFormatter;
@@ -423,7 +425,7 @@ class Location implements Contracts\LocationInterface
         if (!$coordinates = $this->getCoordinates())
             return FALSE;
 
-        list($latitude, $longitude) = $coordinates->toArray();
+        [$latitude, $longitude] = $coordinates->toArray();
 
         return !empty($latitude) AND !empty($longitude);
     }

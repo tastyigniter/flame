@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\ActivityLog\Models;
+<?php
+
+namespace Igniter\Flame\ActivityLog\Models;
 
 use Carbon\Carbon;
 use Igniter\Flame\ActivityLog\ActivityLogger;
@@ -11,8 +13,6 @@ use ReflectionClass;
 
 /**
  * Activity Model Class
- *
- * @package        Igniter\Flame\ActivityLog\Models
  */
 class Activity extends Model
 {

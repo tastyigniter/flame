@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Geolite\Contracts;
+<?php
+
+namespace Igniter\Flame\Geolite\Contracts;
 
 interface PolygonInterface
 {
@@ -12,7 +14,7 @@ interface PolygonInterface
     /**
      * Returns the precision of the geometry.
      *
-     * @return integer
+     * @return int
      */
     public function getPrecision();
 
@@ -38,7 +40,7 @@ interface PolygonInterface
     /**
      * Returns true if the geometry is empty.
      *
-     * @return boolean
+     * @return bool
      */
     public function isEmpty();
 
@@ -51,19 +53,19 @@ interface PolygonInterface
 
     /**
      * @param \Igniter\Flame\Geolite\Contracts\CoordinatesInterface $coordinate
-     * @return boolean
+     * @return bool
      */
     public function pointInPolygon(CoordinatesInterface $coordinate);
 
     /**
      * @param \Igniter\Flame\Geolite\Contracts\CoordinatesInterface $coordinate
-     * @return boolean
+     * @return bool
      */
     public function pointOnBoundary(CoordinatesInterface $coordinate);
 
     /**
      * @param \Igniter\Flame\Geolite\Contracts\CoordinatesInterface $coordinate
-     * @return boolean
+     * @return bool
      */
     public function pointOnVertex(CoordinatesInterface $coordinate);
 }

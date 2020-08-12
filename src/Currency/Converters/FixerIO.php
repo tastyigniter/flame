@@ -17,7 +17,7 @@ class FixerIO extends AbstractConverter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function converterDetails()
     {
@@ -28,7 +28,7 @@ class FixerIO extends AbstractConverter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getExchangeRates($base, array $currencies)
     {

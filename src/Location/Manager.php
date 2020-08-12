@@ -4,13 +4,11 @@ namespace Igniter\Flame\Location;
 
 use Closure;
 use Igniter\Flame\Geolite\Contracts\CoordinatesInterface;
-use Igniter\Flame\Location\Contracts;
 use Igniter\Flame\Traits\EventEmitter;
 use Session;
 
 /**
  * Location Manager Class
- * @package        Igniter\Flame\Location\Manager.php
  */
 abstract class Manager
 {

@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\ActivityLog;
+<?php
+
+namespace Igniter\Flame\ActivityLog;
 
 use Event;
 use Igniter\Flame\ActivityLog\Contracts\ActivityInterface;

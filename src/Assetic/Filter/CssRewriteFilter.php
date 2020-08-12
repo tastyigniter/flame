@@ -36,8 +36,8 @@ class CssRewriteFilter extends BaseCssFilter
 
         // learn how to get from the target back to the source
         if (FALSE !== strpos($sourceBase, '://')) {
-            list($scheme, $url) = explode('://', $sourceBase.'/'.$sourcePath, 2);
-            list($host, $path) = explode('/', $url, 2);
+            [$scheme, $url] = explode('://', $sourceBase.'/'.$sourcePath, 2);
+            [$host, $path] = explode('/', $url, 2);
 
             $host = $scheme.'://'.$host.'/';
             $path = FALSE === strpos($path, '/') ? '' : dirname($path);

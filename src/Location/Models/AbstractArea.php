@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Location\Models;
+<?php
+
+namespace Igniter\Flame\Location\Models;
 
 use Geocoder;
 use Igniter\Flame\Database\Model;

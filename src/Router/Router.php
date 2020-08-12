@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Router;
+<?php
+
+namespace Igniter\Flame\Router;
 
 use October\Rain\Router\Router as OctoberRouter;
 

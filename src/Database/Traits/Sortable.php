@@ -25,7 +25,6 @@ use Exception;
  *      'sortOrderColumn' = 'priority',
  *      'sortWhenCreating' = FALSE,
  *  ];
- *
  */
 trait Sortable
 {

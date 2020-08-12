@@ -55,7 +55,7 @@ class CreateController extends GeneratorCommand
             return;
         }
 
-        list($author, $extension) = $code;
+        [$author, $extension] = $code;
         $controller = $this->argument('controller');
 
         $this->vars = [

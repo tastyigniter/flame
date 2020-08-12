@@ -28,7 +28,7 @@ class Converter extends Manager
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getDefaultDriver()
     {

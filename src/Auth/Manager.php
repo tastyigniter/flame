@@ -15,7 +15,6 @@ use Session;
  * Auth Manager Class
  * Adapted from Ion Auth.
  * @link https://github.com/benedmunds/CodeIgniter-Ion-Auth
- * @package        Igniter\Flame\Auth\Manager.php
  */
 class Manager
 {

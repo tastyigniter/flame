@@ -19,7 +19,7 @@ class Update extends Command
      * @var string
      */
     protected $description = 'Update exchange rates from an online source';
-    
+
     /**
      * Execute the console command.
      *

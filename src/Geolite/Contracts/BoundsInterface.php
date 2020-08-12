@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Geolite\Contracts;
+<?php
+
+namespace Igniter\Flame\Geolite\Contracts;
 
 interface BoundsInterface
 {

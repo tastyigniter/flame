@@ -38,7 +38,7 @@ class Builder extends BuilderBase
         $query->where($this->model->getKeyName(), '=', $id);
 
         $data = $query->first([$this->model->getLftName(),
-            $this->model->getRgtName()]);
+            $this->model->getRgtName(), ]);
 
         if (!$data && $required) {
             throw new ModelNotFoundException;
@@ -101,7 +101,7 @@ class Builder extends BuilderBase
             $valueQuery = $this->model
                 ->newQuery()
                 ->toBase()
-                ->select("_.".$this->model->getRgtName())
+                ->select('_.'.$this->model->getRgtName())
                 ->from($this->model->getTable().' as _')
                 ->where($keyName, '=', $id)
                 ->limit(1);
@@ -112,7 +112,7 @@ class Builder extends BuilderBase
         }
 
         $this->query->whereNested(function ($inner) use ($value, $andSelf, $id) {
-            list($lft, $rgt) = $this->wrappedColumns();
+            [$lft, $rgt] = $this->wrappedColumns();
 
             $inner->whereRaw("{$value} between {$lft} and {$rgt}");
 
@@ -229,7 +229,7 @@ class Builder extends BuilderBase
 
         // Don't include the node
         if (!$andSelf) {
-            ++$data[0];
+            $data[0]++;
         }
 
         return $this->whereNodeBetween($data, $boolean, $not);
@@ -335,7 +335,7 @@ class Builder extends BuilderBase
             $value = '('.$valueQuery->toSql().')';
         }
 
-        list($lft,) = $this->wrappedColumns();
+        [$lft,] = $this->wrappedColumns();
 
         $this->query->whereRaw("{$lft} {$operator} {$value}", [], $boolean);
 
@@ -377,7 +377,7 @@ class Builder extends BuilderBase
      */
     public function whereIsLeaf()
     {
-        list($lft, $rgt) = $this->wrappedColumns();
+        [$lft, $rgt] = $this->wrappedColumns();
 
         return $this->whereRaw("$lft = $rgt - 1");
     }
@@ -405,7 +405,7 @@ class Builder extends BuilderBase
 
         $table = $this->wrappedTable();
 
-        list($lft, $rgt) = $this->wrappedColumns();
+        [$lft, $rgt] = $this->wrappedColumns();
 
         $alias = '_d';
         $wrappedAlias = $this->query->getGrammar()->wrapTable($alias);
@@ -500,7 +500,7 @@ class Builder extends BuilderBase
      */
     public function hasChildren()
     {
-        list($lft, $rgt) = $this->wrappedColumns();
+        [$lft, $rgt] = $this->wrappedColumns();
 
         $this->query->whereRaw("{$rgt} > {$lft} + 1");
 
@@ -543,7 +543,7 @@ class Builder extends BuilderBase
      */
     public function moveNode($key, $position)
     {
-        list($lft, $rgt) = $this->model->newNestedSetQuery()
+        [$lft, $rgt] = $this->model->newNestedSetQuery()
                                        ->getPlainNodeData($key, TRUE);
 
         if ($lft < $position && $position <= $rgt) {
@@ -656,7 +656,7 @@ class Builder extends BuilderBase
         /** @var int $to */
         if ($distance > 0) $distance = '+'.$distance;
 
-        return new Expression("case ".
+        return new Expression('case '.
             "when {$col} between {$lft} and {$rgt} then {$col}{$distance} ". // Move the node
             "when {$col} between {$from} and {$to} then {$col}{$height} ". // Move other nodes
             "else {$col} end"
@@ -706,7 +706,7 @@ class Builder extends BuilderBase
             ->newNestedSetQuery()
             ->toBase()
             ->whereNested(function (BaseQueryBuilder $inner) {
-                list($lft, $rgt) = $this->wrappedColumns();
+                [$lft, $rgt] = $this->wrappedColumns();
 
                 $inner->whereRaw("{$lft} >= {$rgt}")
                       ->orWhereRaw("({$rgt} - {$lft}) % 2 = 0");
@@ -732,7 +732,7 @@ class Builder extends BuilderBase
             ->from($this->query->raw("{$table} as {$waFirst}, {$table} {$waSecond}"))
             ->whereRaw("{$waFirst}.id < {$waSecond}.id")
             ->whereNested(function (BaseQueryBuilder $inner) use ($waFirst, $waSecond) {
-                list($lft, $rgt) = $this->wrappedColumns();
+                [$lft, $rgt] = $this->wrappedColumns();
 
                 $inner->orWhereRaw("{$waFirst}.{$lft}={$waSecond}.{$lft}")
                       ->orWhereRaw("{$waFirst}.{$rgt}={$waSecond}.{$rgt}")
@@ -771,7 +771,7 @@ class Builder extends BuilderBase
             ->whereRaw("{$waInterm}.{$keyName} <> {$waParent}.{$keyName}")
             ->whereRaw("{$waInterm}.{$keyName} <> {$waChild}.{$keyName}")
             ->whereNested(function (BaseQueryBuilder $inner) use ($waInterm, $waChild, $waParent) {
-                list($lft, $rgt) = $this->wrappedColumns();
+                [$lft, $rgt] = $this->wrappedColumns();
 
                 $inner->whereRaw("{$waChild}.{$lft} not between {$waParent}.{$lft} and {$waParent}.{$rgt}")
                       ->orWhereRaw("{$waChild}.{$lft} between {$waInterm}.{$lft} and {$waInterm}.{$rgt}")
@@ -921,7 +921,7 @@ class Builder extends BuilderBase
                 $fixed++;
             }
 
-            ++$cut;
+            $cut++;
         }
 
         unset($dictionary[$parentId]);
