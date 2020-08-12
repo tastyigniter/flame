@@ -24,12 +24,12 @@ class Builder extends BuilderBase
     /**
      * Get node's `lft` and `rgt` values.
      *
-     * @since 2.0
-     *
      * @param mixed $id
      * @param bool $required
      *
      * @return array
+     * @since 2.0
+     *
      */
     public function getNodeData($id, $required = FALSE)
     {
@@ -37,8 +37,9 @@ class Builder extends BuilderBase
 
         $query->where($this->model->getKeyName(), '=', $id);
 
-        $data = $query->first([$this->model->getLftName(),
-            $this->model->getRgtName(), ]);
+        $data = $query->first([
+            $this->model->getLftName(), $this->model->getRgtName(),
+        ]);
 
         if (!$data && $required) {
             throw new ModelNotFoundException;
@@ -50,12 +51,12 @@ class Builder extends BuilderBase
     /**
      * Get plain node data.
      *
-     * @since 2.0
-     *
      * @param mixed $id
      * @param bool $required
      *
      * @return array
+     * @since 2.0
+     *
      */
     public function getPlainNodeData($id, $required = FALSE)
     {
@@ -77,14 +78,14 @@ class Builder extends BuilderBase
     /**
      * Limit results to ancestors of specified node.
      *
-     * @since 2.0
-     *
      * @param mixed $id
      * @param bool $andSelf
      *
      * @param string $boolean
      *
      * @return $this
+     * @since 2.0
+     *
      */
     public function whereAncestorOf($id, $andSelf = FALSE, $boolean = 'and')
     {
@@ -148,12 +149,12 @@ class Builder extends BuilderBase
     /**
      * Get ancestors of specified node.
      *
-     * @since 2.0
-     *
      * @param mixed $id
      * @param array $columns
      *
      * @return \Kalnoy\Nestedset\Collection
+     * @since 2.0
+     *
      */
     public function ancestorsOf($id, array $columns = ['*'])
     {
@@ -174,13 +175,13 @@ class Builder extends BuilderBase
     /**
      * Add node selection statement between specified range.
      *
-     * @since 2.0
-     *
      * @param array $values
      * @param string $boolean
      * @param bool $not
      *
      * @return $this
+     * @since 2.0
+     *
      */
     public function whereNodeBetween($values, $boolean = 'and', $not = FALSE)
     {
@@ -192,11 +193,11 @@ class Builder extends BuilderBase
     /**
      * Add node selection statement between specified range joined with `or` operator.
      *
-     * @since 2.0
-     *
      * @param array $values
      *
      * @return $this
+     * @since 2.0
+     *
      */
     public function orWhereNodeBetween($values)
     {
@@ -206,25 +207,24 @@ class Builder extends BuilderBase
     /**
      * Add constraint statement to descendants of specified node.
      *
-     * @since 2.0
-     *
      * @param mixed $id
      * @param string $boolean
      * @param bool $not
      * @param bool $andSelf
      *
      * @return $this
+     * @since 2.0
+     *
      */
     public function whereDescendantOf($id, $boolean = 'and', $not = FALSE,
-        $andSelf = FALSE
-    )
-    {
+                                      $andSelf = FALSE
+    ) {
         if (NestedSet::isNode($id)) {
             $data = $id->getBounds();
         }
         else {
             $data = $this->model->newNestedSetQuery()
-                                ->getPlainNodeData($id, TRUE);
+                ->getPlainNodeData($id, TRUE);
         }
 
         // Don't include the node
@@ -280,19 +280,20 @@ class Builder extends BuilderBase
     /**
      * Get descendants of specified node.
      *
-     * @since 2.0
-     *
      * @param mixed $id
      * @param array $columns
      * @param bool $andSelf
      *
      * @return Collection
+     * @since 2.0
+     *
      */
     public function descendantsOf($id, array $columns = ['*'], $andSelf = FALSE)
     {
         try {
             return $this->whereDescendantOf($id, 'and', FALSE, $andSelf)->get($columns);
-        } catch (ModelNotFoundException $e) {
+        }
+        catch (ModelNotFoundException $e) {
             return $this->model->newCollection();
         }
     }
@@ -345,12 +346,12 @@ class Builder extends BuilderBase
     /**
      * Constraint nodes to those that are after specified node.
      *
-     * @since 2.0
-     *
      * @param mixed $id
      * @param string $boolean
      *
      * @return $this
+     * @since 2.0
+     *
      */
     public function whereIsAfter($id, $boolean = 'and')
     {
@@ -360,12 +361,12 @@ class Builder extends BuilderBase
     /**
      * Constraint nodes to those that are before specified node.
      *
-     * @since 2.0
-     *
      * @param mixed $id
      * @param string $boolean
      *
      * @return $this
+     * @since 2.0
+     *
      */
     public function whereIsBefore($id, $boolean = 'and')
     {
@@ -425,9 +426,9 @@ class Builder extends BuilderBase
     /**
      * Get wrapped `lft` and `rgt` column names.
      *
+     * @return array
      * @since 2.0
      *
-     * @return array
      */
     protected function wrappedColumns()
     {
@@ -442,9 +443,9 @@ class Builder extends BuilderBase
     /**
      * Get a wrapped table name.
      *
+     * @return string
      * @since 2.0
      *
-     * @return string
      */
     protected function wrappedTable()
     {
@@ -454,9 +455,9 @@ class Builder extends BuilderBase
     /**
      * Wrap model's key name.
      *
+     * @return string
      * @since 2.0
      *
-     * @return string
      */
     protected function wrappedKey()
     {
@@ -478,10 +479,10 @@ class Builder extends BuilderBase
     /**
      * Equivalent of `withoutRoot`.
      *
-     * @since 2.0
+     * @return $this
      * @deprecated since v4.1
      *
-     * @return $this
+     * @since 2.0
      */
     public function hasParent()
     {
@@ -493,10 +494,10 @@ class Builder extends BuilderBase
     /**
      * Get only nodes that have children.
      *
-     * @since 2.0
+     * @return $this
      * @deprecated since v4.1
      *
-     * @return $this
+     * @since 2.0
      */
     public function hasChildren()
     {
@@ -544,7 +545,7 @@ class Builder extends BuilderBase
     public function moveNode($key, $position)
     {
         [$lft, $rgt] = $this->model->newNestedSetQuery()
-                                       ->getPlainNodeData($key, TRUE);
+            ->getPlainNodeData($key, TRUE);
 
         if ($lft < $position && $position <= $rgt) {
             throw new LogicException('Cannot move node into itself.');
@@ -587,12 +588,12 @@ class Builder extends BuilderBase
     /**
      * Make or remove gap in the tree. Negative height will remove gap.
      *
-     * @since 2.0
-     *
      * @param int $cut
      * @param int $height
      *
      * @return int
+     * @since 2.0
+     *
      */
     public function makeGap($cut, $height)
     {
@@ -609,11 +610,11 @@ class Builder extends BuilderBase
     /**
      * Get patch for columns.
      *
-     * @since 2.0
-     *
      * @param array $params
      *
      * @return array
+     * @since 2.0
+     *
      */
     protected function patch(array $params)
     {
@@ -631,12 +632,12 @@ class Builder extends BuilderBase
     /**
      * Get patch for single column.
      *
-     * @since 2.0
-     *
      * @param string $col
      * @param array $params
      *
      * @return string
+     * @since 2.0
+     *
      */
     protected function columnPatch($col, array $params)
     {
@@ -666,9 +667,9 @@ class Builder extends BuilderBase
     /**
      * Get statistics of errors of the tree.
      *
+     * @return array
      * @since 2.0
      *
-     * @return array
      */
     public function countErrors()
     {
@@ -709,7 +710,7 @@ class Builder extends BuilderBase
                 [$lft, $rgt] = $this->wrappedColumns();
 
                 $inner->whereRaw("{$lft} >= {$rgt}")
-                      ->orWhereRaw("({$rgt} - {$lft}) % 2 = 0");
+                    ->orWhereRaw("({$rgt} - {$lft}) % 2 = 0");
             });
     }
 
@@ -735,9 +736,9 @@ class Builder extends BuilderBase
                 [$lft, $rgt] = $this->wrappedColumns();
 
                 $inner->orWhereRaw("{$waFirst}.{$lft}={$waSecond}.{$lft}")
-                      ->orWhereRaw("{$waFirst}.{$rgt}={$waSecond}.{$rgt}")
-                      ->orWhereRaw("{$waFirst}.{$lft}={$waSecond}.{$rgt}")
-                      ->orWhereRaw("{$waFirst}.{$rgt}={$waSecond}.{$lft}");
+                    ->orWhereRaw("{$waFirst}.{$rgt}={$waSecond}.{$rgt}")
+                    ->orWhereRaw("{$waFirst}.{$lft}={$waSecond}.{$rgt}")
+                    ->orWhereRaw("{$waFirst}.{$rgt}={$waSecond}.{$lft}");
             });
 
         return $this->model->applyNestedSetScope($query, $secondAlias);
@@ -774,8 +775,8 @@ class Builder extends BuilderBase
                 [$lft, $rgt] = $this->wrappedColumns();
 
                 $inner->whereRaw("{$waChild}.{$lft} not between {$waParent}.{$lft} and {$waParent}.{$rgt}")
-                      ->orWhereRaw("{$waChild}.{$lft} between {$waInterm}.{$lft} and {$waInterm}.{$rgt}")
-                      ->whereRaw("{$waInterm}.{$lft} between {$waParent}.{$lft} and {$waParent}.{$rgt}");
+                    ->orWhereRaw("{$waChild}.{$lft} between {$waInterm}.{$lft} and {$waInterm}.{$rgt}")
+                    ->whereRaw("{$waInterm}.{$lft} between {$waParent}.{$lft} and {$waParent}.{$rgt}");
             });
 
         $this->model->applyNestedSetScope($query, $parentAlias);
@@ -812,16 +813,16 @@ class Builder extends BuilderBase
                 $this->model->applyNestedSetScope($existsCheck, $alias);
 
                 $inner->whereRaw("{$parentIdName} is not null")
-                      ->addWhereExistsQuery($existsCheck, 'and', TRUE);
+                    ->addWhereExistsQuery($existsCheck, 'and', TRUE);
             });
     }
 
     /**
      * Get the number of total errors of the tree.
      *
+     * @return int
      * @since 2.0
      *
-     * @return int
      */
     public function getTotalErrors()
     {
@@ -831,9 +832,9 @@ class Builder extends BuilderBase
     /**
      * Get whether the tree is broken.
      *
+     * @return bool
      * @since 2.0
      *
-     * @return bool
      */
     public function isBroken()
     {
@@ -857,10 +858,10 @@ class Builder extends BuilderBase
         ];
 
         $dictionary = $this->model->newNestedSetQuery()
-                                  ->defaultOrder()
-                                  ->get($columns)
-                                  ->groupBy($this->model->getParentIdName())
-                                  ->all();
+            ->defaultOrder()
+            ->get($columns)
+            ->groupBy($this->model->getParentIdName())
+            ->all();
 
         return self::fixNodes($dictionary);
     }
@@ -897,9 +898,8 @@ class Builder extends BuilderBase
      * @return int
      */
     protected static function reorderNodes(array &$dictionary, &$fixed,
-        $parentId = null, $cut = 1
-    )
-    {
+                                           $parentId = null, $cut = 1
+    ) {
         if (!isset($dictionary[$parentId])) {
             return $cut;
         }
@@ -983,11 +983,10 @@ class Builder extends BuilderBase
      * @param mixed $parentId
      */
     protected function buildRebuildDictionary(array &$dictionary,
-        array $data,
-        array &$existing,
-        $parentId = null
-    )
-    {
+                                              array $data,
+                                              array &$existing,
+                                              $parentId = null
+    ) {
         $keyName = $this->model->getKeyName();
 
         foreach ($data as $itemData) {

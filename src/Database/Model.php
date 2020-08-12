@@ -75,8 +75,10 @@ class Model extends EloquentModel
     /**
      * @var array Excepted relationship types, used to cycle and verify relationships.
      */
-    protected static $relationTypes = ['hasOne', 'hasMany', 'belongsTo', 'belongsToMany', 'morphTo', 'morphOne',
-        'morphMany', 'morphToMany', 'morphedByMany', 'hasManyThrough', 'hasOneThrough', ];
+    protected static $relationTypes = [
+        'hasOne', 'hasMany', 'belongsTo', 'belongsToMany', 'morphTo', 'morphOne',
+        'morphMany', 'morphToMany', 'morphedByMany', 'hasManyThrough', 'hasOneThrough',
+    ];
 
     /**
      * The attributes that should be cast to native types.
