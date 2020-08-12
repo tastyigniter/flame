@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Support;
+<?php
+
+namespace Igniter\Flame\Support;
 
 use Illuminate\Support\Str as StrHelper;
 
@@ -9,7 +11,7 @@ class Str extends StrHelper
      *
      * This method converts 13 to 13th, 2 to 2nd ...
      *
-     * @param integer $number Number to get its ordinal value
+     * @param int $number Number to get its ordinal value
      * @return string Ordinal representation of given string.
      */
     public static function ordinal($number)
@@ -80,7 +82,7 @@ class Str extends StrHelper
     {
         $name = static::normalizeClassName($name);
 
-        return substr($name, 0, strrpos($name, "\\"));
+        return substr($name, 0, strrpos($name, '\\'));
     }
 
     /**

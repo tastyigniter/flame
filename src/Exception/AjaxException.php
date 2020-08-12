@@ -4,7 +4,6 @@ namespace Igniter\Flame\Exception;
 
 class AjaxException extends BaseException
 {
-
     /**
      * @var array Collection response contents.
      */

@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Geolite\Model;
+<?php
+
+namespace Igniter\Flame\Geolite\Model;
 
 use Igniter\Flame\Geolite\Contracts;
 use Igniter\Flame\Geolite\Polygon;
@@ -26,7 +28,7 @@ class Bounds implements Contracts\BoundsInterface
     protected $east;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $precision = 8;
 
@@ -142,7 +144,7 @@ class Bounds implements Contracts\BoundsInterface
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getPrecision()
     {
@@ -150,7 +152,7 @@ class Bounds implements Contracts\BoundsInterface
     }
 
     /**
-     * @param  integer $precision
+     * @param  int $precision
      * @return $this
      */
     public function setPrecision($precision)
@@ -185,7 +187,7 @@ class Bounds implements Contracts\BoundsInterface
                 new Coordinates($this->north, $this->east),
                 new Coordinates($this->south, $this->east),
                 new Coordinates($this->south, $this->west),
-                $northWest
+                $northWest,
             ])
         );
     }

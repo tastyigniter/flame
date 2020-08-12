@@ -30,7 +30,7 @@ class HttpAsset extends BaseAsset
      *
      * @param string $sourceUrl The source URL
      * @param array $filters An array of filters
-     * @param Boolean $ignoreErrors
+     * @param bool $ignoreErrors
      * @param array $vars
      *
      * @throws \InvalidArgumentException If the first argument is not an URL
@@ -47,8 +47,8 @@ class HttpAsset extends BaseAsset
         $this->sourceUrl = $sourceUrl;
         $this->ignoreErrors = $ignoreErrors;
 
-        list($scheme, $url) = explode('://', $sourceUrl, 2);
-        list($host, $path) = explode('/', $url, 2);
+        [$scheme, $url] = explode('://', $sourceUrl, 2);
+        [$host, $path] = explode('/', $url, 2);
 
         parent::__construct($filters, $scheme.'://'.$host, $path, $vars);
     }
@@ -71,7 +71,7 @@ class HttpAsset extends BaseAsset
         if (FALSE !== @file_get_contents($this->sourceUrl, FALSE, stream_context_create(['http' => ['method' => 'HEAD']]))) {
             foreach ($http_response_header as $header) {
                 if (0 === stripos($header, 'Last-Modified: ')) {
-                    list(, $mtime) = explode(':', $header, 2);
+                    [, $mtime] = explode(':', $header, 2);
 
                     return strtotime(trim($mtime));
                 }

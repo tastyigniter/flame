@@ -46,7 +46,7 @@ class GeoliteServiceProvider extends ServiceProvider
     {
         return [
             'geocoder', Geocoder::class,
-            'geolite', Geolite::class
+            'geolite', Geolite::class,
         ];
     }
 }

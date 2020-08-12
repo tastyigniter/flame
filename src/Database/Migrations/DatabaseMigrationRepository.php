@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Database\Migrations;
+<?php
+
+namespace Igniter\Flame\Database\Migrations;
 
 use Illuminate\Database\Migrations\DatabaseMigrationRepository as BaseDatabaseMigrationRepository;
 use Illuminate\Database\Schema\Blueprint;

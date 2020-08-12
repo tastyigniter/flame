@@ -197,7 +197,7 @@ class AssetCollection implements \IteratorAggregate, AssetCollectionInterface
     /**
      * Returns the highest last-modified value of all assets in the current collection.
      *
-     * @return integer|null A UNIX timestamp
+     * @return int|null A UNIX timestamp
      */
     public function getLastModified()
     {

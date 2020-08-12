@@ -7,7 +7,6 @@ use Exception;
 /**
  * Class LogViewer
  * Based on Rap2hpoutre\LaravelLogViewer
- * @package Igniter\Flame\Support
  */
 class LogViewer
 {

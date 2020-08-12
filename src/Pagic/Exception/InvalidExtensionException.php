@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Pagic\Exception;
+<?php
+
+namespace Igniter\Flame\Pagic\Exception;
 
 use RuntimeException;
 

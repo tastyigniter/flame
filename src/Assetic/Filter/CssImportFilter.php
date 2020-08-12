@@ -50,13 +50,13 @@ class CssImportFilter extends BaseCssFilter implements DependencyExtractorInterf
 
             if (FALSE !== strpos($matches['url'], '://')) {
                 // absolute
-                list($importScheme, $tmp) = explode('://', $matches['url'], 2);
-                list($importHost, $importPath) = explode('/', $tmp, 2);
+                [$importScheme, $tmp] = explode('://', $matches['url'], 2);
+                [$importHost, $importPath] = explode('/', $tmp, 2);
                 $importRoot = $importScheme.'://'.$importHost;
             }
             elseif (0 === strpos($matches['url'], '//')) {
                 // protocol-relative
-                list($importHost, $importPath) = explode('/', substr($matches['url'], 2), 2);
+                [$importHost, $importPath] = explode('/', substr($matches['url'], 2), 2);
                 $importRoot = '//'.$importHost;
             }
             elseif ('/' == $matches['url'][0]) {

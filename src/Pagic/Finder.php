@@ -500,7 +500,7 @@ class Finder
      * Template directory and file names can contain only alphanumeric symbols, dashes and dots.
      *
      * @param string $filePath Specifies a path to validate
-     * @param integer $maxNesting Specifies the maximum allowed nesting level
+     * @param int $maxNesting Specifies the maximum allowed nesting level
      *
      * @return bool
      */
@@ -515,7 +515,7 @@ class Finder
         }
 
         // @todo: A different approach to fix the file path issue.
-        if (windows_os()) $filePath = str_replace("\\", "/", $filePath);
+        if (windows_os()) $filePath = str_replace('\\', '/', $filePath);
         $segments = explode('/', $filePath);
         if ($maxNesting !== null AND count($segments) > $maxNesting) {
             return FALSE;

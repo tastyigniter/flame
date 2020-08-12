@@ -10,8 +10,6 @@ use Illuminate\Foundation\Application as BaseApplication;
 
 /**
  * Igniter Application Class
- *
- * @package        System\Classes\BaseController.php
  */
 class Application extends BaseApplication
 {
@@ -270,7 +268,7 @@ class Application extends BaseApplication
 
     /**
      * Returns true if a database connection is present.
-     * @return boolean
+     * @return bool
      */
     public function hasDatabase()
     {

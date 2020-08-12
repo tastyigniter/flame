@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Validation;
+<?php
+
+namespace Igniter\Flame\Validation;
 
 use Illuminate\Validation\Validator as BaseValidator;
 

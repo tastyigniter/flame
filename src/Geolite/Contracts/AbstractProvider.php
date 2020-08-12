@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Geolite\Contracts;
+<?php
+
+namespace Igniter\Flame\Geolite\Contracts;
 
 use Cache;
 use GuzzleHttp\Client;

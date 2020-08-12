@@ -8,7 +8,6 @@ use Illuminate\Pagination\Paginator;
 
 /**
  * TastyIgniter Database Manager Class
- * @package        Igniter\Flame\Database\Manager.php
  */
 class Builder extends BuilderBase
 {
@@ -148,7 +147,7 @@ class Builder extends BuilderBase
 
     protected function likeInternal($column, $value, $side = null, $boolean = 'and')
     {
-        $column = $this->toBase()->raw(sprintf("lower(%s)", $column));
+        $column = $this->toBase()->raw(sprintf('lower(%s)', $column));
         $value = trim(mb_strtolower($value));
 
         if ($side === 'none') {

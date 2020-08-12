@@ -105,7 +105,7 @@ class PermalinkMaker
         if ($this->model->isDirty($attribute))
             return FALSE;
 
-        return ($config['generateOnCreate'] === TRUE AND !$this->model->exists);
+        return $config['generateOnCreate'] === TRUE AND !$this->model->exists;
     }
 
     /**

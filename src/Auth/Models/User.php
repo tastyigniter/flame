@@ -131,7 +131,7 @@ class User extends Model implements Authenticatable
         $hashedPassword = $this->attributes['password'];
         $shaPassword = sha1($salt.sha1($salt.sha1($plainPassword)));
 
-        return ($hashedPassword === $shaPassword);
+        return $hashedPassword === $shaPassword;
     }
 
     public function updateHashPassword($hashedPassword)

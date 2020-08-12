@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Exception;
+<?php
+
+namespace Igniter\Flame\Exception;
 
 use October\Rain\Exception\ExceptionBase;
 

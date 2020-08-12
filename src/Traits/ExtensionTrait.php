@@ -16,7 +16,6 @@ trait ExtensionTrait
      * @var array Used to extend the constructor of an extension class. Eg:
      *
      *     BehaviorClass::extend(function($obj) { })
-     *
      */
     protected static $extensionCallbacks = [];
 

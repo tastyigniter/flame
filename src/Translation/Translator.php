@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Translation;
+<?php
+
+namespace Igniter\Flame\Translation;
 
 use Illuminate\Support\Str;
 use Illuminate\Translation\Translator as BaseTranslator;

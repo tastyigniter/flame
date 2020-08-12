@@ -15,8 +15,6 @@ use SystemException;
  *
  * Adapted from the October ExtendableTrait
  * @link https://github.com/octobercms/library/tree/master/src/Extension/ExtendableTrait.php
- *
- * @package Igniter\Traits
  */
 trait ExtendableTrait
 {
@@ -221,7 +219,7 @@ trait ExtendableTrait
      *
      * @param string $name Fully qualified behavior name
      *
-     * @return boolean
+     * @return bool
      */
     public function isClassExtendedWith($name)
     {
@@ -275,15 +273,14 @@ trait ExtendableTrait
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function methodExists($name)
     {
-        return (
+        return
             method_exists($this, $name) ||
             isset($this->extensionData['methods'][$name]) ||
-            isset($this->extensionData['dynamicMethods'][$name])
-        );
+            isset($this->extensionData['dynamicMethods'][$name]);
     }
 
     /**
@@ -319,7 +316,7 @@ trait ExtendableTrait
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function propertyExists($name)
     {
@@ -345,7 +342,7 @@ trait ExtendableTrait
      * @param mixed $class
      * @param string $propertyName
      *
-     * @return boolean
+     * @return bool
      */
     protected function extendableIsAccessible($class, $propertyName)
     {

@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Support;
+<?php
+
+namespace Igniter\Flame\Support;
 
 use Exception;
 
@@ -30,6 +32,7 @@ class ConfigRewrite
         $contents = file_get_contents($filePath);
         $contents = $this->toContent($contents, $newValues, $useValidation);
         file_put_contents($filePath, $contents);
+
         return $contents;
     }
 
@@ -209,6 +212,7 @@ class ConfigRewrite
             // Gotta capture something for $1
             $result = '()';
         }
+
         return $result;
     }
 }

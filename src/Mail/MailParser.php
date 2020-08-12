@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Mail;
+<?php
+
+namespace Igniter\Flame\Mail;
 
 /**
  * This class parses Mail templates.

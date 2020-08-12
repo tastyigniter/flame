@@ -98,11 +98,11 @@ class Translation extends Model
 
     /**
      *  Check if the translation is locked
-     * @return boolean
+     * @return bool
      */
     public function isLocked()
     {
-        return (boolean)$this->locked;
+        return (bool)$this->locked;
     }
 
     protected function flushCache()

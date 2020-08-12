@@ -9,7 +9,6 @@ use Illuminate\Support\ServiceProvider;
 
 /**
  * Class PagicServiceProvider
- * @package Igniter\Flame\Pagic
  */
 class PagicServiceProvider extends ServiceProvider
 {

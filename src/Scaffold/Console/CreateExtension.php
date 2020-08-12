@@ -46,7 +46,7 @@ class CreateExtension extends GeneratorCommand
             return;
         }
 
-        list($author, $name) = $code;
+        [$author, $name] = $code;
 
         $this->vars = [
             'name'        => $name,

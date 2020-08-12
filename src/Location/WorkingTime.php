@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Location;
+<?php
+
+namespace Igniter\Flame\Location;
 
 use DateTime;
 use DateTimeImmutable;
@@ -24,7 +26,7 @@ class WorkingTime
         if (!preg_match('/^([0-1]\d)|(2[0-4]):[0-5]\d$/', $string))
             throw new WorkingHourException("The string `{$string}` isn't a valid time string. A time string must be a formatted as `18:00`.");
 
-        list($hours, $minutes) = explode(':', $string);
+        [$hours, $minutes] = explode(':', $string);
 
         return new self($hours, $minutes);
     }

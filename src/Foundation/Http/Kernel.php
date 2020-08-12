@@ -16,7 +16,7 @@ class Kernel extends BaseKernel
         \Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables::class,
         \Illuminate\Foundation\Bootstrap\LoadConfiguration::class,
         \Igniter\Flame\Foundation\Bootstrap\LoadTranslation::class,
-//        \Igniter\Flame\Foundation\Bootstrap\ConfigureLogging::class,
+        // \Igniter\Flame\Foundation\Bootstrap\ConfigureLogging::class,
         \Illuminate\Foundation\Bootstrap\HandleExceptions::class,
         \Illuminate\Foundation\Bootstrap\RegisterFacades::class,
         \Igniter\Flame\Foundation\Bootstrap\RegisterTastyIgniter::class,
@@ -34,7 +34,7 @@ class Kernel extends BaseKernel
     protected $middleware = [
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
-//        \Igniter\Flame\Foundation\Http\Middleware\TrimStrings::class,
+        // \Igniter\Flame\Foundation\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \Igniter\Flame\Foundation\Http\Middleware\TrustProxies::class,
         \Igniter\Flame\Setting\Middleware\SaveSetting::class,
@@ -51,8 +51,8 @@ class Kernel extends BaseKernel
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-//             \Illuminate\Session\Middleware\AuthenticateSession::class,
-//            \Igniter\Flame\Foundation\Http\Middleware\VerifyCsrfToken::class,
+            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+            // \Igniter\Flame\Foundation\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \Igniter\Flame\Translation\Middleware\Localization::class,
         ],
@@ -71,11 +71,11 @@ class Kernel extends BaseKernel
      * @var array
      */
     protected $routeMiddleware = [
-//        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
-//        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        // 'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+        // 'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
-//        'can' => \Illuminate\Auth\Middleware\Authorize::class,
-//        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        // 'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        // 'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
     ];
 
@@ -89,9 +89,9 @@ class Kernel extends BaseKernel
     protected $middlewarePriority = [
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-//        \Illuminate\Auth\Middleware\Authenticate::class,
-//        \Illuminate\Session\Middleware\AuthenticateSession::class,
+        // \Illuminate\Auth\Middleware\Authenticate::class,
+        // \Illuminate\Session\Middleware\AuthenticateSession::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
-//        \Illuminate\Auth\Middleware\Authorize::class,
+        // \Illuminate\Auth\Middleware\Authorize::class,
     ];
 }

@@ -6,8 +6,6 @@ use Event;
 
 /**
  * Adds event related features to any class.
- *
- * @package Igniter\Traits
  */
 trait EventEmitter
 {
@@ -119,7 +117,7 @@ trait EventEmitter
      *
      * @param string $event Event name
      * @param array $params Event parameters
-     * @param boolean $halt Halt after first non-null result
+     * @param bool $halt Halt after first non-null result
      *
      * @return string|array Collection of event results / Or single result (if halted)
      */
@@ -174,7 +172,7 @@ trait EventEmitter
      *
      * @param string $event Event name
      * @param array $params Event parameters
-     * @param boolean $halt Halt after first non-null result
+     * @param bool $halt Halt after first non-null result
      *
      * @return mixed
      */

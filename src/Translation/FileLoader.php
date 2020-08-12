@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Translation;
+<?php
+
+namespace Igniter\Flame\Translation;
 
 use Illuminate\Translation\FileLoader as FileLoaderBase;
 

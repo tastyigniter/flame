@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Pagic\Source;
+<?php
+
+namespace Igniter\Flame\Pagic\Source;
 
 use Exception;
 use Igniter\Flame\Filesystem\Filesystem;

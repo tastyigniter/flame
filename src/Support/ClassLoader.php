@@ -195,7 +195,7 @@ class ClassLoader
      */
     protected function loadMappedClass($class)
     {
-        list($lowerClass, $upperClass) = $this->normalizeClass($class);
+        [$lowerClass, $upperClass] = $this->normalizeClass($class);
 
         // Look through registered directories
         foreach ($this->directories as $directory) {

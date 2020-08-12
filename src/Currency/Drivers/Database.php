@@ -41,14 +41,14 @@ class Database extends AbstractDriver
         $created = new DateTime('now');
 
         $params = array_merge([
-            'currency_name'   => '',
-            'currency_code'   => '',
+            'currency_name' => '',
+            'currency_code' => '',
             'currency_symbol' => '',
-            'format'          => '',
-            'currency_rate'   => 1,
+            'format' => '',
+            'currency_rate' => 1,
             'currency_status' => 0,
-//            'created_at' => $created,
-            'date_modified'   => $created,
+            // 'created_at' => $created,
+            'date_modified' => $created,
         ], $params);
 
         return $this->database->table($this->config('table'))->insert($params);
@@ -62,25 +62,24 @@ class Database extends AbstractDriver
         $collection = new Collection($this->database->table($this->config('table'))->get());
 
         return $collection->keyBy('currency_code')
-                          ->map(function ($item) {
+            ->map(function ($item) {
+                $format = $item->thousand_sign.'0'.$item->decimal_sign.str_repeat('0', $item->decimal_position);
 
-                              $format = $item->thousand_sign.'0'.$item->decimal_sign.str_repeat('0', $item->decimal_position);
-
-                              return [
-                                  'currency_id'     => $item->currency_id,
-                                  'currency_name'   => $item->currency_name,
-                                  'currency_code'   => strtoupper($item->currency_code),
-                                  'currency_symbol' => $item->currency_symbol,
-                                  'format'          => $item->symbol_position
-                                      ? '1'.$format.$item->currency_symbol
-                                      : $item->currency_symbol.'1'.$format,
-                                  'currency_rate'   => $item->currency_rate,
-                                  'currency_status' => $item->currency_status,
-                                  'date_modified'   => $item->date_modified,
-//                    'date_modified' => $item->date_modified,
-                              ];
-                          })
-                          ->all();
+                return [
+                    'currency_id' => $item->currency_id,
+                    'currency_name' => $item->currency_name,
+                    'currency_code' => strtoupper($item->currency_code),
+                    'currency_symbol' => $item->currency_symbol,
+                    'format' => $item->symbol_position
+                        ? '1'.$format.$item->currency_symbol
+                        : $item->currency_symbol.'1'.$format,
+                    'currency_rate' => $item->currency_rate,
+                    'currency_status' => $item->currency_status,
+                    'date_modified' => $item->date_modified,
+                    // 'date_modified' => $item->date_modified,
+                ];
+            })
+            ->all();
     }
 
     /**
@@ -89,7 +88,7 @@ class Database extends AbstractDriver
     public function find($code, $active = 1)
     {
         $query = $this->database->table($this->config('table'))
-                                ->where('currency_code', strtoupper($code));
+            ->where('currency_code', strtoupper($code));
 
         // Make active optional
         if (is_null($active) === FALSE) {
@@ -112,8 +111,8 @@ class Database extends AbstractDriver
         }
 
         return $this->database->table($table)
-                              ->where('currency_code', strtoupper($code))
-                              ->update($attributes);
+            ->where('currency_code', strtoupper($code))
+            ->update($attributes);
     }
 
     /**
@@ -124,7 +123,7 @@ class Database extends AbstractDriver
         $table = $this->config('table');
 
         return $this->database->table($table)
-                              ->where('currency_code', strtoupper($code))
-                              ->delete();
+            ->where('currency_code', strtoupper($code))
+            ->delete();
     }
 }

@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Location;
+<?php
+
+namespace Igniter\Flame\Location;
 
 use Igniter\Flame\Location\Exceptions\WorkingHourException;
 
@@ -18,7 +20,7 @@ class WorkingRange
 
     public static function create(array $times): self
     {
-        list($start, $end) = $times;
+        [$start, $end] = $times;
 
         return new static(
             WorkingTime::create($start),

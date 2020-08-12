@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Events;
+<?php
+
+namespace Igniter\Flame\Events;
 
 class Dispatcher extends \Illuminate\Events\Dispatcher
 {

@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Support;
+<?php
+
+namespace Igniter\Flame\Support;
 
 /**
  * Class NestedKeyIterator
@@ -19,7 +21,6 @@
  *  foo: bar
  *  baz.foo.uh: ah
  *  baz.oh: eh
- * @package StringTemplate
  */
 class NestedKeyIterator extends \RecursiveIteratorIterator
 {

@@ -52,7 +52,7 @@ class CreateComponent extends GeneratorCommand
             return;
         }
 
-        list($author, $extension) = $code;
+        [$author, $extension] = $code;
         $component = $this->argument('component');
 
         $this->vars = [

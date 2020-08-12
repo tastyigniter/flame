@@ -382,7 +382,6 @@ if (!function_exists('form_prep')) {
      *
      * @return    string|string[]    Escaped values
      * @deprecated    3.0.0    An alias for html_escape()
-     *
      */
     function form_prep($str)
     {

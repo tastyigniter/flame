@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Foundation\Console;
+<?php
+
+namespace Igniter\Flame\Foundation\Console;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Console\KeyGenerateCommand as BaseKeyGenerateCommand;

@@ -45,7 +45,7 @@ class AssetManager
      *
      * @param string $name an asset name
      *
-     * @return Boolean True if the asset has been set, false if not
+     * @return bool True if the asset has been set, false if not
      */
     public function has($name)
     {

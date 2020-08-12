@@ -1,4 +1,6 @@
-<?php namespace Igniter\Flame\Foundation\Providers;
+<?php
+
+namespace Igniter\Flame\Foundation\Providers;
 
 use Illuminate\Log\LogServiceProvider as BaseLogServiceProvider;
 use Psr\Log\LoggerInterface;
