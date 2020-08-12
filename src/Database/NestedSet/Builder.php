@@ -29,7 +29,6 @@ class Builder extends BuilderBase
      *
      * @return array
      * @since 2.0
-     *
      */
     public function getNodeData($id, $required = FALSE)
     {
@@ -56,7 +55,6 @@ class Builder extends BuilderBase
      *
      * @return array
      * @since 2.0
-     *
      */
     public function getPlainNodeData($id, $required = FALSE)
     {
@@ -85,7 +83,6 @@ class Builder extends BuilderBase
      *
      * @return $this
      * @since 2.0
-     *
      */
     public function whereAncestorOf($id, $andSelf = FALSE, $boolean = 'and')
     {
@@ -154,7 +151,6 @@ class Builder extends BuilderBase
      *
      * @return \Kalnoy\Nestedset\Collection
      * @since 2.0
-     *
      */
     public function ancestorsOf($id, array $columns = ['*'])
     {
@@ -181,7 +177,6 @@ class Builder extends BuilderBase
      *
      * @return $this
      * @since 2.0
-     *
      */
     public function whereNodeBetween($values, $boolean = 'and', $not = FALSE)
     {
@@ -197,7 +192,6 @@ class Builder extends BuilderBase
      *
      * @return $this
      * @since 2.0
-     *
      */
     public function orWhereNodeBetween($values)
     {
@@ -214,7 +208,6 @@ class Builder extends BuilderBase
      *
      * @return $this
      * @since 2.0
-     *
      */
     public function whereDescendantOf($id, $boolean = 'and', $not = FALSE,
                                       $andSelf = FALSE
@@ -286,7 +279,6 @@ class Builder extends BuilderBase
      *
      * @return Collection
      * @since 2.0
-     *
      */
     public function descendantsOf($id, array $columns = ['*'], $andSelf = FALSE)
     {
@@ -351,7 +343,6 @@ class Builder extends BuilderBase
      *
      * @return $this
      * @since 2.0
-     *
      */
     public function whereIsAfter($id, $boolean = 'and')
     {
@@ -366,7 +357,6 @@ class Builder extends BuilderBase
      *
      * @return $this
      * @since 2.0
-     *
      */
     public function whereIsBefore($id, $boolean = 'and')
     {
@@ -428,7 +418,6 @@ class Builder extends BuilderBase
      *
      * @return array
      * @since 2.0
-     *
      */
     protected function wrappedColumns()
     {
@@ -445,7 +434,6 @@ class Builder extends BuilderBase
      *
      * @return string
      * @since 2.0
-     *
      */
     protected function wrappedTable()
     {
@@ -457,7 +445,6 @@ class Builder extends BuilderBase
      *
      * @return string
      * @since 2.0
-     *
      */
     protected function wrappedKey()
     {
@@ -593,7 +580,6 @@ class Builder extends BuilderBase
      *
      * @return int
      * @since 2.0
-     *
      */
     public function makeGap($cut, $height)
     {
@@ -614,7 +600,6 @@ class Builder extends BuilderBase
      *
      * @return array
      * @since 2.0
-     *
      */
     protected function patch(array $params)
     {
@@ -637,7 +622,6 @@ class Builder extends BuilderBase
      *
      * @return string
      * @since 2.0
-     *
      */
     protected function columnPatch($col, array $params)
     {
@@ -669,7 +653,6 @@ class Builder extends BuilderBase
      *
      * @return array
      * @since 2.0
-     *
      */
     public function countErrors()
     {
@@ -822,7 +805,6 @@ class Builder extends BuilderBase
      *
      * @return int
      * @since 2.0
-     *
      */
     public function getTotalErrors()
     {
@@ -834,7 +816,6 @@ class Builder extends BuilderBase
      *
      * @return bool
      * @since 2.0
-     *
      */
     public function isBroken()
     {
