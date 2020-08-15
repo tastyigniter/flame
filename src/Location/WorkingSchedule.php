@@ -8,12 +8,15 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
+use Igniter\Flame\Traits\EventEmitter;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 
 class WorkingSchedule
 {
+    use EventEmitter;
+
     protected $type;
 
     protected $timezone;
@@ -108,6 +111,16 @@ class WorkingSchedule
     public function setTimezone($timezone)
     {
         $this->timezone = new DateTimeZone($timezone);
+    }
+
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function days()
+    {
+        return $this->days;
     }
 
     public function exceptions(): array
@@ -402,6 +415,10 @@ class WorkingSchedule
             return new DateTime($date.' '.$slot->format());
         })->filter(function (DateTime $dateTime) use ($checkDateTime) {
             return Carbon::instance($checkDateTime)->lte($dateTime);
+        })->filter(function (DateTime $dateTime) {
+            $result = $this->fireSystemEvent('igniter.workingSchedule.timeslotFilter', [$dateTime]);
+
+            return is_bool($result) ? $dateTime : TRUE;
         })->values();
     }
 
