@@ -8,15 +8,13 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
-use Igniter\Flame\Traits\EventEmitter;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Event;
 use InvalidArgumentException;
 
 class WorkingSchedule
 {
-    use EventEmitter;
-
     protected $type;
 
     protected $timezone;
@@ -416,9 +414,9 @@ class WorkingSchedule
         })->filter(function (DateTime $dateTime) use ($checkDateTime) {
             return Carbon::instance($checkDateTime)->lte($dateTime);
         })->filter(function (DateTime $dateTime) {
-            $result = $this->fireSystemEvent('igniter.workingSchedule.timeslotFilter', [$dateTime]);
+            $result = Event::fire('igniter.workingSchedule.timeslotFilter', [$this, $dateTime], TRUE);
 
-            return is_bool($result) ? $dateTime : TRUE;
+            return is_bool($result) ? $result : TRUE;
         })->values();
     }
 
