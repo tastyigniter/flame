@@ -40,7 +40,7 @@ abstract class AbstractArea extends Model implements AreaInterface
 
     protected $appends = ['vertices', 'circle'];
 
-    protected static $areaColors = [
+    public static $areaColors = [
         '#F16745', '#FFC65D', '#7BC8A4', '#4CC3D9', '#93648D', '#404040',
         '#F16745', '#FFC65D', '#7BC8A4', '#4CC3D9', '#93648D', '#404040',
         '#F16745', '#FFC65D', '#7BC8A4', '#4CC3D9', '#93648D', '#404040',
