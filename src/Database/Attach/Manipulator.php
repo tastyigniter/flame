@@ -5,6 +5,7 @@ namespace Igniter\Flame\Database\Attach;
 use BadMethodCallException;
 use Exception;
 use Illuminate\Support\Collection;
+use League\Flysystem\FilesystemInterface;
 use League\Glide\ServerFactory;
 
 class Manipulator
@@ -14,6 +15,8 @@ class Manipulator
     protected $manipulations;
 
     protected $driver = 'gd';
+
+    protected $source;
 
     protected $tempFilePath;
 
@@ -43,7 +46,17 @@ class Manipulator
         if (!in_array($driver, ['gd', 'imagick']))
             throw new Exception("Driver must be 'gd' or 'imagick'. '{$driver}' provided.");
 
-        $this->manager->configure(['driver' => $driver]);
+        $this->driver = $driver;
+
+        return $this;
+    }
+
+    public function useSource($source)
+    {
+        if (!$source instanceof FilesystemInterface)
+            throw new Exception('Source must be instance of '.FilesystemInterface::class);
+
+        $this->source = $source;
 
         return $this;
     }
@@ -64,7 +77,7 @@ class Manipulator
         $glideServer->setGroupCacheInFolders(FALSE);
 
         $tempImage = $glideServer->makeImage(
-            pathinfo($this->file, PATHINFO_BASENAME),
+            $this->file,
             $this->prepareManipulations()
         );
 
@@ -76,13 +89,13 @@ class Manipulator
     public function save($path)
     {
         if ($this->tempFilePath) {
-            copy($this->tempFilePath, $path);
+            $this->source->put($path, file_get_contents($this->tempFilePath));
             unlink($this->tempFilePath);
 
             return;
         }
 
-        copy($this->file, $path);
+        $this->source->copy($this->file, $path);
     }
 
     protected function mergeManipulations($manipulations)
@@ -114,7 +127,7 @@ class Manipulator
     protected function createGlideServer($image, $watermarks)
     {
         $config = [
-            'source' => dirname($image),
+            'source' => $this->source,
             'cache' => sys_get_temp_dir(),
             'driver' => $this->driver,
         ];

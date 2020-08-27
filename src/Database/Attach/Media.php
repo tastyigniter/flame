@@ -79,9 +79,9 @@ class Media extends Model
     public function addFromRequest(UploadedFile $uploadedFile, $tag = null)
     {
         $this->getMediaAdder()
-             ->performedOn($this->attachment)
-             ->useMediaTag($tag)
-             ->fromFile($uploadedFile);
+            ->performedOn($this->attachment)
+            ->useMediaTag($tag)
+            ->fromFile($uploadedFile);
 
         return $this;
     }
@@ -98,9 +98,9 @@ class Media extends Model
             return;
 
         $this->getMediaAdder()
-             ->performedOn($this->attachment)
-             ->useMediaTag($tag)
-             ->fromFile(new SymfonyFile($filePath));
+            ->performedOn($this->attachment)
+            ->useMediaTag($tag)
+            ->fromFile(new SymfonyFile($filePath));
 
         return $this;
     }
@@ -486,7 +486,6 @@ class Media extends Model
 
     public function outputThumb($options = [])
     {
-
     }
 
     public function getDefaultThumbPath($thumbPath, $default = null)
@@ -566,8 +565,9 @@ class Media extends Model
             $filePath = $this->getDefaultThumbPath($thumbFile, array_get($options, 'default'));
 
         Manipulator::make($filePath)
-                   ->manipulate(array_except($options, ['extension', 'default']))
-                   ->save($thumbPath);
+            ->useSource($this->getStorageDisk()->getDriver())
+            ->manipulate(array_except($options, ['extension', 'default']))
+            ->save($thumbPath);
     }
 
     //
