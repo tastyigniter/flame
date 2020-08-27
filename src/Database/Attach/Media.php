@@ -558,8 +558,7 @@ class Media extends Model
     protected function makeThumb($thumbFile, $options)
     {
         $thumbFile = $this->getStoragePath().$thumbFile;
-        $thumbPath = $this->getStorageDisk()->path($thumbFile);
-        $filePath = $this->getStorageDisk()->path($this->getDiskPath());
+        $filePath = $this->getDiskPath();
 
         if (!$this->hasFile($this->name))
             $filePath = $this->getDefaultThumbPath($thumbFile, array_get($options, 'default'));
@@ -567,7 +566,7 @@ class Media extends Model
         Manipulator::make($filePath)
             ->useSource($this->getStorageDisk()->getDriver())
             ->manipulate(array_except($options, ['extension', 'default']))
-            ->save($thumbPath);
+            ->save($thumbFile);
     }
 
     //
