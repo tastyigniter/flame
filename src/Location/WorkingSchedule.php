@@ -414,7 +414,7 @@ class WorkingSchedule
         })->filter(function (DateTime $dateTime) use ($checkDateTime) {
             return Carbon::instance($checkDateTime)->lte($dateTime);
         })->filter(function (DateTime $dateTime) {
-            $result = Event::fire('igniter.workingSchedule.timeslotFilter', [$this, $dateTime], TRUE);
+            $result = Event::fire('igniter.workingSchedule.timeslotValid', [$this, $dateTime], TRUE);
 
             return is_bool($result) ? $result : TRUE;
         })->values();
