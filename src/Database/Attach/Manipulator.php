@@ -101,6 +101,25 @@ class Manipulator
         $this->copyFileContentsTo($path);
     }
 
+    public function isSupported()
+    {
+        $gdExtensions = [
+            'png', 'jpg', 'jpeg', 'gif', 'webp',
+        ];
+
+        $imagickExtensions = array_merge($gdExtensions, [
+            'tiff', 'bmp', 'ico', 'psd',
+        ]);
+
+        if (!$extension = pathinfo($this->file, PATHINFO_EXTENSION))
+            return false;
+
+        if ($this->driver == 'gd')
+            return in_array($extension, $gdExtensions);
+
+        return in_array($extension, $imagickExtensions);
+    }
+
     protected function mergeManipulations($manipulations)
     {
         $manipulations = $this->manipulations()->merge($manipulations);

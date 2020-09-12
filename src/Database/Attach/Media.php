@@ -79,9 +79,9 @@ class Media extends Model
     public function addFromRequest(UploadedFile $uploadedFile, $tag = null)
     {
         $this->getMediaAdder()
-            ->performedOn($this->attachment)
-            ->useMediaTag($tag)
-            ->fromFile($uploadedFile);
+             ->performedOn($this->attachment)
+             ->useMediaTag($tag)
+             ->fromFile($uploadedFile);
 
         return $this;
     }
@@ -98,9 +98,9 @@ class Media extends Model
             return;
 
         $this->getMediaAdder()
-            ->performedOn($this->attachment)
-            ->useMediaTag($tag)
-            ->fromFile(new SymfonyFile($filePath));
+             ->performedOn($this->attachment)
+             ->useMediaTag($tag)
+             ->fromFile(new SymfonyFile($filePath));
 
         return $this;
     }
@@ -563,10 +563,14 @@ class Media extends Model
         if (!$this->hasFile($this->name))
             $filePath = $this->getDefaultThumbPath($thumbFile, array_get($options, 'default'));
 
-        Manipulator::make($filePath)
-            ->useSource($this->getStorageDisk()->getDriver())
-            ->manipulate(array_except($options, ['extension', 'default']))
-            ->save($thumbFile);
+        $manipulator = Manipulator::make($filePath)->useSource(
+            $this->getStorageDisk()->getDriver()
+        );
+
+        if ($manipulator->isSupported())
+            $manipulator->manipulate(array_except($options, ['extension', 'default']));
+
+        $manipulator->save($thumbFile);
     }
 
     //
