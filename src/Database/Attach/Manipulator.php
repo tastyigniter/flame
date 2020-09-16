@@ -36,7 +36,7 @@ class Manipulator
 
     public function __call($name, $arguments)
     {
-        if (!in_array($this->getAvailableGlideParameters(), $name))
+        if (!in_array($name, $this->getAvailableGlideParameters()))
             throw new BadMethodCallException("Manipulation '{$name}' is not a valid glide parameter");
 
         $this->manipulations()->push($name, $arguments);
