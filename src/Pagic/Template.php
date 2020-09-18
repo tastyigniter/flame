@@ -120,6 +120,10 @@ class Template
 
     protected function evaluatePath($path, $data)
     {
+        if ($silenceNotice = config('system.suppressTemplateRuntimeNotice')) {
+            $errorLevel = error_reporting(E_ALL & ~E_NOTICE);
+        }
+
         $obLevel = ob_get_level();
         ob_start();
 
@@ -136,6 +140,10 @@ class Template
         }
         catch (Throwable $e) {
             $this->handleException(new FatalThrowableError($e), $obLevel);
+        }
+
+        if ($silenceNotice) {
+            error_reporting($errorLevel);
         }
 
         return ltrim(ob_get_clean());
