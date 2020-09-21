@@ -28,12 +28,22 @@ trait CartConditionHelper
             $action = $this->parseAction($action);
             $actionValue = array_get($action, 'value', 0);
 
-            if ($this->valueIsPercentage($actionValue)) {
-                $cleanValue = $this->cleanValue($actionValue);
-                $value = ($total * ($cleanValue / 100));
-            }
-            else {
-                $value = (float)$this->cleanValue($actionValue);
+            if (($calculateValue = array_get($action, 'calculateValue')) !== null) {
+                if (($response = call_user_func_array($calculateValue, [$this, $actionValue])) !== null)
+                {
+                    $value = $response;
+                }
+            } 
+
+            if (!isset($value))
+            {
+                if ($this->valueIsPercentage($actionValue)) {
+                    $cleanValue = $this->cleanValue($actionValue);
+                    $value = ($total * ($cleanValue / 100));
+                }
+                else {
+                    $value = (float)$this->cleanValue($actionValue);
+                }
             }
 
             $this->calculatedValue += $value;
