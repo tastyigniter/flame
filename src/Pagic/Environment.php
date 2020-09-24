@@ -4,6 +4,7 @@ namespace Igniter\Flame\Pagic;
 
 use File;
 use Igniter\Flame\Pagic\Extension\AbstractExtension;
+use Igniter\Flame\Pagic\Extension\CoreExtension;
 use Illuminate\Support\Facades\App;
 use Illuminate\View\Compilers\CompilerInterface;
 use LogicException;
