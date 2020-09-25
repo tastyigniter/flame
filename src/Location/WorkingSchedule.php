@@ -409,8 +409,11 @@ class WorkingSchedule
 
     protected function filterTimeslot(Collection $timeslot, string $date, DateTime $checkDateTime)
     {
-        return $timeslot->map(function (WorkingTime $slot) use ($date) {
-            return new DateTime($date.' '.$slot->format());
+        return $timeslot->map(function (WorkingTime $slot) use ($timeslot, $date) {
+            $myDate = new DateTime($date.' '.$slot->format());
+            if ($slot->isBefore($timeslot->first()))
+                $myDate->add(new DateInterval('P1D'));
+            return $myDate;
         })->filter(function (DateTime $dateTime) use ($checkDateTime) {
             return Carbon::instance($checkDateTime)->lte($dateTime);
         })->filter(function (DateTime $dateTime) {
