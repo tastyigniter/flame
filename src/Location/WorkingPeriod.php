@@ -142,6 +142,9 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
             $start = new DateTime($range->start());
             $end = new DateTime($range->end());
 
+            if ($range->endsNextDay())
+                $end->add(new DateInterval('P1D'));
+
             if (!is_null($leadTime)) {
                 $start = $start->add($leadTime);
                 $end = $end->sub($leadTime);
