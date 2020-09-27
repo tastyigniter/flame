@@ -6,8 +6,6 @@ use ArrayAccess;
 use ArrayIterator;
 use Countable;
 use DateInterval;
-use DatePeriod;
-use DateTime;
 use Igniter\Flame\Location\Exceptions\WorkingHourException;
 use IteratorAggregate;
 
@@ -134,26 +132,7 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
 
     public function timeslot(DateInterval $interval, DateInterval $leadTime = null)
     {
-        if (is_null($leadTime))
-            $leadTime = $interval;
-
-        $timeslot = [];
-        foreach ($this->ranges as $range) {
-            $start = new DateTime($range->start());
-            $end = new DateTime($range->end());
-
-            if (!is_null($leadTime)) {
-                $start = $start->add($leadTime);
-                $end = $end->sub($leadTime);
-            }
-
-            $datePeriod = new DatePeriod($start, $interval, $end);
-            foreach ($datePeriod as $dateTime) {
-                $timeslot[] = WorkingTime::fromDateTime($dateTime);
-            }
-        }
-
-        return collect($timeslot);
+        traceLog('WorkingPeriod::timeslot is deprecated. See WorkingSchedule::getTimeslot.');
     }
 
     protected function findTimeInRange(WorkingTime $time)
