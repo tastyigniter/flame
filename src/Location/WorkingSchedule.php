@@ -4,6 +4,7 @@ namespace Igniter\Flame\Location;
 
 use Carbon\Carbon;
 use DateInterval;
+use DatePeriod;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -328,9 +329,9 @@ class WorkingSchedule
         for ($date = $start; $date->lte($end); $date->addDay()) {
             $indexValue = $date->toDateString();
 
-            $timeslot = $this->forDate($date)->timeslot($interval, $leadTime);
+            $timeslot = $this->generateTimeslot($date, $interval, $leadTime);
 
-            $filteredTimeslot = $this->filterTimeslot($timeslot, $indexValue, $checkDateTime);
+            $filteredTimeslot = $this->filterTimeslot($timeslot, $checkDateTime);
 
             if ($filteredTimeslot->isEmpty())
                 continue;
@@ -407,11 +408,9 @@ class WorkingSchedule
         return $date;
     }
 
-    protected function filterTimeslot(Collection $timeslot, string $date, DateTime $checkDateTime)
+    protected function filterTimeslot(Collection $timeslot, DateTime $checkDateTime)
     {
-        return $timeslot->map(function (WorkingTime $slot) use ($date) {
-            return new DateTime($date.' '.$slot->format());
-        })->filter(function (DateTime $dateTime) use ($checkDateTime) {
+        return $timeslot->filter(function (DateTime $dateTime) use ($checkDateTime) {
             return Carbon::instance($checkDateTime)->lte($dateTime);
         })->filter(function (DateTime $dateTime) {
             $result = Event::fire('igniter.workingSchedule.timeslotValid', [$this, $dateTime], TRUE);
@@ -431,5 +430,32 @@ class WorkingSchedule
             return TRUE;
 
         return FALSE;
+    }
+
+    protected function generateTimeslot(DateTime $date, DateInterval $interval, ?DateInterval $leadTime = null)
+    {
+        if (is_null($leadTime))
+            $leadTime = $interval;
+
+        $timeslot = [];
+        foreach ($this->forDate($date)->getIterator() as $range) {
+            $start = $range->start()->toDateTime($date);
+            $end = $range->end()->toDateTime($date);
+
+            if ($range->endsNextDay())
+                $end->add(new DateInterval('P1D'));
+
+            if (!is_null($leadTime)) {
+                $start = $start->add($leadTime);
+                $end = $end->sub($leadTime);
+            }
+
+            $datePeriod = new DatePeriod($start, $interval, $end);
+            foreach ($datePeriod as $dateTime) {
+                $timeslot[$dateTime->getTimestamp()] = $dateTime;
+            }
+        }
+
+        return collect($timeslot);
     }
 }
