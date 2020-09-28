@@ -7,7 +7,6 @@ use Exception;
 use File;
 use Igniter\Flame\Pagic\Contracts\TemplateLoader;
 use Igniter\Flame\Pagic\Contracts\TemplateSource;
-use Illuminate\View\Compilers\CompilerInterface;
 
 /**
  * Loader class
@@ -33,8 +32,6 @@ class Loader implements TemplateLoader
      * @var \Main\Template\Model A object to load the template from.
      */
     protected $source;
-
-    protected $compiler;
 
     /**
      * Sets a object to load the template from.
@@ -78,7 +75,7 @@ class Loader implements TemplateLoader
     /**
      * Gets the path of a view file
      *
-     * @param  string $name
+     * @param string $name
      *
      * @return string
      */
@@ -124,19 +121,6 @@ class Loader implements TemplateLoader
         catch (Exception $exception) {
             return FALSE;
         }
-    }
-
-    public function setCompiler(CompilerInterface $compiler)
-    {
-        $this->compiler = $compiler;
-    }
-
-    public function getCompiler()
-    {
-        if (is_null($this->compiler))
-            $this->compiler = App::make('blade.compiler');
-
-        return $this->compiler;
     }
 
     public function getFilePath()

@@ -4,6 +4,9 @@ namespace Igniter\Flame\Pagic;
 
 use File;
 use Igniter\Flame\Pagic\Extension\AbstractExtension;
+use Igniter\Flame\Pagic\Extension\CoreExtension;
+use Illuminate\Support\Facades\App;
+use Illuminate\View\Compilers\CompilerInterface;
 use LogicException;
 use View;
 
@@ -18,6 +21,11 @@ class Environment
     protected $cache;
 
     /**
+     * @var CompilerInterface
+     */
+    protected $compiler;
+
+    /**
      * @var array Cache for global variables.
      */
     protected static $globalsCache;
@@ -25,6 +33,18 @@ class Environment
     protected $templateClassPrefix = '__PagicTemplate_';
 
     protected $extensions = [];
+
+    /**
+     * @var bool
+     */
+    protected $debug;
+
+    /**
+     * @var mixed
+     */
+    protected $templateClass;
+
+    protected $charset;
 
     /**
      * Constructor.
@@ -48,13 +68,15 @@ class Environment
             'debug' => FALSE,
             'charset' => 'UTF-8',
             'templateClass' => 'Igniter\Flame\Pagic\Template',
-            'cache' => FALSE,
+            'cache' => null,
         ], $options);
 
         $this->debug = (bool)$options['debug'];
         $this->templateClass = $options['templateClass'];
         $this->setCharset($options['charset']);
         $this->setCache($options['cache']);
+
+        $this->addExtension(new CoreExtension());
 
         View::share('___env', $this);
     }
@@ -116,6 +138,21 @@ class Environment
         $this->cache = $cache;
     }
 
+    public function getCompiler()
+    {
+        if (is_null($this->compiler))
+            $this->compiler = App::make('blade.compiler');
+
+        $this->initExtensions();
+
+        return $this->compiler;
+    }
+
+    public function setCompiler(CompilerInterface $compiler)
+    {
+        $this->compiler = $compiler;
+    }
+
     public function getTemplateClass()
     {
         return $this->templateClass;
@@ -167,10 +204,10 @@ class Environment
         $isFresh = $this->isTemplateFresh($name, $fileCache->getTimestamp($path));
 
         if (!$isFresh OR !File::isFile($path)) {
-            $loader = $this->getLoader();
-            $content = $loader->getMarkup($name);
+            $markup = $this->getLoader()->getMarkup($name);
+            $compiled = $this->getCompiler()->compileString($markup);
 
-            $fileCache->write($path, $content);
+            $fileCache->write($path, $compiled);
         }
 
         $class = $this->getTemplateClass();
@@ -293,15 +330,12 @@ class Environment
 
     protected function addDirective($name, $callback)
     {
-        $compiler = $this->getLoader()->getCompiler();
-
-        if (is_array($callback) AND is_callable($callback)) {
-            $compiler->directive($name, $callback);
-        }
-        else {
-            $compiler->directive($name, function ($expression) use ($callback) {
+        if (!is_callable($callback)) {
+            $callback = function ($expression) use ($callback) {
                 return $callback;
-            });
+            };
         }
+
+        $this->compiler->directive($name, $callback);
     }
 }

@@ -13,8 +13,6 @@ class Template
 {
     private $env;
 
-    private $loader;
-
     /**
      * A stack of the last compiled templates.
      *
@@ -39,18 +37,15 @@ class Template
     /**
      * This method is for internal use only and should never be called
      * directly (use Environment::load() instead).
-     * @internal
-     *
      * @param \Igniter\Flame\Pagic\Environment $env
      * @param $path
+     * @internal
+     *
      */
     public function __construct(Environment $env, $path)
     {
         $this->env = $env;
-        $this->loader = $env->getLoader();
         $this->path = $path;
-
-        $env->initExtensions();
     }
 
     /**
@@ -89,15 +84,7 @@ class Template
 
     protected function getContents($data)
     {
-        $compiler = $this->loader->getCompiler();
-
-        if ($compiler->isExpired($this->path)) {
-            $compiler->compile($this->path);
-        }
-
-        $compiled = $compiler->getCompiledPath($this->path);
-
-        return $this->evaluatePath($compiled, $this->gatherData($data));
+        return $this->evaluatePath($this->path, $this->gatherData($data));
     }
 
     /**
@@ -120,6 +107,10 @@ class Template
 
     protected function evaluatePath($path, $data)
     {
+        if ($silenceNotice = config('system.suppressTemplateRuntimeNotice')) {
+            $errorLevel = error_reporting(E_ALL & ~E_NOTICE);
+        }
+
         $obLevel = ob_get_level();
         ob_start();
 
@@ -136,6 +127,10 @@ class Template
         }
         catch (Throwable $e) {
             $this->handleException(new FatalThrowableError($e), $obLevel);
+        }
+
+        if ($silenceNotice) {
+            error_reporting($errorLevel);
         }
 
         return ltrim(ob_get_clean());
@@ -155,7 +150,7 @@ class Template
     /**
      * Get the exception message for an exception.
      *
-     * @param  \Exception $e
+     * @param \Exception $e
      * @return string
      */
     protected function getMessage(Exception $e)
@@ -165,6 +160,6 @@ class Template
 
     protected function getSourceFilePath()
     {
-        return $this->loader->getFilePath() ?? $this->path;
+        return $this->env->getLoader()->getFilePath() ?? $this->path;
     }
 }
