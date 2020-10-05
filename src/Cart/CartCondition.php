@@ -62,6 +62,8 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
 
     protected $calculatedValue;
 
+    protected $limitations = [];
+
     /**
      * The config for this cart condition.
      *
@@ -180,6 +182,16 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
      * @return array
      */
     public function getActions()
+    {
+        return [];
+    }
+
+    /**
+     * Returns the limitations for this cart condition.
+     *
+     * @return array
+     */
+    public function getLimitations()
     {
         return [];
     }
