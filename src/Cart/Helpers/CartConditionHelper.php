@@ -28,22 +28,41 @@ trait CartConditionHelper
             $action = $this->parseAction($action);
             $actionValue = array_get($action, 'value', 0);
 
-            if (($calculateValue = array_get($action, 'calculateValue')) !== null) {
-                if (($response = call_user_func_array($calculateValue, [$this, $actionValue])) !== null)
-                {
-                    $value = $response;
-                }
-            } 
-
-            if (!isset($value))
+            $limitations = $this->getLimitations();
+            if (count($limitations))
             {
-                if ($this->valueIsPercentage($actionValue)) {
-                    $cleanValue = $this->cleanValue($actionValue);
-                    $value = ($total * ($cleanValue / 100));
-                }
-                else {
-                    $value = (float)$this->cleanValue($actionValue);
-                }
+                $total = $this->getCartContent()
+                ->reduce(function($total, $item) use ($limitations){
+                    $model = collect($item->getModel()->toArray());
+                    foreach ($limitations as $key=>$values)
+                    {
+                        if ($modelValue = $model->get($key))
+                        {
+                            if ($modelValue instanceof \Illuminate\Support\Collection)
+                            {
+                                if ($values->insersect($modelValue)->count())
+                                {
+                                   $total += $item->qty * $item->price;
+                                }
+                            } else {
+                                if ($values->contains($modelValue))
+                                {
+                                    $total += $item->qty * $item->price;
+                                }
+                            }
+                        }
+                    }
+                    return $total;
+                });
+            }
+
+            if ($this->valueIsPercentage($actionValue))
+            {
+                $cleanValue = $this->cleanValue($actionValue);
+                $value = ($total * ($cleanValue / 100));
+            }
+            else {
+                $value = (float)$this->cleanValue($actionValue);
             }
 
             $this->calculatedValue += $value;
