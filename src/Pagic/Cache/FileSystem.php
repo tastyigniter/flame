@@ -27,11 +27,13 @@ class FileSystem
     {
         $hash = md5($name);
         $result = $this->path.'/';
+        if ($hashName)
+            return $result.$hash.'.php';
+
         $result .= substr($hash, 0, 3).'/';
         $result .= substr($hash, 3, 3).'/';
-        $result .= $hashName ? $hash.'.php' : basename($name);
 
-        return $result;
+        return $result.basename($name);
     }
 
     public function load($key)
