@@ -88,7 +88,7 @@ class CartItem implements Arrayable, Jsonable
         $this->id = $id;
         $this->name = $name;
         $this->price = (float)$price;
-        $this->options = $this->makeCartOptions($options);
+        $this->options = $this->makeCartItemOptions($options);
         $this->comment = $comment;
         $this->rowId = $this->generateRowId($id, $options);
     }
@@ -111,11 +111,11 @@ class CartItem implements Arrayable, Jsonable
      */
     public function subtotal()
     {
-        $price = $this->options->reduce(function ($subtotal, CartItemOption $option) {
-            return $subtotal + $option->subtotal();
-        }, $this->price);
+        $price = $this->price();
 
-        return $this->qty * $price;
+        $optionsSum = $this->options->subtotal();
+
+        return $this->qty * ($price + $optionsSum);
     }
 
     public function comment()
@@ -169,9 +169,9 @@ class CartItem implements Arrayable, Jsonable
      */
     public function updateFromBuyable(Buyable $item)
     {
-        $this->id = $item->getBuyableIdentifier($this->options);
-        $this->name = $item->getBuyableName($this->options);
-        $this->price = $item->getBuyablePrice($this->options);
+        $this->id = $item->getBuyableIdentifier();
+        $this->name = $item->getBuyableName();
+        $this->price = $item->getBuyablePrice();
     }
 
     /**
@@ -187,7 +187,7 @@ class CartItem implements Arrayable, Jsonable
         $this->name = array_get($attributes, 'name', $this->name);
         $this->price = array_get($attributes, 'price', $this->price);
         $this->qty = array_get($attributes, 'qty', $this->qty);
-        $this->options = $this->makeCartOptions(array_get($attributes, 'options', $this->options));
+        $this->options = $this->makeCartItemOptions(array_get($attributes, 'options', $this->options));
         $this->comment = array_get($attributes, 'comment', $this->comment);
 
         $this->rowId = $this->generateRowId($this->id, $this->options->all());
@@ -239,9 +239,9 @@ class CartItem implements Arrayable, Jsonable
     public static function fromBuyable(Buyable $item, array $options = [], $comment = null)
     {
         return new self(
-            $item->getBuyableIdentifier($options),
-            $item->getBuyableName($options),
-            $item->getBuyablePrice($options),
+            $item->getBuyableIdentifier(),
+            $item->getBuyableName(),
+            $item->getBuyablePrice(),
             $options,
             $comment
         );
@@ -280,14 +280,14 @@ class CartItem implements Arrayable, Jsonable
         return md5($id.serialize($options).$this->comment);
     }
 
-    protected function makeCartOptions($items)
+    protected function makeCartItemOptions($options)
     {
-        if ($items instanceof CartItemOptions)
-            return $items;
+        if ($options instanceof CartItemOptions)
+            return $options;
 
-        return new CartItemOptions(array_map(function ($item) {
-            return CartItemOption::fromArray($item);
-        }, $items));
+        return new CartItemOptions(array_map(function ($option) {
+            return CartItemOption::fromArray($option);
+        }, $options));
     }
 
     /**

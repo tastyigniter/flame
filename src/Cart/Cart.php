@@ -35,8 +35,6 @@ class Cart
      */
     protected $instance;
 
-    protected $conditionsLoaded;
-
     /**
      * Instance of the cart condition.
      *
@@ -256,7 +254,7 @@ class Cart
      */
     public function total()
     {
-        return $this->conditions()->total($this->subtotal());
+        return $this->conditions()->apply($this->subtotal());
     }
 
     /**
@@ -266,7 +264,11 @@ class Cart
      */
     public function subtotal()
     {
-        return $this->getContent()->subtotal();
+        $subtotal = $this->getContent()->subtotal();
+
+        $this->getConditions()->apply($subtotal);
+
+        return $subtotal;
     }
 
     /**
@@ -317,7 +319,7 @@ class Cart
      */
     public function conditions()
     {
-        return $this->getConditions()->applied($this->subtotal());
+        return $this->getConditions()->applied();
     }
 
     /**
@@ -379,31 +381,27 @@ class Cart
         // Extensibility
         $this->fireEvent('condition.loading', $condition);
 
+        $conditions = $this->getConditions();
+
+        if ($condition->getPriority() == 0) {
+            $last = $conditions->last();
+            $condition->setPriority(!is_null($last) ? $last->getPriority() + 1 : 1);
+        }
+
         $condition->setCartContent($this->getContent());
 
         $condition->onLoad();
 
         $this->fireEvent('condition.loaded', $condition);
+
+        $conditions->put($condition->name, $condition);
+
+        $this->conditions = $conditions->sorted();
     }
 
-    public function loadConditions()
+    protected function loadConditions()
     {
-        if ($this->conditionsLoaded)
-            return;
-
-        $this->conditions = new CartConditions;
-        foreach (config('cart.conditions', []) as $definition) {
-            if (!array_get($definition, 'status', TRUE))
-                continue;
-
-            $condition = $this->makeCondition($definition);
-
-            $this->loadCondition($condition);
-
-            $this->conditions->put($condition->name, $condition);
-        }
-
-        $this->conditionsLoaded = TRUE;
+        traceLog('Deprecated. Use CartConditionManager::instance()->loadCartConditions($cart) instead');
     }
 
     protected function makeCondition($config)
@@ -448,6 +446,9 @@ class Cart
      */
     protected function getConditions()
     {
+        if (!$this->conditions)
+            $this->conditions = new CartConditions;
+
         return $this->conditions;
     }
 

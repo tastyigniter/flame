@@ -109,24 +109,13 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
      */
     public function apply($subTotal)
     {
-        if ($this->applied
-            OR $this->beforeApply() === FALSE
-        ) return $this;
+        if ($this->applied)
+            return $this;
 
-        if ($passed = $this->validate($this->getRules()))
+        if ($this->validate($this->getRules()))
             $this->processValue($subTotal);
 
-        if ($passed) {
-            $this->whenValid();
-        }
-        else {
-            $this->whenInvalid();
-        }
-
-        $this->passed = $passed;
         $this->applied = TRUE;
-
-        $this->afterApply();
 
         return $this;
     }
@@ -151,16 +140,16 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     }
 
     /**
-     * Called before the applying of condition on cart total.
+     * Called before the applying of condition on the entire cart.
      */
-    protected function beforeApply()
+    public function beforeApply()
     {
     }
 
     /**
-     * Called after the applying of condition on cart total.
+     * Called after the applying of condition on the entire cart.
      */
-    protected function afterApply()
+    public function afterApply()
     {
     }
 
@@ -187,14 +176,14 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     /**
      * Called once when the condition validation passes.
      */
-    protected function whenValid()
+    public function whenValid()
     {
     }
 
     /**
      * Called once when the condition validation fails.
      */
-    protected function whenInvalid()
+    public function whenInvalid()
     {
     }
 
@@ -239,12 +228,12 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
         $this->priority = $priority;
     }
 
-    public function getConfig($key, $default = null)
+    protected function getConfig($key, $default = null)
     {
         return array_get($this->config, $key, $default);
     }
 
-    public function setConfig($key, $value)
+    protected function setConfig($key, $value)
     {
         return array_set($this->config, $key, $value);
     }
@@ -308,8 +297,8 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
             'name' => $this->name,
             'label' => $this->label,
             'priority' => $this->priority,
-            'metaData' => Session::get($this->getSessionKey(), []),
             'removeable' => $this->removeable,
+            'metaData' => Session::get($this->getSessionKey(), []),
         ];
     }
 

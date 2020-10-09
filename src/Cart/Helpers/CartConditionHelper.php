@@ -13,11 +13,18 @@ trait CartConditionHelper
 
     protected function validate($rules)
     {
-        $passed = collect($rules)->filter(function ($rule) {
+        $validated = collect($rules)->filter(function ($rule) {
             return $this->ruleIsValid($rule);
         })->count();
 
-        return $passed == count($rules);
+        if ($this->passed = ($validated == count($rules))) {
+            $this->whenValid();
+        }
+        else {
+            $this->whenInvalid();
+        }
+
+        return $this->passed;
     }
 
     protected function processValue($total)

@@ -17,4 +17,11 @@ class CartItemOptions extends Collection
     {
         return $this->get($key);
     }
+
+    public function subtotal()
+    {
+        return $this->sum(function (CartItemOption $option) {
+            return $option->subtotal();
+        });
+    }
 }
