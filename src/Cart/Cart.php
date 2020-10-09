@@ -112,6 +112,8 @@ class Cart
             $cartItem->qty += $content->get($cartItem->rowId)->qty;
         }
 
+        $this->applyAllConditionsToItem($cartItem);
+
         $content->put($cartItem->rowId, $cartItem);
 
         $this->fireEvent('added', $cartItem);
@@ -161,6 +163,8 @@ class Cart
 
             return $cartItem->rowId;
         }
+
+        $this->applyAllConditionsToItem($cartItem);
 
         $content->put($cartItem->rowId, $cartItem);
 
@@ -396,6 +400,92 @@ class Cart
         $conditions->put($condition->name, $condition);
 
         $this->conditions = $conditions->sorted();
+    }
+
+    /**
+     * Applies all conditions to a cart item.
+     *
+     * @param \Igniter\Flame\Cart\CartItem $cartItem
+     */
+    protected function applyAllConditionsToItem(CartItem $cartItem)
+    {
+        foreach ($this->getConditions() as $condition) {
+            $this->applyConditionToItem($condition, $cartItem);
+        }
+    }
+
+    protected function applyConditionToItem(CartCondition $condition, CartItem $cartItem)
+    {
+//        if (!$condition->isApplicableItem($cartItem->id))
+        if (!in_array($cartItem->id, $condition->getApplicableItems()))
+            return;
+
+        if ($cartItem->conditions->has($condition->name))
+            return;
+
+        $itemCondition = $condition->toItem($cartItem);
+        $cartItem->conditions->put($condition->name, $itemCondition);
+    }
+
+    /**
+     * Load condition on an existing item on the cart
+     *
+     * @param string $name
+     * @param string|null $rowId
+     */
+    public function addItemCondition($name, $rowId = null)
+    {
+        $condition = $this->getCondition($name);
+
+        $content = $this->getContent();
+
+        if (!is_null($rowId))
+            $content->where('rowId', $rowId);
+
+        $content->each(function (CartItem $cartItem) use ($condition) {
+            $this->applyConditionToItem($condition, $cartItem);
+        });
+
+        $this->putSession('content', $content);
+    }
+
+    /**
+     * Remove a condition that has been applied on a cart item
+     *
+     * @param string $name
+     * @param string|null $rowId
+     */
+    public function removeItemCondition($name, $rowId = null)
+    {
+        $content = $this->getContent();
+
+        if (!is_null($rowId))
+            $content->where('rowId', $rowId);
+
+        $content->each(function (CartItem $cartItem) use ($name) {
+            $cartItem->conditions->forget($name);
+        });
+
+        $this->putSession('content', $content);
+    }
+
+    /**
+     * Remove all conditions that has been applied on a cart item
+     *
+     * @param string|null $rowId
+     */
+    public function clearItemConditions($rowId = null)
+    {
+        $content = $this->getContent();
+
+        if (!is_null($rowId))
+            $content->where('rowId', $rowId);
+
+        $content->each(function (CartItem $cartItem) {
+            $cartItem->clearConditions();
+        });
+
+        $this->putSession('content', $content);
     }
 
     protected function loadConditions()

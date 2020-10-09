@@ -27,7 +27,7 @@ trait CartConditionHelper
         return $this->passed;
     }
 
-    protected function processValue($total)
+    public function processValue($total)
     {
         $this->calculatedValue = 0;
 
@@ -52,7 +52,7 @@ trait CartConditionHelper
         $this->actionCollection = $result;
     }
 
-    protected function processTotal($total)
+    public function processTotal($total)
     {
         $result = $this->actionCollection->reduce(function ($total, $action) {
             $action = $this->parseAction($action);

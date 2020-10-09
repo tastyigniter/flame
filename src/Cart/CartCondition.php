@@ -185,6 +185,11 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     {
     }
 
+    public function getApplicableItems()
+    {
+        return [];
+    }
+
     //
     // Getters and Setters
     //
@@ -283,6 +288,17 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     //
     //
     //
+
+    /**
+     * Get the instance to apply on a cart item.
+     *
+     * @param \Igniter\Flame\Cart\CartItem $cartItem
+     * @return static
+     */
+    public function toItem(CartItem $cartItem)
+    {
+        return new static($this->toArray());
+    }
 
     /**
      * Get the instance as an array.
