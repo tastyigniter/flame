@@ -88,13 +88,13 @@ class Cart
      * Add an item to the cart.
      *
      * @param $buyable
-     * @param int|float $qty
+     * @param int $qty
      * @param array $options
      * @param null $comment
      *
-     * @return \Igniter\Flame\Cart\CartItem
+     * @return array|\Igniter\Flame\Cart\CartItem
      */
-    public function add($buyable, $qty = null, array $options = [], $comment = null)
+    public function add($buyable, $qty = 0, array $options = [], $comment = null)
     {
         if ($this->isMulti($buyable)) {
             return array_map(function ($item) {
@@ -248,7 +248,7 @@ class Cart
     }
 
     /**
-     * Get the total price of the items (after conditions) in the cart.
+     * Get the total price of the items (with conditions) in the cart.
      *
      * @return string
      */
@@ -258,7 +258,7 @@ class Cart
     }
 
     /**
-     * Get the subtotal (before conditions) of the items in the cart.
+     * Get the subtotal (with conditions) of the items in the cart.
      *
      * @return float
      */
@@ -335,7 +335,7 @@ class Cart
     }
 
     /**
-     * Removes a condition on a cart by unique id,
+     * Clear a condition on a cart by its name,
      *
      * @param $name
      *
@@ -351,7 +351,6 @@ class Cart
             return FALSE;
 
         $cartCondition->clearMetaData();
-        $this->conditions->pull($name);
 
         $this->fireEvent('condition.removed', $cartCondition);
     }
@@ -456,13 +455,13 @@ class Cart
      * Create a new CartItem from the supplied attributes.
      *
      * @param $buyable
-     * @param int|float $qty
+     * @param int $qty
      * @param array $options
      * @param null $comment
      *
      * @return \Igniter\Flame\Cart\CartItem
      */
-    protected function createCartItem($buyable, $qty = null, array $options = [], $comment = null)
+    protected function createCartItem($buyable, $qty = 0, array $options = [], $comment = null)
     {
         if ($buyable instanceof Buyable) {
             $cartItem = CartItem::fromBuyable($buyable, $options, $comment);
@@ -551,8 +550,8 @@ class Cart
     public function deleteStored($identifier)
     {
         $this->createModel()
-             ->where('identifier', $identifier)
-             ->where('instance', $this->currentInstance())->delete();
+            ->where('identifier', $identifier)
+            ->where('instance', $this->currentInstance())->delete();
     }
 
     /**
@@ -563,14 +562,14 @@ class Cart
     protected function storedCartWithIdentifierExists($identifier)
     {
         return $this->createModel()
-                    ->where('identifier', $identifier)
-                    ->where('instance', $this->currentInstance())->exists();
+            ->where('identifier', $identifier)
+            ->where('instance', $this->currentInstance())->exists();
     }
 
     protected function getStoredCartByIdentifier($identifier)
     {
         return $this->createModel()
-                    ->where('identifier', $identifier)->first();
+            ->where('identifier', $identifier)->first();
     }
 
     /**

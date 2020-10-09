@@ -43,8 +43,6 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
 
     public $removeable = FALSE;
 
-    public $disabled = FALSE;
-
     //
     // Object properties
     //
