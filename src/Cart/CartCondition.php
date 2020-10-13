@@ -133,6 +133,17 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
             }, $subTotal);
     }
 
+    /**
+     * Added for backward compatibility
+     *
+     * @param $subTotal
+     * @return float|string
+     */
+    public function processValue($subTotal)
+    {
+        return $this->calculate($subTotal);
+    }
+
     //
     // Extensions & Overrides
     //
@@ -205,12 +216,16 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
 
     public function setCartContent($cartContent)
     {
-        traceLog('Deprecated. See CartCondition::withTarget()');
+        traceLog('CartCondition::setCartContent() is deprecated. See CartCondition::withTarget()');
+
+        return $this->withTarget($cartContent);
     }
 
     public function getCartContent()
     {
-        traceLog('Deprecated. Use Cart::content() instead');
+        traceLog('CartCondition::getCartContent() is deprecated. Use Cart::content() instead');
+
+        return $this->target;
     }
 
     public function getLabel()
