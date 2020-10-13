@@ -7,6 +7,7 @@ use Exception;
 use Igniter\Flame\Cart\Contracts\Buyable;
 use Igniter\Flame\Cart\Exceptions\InvalidRowIDException;
 use Igniter\Flame\Cart\Exceptions\UnknownModelException;
+use Igniter\Flame\Cart\Helpers\ActsAsItemable;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Session\SessionManager;
 
@@ -112,8 +113,6 @@ class Cart
             $cartItem->qty += $content->get($cartItem->rowId)->qty;
         }
 
-        $this->applyAllConditionsToItem($cartItem);
-
         $content->put($cartItem->rowId, $cartItem);
 
         $this->fireEvent('added', $cartItem);
@@ -163,8 +162,6 @@ class Cart
 
             return $cartItem->rowId;
         }
-
-        $this->applyAllConditionsToItem($cartItem);
 
         $content->put($cartItem->rowId, $cartItem);
 
@@ -258,7 +255,7 @@ class Cart
      */
     public function total()
     {
-        return $this->conditions()->apply($this->subtotal());
+        return $this->conditions()->apply($this->getContent());
     }
 
     /**
@@ -268,11 +265,7 @@ class Cart
      */
     public function subtotal()
     {
-        $subtotal = $this->getContent()->subtotal();
-
-        $this->getConditions()->apply($subtotal);
-
-        return $subtotal;
+        return $this->getContent()->subtotal();
     }
 
     /**
@@ -323,7 +316,11 @@ class Cart
      */
     public function conditions()
     {
-        return $this->getConditions()->applied();
+        $conditions = $this->getConditions();
+
+        $conditions->apply($content = $this->getContent());
+
+        return $conditions->applied();
     }
 
     /**
@@ -356,6 +353,8 @@ class Cart
 
         $cartCondition->clearMetaData();
 
+        $this->removeItemCondition($cartCondition);
+
         $this->fireEvent('condition.removed', $cartCondition);
     }
 
@@ -367,6 +366,8 @@ class Cart
             $condition->clearMetaData();
         });
 
+        $this->clearItemConditions();
+
         $this->fireEvent('condition.cleared');
     }
 
@@ -377,6 +378,11 @@ class Cart
     {
         traceLog('Deprecated. Use Cart::loadCondition($condition) instead');
         $this->loadCondition($condition);
+    }
+
+    public function loadConditions()
+    {
+        traceLog('Deprecated. Use CartConditionManager::instance()->loadCartConditions($cart) instead');
     }
 
     public function loadCondition(CartCondition $condition)
@@ -391,13 +397,13 @@ class Cart
             $condition->setPriority(!is_null($last) ? $last->getPriority() + 1 : 1);
         }
 
-        $condition->setCartContent($this->getContent());
-
         $condition->onLoad();
 
         $this->fireEvent('condition.loaded', $condition);
 
         $conditions->put($condition->name, $condition);
+
+        $this->loadItemsCondition($condition);
 
         $this->conditions = $conditions->sorted();
     }
@@ -416,31 +422,28 @@ class Cart
 
     protected function applyConditionToItem(CartCondition $condition, CartItem $cartItem)
     {
-//        if (!$condition->isApplicableItem($cartItem->id))
-        if (!in_array($cartItem->id, $condition->getApplicableItems()))
-            return;
+        if (!in_array(ActsAsItemable::class, class_uses($condition)))
+            return $cartItem->conditions;
 
-        if ($cartItem->conditions->has($condition->name))
-            return;
+        if (!in_array($cartItem->id, (array)$condition->getApplicableItems())) {
+            return $cartItem->conditions->forget($condition->name);
+        }
 
-        $itemCondition = $condition->toItem($cartItem);
-        $cartItem->conditions->put($condition->name, $itemCondition);
+        if (!$cartItem->conditions->has($condition->name) AND method_exists($condition, 'toItem')) {
+            $cartItem->conditions->put($condition->name, $condition->toItem());
+        }
+
+        return $cartItem->conditions;
     }
 
     /**
-     * Load condition on an existing item on the cart
+     * Load condition on all existing cart items
      *
-     * @param string $name
-     * @param string|null $rowId
+     * @param CartCondition $condition
      */
-    public function addItemCondition($name, $rowId = null)
+    protected function loadItemsCondition($condition)
     {
-        $condition = $this->getCondition($name);
-
         $content = $this->getContent();
-
-        if (!is_null($rowId))
-            $content->where('rowId', $rowId);
 
         $content->each(function (CartItem $cartItem) use ($condition) {
             $this->applyConditionToItem($condition, $cartItem);
@@ -450,56 +453,33 @@ class Cart
     }
 
     /**
-     * Remove a condition that has been applied on a cart item
+     * Remove an applied condition from all cart items
      *
-     * @param string $name
-     * @param string|null $rowId
+     * @param CartCondition $condition
      */
-    public function removeItemCondition($name, $rowId = null)
+    protected function removeItemCondition($condition)
     {
         $content = $this->getContent();
 
-        if (!is_null($rowId))
-            $content->where('rowId', $rowId);
-
-        $content->each(function (CartItem $cartItem) use ($name) {
-            $cartItem->conditions->forget($name);
+        $content->each(function (CartItem $cartItem) use ($condition) {
+            $cartItem->conditions->forget($condition->name);
         });
 
         $this->putSession('content', $content);
     }
 
     /**
-     * Remove all conditions that has been applied on a cart item
-     *
-     * @param string|null $rowId
+     * Remove all applied conditions from all cart items
      */
-    public function clearItemConditions($rowId = null)
+    protected function clearItemConditions()
     {
         $content = $this->getContent();
-
-        if (!is_null($rowId))
-            $content->where('rowId', $rowId);
 
         $content->each(function (CartItem $cartItem) {
             $cartItem->clearConditions();
         });
 
         $this->putSession('content', $content);
-    }
-
-    protected function loadConditions()
-    {
-        traceLog('Deprecated. Use CartConditionManager::instance()->loadCartConditions($cart) instead');
-    }
-
-    protected function makeCondition($config)
-    {
-        $className = array_get($config, 'className');
-        if (!class_exists($className))
-            throw new Exception(sprintf("The Cart Condition class name '%s' has not been registered", $className));
-
-        return new $className($config);
     }
 
     //

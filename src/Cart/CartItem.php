@@ -111,7 +111,7 @@ class CartItem implements Arrayable, Jsonable
     {
         $price = $this->priceWithoutConditions();
 
-        return $this->conditions->apply($price);
+        return $this->conditions->apply($price, $this);
     }
 
     /**

@@ -6,13 +6,11 @@ use Illuminate\Support\Collection;
 
 class CartItemConditions extends Collection
 {
-    public function apply($subtotal)
+    public function apply($price, CartItem $cartItem)
     {
         return $this
-            ->reduce(function ($total, CartCondition $condition) {
-                $condition->processValue($total);
-
-                return $condition->processTotal($total);
-            }, $subtotal);
+            ->reduce(function ($total, CartCondition $condition) use ($cartItem) {
+                return $condition->withTarget($cartItem)->calculate($total);
+            }, $price);
     }
 }
