@@ -36,10 +36,10 @@ class CreateController extends GeneratorCommand
      */
     protected $stubs = [
         'controller/controller.stub' => 'controllers/{{studly_name}}.php',
-        'controller/index.stub' => 'views/{{lower_name}}/index.php',
-        'controller/create.stub' => 'views/{{lower_name}}/create.php',
-        'controller/edit.stub' => 'views/{{lower_name}}/edit.php',
-        'controller/preview.stub' => 'views/{{lower_name}}/preview.php',
+        'controller/index.stub' => 'views/{{lower_name}}/index.blade.php',
+        'controller/create.stub' => 'views/{{lower_name}}/create.blade.php',
+        'controller/edit.stub' => 'views/{{lower_name}}/edit.blade.php',
+        'controller/preview.stub' => 'views/{{lower_name}}/preview.blade.php',
     ];
 
     /**
