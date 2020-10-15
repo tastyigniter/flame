@@ -422,18 +422,30 @@ class Cart
 
     protected function applyConditionToItem(CartCondition $condition, CartItem $cartItem)
     {
+        if ($itemCondition = $this->getApplicableItemCondition($condition, $cartItem)) {
+            if (!$cartItem->conditions->has($itemCondition->name)) {
+                $cartItem->conditions->put($itemCondition->name, $itemCondition);
+            }
+        }
+        else {
+            $cartItem->conditions->forget($condition->name);
+        }
+    }
+
+    /**
+     * @param $condition
+     * @param $cartItem
+     * @return null|\Igniter\Flame\Cart\CartCondition
+     */
+    protected function getApplicableItemCondition($condition, $cartItem)
+    {
         if (!in_array(ActsAsItemable::class, class_uses($condition)))
-            return $cartItem->conditions;
+            return null;
 
-        if (!in_array($cartItem->id, (array)$condition->getApplicableItems())) {
-            return $cartItem->conditions->forget($condition->name);
-        }
+        if (!$condition::isApplicableTo($cartItem))
+            return null;
 
-        if (!$cartItem->conditions->has($condition->name) AND method_exists($condition, 'toItem')) {
-            $cartItem->conditions->put($condition->name, $condition->toItem());
-        }
-
-        return $cartItem->conditions;
+        return $condition->toItem();
     }
 
     /**

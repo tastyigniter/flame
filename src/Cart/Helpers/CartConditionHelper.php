@@ -27,6 +27,17 @@ trait CartConditionHelper
         return $this->passed;
     }
 
+    /**
+     * Added for backward compatibility
+     *
+     * @param $subTotal
+     * @return float|string
+     */
+    protected function processValue($subTotal)
+    {
+        return $this->calculate($subTotal);
+    }
+
     protected function processActionValue($action, $total)
     {
         $action = $this->parseAction($action);

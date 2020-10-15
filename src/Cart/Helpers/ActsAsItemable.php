@@ -15,8 +15,7 @@ trait ActsAsItemable
         return new static($this->toArray());
     }
 
-    public function getApplicableItems()
+    public static function isApplicableTo($cartItem)
     {
-        return [];
     }
 }

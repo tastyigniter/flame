@@ -133,17 +133,6 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
             }, $subTotal);
     }
 
-    /**
-     * Added for backward compatibility
-     *
-     * @param $subTotal
-     * @return float|string
-     */
-    public function processValue($subTotal)
-    {
-        return $this->calculate($subTotal);
-    }
-
     //
     // Extensions & Overrides
     //
