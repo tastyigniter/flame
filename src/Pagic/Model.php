@@ -425,9 +425,13 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
         }
 
         if (!strlen($extension = pathinfo($fileName, PATHINFO_EXTENSION))) {
-            if (File::exists($this->getFilePath($fileName.'.blade.php')))
+            if (!File::exists($this->getFilePath($fileName.'.php')))
                 $fileName = $fileName.'.blade';
 
+            $extension = $this->defaultExtension;
+            $baseFile = $fileName;
+        }
+        elseif ($extension == 'blade') {
             $extension = $this->defaultExtension;
             $baseFile = $fileName;
         }
