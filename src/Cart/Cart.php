@@ -113,6 +113,8 @@ class Cart
             $cartItem->qty += $content->get($cartItem->rowId)->qty;
         }
 
+        $this->applyAllConditionsToItem($cartItem);
+
         $content->put($cartItem->rowId, $cartItem);
 
         $this->fireEvent('added', $cartItem);
@@ -162,6 +164,8 @@ class Cart
 
             return $cartItem->rowId;
         }
+
+        $this->applyAllConditionsToItem($cartItem);
 
         $content->put($cartItem->rowId, $cartItem);
 
