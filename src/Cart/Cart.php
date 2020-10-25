@@ -7,6 +7,7 @@ use Exception;
 use Igniter\Flame\Cart\Contracts\Buyable;
 use Igniter\Flame\Cart\Exceptions\InvalidRowIDException;
 use Igniter\Flame\Cart\Exceptions\UnknownModelException;
+use Igniter\Flame\Cart\Helpers\ActsAsItemable;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Session\SessionManager;
 
@@ -112,6 +113,8 @@ class Cart
             $cartItem->qty += $content->get($cartItem->rowId)->qty;
         }
 
+        $this->applyAllConditionsToItem($cartItem);
+
         $content->put($cartItem->rowId, $cartItem);
 
         $this->fireEvent('added', $cartItem);
@@ -161,6 +164,8 @@ class Cart
 
             return $cartItem->rowId;
         }
+
+        $this->applyAllConditionsToItem($cartItem);
 
         $content->put($cartItem->rowId, $cartItem);
 
@@ -254,7 +259,7 @@ class Cart
      */
     public function total()
     {
-        return $this->conditions()->apply($this->subtotal());
+        return $this->conditions()->apply($this->getContent());
     }
 
     /**
@@ -264,11 +269,7 @@ class Cart
      */
     public function subtotal()
     {
-        $subtotal = $this->getContent()->subtotal();
-
-        $this->getConditions()->apply($subtotal);
-
-        return $subtotal;
+        return $this->getContent()->subtotal();
     }
 
     /**
@@ -319,7 +320,11 @@ class Cart
      */
     public function conditions()
     {
-        return $this->getConditions()->applied();
+        $conditions = $this->getConditions();
+
+        $conditions->apply($content = $this->getContent());
+
+        return $conditions->applied();
     }
 
     /**
@@ -352,6 +357,8 @@ class Cart
 
         $cartCondition->clearMetaData();
 
+        $this->removeItemCondition($cartCondition);
+
         $this->fireEvent('condition.removed', $cartCondition);
     }
 
@@ -363,6 +370,8 @@ class Cart
             $condition->clearMetaData();
         });
 
+        $this->clearItemConditions();
+
         $this->fireEvent('condition.cleared');
     }
 
@@ -373,6 +382,11 @@ class Cart
     {
         traceLog('Deprecated. Use Cart::loadCondition($condition) instead');
         $this->loadCondition($condition);
+    }
+
+    public function loadConditions()
+    {
+        traceLog('Deprecated. Use CartConditionManager::instance()->loadCartConditions($cart) instead');
     }
 
     public function loadCondition(CartCondition $condition)
@@ -387,29 +401,101 @@ class Cart
             $condition->setPriority(!is_null($last) ? $last->getPriority() + 1 : 1);
         }
 
-        $condition->setCartContent($this->getContent());
-
         $condition->onLoad();
 
         $this->fireEvent('condition.loaded', $condition);
 
         $conditions->put($condition->name, $condition);
 
+        $this->loadItemsCondition($condition);
+
         $this->conditions = $conditions->sorted();
     }
 
-    protected function loadConditions()
+    /**
+     * Applies all conditions to a cart item.
+     *
+     * @param \Igniter\Flame\Cart\CartItem $cartItem
+     */
+    protected function applyAllConditionsToItem(CartItem $cartItem)
     {
-        traceLog('Deprecated. Use CartConditionManager::instance()->loadCartConditions($cart) instead');
+        foreach ($this->getConditions() as $condition) {
+            $this->applyConditionToItem($condition, $cartItem);
+        }
     }
 
-    protected function makeCondition($config)
+    protected function applyConditionToItem(CartCondition $condition, CartItem $cartItem)
     {
-        $className = array_get($config, 'className');
-        if (!class_exists($className))
-            throw new Exception(sprintf("The Cart Condition class name '%s' has not been registered", $className));
+        if ($itemCondition = $this->getApplicableItemCondition($condition, $cartItem)) {
+            if (!$cartItem->conditions->has($itemCondition->name)) {
+                $cartItem->conditions->put($itemCondition->name, $itemCondition);
+            }
+        }
+        else {
+            $cartItem->conditions->forget($condition->name);
+        }
+    }
 
-        return new $className($config);
+    /**
+     * @param $condition
+     * @param $cartItem
+     * @return null|\Igniter\Flame\Cart\CartCondition
+     */
+    protected function getApplicableItemCondition($condition, $cartItem)
+    {
+        if (!in_array(ActsAsItemable::class, class_uses($condition)))
+            return null;
+
+        if (!$condition::isApplicableTo($cartItem))
+            return null;
+
+        return $condition->toItem();
+    }
+
+    /**
+     * Load condition on all existing cart items
+     *
+     * @param CartCondition $condition
+     */
+    protected function loadItemsCondition($condition)
+    {
+        $content = $this->getContent();
+
+        $content->each(function (CartItem $cartItem) use ($condition) {
+            $this->applyConditionToItem($condition, $cartItem);
+        });
+
+        $this->putSession('content', $content);
+    }
+
+    /**
+     * Remove an applied condition from all cart items
+     *
+     * @param CartCondition $condition
+     */
+    protected function removeItemCondition($condition)
+    {
+        $content = $this->getContent();
+
+        $content->each(function (CartItem $cartItem) use ($condition) {
+            $cartItem->conditions->forget($condition->name);
+        });
+
+        $this->putSession('content', $content);
+    }
+
+    /**
+     * Remove all applied conditions from all cart items
+     */
+    protected function clearItemConditions()
+    {
+        $content = $this->getContent();
+
+        $content->each(function (CartItem $cartItem) {
+            $cartItem->clearConditions();
+        });
+
+        $this->putSession('content', $content);
     }
 
     //

@@ -27,67 +27,68 @@ trait CartConditionHelper
         return $this->passed;
     }
 
-    protected function processValue($total)
+    /**
+     * Added for backward compatibility
+     *
+     * @param $subTotal
+     * @return float|string
+     */
+    protected function processValue($subTotal)
     {
-        $this->calculatedValue = 0;
-
-        $result = collect($this->getActions())->map(function ($action) use ($total) {
-            $action = $this->parseAction($action);
-            $actionValue = array_get($action, 'value', 0);
-
-            if ($this->valueIsPercentage($actionValue)) {
-                $cleanValue = $this->cleanValue($actionValue);
-                $value = ($total * ($cleanValue / 100));
-            }
-            else {
-                $value = (float)$this->cleanValue($actionValue);
-            }
-
-            $this->calculatedValue += $value;
-            $action['cleanValue'] = $value;
-
-            return $action;
-        });
-
-        $this->actionCollection = $result;
+        return $this->calculate($subTotal);
     }
 
-    protected function processTotal($total)
+    protected function processActionValue($action, $total)
     {
-        $result = $this->actionCollection->reduce(function ($total, $action) {
-            $action = $this->parseAction($action);
-            $actionValue = array_get($action, 'value', 0);
-            $calculatedValue = array_get($action, 'cleanValue', 0);
-            $actionMultiplier = array_get($action, 'multiplier');
-            $actionMax = array_get($action, 'max', FALSE);
+        $action = $this->parseAction($action);
+        $actionValue = array_get($action, 'value', 0);
 
+        if ($this->valueIsPercentage($actionValue)) {
+            $cleanValue = $this->cleanValue($actionValue);
+            $value = ($total * ($cleanValue / 100));
+        }
+        else {
+            $value = (float)$this->cleanValue($actionValue);
+        }
+
+        $this->calculatedValue += $value;
+        $action['cleanValue'] = $value;
+
+        return $action;
+    }
+
+    protected function calculateActionValue($action, $total)
+    {
+        $action = $this->parseAction($action);
+        $actionValue = array_get($action, 'value', 0);
+        $calculatedValue = array_get($action, 'cleanValue', 0);
+        $actionMultiplier = array_get($action, 'multiplier');
+        $actionMax = array_get($action, 'max', FALSE);
+
+        $result = $total;
+        if ($this->actionIsInclusive($action)) {
             $result = $total;
-            if ($this->actionIsInclusive($action)) {
-                $result = $total;
-            }
-            elseif ($this->valueIsToBeSubtracted($actionValue)) {
-                $result = ($total - $calculatedValue);
-            }
-            elseif ($this->valueIsToBeAdded($actionValue)) {
-                $result = ($total + $calculatedValue);
-            }
-            elseif ($this->valueIsToBeMultiplied($actionValue)) {
-                $result = ($total * $calculatedValue);
-            }
-            elseif ($this->valueIsToBeDivided($actionValue)) {
-                $result = (float)($total / $calculatedValue);
-            }
+        }
+        elseif ($this->valueIsToBeSubtracted($actionValue)) {
+            $result = ($total - $calculatedValue);
+        }
+        elseif ($this->valueIsToBeAdded($actionValue)) {
+            $result = ($total + $calculatedValue);
+        }
+        elseif ($this->valueIsToBeMultiplied($actionValue)) {
+            $result = ($total * $calculatedValue);
+        }
+        elseif ($this->valueIsToBeDivided($actionValue)) {
+            $result = (float)($total / $calculatedValue);
+        }
 
-            if ($actionMultiplier)
-                $result = (float)($total * $this->operandValue($actionMultiplier));
+        if ($actionMultiplier)
+            $result = (float)($total * $this->operandValue($actionMultiplier));
 
-            if ($this->actionHasReachedMax($actionMax, $result))
-                $result = $actionMax;
+        if ($this->actionHasReachedMax($actionMax, $result))
+            $result = $actionMax;
 
-            return max($result, 0);
-        }, $total);
-
-        return $result;
+        return max($result, 0);
     }
 
     protected function actionHasReachedMax($actionMax, $value)
@@ -113,9 +114,8 @@ trait CartConditionHelper
         if (property_exists($this, $key))
             return $this->{$key};
 
-        $cartContent = $this->getCartContent();
-        if (method_exists($cartContent, $key))
-            return call_user_func([$cartContent, $key]);
+        if ($key !== 'total' AND $this->target AND method_exists($this->target, $key))
+            return call_user_func([$this->target, $key]);
 
         return $key;
     }
@@ -163,7 +163,7 @@ trait CartConditionHelper
         if ($action == [])
             return $action;
 
-        if (!isset($action['value']))
+        if (!array_key_exists('value', $action))
             throw new Exception(sprintf('Cart condition action [%s] format is invalid on %s.', $action, get_class($this)));
 
         return $action;
