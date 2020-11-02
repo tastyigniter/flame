@@ -43,8 +43,6 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
 
     public $removeable = FALSE;
 
-    public $disabled = FALSE;
-
     //
     // Object properties
     //
@@ -52,13 +50,11 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     protected $sessionKey = 'cart.conditions.%s';
 
     /**
-     * @var \Igniter\Flame\Cart\CartContent
+     * @var \Igniter\Flame\Cart\CartContent|\Igniter\Flame\Cart\CartItem
      */
-    protected $cartContent;
+    protected $target;
 
     protected $passed = FALSE;
-
-    protected $applied = FALSE;
 
     protected $calculatedValue;
 
@@ -96,47 +92,45 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
         return $this->passed;
     }
 
-    public function isApplied()
-    {
-        return $this->applied;
-    }
-
     /**
      * Apply condition to cart content
      *
      * @param $subTotal
-     * @return \Igniter\Flame\Cart\CartCondition
+     *
+     * @return float|string
      */
     public function apply($subTotal)
     {
-        if ($this->applied
-            OR $this->beforeApply() === FALSE
-        ) return $this;
+        if ($this->beforeApply() === FALSE)
+            return $subTotal;
 
-        if ($passed = $this->validate($this->getRules()))
-            $this->processValue($subTotal);
-
-        if ($passed) {
-            $this->whenValid();
-        }
-        else {
-            $this->whenInvalid();
-        }
-
-        $this->passed = $passed;
-        $this->applied = TRUE;
+        if ($this->validate($this->getRules()))
+            $subTotal = $this->calculate($subTotal);
 
         $this->afterApply();
 
-        return $this;
+        return $subTotal;
     }
 
-    public function calculateTotal($subTotal)
+    /**
+     * Get the calculated the value of this condition
+     * Used internally when applying to cart item
+     *
+     * @param $subTotal
+     *
+     * @return float|string
+     */
+    public function calculate($subTotal)
     {
-        if ($this->applied AND $this->passed)
-            $subTotal = $this->processTotal($subTotal);
+        $this->calculatedValue = 0;
 
-        return $subTotal;
+        return collect($this->getActions())
+            ->map(function ($action) use ($subTotal) {
+                return $this->processActionValue($action, $subTotal);
+            })
+            ->reduce(function ($total, $action) {
+                return $this->calculateActionValue($action, $total);
+            }, $subTotal);
     }
 
     //
@@ -151,16 +145,16 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     }
 
     /**
-     * Called before the applying of condition on cart total.
+     * Called before the applying of condition on the entire cart.
      */
-    protected function beforeApply()
+    public function beforeApply()
     {
     }
 
     /**
-     * Called after the applying of condition on cart total.
+     * Called after the applying of condition on the entire cart.
      */
-    protected function afterApply()
+    public function afterApply()
     {
     }
 
@@ -187,14 +181,14 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     /**
      * Called once when the condition validation passes.
      */
-    protected function whenValid()
+    public function whenValid()
     {
     }
 
     /**
      * Called once when the condition validation fails.
      */
-    protected function whenInvalid()
+    public function whenInvalid()
     {
     }
 
@@ -202,16 +196,25 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     // Getters and Setters
     //
 
-    public function setCartContent($cartContent)
+    public function withTarget($target)
     {
-        $this->cartContent = $cartContent;
+        $this->target = $target;
 
         return $this;
     }
 
+    public function setCartContent($cartContent)
+    {
+        traceLog('CartCondition::setCartContent() is deprecated. See CartCondition::withTarget()');
+
+        return $this->withTarget($cartContent);
+    }
+
     public function getCartContent()
     {
-        return $this->cartContent;
+        traceLog('CartCondition::getCartContent() is deprecated. Use Cart::content() instead');
+
+        return $this->target;
     }
 
     public function getLabel()
@@ -239,12 +242,12 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
         $this->priority = $priority;
     }
 
-    public function getConfig($key, $default = null)
+    protected function getConfig($key, $default = null)
     {
         return array_get($this->config, $key, $default);
     }
 
-    public function setConfig($key, $value)
+    protected function setConfig($key, $value)
     {
         return array_set($this->config, $key, $value);
     }
@@ -308,8 +311,8 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
             'name' => $this->name,
             'label' => $this->label,
             'priority' => $this->priority,
-            'metaData' => Session::get($this->getSessionKey(), []),
             'removeable' => $this->removeable,
+            'metaData' => Session::get($this->getSessionKey(), []),
         ];
     }
 

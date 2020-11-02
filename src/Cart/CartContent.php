@@ -13,10 +13,8 @@ class CartContent extends Collection
 
     public function subtotal()
     {
-        $subTotal = $this->reduce(function ($subTotal, CartItem $cartItem) {
-            return $subTotal + $cartItem->subtotal();
-        }, 0);
-
-        return $subTotal;
+        return $this->sum(function (CartItem $cartItem) {
+            return $cartItem->subtotal();
+        });
     }
 }

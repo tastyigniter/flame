@@ -160,6 +160,9 @@ class Template
 
     protected function getSourceFilePath()
     {
-        return $this->env->getLoader()->getFilePath() ?? $this->path;
+        if ($source = $this->env->getLoader()->getSource())
+            return $source->getFilePath();
+
+        return $this->path;
     }
 }

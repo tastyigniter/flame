@@ -36,7 +36,7 @@ class CreateComponent extends GeneratorCommand
      */
     protected $stubs = [
         'component/component.stub' => 'components/{{studly_name}}.php',
-        'component/default.stub'   => 'components/{{lower_name}}/default.php',
+        'component/default.stub' => 'components/{{lower_name}}/default.blade.php',
     ];
 
     /**
@@ -56,19 +56,19 @@ class CreateComponent extends GeneratorCommand
         $component = $this->argument('component');
 
         $this->vars = [
-            'extension'        => $extension,
-            'lower_extension'  => strtolower($extension),
-            'title_extension'  => title_case($extension),
+            'extension' => $extension,
+            'lower_extension' => strtolower($extension),
+            'title_extension' => title_case($extension),
             'studly_extension' => studly_case($extension),
 
-            'author'        => $author,
-            'lower_author'  => strtolower($author),
-            'title_author'  => title_case($author),
+            'author' => $author,
+            'lower_author' => strtolower($author),
+            'title_author' => title_case($author),
             'studly_author' => studly_case($author),
 
-            'name'        => $component,
-            'lower_name'  => strtolower($component),
-            'title_name'  => title_case($component),
+            'name' => $component,
+            'lower_name' => strtolower($component),
+            'title_name' => title_case($component),
             'studly_name' => studly_case($component),
         ];
     }

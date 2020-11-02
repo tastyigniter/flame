@@ -47,6 +47,21 @@ abstract class AbstractArea extends Model implements AreaInterface
         '#F16745', '#FFC65D',
     ];
 
+    public function getColorAttribute($value)
+    {
+        if (!strlen($value))
+            $value = $this->pickColor();
+
+        return $value;
+    }
+
+    protected function pickColor()
+    {
+        $index = mt_rand(0, count(self::$areaColors) - 1);
+
+        return self::$areaColors[$index];
+    }
+
     //
     // Accessors & Mutators
     //

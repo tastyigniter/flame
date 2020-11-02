@@ -7,6 +7,7 @@ use BadMethodCallException;
 use Exception;
 use Igniter\Flame\Pagic\Source\SourceResolverInterface;
 use Igniter\Flame\Support\Extendable;
+use Igniter\Flame\Support\Facades\File;
 use Igniter\Flame\Traits\EventEmitter;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
@@ -424,6 +425,13 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
         }
 
         if (!strlen($extension = pathinfo($fileName, PATHINFO_EXTENSION))) {
+            if (!File::exists($this->getFilePath($fileName.'.php')))
+                $fileName = $fileName.'.blade';
+
+            $extension = $this->defaultExtension;
+            $baseFile = $fileName;
+        }
+        elseif ($extension == 'blade') {
             $extension = $this->defaultExtension;
             $baseFile = $fileName;
         }

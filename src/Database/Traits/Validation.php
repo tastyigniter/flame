@@ -3,7 +3,9 @@
 namespace Igniter\Flame\Database\Traits;
 
 use Igniter\Flame\Exception\ValidationException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
+use System\Helpers\ValidationHelper;
 use Watson\Validating\ValidatingTrait;
 
 trait Validation
@@ -18,6 +20,31 @@ trait Validation
     public function getValidator()
     {
         return $this->validator ?: Validator::getFacadeRoot();
+    }
+
+    protected function makeValidator($rules = [])
+    {
+        $parsed = ValidationHelper::prepareRules($rules);
+        $rules = Arr::get($parsed, 'rules', $rules);
+
+        // Get the casted model attributes.
+        $attributes = $this->getModelAttributes();
+
+        if ($this->getInjectUniqueIdentifier()) {
+            $rules = $this->injectUniqueIdentifierToRules($rules);
+        }
+
+        $messages = $this->getValidationMessages();
+
+        $validator = $this->getValidator()->make($attributes, $rules, $messages);
+
+        if ($this->getValidationAttributeNames()) {
+            $validator->setAttributeNames(Arr::get(
+                $parsed, 'attributes', $this->getValidationAttributeNames()
+            ));
+        }
+
+        return $validator;
     }
 
     /**
