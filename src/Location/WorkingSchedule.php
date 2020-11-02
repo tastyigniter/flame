@@ -318,7 +318,7 @@ class WorkingSchedule
     public function getTimeslot(int $interval = 15, DateTime $dateTime = null, int $leadTime = 25)
     {
         $dateTime = Carbon::instance($this->parseDate($dateTime));
-        $checkDateTime = $dateTime->copy()->addMinutes($leadTime * 2);
+        $checkDateTime = $dateTime->copy();
         $interval = new DateInterval('PT'.($interval ?: 15).'M');
         $leadTime = new DateInterval('PT'.($leadTime ?: 25).'M');
 
@@ -445,10 +445,7 @@ class WorkingSchedule
             if ($range->endsNextDay())
                 $end->add(new DateInterval('P1D'));
 
-            if (!is_null($leadTime)) {
-                $start = $start->add($leadTime);
-                $end = $end->sub($leadTime);
-            }
+            $start = $start->add($leadTime);
 
             $datePeriod = new DatePeriod($start, $interval, $end);
             foreach ($datePeriod as $dateTime) {
