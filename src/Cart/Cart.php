@@ -431,7 +431,7 @@ class Cart
                 $cartItem->conditions->put($itemCondition->name, $itemCondition);
             }
         }
-        else {
+        elseif ($cartItem->conditions) {
             $cartItem->conditions->forget($condition->name);
         }
     }
