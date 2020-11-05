@@ -366,7 +366,7 @@ class Cart
     {
         $this->fireEvent('condition.clearing');
 
-        $this->conditions->each(function (CartCondition $condition) {
+        $this->conditions()->each(function (CartCondition $condition) {
             $condition->clearMetaData();
         });
 
