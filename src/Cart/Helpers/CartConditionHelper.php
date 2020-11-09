@@ -17,14 +17,13 @@ trait CartConditionHelper
             return $this->ruleIsValid($rule);
         })->count();
 
-        if ($this->passed = ($validated == count($rules))) {
-            $this->whenValid();
-        }
-        else {
-            $this->whenInvalid();
+        $passed = $validated == count($rules);
+
+        if (is_null($this->passed)) {
+            $passed ? $this->whenValid() : $this->whenInvalid();
         }
 
-        return $this->passed;
+        return $this->passed = $passed;
     }
 
     /**

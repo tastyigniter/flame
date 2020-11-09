@@ -54,7 +54,7 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
      */
     protected $target;
 
-    protected $passed = FALSE;
+    protected $passed;
 
     protected $calculatedValue;
 
