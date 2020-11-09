@@ -92,6 +92,11 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
         return $this->passed;
     }
 
+    public function isApplied()
+    {
+        return $this->isValid();
+    }
+
     /**
      * Apply condition to cart content
      *
