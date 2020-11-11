@@ -104,7 +104,10 @@ class Localization
 
     public function supportedLocales()
     {
-        return $this->getConfig('supportedLocales', []);
+        $supportedLocales = $this->getConfig('supportedLocales', []);
+        if (!$supportedLocales)
+            $supportedLocales = ['en'];
+        return $supportedLocales;
     }
 
     public function detectBrowserLocale()
