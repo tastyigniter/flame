@@ -107,6 +107,7 @@ class Localization
         $supportedLocales = $this->getConfig('supportedLocales', []);
         if (!$supportedLocales)
             $supportedLocales = ['en'];
+
         return $supportedLocales;
     }
 
