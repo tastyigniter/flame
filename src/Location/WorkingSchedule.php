@@ -318,7 +318,6 @@ class WorkingSchedule
     public function getTimeslot(int $interval = 15, DateTime $dateTime = null, int $leadTime = 25)
     {
         $dateTime = Carbon::instance($this->parseDate($dateTime));
-        $checkDateTime = $dateTime->copy();
         $interval = new DateInterval('PT'.($interval ?: 15).'M');
         $leadTime = new DateInterval('PT'.($leadTime ?: 25).'M');
 
@@ -331,7 +330,7 @@ class WorkingSchedule
 
             $timeslot = $this->generateTimeslot($date, $interval, $leadTime);
 
-            $filteredTimeslot = $this->filterTimeslot($timeslot, $checkDateTime);
+            $filteredTimeslot = $this->filterTimeslot($timeslot, $dateTime, $leadTime->i);
 
             if ($filteredTimeslot->isEmpty())
                 continue;
@@ -408,10 +407,13 @@ class WorkingSchedule
         return $date;
     }
 
-    protected function filterTimeslot(Collection $timeslot, DateTime $checkDateTime)
+    protected function filterTimeslot(Collection $timeslot, DateTime $checkDateTime, int $leadTime)
     {
-        return $timeslot->filter(function (DateTime $dateTime) use ($checkDateTime) {
-            return Carbon::instance($checkDateTime)->lte($dateTime);
+        return $timeslot->filter(function (DateTime $dateTime) use ($checkDateTime, $leadTime) {
+            if (Carbon::instance($checkDateTime)->gt($dateTime))
+                return false;
+
+            return Carbon::now()->diffInMinutes($dateTime) > $leadTime;
         })->filter(function (DateTime $dateTime) {
             $result = Event::fire('igniter.workingSchedule.timeslotValid', [$this, $dateTime], TRUE);
 
