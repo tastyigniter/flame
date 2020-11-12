@@ -319,6 +319,8 @@ class WorkingSchedule
     {
         $dateTime = Carbon::instance($this->parseDate($dateTime));
         $checkDateTime = $dateTime->copy();
+        if (Carbon::now()->diffInMinutes($dateTime) <= $leadTime)
+            $checkDateTime->addMinutes($leadTime);
         $interval = new DateInterval('PT'.($interval ?: 15).'M');
         $leadTime = new DateInterval('PT'.($leadTime ?: 25).'M');
 
