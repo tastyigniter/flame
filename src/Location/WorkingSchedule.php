@@ -320,7 +320,7 @@ class WorkingSchedule
         $dateTime = Carbon::instance($this->parseDate($dateTime));
         $checkDateTime = $dateTime->copy();
         $interval = new DateInterval('PT'.($interval ?: 15).'M');
-        $leadTimeInterval = new DateInterval('PT'.($leadTime ?: 25).'M');
+        $leadTime = new DateInterval('PT'.($leadTime ?: 25).'M');
 
         $start = $dateTime->copy()->startOfDay()->subDay();
         $end = $dateTime->copy()->startOfDay()->addDay($this->days);
@@ -329,9 +329,9 @@ class WorkingSchedule
         for ($date = $start; $date->lte($end); $date->addDay()) {
             $indexValue = $date->toDateString();
 
-            $timeslot = $this->generateTimeslot($date, $interval, $leadTimeInterval);
+            $timeslot = $this->generateTimeslot($date, $interval, $leadTime);
 
-            $filteredTimeslot = $this->filterTimeslot($timeslot, $checkDateTime, $leadTime);
+            $filteredTimeslot = $this->filterTimeslot($timeslot, $checkDateTime, $leadTime->i);
 
             if ($filteredTimeslot->isEmpty())
                 continue;
