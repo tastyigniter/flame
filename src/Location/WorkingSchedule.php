@@ -413,6 +413,7 @@ class WorkingSchedule
         return $timeslot->filter(function (DateTime $dateTime) use ($checkDateTime, $leadTime) {
             if (Carbon::instance($checkDateTime)->gt($dateTime))
                 return false;
+
             return Carbon::now()->diffInMinutes($dateTime) > $leadTime;
         })->filter(function (DateTime $dateTime) {
             $result = Event::fire('igniter.workingSchedule.timeslotValid', [$this, $dateTime], TRUE);
