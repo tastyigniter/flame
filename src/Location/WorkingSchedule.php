@@ -319,10 +319,8 @@ class WorkingSchedule
     {
         $dateTime = Carbon::instance($this->parseDate($dateTime));
         $checkDateTime = $dateTime->copy();
-        if (Carbon::now()->diffInMinutes($dateTime) <= $leadTime)
-            $checkDateTime->addMinutes($leadTime);
         $interval = new DateInterval('PT'.($interval ?: 15).'M');
-        $leadTime = new DateInterval('PT'.($leadTime ?: 25).'M');
+        $leadTimeInterval = new DateInterval('PT'.($leadTime ?: 25).'M');
 
         $start = $dateTime->copy()->startOfDay()->subDay();
         $end = $dateTime->copy()->startOfDay()->addDay($this->days);
@@ -331,9 +329,9 @@ class WorkingSchedule
         for ($date = $start; $date->lte($end); $date->addDay()) {
             $indexValue = $date->toDateString();
 
-            $timeslot = $this->generateTimeslot($date, $interval, $leadTime);
+            $timeslot = $this->generateTimeslot($date, $interval, $leadTimeInterval);
 
-            $filteredTimeslot = $this->filterTimeslot($timeslot, $checkDateTime);
+            $filteredTimeslot = $this->filterTimeslot($timeslot, $checkDateTime, $leadTime);
 
             if ($filteredTimeslot->isEmpty())
                 continue;
@@ -410,10 +408,10 @@ class WorkingSchedule
         return $date;
     }
 
-    protected function filterTimeslot(Collection $timeslot, DateTime $checkDateTime)
+    protected function filterTimeslot(Collection $timeslot, DateTime $checkDateTime, int $leadTime)
     {
-        return $timeslot->filter(function (DateTime $dateTime) use ($checkDateTime) {
-            return Carbon::instance($checkDateTime)->lte($dateTime);
+        return $timeslot->filter(function (DateTime $dateTime) use ($checkDateTime, $leadTime) {
+            return Carbon::now()->diffInMinutes($dateTime) > $leadTime AND Carbon::instance($checkDateTime)->lte($dateTime);
         })->filter(function (DateTime $dateTime) {
             $result = Event::fire('igniter.workingSchedule.timeslotValid', [$this, $dateTime], TRUE);
 
