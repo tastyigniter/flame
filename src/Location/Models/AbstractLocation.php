@@ -62,24 +62,16 @@ class AbstractLocation extends Model implements LocationInterface
 
     public function getAddress()
     {
-        $row = $this;
-
-        $address_data = [
-            'address_1' => $row['location_address_1'],
-            'address_2' => $row['location_address_2'],
-            'city' => $row['location_city'],
-            'state' => $row['location_state'],
-            'postcode' => $row['location_postcode'],
-            'location_lat' => $row['location_lat'],
-            'location_lng' => $row['location_lng'],
-            'country_id' => $row['location_country_id'],
-            'country' => isset($row['country_name']) ? $row['country_name'] : null,
-            'iso_code_2' => isset($row['iso_code_2']) ? $row['iso_code_2'] : null,
-            'iso_code_3' => isset($row['iso_code_3']) ? $row['iso_code_3'] : null,
-            'format' => isset($row['format']) ? $row['format'] : null,
+        return [
+            'address_1' => $this->location_address_1,
+            'address_2' => $this->location_address_2,
+            'city' => $this->location_city,
+            'state' => $this->location_state,
+            'postcode' => $this->location_postcode,
+            'location_lat' => $this->location_lat,
+            'location_lng' => $this->location_lng,
+            'country_id' => $this->location_country_id,
         ];
-
-        return $address_data;
     }
 
     public function setOption($key, $value)

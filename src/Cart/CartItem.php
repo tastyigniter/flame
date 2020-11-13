@@ -162,7 +162,7 @@ class CartItem implements Arrayable, Jsonable
 
     public function hasConditions()
     {
-        return count($this->conditions);
+        return count($this->conditions ?? []);
     }
 
     public function clearConditions()

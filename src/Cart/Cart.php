@@ -623,7 +623,7 @@ class Cart
 
         $storedConditions = array_get($storedData, 'conditions');
         foreach ($storedConditions as $cartCondition) {
-            $this->conditions->put($cartCondition->name, $cartCondition);
+            $this->getConditions()->put($cartCondition->name, $cartCondition);
         }
 
         $this->putSession('content', $content);
