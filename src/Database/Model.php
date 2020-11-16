@@ -5,6 +5,7 @@ namespace Igniter\Flame\Database;
 use Carbon\Carbon;
 use Closure;
 use DateTimeInterface;
+use Exception;
 use Igniter\Flame\Database\Query\Builder as QueryBuilder;
 use Igniter\Flame\Traits\EventEmitter;
 use Igniter\Flame\Traits\ExtendableTrait;
@@ -362,9 +363,10 @@ class Model extends EloquentModel
      */
     public function setAttribute($key, $value)
     {
-        // First we will check for the presence of a mutator for the set operation
-        // which simply lets the developers tweak the attribute as it is set on
-        // the model, such as "json_encoding" an listing of data for storage.
+        if (empty($key)) {
+            throw new Exception('Cannot access empty model attribute.');
+        }
+
         if ($this->hasSetMutator($key)) {
             $method = 'set'.Str::studly($key).'Attribute';
 
@@ -376,6 +378,10 @@ class Model extends EloquentModel
         // the connection grammar's date format. We will auto set the values.
         elseif ($value && (in_array($key, $this->getDates()) || $this->isDateCastable($key))) {
             $value = $this->fromDateTime($value);
+        }
+
+        if ($this->hasRelation($key) AND !$this->isRelationPurgeable($key)) {
+            return $this->setRelationValue($key, $value);
         }
 
         if (!is_null($value) && $this->isSerializedCastable($key)) {
@@ -398,6 +404,15 @@ class Model extends EloquentModel
         $this->fireEvent('model.setAttribute', [$key, $value]);
 
         return $this;
+    }
+
+    protected function isRelationPurgeable($name)
+    {
+        $purgeableAttributes = [];
+        if (method_exists($this, 'getPurgeableAttributes'))
+            $purgeableAttributes = $this->getPurgeableAttributes($name);
+
+        return in_array($name, $purgeableAttributes);
     }
 
     protected function asSerialized($value)
