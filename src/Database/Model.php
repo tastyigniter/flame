@@ -376,69 +376,6 @@ class Model extends EloquentModel
         );
     }
 
-    /**
-     * Fill the model with an array of attributes.
-     *
-     * @param array $attributes
-     *
-     * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Illuminate\Database\Eloquent\MassAssignmentException
-     */
-    public function fill(array $attributes)
-    {
-        return parent::fill($attributes);
-    }
-
-    /**
-     * Cast an attribute to a native PHP type.
-     * Cast an attribute to a native PHP type.
-     *
-     * @param string $key
-     * @param mixed $value
-     *
-     * @return mixed
-     */
-    protected function castAttribute($key, $value)
-    {
-        if (is_null($value)) {
-            return $value;
-        }
-
-        switch ($this->getCastType($key)) {
-            case 'int':
-            case 'integer':
-                return (int)$value;
-            case 'real':
-            case 'float':
-            case 'double':
-                return (float)$value;
-            case 'string':
-                return (string)$value;
-            case 'bool':
-            case 'boolean':
-                return (bool)$value;
-            case 'object':
-                return $this->fromJson($value, TRUE);
-            case 'array':
-            case 'json':
-                return $this->fromJson($value);
-            case 'collection':
-                return new EloquentCollection($this->fromJson($value));
-            case 'date':
-                return $this->asDate($value);
-            case 'datetime':
-                return $this->asDateTime($value);
-            case 'timestamp':
-                return $this->asTimeStamp($value);
-//            case 'time':
-//                return $this->asTime($value);
-            case 'serialize':
-                return $this->fromSerialized($value);
-            default:
-                return $value;
-        }
-    }
-
     public function getAttribute($key)
     {
         if (array_key_exists($key, $this->attributes) || $this->hasGetMutator($key)) {
@@ -681,15 +618,10 @@ class Model extends EloquentModel
         return Str::snake(Str::singular(str_replace('_model', '', class_basename($this)))).'_id';
     }
 
-    /**
-     * __get magic
-     * Allows models to access CI's loaded classes using the same
-     * syntax as controllers.
-     *
-     * @param string $key
-     *
-     * @return mixed
-     */
+    //
+    // Magic
+    //
+
     public function __get($key)
     {
         return $this->extendableGet($key);
@@ -716,18 +648,9 @@ class Model extends EloquentModel
         return $this->extendableCall($method, $params);
     }
 
-    /**
-     * Handle dynamic static method calls into the method.
-     *
-     * @param string $method
-     * @param array $parameters
-     *
-     * @return mixed
-     */
-    public static function __callStatic($method, $parameters)
-    {
-        return (new static)->$method(...$parameters);
-    }
+    //
+    // Pivot
+    //
 
     public function hasRelation($name)
     {
