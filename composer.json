@@ -28,7 +28,7 @@
     "ext-zip": "*",
     "fideloper/proxy": "~4.0",
     "doctrine/instantiator": "~1.0",
-    "october/rain": "~1.0.468",
+    "october/rain": "~1.1",
     "guzzlehttp/guzzle": "~6.3",
     "kalnoy/nestedset": "~5.0",
     "watson/validating": "~4.0",

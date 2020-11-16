@@ -2,13 +2,13 @@
 
 namespace Igniter\Flame\Database\Query;
 
-class Builder extends \Illuminate\Database\Query\Builder
+class Builder extends \October\Rain\Database\QueryBuilder
 {
     /**
      * Get an array with the values of a given column.
      *
-     * @param  string $column
-     * @param  string|null $key
+     * @param string $column
+     * @param string|null $key
      *
      * @return \Illuminate\Support\Collection
      */
