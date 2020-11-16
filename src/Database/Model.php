@@ -353,6 +353,17 @@ class Model extends EloquentModel
         }
     }
 
+    public function getAttributeValue($key)
+    {
+        $attr = parent::getAttributeValue($key);
+
+        if ($this->isSerializedCastable($key) AND !empty($attr)) {
+            $attr = $this->fromSerialized($attr);
+        }
+
+        return $attr;
+    }
+
     /**
      * Set a given attribute on the model.
      *
