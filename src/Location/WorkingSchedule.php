@@ -342,6 +342,30 @@ class WorkingSchedule
         return collect($result)->sort();
     }
 
+    public function generateTimeslot(DateTime $date, DateInterval $interval, ?DateInterval $leadTime = null)
+    {
+        if (is_null($leadTime))
+            $leadTime = $interval;
+
+        $timeslot = [];
+        foreach ($this->forDate($date)->getIterator() as $range) {
+            $start = $range->start()->toDateTime($date);
+            $end = $range->end()->toDateTime($date);
+
+            if ($range->endsNextDay())
+                $end->add(new DateInterval('P1D'));
+
+            $start = $start->add($leadTime);
+
+            $datePeriod = new DatePeriod($start, $interval, $end);
+            foreach ($datePeriod as $dateTime) {
+                $timeslot[$dateTime->getTimestamp()] = $dateTime;
+            }
+        }
+
+        return collect($timeslot);
+    }
+
     protected function now()
     {
         return $this->now ?? $this->now = new DateTime();
@@ -432,29 +456,5 @@ class WorkingSchedule
             return TRUE;
 
         return FALSE;
-    }
-
-    protected function generateTimeslot(DateTime $date, DateInterval $interval, ?DateInterval $leadTime = null)
-    {
-        if (is_null($leadTime))
-            $leadTime = $interval;
-
-        $timeslot = [];
-        foreach ($this->forDate($date)->getIterator() as $range) {
-            $start = $range->start()->toDateTime($date);
-            $end = $range->end()->toDateTime($date);
-
-            if ($range->endsNextDay())
-                $end->add(new DateInterval('P1D'));
-
-            $start = $start->add($leadTime);
-
-            $datePeriod = new DatePeriod($start, $interval, $end);
-            foreach ($datePeriod as $dateTime) {
-                $timeslot[$dateTime->getTimestamp()] = $dateTime;
-            }
-        }
-
-        return collect($timeslot);
     }
 }
