@@ -170,19 +170,19 @@ class DatabaseSettingStore extends SettingStore
 
         foreach ($updateData as $key => $value) {
             $this->newQuery()
-                 ->where($this->keyColumn, '=', $key)
-                 ->update([$this->valueColumn => $value]);
+                ->where($this->keyColumn, '=', $key)
+                ->update([$this->valueColumn => $value]);
         }
 
         if ($insertData) {
             $this->newQuery(TRUE)
-                 ->insert($this->prepareInsertData($insertData));
+                ->insert($this->prepareInsertData($insertData));
         }
 
         if ($deleteKeys) {
             $this->newQuery()
-                 ->whereIn($this->keyColumn, $deleteKeys)
-                 ->delete();
+                ->whereIn($this->keyColumn, $deleteKeys)
+                ->delete();
         }
 
         $this->flushCache();

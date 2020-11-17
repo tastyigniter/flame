@@ -230,7 +230,7 @@ trait HasMedia
     {
         $newMediaIds = $this->parseIds($media);
         $this->getMedia($tag)
-             ->reject(function (Media $tagMedia) use ($newMediaIds) {
+            ->reject(function (Media $tagMedia) use ($newMediaIds) {
                  return in_array($tagMedia->getKey(), array_column($newMediaIds, 'id'));
              })
             ->each->delete();

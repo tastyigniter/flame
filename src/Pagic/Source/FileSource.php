@@ -104,10 +104,10 @@ class FileSource extends AbstractSource implements SourceInterface
         }
 
         $iterator = $this->finder->create()
-                                 ->files()
-                                 ->ignoreVCS(TRUE)
-                                 ->ignoreDotFiles(TRUE)
-                                 ->depth('<= 1');  // Support only a single level of subdirectories
+            ->files()
+            ->ignoreVCS(TRUE)
+            ->ignoreDotFiles(TRUE)
+            ->depth('<= 1');  // Support only a single level of subdirectories
 
         $iterator->filter(function (\SplFileInfo $file) use ($extensions, $fileMatch) {
             // Filter by extension

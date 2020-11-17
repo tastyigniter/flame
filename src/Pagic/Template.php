@@ -40,7 +40,6 @@ class Template
      * @param \Igniter\Flame\Pagic\Environment $env
      * @param $path
      * @internal
-     *
      */
     public function __construct(Environment $env, $path)
     {

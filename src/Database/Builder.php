@@ -180,7 +180,7 @@ class Builder extends BuilderBase
         $dates = [];
 
         $collection = $this->selectRaw("{$column}, MONTH({$column}) as month, YEAR({$column}) as year")
-                           ->groupBy([$column, 'month', 'year'])->orderBy($column, 'desc')->get();
+            ->groupBy([$column, 'month', 'year'])->orderBy($column, 'desc')->get();
 
         if ($collection) {
             foreach ($collection as $model) {

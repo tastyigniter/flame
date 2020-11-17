@@ -113,10 +113,10 @@ class Translation extends Model
     public static function getFresh($locale, $group, $namespace = null)
     {
         return static::query()
-                     ->where('locale', $locale)
-                     ->where('group', $group)
-                     ->where('namespace', $namespace)
-                     ->get();
+            ->where('locale', $locale)
+            ->where('group', $group)
+            ->where('namespace', $namespace)
+            ->get();
     }
 
     public static function getCached($locale, $group, $namespace = null)

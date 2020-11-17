@@ -102,7 +102,7 @@ trait HasPermalink
         $separator = $config['separator'];
 
         return $query->where($attribute, $slug)
-                     ->orWhere($attribute, 'LIKE', $slug.$separator.'%');
+            ->orWhere($attribute, 'LIKE', $slug.$separator.'%');
     }
 
     public function findSlug($slug, $columns = ['*'])
