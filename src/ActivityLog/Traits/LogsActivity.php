@@ -62,10 +62,10 @@ trait LogsActivity
                 }
 
                 $model->getActivityLogger()
-                      ->useLog($model->getLogNameToUse($eventName))
-                      ->performedOn($model)
-                      ->withProperties($model->attributeValuesToBeLogged($eventName))
-                      ->log($description);
+                    ->useLog($model->getLogNameToUse($eventName))
+                    ->performedOn($model)
+                    ->withProperties($model->attributeValuesToBeLogged($eventName))
+                    ->log($description);
             });
         });
     }

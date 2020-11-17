@@ -79,9 +79,9 @@ class Media extends Model
     public function addFromRequest(UploadedFile $uploadedFile, $tag = null)
     {
         $this->getMediaAdder()
-             ->performedOn($this->attachment)
-             ->useMediaTag($tag)
-             ->fromFile($uploadedFile);
+            ->performedOn($this->attachment)
+            ->useMediaTag($tag)
+            ->fromFile($uploadedFile);
 
         return $this;
     }
@@ -98,9 +98,9 @@ class Media extends Model
             return;
 
         $this->getMediaAdder()
-             ->performedOn($this->attachment)
-             ->useMediaTag($tag)
-             ->fromFile(new SymfonyFile($filePath));
+            ->performedOn($this->attachment)
+            ->useMediaTag($tag)
+            ->fromFile(new SymfonyFile($filePath));
 
         return $this;
     }
