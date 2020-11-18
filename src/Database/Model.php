@@ -357,7 +357,7 @@ class Model extends EloquentModel
     {
         $attr = parent::getAttributeValue($key);
 
-        if ($this->isSerializedCastable($key) AND !empty($attr)) {
+        if ($this->isSerializedCastable($key) AND !empty($attr) AND is_string($attr)) {
             $attr = $this->fromSerialized($attr);
         }
 
