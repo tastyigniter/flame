@@ -8,6 +8,7 @@ use Igniter\Flame\Exception\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use October\Rain\Foundation\Exception\Handler as OctoberHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class Handler extends OctoberHandler
 {
@@ -30,4 +31,19 @@ class Handler extends OctoberHandler
      * @var array
      */
     protected $handlers = [];
+
+    protected function getStatusCode($exception)
+    {
+        if ($exception instanceof HttpExceptionInterface) {
+            $code = $exception->getStatusCode();
+        }
+        elseif ($exception instanceof AjaxException) {
+            $code = 406;
+        }
+        else {
+            $code = 500;
+        }
+
+        return $code;
+    }
 }
