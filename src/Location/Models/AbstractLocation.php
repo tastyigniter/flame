@@ -36,7 +36,7 @@ class AbstractLocation extends Model implements LocationInterface
         ],
     ];
 
-    public $casts = [
+    protected $casts = [
         'options' => 'serialize',
     ];
 

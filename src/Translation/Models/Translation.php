@@ -32,7 +32,7 @@ class Translation extends Model
      */
     protected $fillable = ['locale', 'namespace', 'group', 'item', 'text', 'unstable'];
 
-    public $casts = [
+    protected $casts = [
         'unstable' => 'boolean',
         'locked' => 'boolean',
     ];

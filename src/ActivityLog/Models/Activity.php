@@ -39,7 +39,7 @@ class Activity extends Model
 
     public $timestamps = TRUE;
 
-    public $casts = [
+    protected $casts = [
         'properties' => 'collection',
         'subject_id' => 'integer',
         'causer_id' => 'integer',

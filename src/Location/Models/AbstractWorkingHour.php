@@ -31,7 +31,7 @@ abstract class AbstractWorkingHour extends Model implements Contracts\WorkingHou
         ],
     ];
 
-    public $casts = [
+    protected $casts = [
         'opening_time' => 'time',
         'closing_time' => 'time',
     ];

@@ -32,7 +32,7 @@ abstract class AbstractArea extends Model implements AreaInterface
         ],
     ];
 
-    public $casts = [
+    protected $casts = [
         'boundaries' => 'serialize',
         'conditions' => 'serialize',
         'is_default' => 'boolean',

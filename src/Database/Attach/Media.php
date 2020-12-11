@@ -39,7 +39,7 @@ class Media extends Model
      *
      * @var array
      */
-    public $casts = [
+    protected $casts = [
         'manipulations' => 'array',
         'custom_properties' => 'array',
     ];
