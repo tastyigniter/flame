@@ -32,7 +32,7 @@ class Model extends EloquentModel
     /**
      * @var array Make the model's attributes public so actions can modify them.
      */
-    public $attributes = [];
+    protected $attributes = [];
 
     public $timestamps = FALSE;
 
@@ -47,7 +47,7 @@ class Model extends EloquentModel
      * New Custom types: serialize, time
      * @var array
      */
-    public $casts = [];
+    protected $casts = [];
 
     /**
      * @var array The array of models booted events.
@@ -321,6 +321,17 @@ class Model extends EloquentModel
     //
     // Overrides
     //
+
+    /**
+     * Add attribute casts for the model.
+     *
+     * @param array $attributes
+     * @return void
+     */
+    public function addCasts($attributes)
+    {
+        $this->casts = array_merge($this->casts, $attributes);
+    }
 
     /**
      * Get the observable event names.
