@@ -17,6 +17,14 @@ class Localization
      */
     public function handle($request, Closure $next)
     {
+        if (app()->hasDatabase())
+            $this->loadLocale();
+
+        return $next($request);
+    }
+
+    protected function loadLocale()
+    {
         $localization = app('translator.localization');
 
         if (app()->runningInAdmin()) {
@@ -36,7 +44,5 @@ class Localization
                 }
             }
         }
-
-        return $next($request);
     }
 }
