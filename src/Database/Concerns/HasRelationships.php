@@ -286,14 +286,18 @@ trait HasRelationships
 
             case 'morphedByMany':
                 $relation = $this->validateRelationArgs($relationName,
-                    ['table', 'foreignKey', 'otherKey', 'pivot', 'timestamps'], ['name']
+                    ['table', 'foreignKey', 'otherKey', 'parentKey', 'relatedKey', 'pivot', 'timestamps'], ['name']
                 );
                 $relationObj = $this->$relationType(
                     $relation[0],
                     $relation['name'],
                     $relation['table'],
                     $relation['foreignKey'],
-                    $relation['otherKey'], $relationName);
+                    $relation['otherKey'],
+                    $relation['parentKey'],
+                    $relation['relatedKey'],
+                    $relationName
+                );
                 break;
 
             case 'hasOneThrough':
