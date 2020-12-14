@@ -2,6 +2,12 @@
 
 namespace Igniter\Flame\Mail;
 
-class Markdown extends \October\Rain\Parse\Markdown
+use Igniter\Flame\Support\Facades\File;
+
+class Markdown extends \Illuminate\Mail\Markdown
 {
+    public static function parseFile($path)
+    {
+        return self::parse(File::get($path));
+    }
 }
