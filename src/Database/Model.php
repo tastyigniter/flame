@@ -366,13 +366,61 @@ class Model extends EloquentModel
 
     public function getAttributeValue($key)
     {
+        if (($attr = $this->fireEvent('model.beforeGetAttribute', [$key], TRUE)) !== null) {
+            return $attr;
+        }
+
         $attr = parent::getAttributeValue($key);
 
         if ($this->isSerializedCastable($key) AND !empty($attr) AND is_string($attr)) {
             $attr = $this->fromSerialized($attr);
         }
 
+        if (($_attr = $this->fireEvent('model.getAttribute', [$key, $attr], TRUE)) !== null) {
+            return $_attr;
+        }
+
         return $attr;
+    }
+
+    public function attributesToArray()
+    {
+        $attributes = $this->getArrayableAttributes();
+
+        foreach ($attributes as $key => $value) {
+            if (($eventValue = $this->fireEvent('model.beforeGetAttribute', [$key], TRUE)) !== null) {
+                $attributes[$key] = $eventValue;
+            }
+        }
+
+        $attributes = $this->addDateAttributesToArray(
+            $attributes = $this->getArrayableAttributes()
+        );
+
+        $attributes = $this->addMutatedAttributesToArray(
+            $attributes, $mutatedAttributes = $this->getMutatedAttributes()
+        );
+
+        $attributes = $this->addCastAttributesToArray(
+            $attributes, $mutatedAttributes
+        );
+
+        foreach ($attributes as $key => $value) {
+            if ($this->isSerializedCastable($key))
+                $attributes[$key] = $this->fromSerialized($value);
+        }
+
+        foreach ($this->getArrayableAppends() as $key) {
+            $attributes[$key] = $this->mutateAttributeForArray($key, null);
+        }
+
+        foreach ($attributes as $key => $value) {
+            if (($eventValue = $this->fireEvent('model.getAttribute', [$key, $value], TRUE)) !== null) {
+                $attributes[$key] = $eventValue;
+            }
+        }
+
+        return $attributes;
     }
 
     /**
@@ -404,6 +452,10 @@ class Model extends EloquentModel
 
         if ($this->hasRelation($key) AND !$this->isRelationPurgeable($key)) {
             return $this->setRelationValue($key, $value);
+        }
+
+        if (($_value = $this->fireEvent('model.beforeSetAttribute', [$key, $value], TRUE)) !== null) {
+            $value = $_value;
         }
 
         if (!is_null($value) && $this->isSerializedCastable($key)) {
