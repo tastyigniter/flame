@@ -347,6 +347,8 @@ class WorkingSchedule
         if (is_null($leadTime))
             $leadTime = $interval;
 
+        $previousDayClose = $this->nextCloseAt($date->copy()->subDay());
+
         $timeslot = [];
         foreach ($this->forDate($date)->getIterator() as $range) {
             $start = $range->start()->toDateTime($date);
@@ -355,7 +357,9 @@ class WorkingSchedule
             if ($range->endsNextDay())
                 $end->add(new DateInterval('P1D'));
 
-            $start = $start->add($leadTime);
+            // if our start time is greater than 1 minute after our previous close time, then add lead time
+            if ($start->diff($previousDayClose)->i > 1)
+                $start = $start->add($leadTime);
 
             $datePeriod = new DatePeriod($start, $interval, $end);
             foreach ($datePeriod as $dateTime) {
