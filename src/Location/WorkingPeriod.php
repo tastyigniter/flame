@@ -93,15 +93,11 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
     public function nextCloseAt(WorkingTime $time)
     {
         foreach ($this->ranges as $range) {
-            if ($range->containsTime($time) AND $nextCloseTime = next($range)) {
-                reset($range);
-
+            if ($range->containsTime($time) AND $nextCloseTime = $range->end()) {
                 return $nextCloseTime;
             }
 
             if ($nextCloseTime = $this->findNextTimeInFreeTime('end', $time, $range)) {
-                reset($range);
-
                 return $nextCloseTime;
             }
         }

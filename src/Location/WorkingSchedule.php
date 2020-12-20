@@ -44,7 +44,7 @@ class WorkingSchedule
     public function __construct($timezone = null, $days = 5)
     {
         $this->timezone = $timezone ? new DateTimeZone($timezone) : null;
-        $this->days = $days;
+        $this->days = (int)$days;
 
         $this->periods = WorkingDay::mapDays(function () {
             return new WorkingPeriod;
@@ -320,11 +320,8 @@ class WorkingSchedule
         $dateTime = Carbon::instance($this->parseDate($dateTime));
         $interval = new DateInterval('PT'.($interval ?: 15).'M');
 
-        $start = $dateTime->copy()->startOfDay()->subDay();
-        $end = $dateTime->copy()->startOfDay()->addDay($this->days);
-
         $timeslot = [];
-        $datePeriod = new DatePeriod($start, $interval, $end);
+        $datePeriod = $this->createPeriodForTimeslot($dateTime, $interval);
         foreach ($datePeriod as $date) {
             $workingTime = WorkingTime::create($date->format('H:i'));
             $workingPeriod = $this->forDate($date);
@@ -456,5 +453,16 @@ class WorkingSchedule
             return TRUE;
 
         return FALSE;
+    }
+
+    protected function createPeriodForTimeslot($dateTime, $interval)
+    {
+        $startDate = $this->nextOpenAt($dateTime);
+        $endDate = $this->nextCloseAt($dateTime->copy()->addDays($this->days));
+
+        if ($this->forDate($endDate)->closesLate())
+            $endDate->addDay();
+
+        return new DatePeriod($startDate, $interval, $endDate);
     }
 }
