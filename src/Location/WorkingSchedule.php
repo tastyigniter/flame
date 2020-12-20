@@ -340,7 +340,7 @@ class WorkingSchedule
             $timeslot[$dateString][$date->getTimestamp()] = $date;
         }
 
-        return collect($timeslot)->sort();
+        return collect($timeslot);
     }
 
     public function generateTimeslot(DateTime $date, DateInterval $interval, ?DateInterval $leadTime = null)
