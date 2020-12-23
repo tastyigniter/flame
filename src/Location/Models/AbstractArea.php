@@ -57,9 +57,7 @@ abstract class AbstractArea extends Model implements AreaInterface
 
     protected function pickColor()
     {
-        $index = mt_rand(0, count(self::$areaColors) - 1);
-
-        return self::$areaColors[$index];
+        return array_random(self::$areaColors);
     }
 
     //
