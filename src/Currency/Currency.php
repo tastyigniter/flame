@@ -124,6 +124,9 @@ class Currency
         // Get default currency if one is not set
         $code = $code ?: $this->config('default');
 
+        if (is_numeric($code))
+            $code = optional($this->getCurrency($code))->getCode() ?: $code;
+
         // Remove unnecessary characters
         $value = preg_replace('/[\s\',!]/', '', $value);
 
