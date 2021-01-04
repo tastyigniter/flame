@@ -458,7 +458,7 @@ class WorkingSchedule
     protected function createPeriodForTimeslot($dateTime, $interval)
     {
         $startDate = $dateTime->copy()->startOfDay()->subDay();
-        $endDate = $this->nextCloseAt($dateTime->copy()->addDays($this->days));
+        $endDate = $dateTime->copy()->addDays($this->days);
 
         if ($this->forDate($endDate)->closesLate())
             $endDate->addDay();
