@@ -44,7 +44,7 @@ class WorkingSchedule
     public function __construct($timezone = null, $days = 5)
     {
         $this->timezone = $timezone ? new DateTimeZone($timezone) : null;
-        $this->days = $days;
+        $this->days = (int)$days;
 
         $this->periods = WorkingDay::mapDays(function () {
             return new WorkingPeriod;
@@ -311,35 +311,33 @@ class WorkingSchedule
     /**
      * @param int $interval
      * @param \DateTime|null $dateTime
-     * @param int $leadTime
+     * @param int $leadTimeMinutes
      * @return Collection
      * @throws \Exception
      */
-    public function getTimeslot(int $interval = 15, DateTime $dateTime = null, int $leadTime = 25)
+    public function getTimeslot(int $interval = 15, DateTime $dateTime = null, int $leadTimeMinutes = 25)
     {
         $dateTime = Carbon::instance($this->parseDate($dateTime));
         $interval = new DateInterval('PT'.($interval ?: 15).'M');
-        $leadTime = new DateInterval('PT'.($leadTime ?: 25).'M');
 
-        $start = $dateTime->copy()->startOfDay()->subDay();
-        $end = $dateTime->copy()->startOfDay()->addDay($this->days);
+        $timeslot = [];
+        $datePeriod = $this->createPeriodForTimeslot($dateTime, $interval);
+        foreach ($datePeriod as $date) {
+            $workingTime = WorkingTime::create($date->format('H:i'));
+            $workingPeriod = $this->forDate($date);
 
-        $result = [];
-        for ($date = $start; $date->lte($end); $date->addDay()) {
-            $indexValue = $date->toDateString();
-
-            $timeslot = $this->generateTimeslot($date, $interval, $leadTime);
-
-            $filteredTimeslot = $this->filterTimeslot($timeslot, $dateTime, $leadTime->i);
-
-            if ($filteredTimeslot->isEmpty())
+            if (!$workingPeriod->isOpenAt($workingTime))
                 continue;
 
-            // Use date string as array key to allow range to span over a week.
-            $result[$indexValue] = $filteredTimeslot;
+            if (!$this->isTimeslotValid($date, $dateTime, $leadTimeMinutes))
+                continue;
+
+            $dateString = $date->toDateString();
+
+            $timeslot[$dateString][$date->getTimestamp()] = $date;
         }
 
-        return collect($result)->sort();
+        return collect($timeslot);
     }
 
     public function generateTimeslot(DateTime $date, DateInterval $interval, ?DateInterval $leadTime = null)
@@ -431,18 +429,17 @@ class WorkingSchedule
         return $date;
     }
 
-    protected function filterTimeslot(Collection $timeslot, DateTime $checkDateTime, int $leadTime)
+    protected function isTimeslotValid(DateTimeInterface $date, DateTimeInterface $dateTime, int $leadTimeMinutes)
     {
-        return $timeslot->filter(function (DateTime $dateTime) use ($checkDateTime, $leadTime) {
-            if (Carbon::instance($checkDateTime)->gt($dateTime))
-                return false;
+        if (Carbon::instance($dateTime)->gt($date))
+            return FALSE;
 
-            return Carbon::now()->diffInMinutes($dateTime) > $leadTime;
-        })->filter(function (DateTime $dateTime) {
-            $result = Event::fire('igniter.workingSchedule.timeslotValid', [$this, $dateTime], TRUE);
+        if (Carbon::now()->diffInMinutes($date) < $leadTimeMinutes)
+            return FALSE;
 
-            return is_bool($result) ? $result : TRUE;
-        })->values();
+        $result = Event::fire('igniter.workingSchedule.timeslotValid', [$this, $dateTime], TRUE);
+
+        return is_bool($result) ? $result : TRUE;
     }
 
     protected function hasPeriod()
@@ -456,5 +453,16 @@ class WorkingSchedule
             return TRUE;
 
         return FALSE;
+    }
+
+    protected function createPeriodForTimeslot($dateTime, $interval)
+    {
+        $startDate = $dateTime->copy()->startOfDay()->subDay();
+        $endDate = $dateTime->copy()->endOfDay()->addDays($this->days);
+
+        if ($this->forDate($endDate)->closesLate())
+            $endDate->addDay();
+
+        return new DatePeriod($startDate, $interval, $endDate);
     }
 }
