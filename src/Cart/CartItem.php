@@ -124,7 +124,7 @@ class CartItem implements Arrayable, Jsonable
 
         $optionsSum = $this->options->subtotal();
         $itemSubtotal = $price + $optionsSum;
-        
+
         $itemSubtotal = (optional($this->conditions)->apply($itemSubtotal, $this) ?? $itemSubtotal);
 
         $price = $this->qty * $itemSubtotal;
