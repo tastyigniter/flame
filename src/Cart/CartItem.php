@@ -109,9 +109,7 @@ class CartItem implements Arrayable, Jsonable
      */
     public function price()
     {
-        $price = $this->priceWithoutConditions();
-
-        return optional($this->conditions)->apply($price, $this) ?? $price;
+        return $this->price;
     }
 
     /**
@@ -122,21 +120,14 @@ class CartItem implements Arrayable, Jsonable
      */
     public function subtotal()
     {
-        $price = $this->price();
+        $subtotal = $this->subtotalWithoutConditions();
 
-        $optionsSum = $this->options->subtotal();
-
-        return $this->qty * ($price + $optionsSum);
-    }
-
-    public function priceWithoutConditions()
-    {
-        return $this->price;
+        return optional($this->conditions)->apply($subtotal, $this) ?? $subtotal;
     }
 
     public function subtotalWithoutConditions()
     {
-        $price = $this->priceWithoutConditions();
+        $price = $this->price();
 
         $optionsSum = $this->options->subtotal();
 
