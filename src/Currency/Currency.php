@@ -176,6 +176,29 @@ class Currency
     }
 
     /**
+     * Format the value into a json array
+     *
+     * @param float $value
+     * @param string $code
+     *
+     * @return string
+     */
+    public function formatToJson($value, $code = null)
+    {
+        // Get default currency if one is not set
+        $code = $code ?: $this->config('default');
+
+        if (is_numeric($code))
+            $code = optional($this->getCurrency($code))->getCode() ?: $code;
+
+        return [
+            'currency' => $code,
+            'value' => $value,
+        ];
+    }
+
+
+    /**
      * Set user's currency.
      *
      * @param string $code
