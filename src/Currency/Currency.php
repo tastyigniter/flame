@@ -197,7 +197,6 @@ class Currency
         ];
     }
 
-
     /**
      * Set user's currency.
      *
