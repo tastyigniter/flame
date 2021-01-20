@@ -400,6 +400,21 @@ if (!function_exists('currency_format')) {
     }
 }
 
+if (!function_exists('currency_json')) {
+    /**
+     * Convert value to a currency array
+     *
+     * @param float $amount
+     * @param string $currency
+     *
+     * @return array
+     */
+    function currency_json($amount = null, $currency = null)
+    {
+        return app('currency')->formatToJson($amount, $currency);
+    }
+}
+
 if (!function_exists('flash')) {
     /**
      * Arrange for a flash message.
