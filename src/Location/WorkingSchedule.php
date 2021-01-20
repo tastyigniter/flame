@@ -437,7 +437,7 @@ class WorkingSchedule
         if (Carbon::now()->diffInMinutes($date) < $leadTimeMinutes)
             return FALSE;
 
-        $result = Event::fire('igniter.workingSchedule.timeslotValid', [$this, $dateTime], TRUE);
+        $result = Event::fire('igniter.workingSchedule.timeslotValid', [$this, $date], TRUE);
 
         return is_bool($result) ? $result : TRUE;
     }
