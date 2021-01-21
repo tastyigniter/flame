@@ -57,8 +57,8 @@ abstract class AbstractProvider
             'defaults' => [
                 'headers' => [
                     'referer' => Request::getHost(),
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
