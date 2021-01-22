@@ -5,7 +5,6 @@ namespace Igniter\Flame\Geolite\Contracts;
 use Cache;
 use GuzzleHttp\Client;
 use Illuminate\Support\Collection;
-use Request;
 
 abstract class AbstractProvider
 {
@@ -53,13 +52,7 @@ abstract class AbstractProvider
      */
     protected function getHttpClient()
     {
-        return $this->httpClient ?? new Client([
-            'defaults' => [
-                'headers' => [
-                    'referer' => Request::getHost(),
-                ],
-            ],
-        ]);
+        return $this->httpClient ?? new Client();
     }
 
     //

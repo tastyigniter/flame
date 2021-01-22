@@ -96,7 +96,12 @@ class GoogleProvider extends AbstractProvider
         if ($apiKey = array_get($this->config, 'apiKey'))
             $url = sprintf('%s&key=%s', $url, $apiKey);
 
+        $headers = [];
+        if ($host = array_get($this->config, 'appUrl'))
+            $headers['referer'] = $host;
+
         $response = $this->getHttpClient()->get($url, [
+            'headers' => $headers,
             'timeout' => $query->getData('timeout', 15),
         ]);
 
