@@ -329,6 +329,10 @@ class WorkingSchedule
             if (!$workingPeriod->isOpenAt($workingTime))
                 continue;
 
+            // as we calculate times from 12pm we need to work out if our opening time requires an offset applied
+            $differenceInMinutes = ($workingTime->diff($workingPeriod->openTimeAt($workingTime))->i) % $interval->i;
+            $date->subMinutes($differenceInMinutes);
+
             if (!$this->isTimeslotValid($date, $dateTime, $leadTimeMinutes))
                 continue;
 
