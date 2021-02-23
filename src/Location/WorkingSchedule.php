@@ -319,29 +319,35 @@ class WorkingSchedule
     {
         $dateTime = Carbon::instance($this->parseDate($dateTime));
         $interval = new DateInterval('PT'.($interval ?: 15).'M');
+        
+        $timeslots = [];
+        $datePeriod = $this->createPeriodForDays($dateTime);
 
-        $timeslot = [];
-        $datePeriod = $this->createPeriodForTimeslot($dateTime, $interval);
         foreach ($datePeriod as $date) {
-            $workingTime = WorkingTime::create($date->format('H:i'));
+
             $workingPeriod = $this->forDate($date);
 
-            if (!$workingPeriod->isOpenAt($workingTime))
-                continue;
+            foreach ($workingPeriod as $workingRange) {
 
-            // as we calculate times from 12pm we need to work out if our opening time requires an offset applied
-            $differenceInMinutes = ($workingTime->diff($workingPeriod->openTimeAt($workingTime))->i) % $interval->i;
-            $date->subMinutes($differenceInMinutes);
+                $startTime = $date->copy()->setTimeFromTimeString($workingRange->start()->format('H:i:s'));
+                $endTime = $date->copy()->setTimeFromTimeString($workingRange->end()->format('H:i:s'));
 
-            if (!$this->isTimeslotValid($date, $dateTime, $leadTimeMinutes))
-                continue;
+                $timePeriod = new DatePeriod($startTime, $interval, $endTime);
+                foreach ($timePeriod as $timeslot) {
 
-            $dateString = $date->toDateString();
+                    if (!$this->isTimeslotValid($timeslot, $dateTime, $leadTimeMinutes))
+                        continue;
 
-            $timeslot[$dateString][$date->getTimestamp()] = $date;
+                    $dateString = $timeslot->toDateString();
+
+                    $timeslots[$dateString][$timeslot->getTimestamp()] = $timeslot;
+
+                }
+
+            }
         }
 
-        return collect($timeslot);
+        return collect($timeslots);
     }
 
     public function generateTimeslot(DateTime $date, DateInterval $interval, ?DateInterval $leadTime = null)
@@ -459,7 +465,7 @@ class WorkingSchedule
         return FALSE;
     }
 
-    protected function createPeriodForTimeslot($dateTime, $interval)
+    protected function createPeriodForDays($dateTime)
     {
         $startDate = $dateTime->copy()->startOfDay()->subDay();
         $endDate = $dateTime->copy()->endOfDay()->addDays($this->days);
@@ -467,6 +473,6 @@ class WorkingSchedule
         if ($this->forDate($endDate)->closesLate())
             $endDate->addDay();
 
-        return new DatePeriod($startDate, $interval, $endDate);
+        return new DatePeriod($startDate, new DateInterval('P1D'), $endDate);
     }
 }
