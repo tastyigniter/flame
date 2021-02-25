@@ -319,7 +319,7 @@ class WorkingSchedule
     {
         $dateTime = Carbon::instance($this->parseDate($dateTime));
         $interval = new DateInterval('PT'.($interval ?: 15).'M');
-        
+
         $timeslots = [];
         $datePeriod = $this->createPeriodForDays($dateTime);
 
@@ -331,6 +331,8 @@ class WorkingSchedule
 
                 $startTime = $date->copy()->setTimeFromTimeString($workingRange->start()->format('H:i:s'));
                 $endTime = $date->copy()->setTimeFromTimeString($workingRange->end()->format('H:i:s'));
+                if ($workingRange->endsNextDay())
+                    $endTime->addDay(1);
 
                 $timePeriod = new DatePeriod($startTime, $interval, $endTime);
                 foreach ($timePeriod as $timeslot) {
