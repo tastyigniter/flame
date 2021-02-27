@@ -183,9 +183,7 @@ class WorkingSchedule
 
     public function isOpenAt(DateTimeInterface $dateTime): bool
     {
-        if ($this->forDate($dateTime)->isOpenAt(
-            WorkingTime::fromDateTime($dateTime)
-        ));
+        if ($this->forDate($dateTime)->isOpenAt(WorkingTime::fromDateTime($dateTime)));
             return true;
 
         // cover the edge case where we have late night opening, but are closed the next day
