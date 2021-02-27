@@ -183,9 +183,19 @@ class WorkingSchedule
 
     public function isOpenAt(DateTimeInterface $dateTime): bool
     {
-        return $this->forDate($dateTime)->isOpenAt(
+        if ($this->forDate($dateTime)->isOpenAt(
             WorkingTime::fromDateTime($dateTime)
-        );
+        ));
+            return true;
+
+        // cover the edge case where we have late night opening, but are closed the next day
+        // and the date range falls inside the late night opening
+        $workingPeriod = $this->forDate(Carbon::parse($date)->subDay());
+        foreach ($workingPeriod as $workingRange)
+            if ($workingRange->endsNextDay() AND $workingRange->containsTime($dateTime))
+                return true;
+
+        return false;
     }
 
     public function isClosedAt(DateTimeInterface $dateTime): bool
@@ -317,7 +327,7 @@ class WorkingSchedule
      */
     public function getTimeslot(int $interval = 15, DateTime $dateTime = null, int $leadTimeMinutes = 25)
     {
-        $dateTime = Carbon::instance($this->parseDate($dateTime));
+        $dateTime = Carbon::instance($this->parseDate($dateTime))->subDay();
         $interval = new DateInterval('PT'.($interval ?: 15).'M');
 
         $timeslots = [];
@@ -340,7 +350,7 @@ class WorkingSchedule
                     if (!$this->isTimeslotValid($timeslot, $dateTime, $leadTimeMinutes))
                         continue;
 
-                    $dateString = $timeslot->toDateString();
+                    $dateString = $date->toDateString();
 
                     $timeslots[$dateString][$timeslot->getTimestamp()] = $timeslot;
 
