@@ -183,14 +183,14 @@ class WorkingSchedule
 
     public function isOpenAt(DateTimeInterface $dateTime): bool
     {
-        if ($this->forDate($dateTime)->isOpenAt(WorkingTime::fromDateTime($dateTime)));
+        if ($this->forDate($dateTime)->isOpenAt(WorkingTime::fromDateTime($dateTime)))
             return true;
 
         // cover the edge case where we have late night opening, but are closed the next day
         // and the date range falls inside the late night opening
-        $workingPeriod = $this->forDate(Carbon::parse($date)->subDay());
+        $workingPeriod = $this->forDate(Carbon::parse($dateTime)->subDay());
         foreach ($workingPeriod as $workingRange)
-            if ($workingRange->endsNextDay() AND $workingRange->containsTime($dateTime))
+            if ($workingRange->endsNextDay() AND $workingRange->containsTime(WorkingTime::fromDateTime($dateTime)))
                 return true;
 
         return false;
