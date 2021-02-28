@@ -451,7 +451,7 @@ class WorkingSchedule
 
     protected function isTimeslotValid(DateTimeInterface $date, DateTimeInterface $dateTime, int $leadTimeMinutes)
     {
-        if (Carbon::instance($dateTime)->gt($date))
+        if (Carbon::instance($dateTime)->gt($date) || Carbon::now()->gt($date))
             return FALSE;
 
         if (Carbon::now()->diffInMinutes($date) < $leadTimeMinutes)
