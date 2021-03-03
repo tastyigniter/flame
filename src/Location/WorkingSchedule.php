@@ -478,7 +478,7 @@ class WorkingSchedule
     protected function createPeriodForDays($dateTime)
     {
         $startDate = $dateTime->copy()->startOfDay()->subDay();
-        $endDate = $dateTime->copy()->endOfDay()->addDays($this->days);
+        $endDate = $dateTime->copy()->endOfDay()->addDays($this->days + 1);
 
         if ($this->forDate($endDate)->closesLate())
             $endDate->addDay();
