@@ -457,6 +457,9 @@ class WorkingSchedule
         if (Carbon::now()->diffInMinutes($date) < $leadTimeMinutes)
             return FALSE;
 
+        if (Carbon::instance($dateTime)->addDays($this->days + 2)->lt($date)) // +2 as we subtracted a day and need to count the current day
+            return FALSE;
+
         $result = Event::fire('igniter.workingSchedule.timeslotValid', [$this, $date], TRUE);
 
         return is_bool($result) ? $result : TRUE;
