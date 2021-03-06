@@ -325,11 +325,16 @@ class WorkingSchedule
      */
     public function getTimeslot(int $interval = 15, DateTime $dateTime = null, int $leadTimeMinutes = 25)
     {
+        $selectedDateTime = Carbon::instance($this->parseDate($dateTime));
         $dateTime = Carbon::instance($this->parseDate($dateTime))->subDay();
         $interval = new DateInterval('PT'.($interval ?: 15).'M');
 
         $timeslots = [];
         $datePeriod = $this->createPeriodForDays($dateTime);
+
+        $lastIntervalTime = $this->nextCloseAt($selectedDateTime->addDays($this->days));
+        if ($lastIntervalTime->lt($selectedDateTime))
+            $lastIntervalTime->addDay();
 
         foreach ($datePeriod as $date) {
 
@@ -345,7 +350,7 @@ class WorkingSchedule
                 $timePeriod = new DatePeriod($startTime, $interval, $endTime);
                 foreach ($timePeriod as $timeslot) {
 
-                    if (!$this->isTimeslotValid($timeslot, $dateTime, $leadTimeMinutes))
+                    if ($lastIntervalTime->lt($timeslot) OR !$this->isTimeslotValid($timeslot, $dateTime, $leadTimeMinutes))
                         continue;
 
                     $dateString = $date->toDateString();
