@@ -74,4 +74,6 @@ return [
 
         'duration' => 43200,
     ],
+
+    'precision' => 8,
 ];
