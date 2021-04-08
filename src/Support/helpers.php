@@ -310,7 +310,7 @@ if (!function_exists('get')) {
      */
     function get($name = null, $default = null)
     {
-        $inputData = request()->get();
+        $inputData = request()->input();
         if (is_null($name))
             return $inputData;
 
