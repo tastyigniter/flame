@@ -127,6 +127,16 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
         return FALSE;
     }
 
+    public function opensLateAt(WorkingTime $time)
+    {
+        foreach ($this->ranges as $range) {
+            if ($range->endsNextDay() AND $range->containsTime($time))
+                return TRUE;
+        }
+
+        return FALSE;
+    }
+
     public function timeslot(DateTimeInterface $dateTime, DateInterval $interval, ?DateInterval $leadTime = null)
     {
         return WorkingTimeslot::make($this->ranges)->generate(
