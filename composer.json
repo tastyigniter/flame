@@ -31,7 +31,6 @@
     "october/rain": "~1.1",
     "guzzlehttp/guzzle": "~6.3",
     "kalnoy/nestedset": "~5.0",
-    "watson/validating": "~4.0",
     "natxet/cssmin": "~3.0",
     "scssphp/scssphp": "~1.0",
     "league/glide": "~1.5"
