@@ -26,6 +26,8 @@
     "ext-libxml": "*",
     "ext-PDO": "*",
     "ext-zip": "*",
+    "ext-mbstring": "*",
+    "ext-openssl": "*",
     "fideloper/proxy": "~4.0",
     "doctrine/instantiator": "~1.0",
     "october/rain": "~1.1",
