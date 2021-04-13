@@ -96,7 +96,7 @@ trait Validation
      */
     public function getValidationAttributes()
     {
-        return $this->getAttributes();
+        return $this->attributesToArray();
     }
 
     /**

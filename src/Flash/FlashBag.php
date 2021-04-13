@@ -32,6 +32,8 @@ class FlashBag
     public function setSessionKey($key)
     {
         $this->sessionKey = $key;
+
+        return $this;
     }
 
     public function messages()

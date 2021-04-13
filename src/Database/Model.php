@@ -840,7 +840,7 @@ class Model extends EloquentModel
      *
      * @return bool
      */
-    public function alwaysPush($options = null, $sessionKey)
+    public function alwaysPush($options = null, $sessionKey = null)
     {
         return $this->push(['always' => TRUE] + (array)$options, $sessionKey);
     }
