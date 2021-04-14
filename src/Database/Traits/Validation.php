@@ -86,7 +86,7 @@ trait Validation
      */
     public function setValidating($value)
     {
-        $this->validating = (boolean)$value;
+        $this->validating = (bool)$value;
     }
 
     /**
@@ -215,14 +215,14 @@ trait Validation
      */
     public function setInjectUniqueIdentifier($value)
     {
-        $this->injectUniqueIdentifier = (boolean)$value;
+        $this->injectUniqueIdentifier = (bool)$value;
     }
 
     /**
      * Perform validation with the specified ruleset.
      *
      * @param string $event
-     * @return boolean
+     * @return bool
      */
     protected function performValidation($event)
     {
@@ -283,7 +283,7 @@ trait Validation
      */
     protected function fireValidatingEvents($event)
     {
-        if (Event::until("eloquent.validating: ".get_class($this), [$this, $event]) !== null)
+        if (Event::until('eloquent.validating: '.get_class($this), [$this, $event]) !== null)
             return TRUE;
 
         if ($this->fireEvent('model.beforeValidate', [], TRUE) === FALSE)
@@ -302,7 +302,7 @@ trait Validation
      */
     protected function fireValidatedEvents($status)
     {
-        Event::dispatch("eloquent.validated: ".get_class($this), [$this, $status]);
+        Event::dispatch('eloquent.validated: '.get_class($this), [$this, $status]);
     }
 
     /**
