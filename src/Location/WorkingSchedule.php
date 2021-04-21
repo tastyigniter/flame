@@ -436,7 +436,8 @@ class WorkingSchedule
         if (Carbon::now()->diffInMinutes($date) < $leadTimeMinutes)
             return FALSE;
 
-        if (Carbon::instance($dateTime)->addDays($this->days + 2)->lt($date)) // +2 as we subtracted a day and need to count the current day
+        // +2 as we subtracted a day and need to count the current day
+        if (Carbon::instance($dateTime)->addDays($this->days + 2)->lt($date))
             return FALSE;
 
         $result = Event::fire('igniter.workingSchedule.timeslotValid', [$this, $date], TRUE);
@@ -459,9 +460,11 @@ class WorkingSchedule
 
     protected function createPeriodForDays($dateTime)
     {
-        $startDate = $dateTime->copy()->startOfDay()->subDays(2);
-        $endDate = $dateTime->copy()->endOfDay()->addDays($this->days + 1);
+        $startDate = $this->nextOpenAt(
+            $dateTime->copy()->startOfDay()->subDays(2)
+        );
 
+        $endDate = $dateTime->copy()->endOfDay()->addDays($this->days + 1);
         if ($this->forDate($endDate)->closesLate())
             $endDate->addDay();
 
