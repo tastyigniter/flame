@@ -33,11 +33,6 @@ class WorkingSchedule
     protected $days;
 
     /**
-     * @var DateTime
-     */
-    protected $now;
-
-    /**
      * @param null $timezone
      * @param int $days
      */
@@ -102,7 +97,7 @@ class WorkingSchedule
 
     public function setNow(DateTime $now)
     {
-        $this->now = $now;
+        traceLog('Deprecated function. No longer supported.');
 
         return $this;
     }
@@ -364,11 +359,6 @@ class WorkingSchedule
         return collect($timeslot);
     }
 
-    protected function now()
-    {
-        return $this->now ?? $this->now = new DateTime();
-    }
-
     protected function setPeriods(array $periods)
     {
         foreach ($periods as $day => $period) {
@@ -386,7 +376,7 @@ class WorkingSchedule
     protected function parseDate($start = null)
     {
         if (!$start)
-            return $this->now();
+            return new DateTime();
 
         if (is_string($start))
             return new DateTime($start);
