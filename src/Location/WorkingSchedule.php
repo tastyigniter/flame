@@ -464,7 +464,7 @@ class WorkingSchedule
             $dateTime->copy()->startOfDay()->subDays(2)
         );
 
-        $endDate = $dateTime->copy()->endOfDay()->addDays($this->days + 1);
+        $endDate = $dateTime->copy()->endOfDay()->addDays($this->days);
         if ($this->forDate($endDate)->closesLate())
             $endDate->addDay();
 
