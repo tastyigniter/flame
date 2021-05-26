@@ -6,6 +6,7 @@ use DB;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Geolite\Contracts\CoordinatesInterface;
 use Igniter\Flame\Location\Contracts\LocationInterface;
+use Igniter\Flame\Location\OrderTypes;
 
 class AbstractLocation extends Model implements LocationInterface
 {
@@ -147,14 +148,15 @@ class AbstractLocation extends Model implements LocationInterface
 
     public function availableOrderTypes()
     {
-        $orderTypes = [];
-        if ($this->hasDelivery())
-            $orderTypes[1] = static::DELIVERY;
+        return OrderTypes::instance()->makeOrderTypes($this);
+    }
 
-        if ($this->hasCollection())
-            $orderTypes[2] = static::COLLECTION;
-
-        return $orderTypes;
+    public static function getOrderTypeOptions()
+    {
+        return collect(OrderTypes::instance()->listOrderTypes())
+            ->mapWithKeys(function ($orderType) {
+                return [$orderType['code'] => $orderType['name']];
+            });
     }
 
     public function calculateDistance(CoordinatesInterface $position)
