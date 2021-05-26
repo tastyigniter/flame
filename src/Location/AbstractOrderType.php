@@ -13,20 +13,28 @@ abstract class AbstractOrderType implements OrderTypeInterface
 
     protected $code;
 
+    protected $name;
+
     /**
      * @var \Igniter\Flame\Location\WorkingSchedule
      */
     protected $schedule;
 
-    public function __construct($model, $code)
+    public function __construct($model, $config)
     {
         $this->model = $model;
-        $this->code = $code;
+        $this->code = $config['code'];
+        $this->name = $config['name'];
     }
 
     public function getCode(): string
     {
         return $this->code;
+    }
+
+    public function getLabel(): string
+    {
+        return $this->name;
     }
 
     public function getInterval(): int

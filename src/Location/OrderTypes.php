@@ -29,8 +29,8 @@ class OrderTypes
     public function makeOrderTypes($location)
     {
         return collect($this->registeredOrderTypes)
-            ->map(function ($orderType, $code) use ($location) {
-                return new $orderType['className']($location, $code);
+            ->map(function ($orderType) use ($location) {
+                return new $orderType['className']($location, $orderType);
             });
     }
 
