@@ -34,7 +34,7 @@ abstract class AbstractOrderType implements OrderTypeInterface
 
     public function getLabel(): string
     {
-        return $this->name;
+        return lang($this->name);
     }
 
     public function getInterval(): int

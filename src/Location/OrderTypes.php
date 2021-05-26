@@ -16,7 +16,7 @@ class OrderTypes
     /**
      * @var array Cache of order types registration callbacks.
      */
-    protected $registeredCallbacks = [];
+    protected static $registeredCallbacks = [];
 
     protected function initialize()
     {
@@ -50,7 +50,7 @@ class OrderTypes
 
     public function loadOrderTypes()
     {
-        foreach ($this->registeredCallbacks as $callback) {
+        foreach (self::$registeredCallbacks as $callback) {
             $callback($this);
         }
     }
@@ -74,8 +74,8 @@ class OrderTypes
         ]);
     }
 
-    public function registerCallback(callable $definitions)
+    public static function registerCallback(callable $definitions)
     {
-        $this->registeredCallbacks[] = $definitions;
+        self::$registeredCallbacks[] = $definitions;
     }
 }
