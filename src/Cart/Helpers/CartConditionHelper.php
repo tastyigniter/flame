@@ -50,7 +50,8 @@ trait CartConditionHelper
             $value = (float)$this->cleanValue($actionValue);
         }
 
-        $this->calculatedValue += $value;
+        $precision = app('currency')->getDefault() ? app('currency')->getDefault()->decimal_position : 2;
+        $this->calculatedValue += round($value, $precision);
         $action['cleanValue'] = $value;
 
         return $action;
