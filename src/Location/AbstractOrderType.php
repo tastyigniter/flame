@@ -11,6 +11,8 @@ abstract class AbstractOrderType implements OrderTypeInterface
      */
     protected $model;
 
+    protected $config;
+
     protected $code;
 
     protected $name;
@@ -23,6 +25,7 @@ abstract class AbstractOrderType implements OrderTypeInterface
     public function __construct($model, $config)
     {
         $this->model = $model;
+        $this->config = $config;
         $this->code = $config['code'];
         $this->name = $config['name'];
     }
@@ -64,5 +67,10 @@ abstract class AbstractOrderType implements OrderTypeInterface
         );
 
         return $this->schedule = $schedule;
+    }
+
+    public function hasAsapSchedule(): bool
+    {
+        return !(bool)$this->model->getOption('limit_orders');
     }
 }
