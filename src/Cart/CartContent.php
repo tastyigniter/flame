@@ -17,4 +17,11 @@ class CartContent extends Collection
             return $cartItem->subtotal();
         });
     }
+
+    public function subtotalWithoutConditions()
+    {
+        return $this->sum(function (CartItem $cartItem) {
+            return $cartItem->subtotalWithoutConditions();
+        });
+    }
 }
