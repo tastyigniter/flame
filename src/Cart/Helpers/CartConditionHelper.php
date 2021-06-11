@@ -41,6 +41,7 @@ trait CartConditionHelper
     {
         $action = $this->parseAction($action);
         $actionValue = array_get($action, 'value', 0);
+        $actionValuePrecision = (int)array_get($action, 'valuePrecision', 2);
 
         if ($this->valueIsPercentage($actionValue)) {
             $cleanValue = $this->cleanValue($actionValue);
@@ -50,8 +51,9 @@ trait CartConditionHelper
             $value = (float)$this->cleanValue($actionValue);
         }
 
-        $precision = app('currency')->getDefault() ? app('currency')->getDefault()->decimal_position : 2;
-        $this->calculatedValue += round($value, $precision);
+        $value = round($value, $actionValuePrecision);
+
+        $this->calculatedValue += $value;
         $action['cleanValue'] = $value;
 
         return $action;
