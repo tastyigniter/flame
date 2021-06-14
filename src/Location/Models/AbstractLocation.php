@@ -141,7 +141,7 @@ class AbstractLocation extends Model implements LocationInterface
     {
         $orderType = $orderType ?: static::DELIVERY;
 
-        return (bool)$this->getOption("future_orders.{$orderType}_days", 0);
+        return (bool)$this->getOption("future_orders.enable_{$orderType}", 0);
     }
 
     public function futureOrderDays($orderType = null)
