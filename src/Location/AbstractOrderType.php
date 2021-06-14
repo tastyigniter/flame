@@ -78,6 +78,6 @@ abstract class AbstractOrderType implements OrderTypeInterface
         if ($this->model->getOption('limit_orders'))
             return static::LATER_ONLY;
 
-        return $this->model->getOrderTimeRestriction($this->code);
+        return 0;
     }
 }
