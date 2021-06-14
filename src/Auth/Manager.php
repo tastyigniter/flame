@@ -270,7 +270,7 @@ class Manager
 
         $this->user = null;
 
-        Session::flush();
+        Session::forget($this->sessionKey);
 
         // delete the remember me cookies if they exist
         Cookie::queue(Cookie::forget($this->sessionKey));
