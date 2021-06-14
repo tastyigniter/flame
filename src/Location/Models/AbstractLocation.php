@@ -112,6 +112,11 @@ class AbstractLocation extends Model implements LocationInterface
         return (int)$this->getOption($orderType.'_lead_time', 15);
     }
 
+    public function getOrderTimeRestriction($orderType)
+    {
+        return (int)$this->getOption($orderType.'_time_restriction', 0);
+    }
+
     public function deliveryMinutes()
     {
         return (int)$this->getOption('delivery_lead_time', 15);
