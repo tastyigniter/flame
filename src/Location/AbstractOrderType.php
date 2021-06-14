@@ -7,6 +7,7 @@ use Igniter\Flame\Location\Contracts\OrderTypeInterface;
 abstract class AbstractOrderType implements OrderTypeInterface
 {
     public const ASAP_ONLY = 1;
+
     public const LATER_ONLY = 2;
 
     /**
@@ -72,7 +73,7 @@ abstract class AbstractOrderType implements OrderTypeInterface
         return $this->schedule = $schedule;
     }
 
-    public function getScheduleRestriction()
+    public function getScheduleRestriction(): int
     {
         if ($this->model->getOption('limit_orders'))
             return static::LATER_ONLY;
