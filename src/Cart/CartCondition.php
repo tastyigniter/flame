@@ -97,6 +97,15 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
         return $this->isValid();
     }
 
+    public function isInclusive()
+    {
+        return collect($this->getActions())
+            ->filter(function ($action) {
+                return array_get($action, 'inclusive', FALSE);
+            })
+            ->isNotEmpty();
+    }
+
     /**
      * Apply condition to cart content
      *
