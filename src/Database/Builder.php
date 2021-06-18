@@ -110,7 +110,7 @@ class Builder extends BuilderBase
      *
      * @return $this
      */
-    protected function searchInternal($term, $columns = [], $mode, $boolean)
+    protected function searchInternal($term, $columns, $mode, $boolean)
     {
         if (!is_array($columns))
             $columns = [$columns];
