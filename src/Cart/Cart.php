@@ -396,7 +396,7 @@ class Cart
 
         $conditions = $this->getConditions();
 
-        if ($condition->getPriority() == 0) {
+        if (is_null($condition->getPriority())) {
             $last = $conditions->last();
             $condition->setPriority(!is_null($last) ? $last->getPriority() + 1 : 1);
         }
