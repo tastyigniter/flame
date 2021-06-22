@@ -2,6 +2,7 @@
 
 namespace Igniter\Flame\Foundation;
 
+use Closure;
 use Exception;
 use Igniter\Flame\Events\EventServiceProvider;
 use Igniter\Flame\Foundation\Providers\LogServiceProvider;
@@ -230,6 +231,17 @@ class Application extends BaseApplication
     public function before($callback)
     {
         return $this['router']->before($callback);
+    }
+
+    /**
+     * Register an application error handler.
+     *
+     * @param \Closure $callback
+     * @return void
+     */
+    public function error(Closure $callback)
+    {
+        $this->make('Illuminate\Contracts\Debug\ExceptionHandler')->error($callback);
     }
 
     /**
