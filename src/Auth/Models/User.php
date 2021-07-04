@@ -247,7 +247,6 @@ class User extends Model implements Authenticatable
 
         if ($activationCode == $this->activation_code) {
             $this->activation_code = null;
-            $this->status = TRUE;
             $this->is_activated = TRUE;
             $this->date_activated = $this->freshTimestamp();
             $this->save();
