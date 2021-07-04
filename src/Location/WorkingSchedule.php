@@ -326,24 +326,22 @@ class WorkingSchedule
         $timeslots = [];
         $datePeriod = $this->createPeriodForDays($dateTime);
 
-        if ($datePeriod !== false) {
-            foreach ($datePeriod as $date) {
-                $dateString = $date->toDateString();
+        foreach ($datePeriod ?: [] as $date) {
+            $dateString = $date->toDateString();
 
-                $periodTimeslot = $this->forDate($date)
-                    ->timeslot($date, $interval)
-                    ->filter(function ($timeslot) use ($dateTime, $leadTimeMinutes) {
-                        return $this->isTimeslotValid($timeslot, $dateTime, $leadTimeMinutes);
-                    })
-                    ->mapWithKeys(function ($timeslot) {
-                        return [$timeslot->getTimestamp() => $timeslot];
-                    });
+            $periodTimeslot = $this->forDate($date)
+                ->timeslot($date, $interval)
+                ->filter(function ($timeslot) use ($dateTime, $leadTimeMinutes) {
+                    return $this->isTimeslotValid($timeslot, $dateTime, $leadTimeMinutes);
+                })
+                ->mapWithKeys(function ($timeslot) {
+                    return [$timeslot->getTimestamp() => $timeslot];
+                });
 
-                if ($periodTimeslot->isEmpty())
-                    continue;
+            if ($periodTimeslot->isEmpty())
+                continue;
 
-                $timeslots[$dateString] = $periodTimeslot->all();
-            }
+            $timeslots[$dateString] = $periodTimeslot->all();
         }
 
         return collect($timeslots);
@@ -453,12 +451,9 @@ class WorkingSchedule
 
     protected function createPeriodForDays($dateTime)
     {
-        $startDate = $this->nextOpenAt(
-            $dateTime->copy()->startOfDay()->subDays(2)
-        );
-
-        if (is_null($startDate))
-            return false;
+        $startDate = $dateTime->copy()->startOfDay()->subDays(2);
+        if (!$startDate = $this->nextOpenAt($startDate))
+            return FALSE;
 
         $endDate = $dateTime->copy()->endOfDay()->addDays($this->days);
         if ($this->forDate($endDate)->closesLate())
