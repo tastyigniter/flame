@@ -325,7 +325,8 @@ class WorkingSchedule
 
         $timeslots = [];
         $datePeriod = $this->createPeriodForDays($dateTime);
-        foreach ($datePeriod as $date) {
+
+        foreach ($datePeriod ?: [] as $date) {
             $dateString = $date->toDateString();
 
             $periodTimeslot = $this->forDate($date)
@@ -450,9 +451,9 @@ class WorkingSchedule
 
     protected function createPeriodForDays($dateTime)
     {
-        $startDate = $this->nextOpenAt(
-            $dateTime->copy()->startOfDay()->subDays(2)
-        );
+        $startDate = $dateTime->copy()->startOfDay()->subDays(2);
+        if (!$startDate = $this->nextOpenAt($startDate))
+            return FALSE;
 
         $endDate = $dateTime->copy()->endOfDay()->addDays($this->days);
         if ($this->forDate($endDate)->closesLate())
