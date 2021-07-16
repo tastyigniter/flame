@@ -359,14 +359,14 @@ class WorkingSchedule
             });
     }
 
-    protected function setPeriods(array $periods)
+    public function setPeriods(array $periods)
     {
         foreach ($periods as $day => $period) {
             $this->periods[$day] = WorkingPeriod::create($period);
         }
     }
 
-    protected function setExceptions(array $exceptions)
+    public function setExceptions(array $exceptions)
     {
         foreach ($exceptions as $day => $exception) {
             $this->exceptions[$day] = WorkingPeriod::create($exception);
