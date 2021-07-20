@@ -136,7 +136,7 @@ class BelongsToMany extends BelongsToManyBase
          *
          * Example usage:
          *
-         *     $model->bindEvent('model.relation.beforeAttach', function (string $relationName, array $attachedIdList, array $insertData) use (\October\Rain\Database\Model $model) {
+         *     $model->bindEvent('model.relation.beforeAttach', function (string $relationName, array $attachedIdList, array $insertData) use (\Igniter\Flame\Database\Model $model) {
          *         if (!$model->isRelationValid($attachedIdList)) {
          *             throw new \Exception("Invalid relation!");
          *             return false;
@@ -163,7 +163,7 @@ class BelongsToMany extends BelongsToManyBase
          *
          * Example usage:
          *
-         *     $model->bindEvent('model.relation.afterAttach', function (string $relationName, array $attachedIdList, array $insertData) use (\October\Rain\Database\Model $model) {
+         *     $model->bindEvent('model.relation.afterAttach', function (string $relationName, array $attachedIdList, array $insertData) use (\Igniter\Flame\Database\Model $model) {
          *         traceLog("New relation {$relationName} was created", $attachedIdList);
          *     });
          *
@@ -191,7 +191,7 @@ class BelongsToMany extends BelongsToManyBase
          *
          * Example usage:
          *
-         *     $model->bindEvent('model.relation.beforeDetach', function (string $relationName, array $attachedIdList) use (\October\Rain\Database\Model $model) {
+         *     $model->bindEvent('model.relation.beforeDetach', function (string $relationName, array $attachedIdList) use (\Igniter\Flame\Database\Model $model) {
          *         if (!$model->isRelationValid($attachedIdList)) {
          *             throw new \Exception("Invalid relation!");
          *             return false;
@@ -214,7 +214,7 @@ class BelongsToMany extends BelongsToManyBase
          *
          * Example usage:
          *
-         *     $model->bindEvent('model.relation.afterDetach', function (string $relationName, array $attachedIdList) use (\October\Rain\Database\Model $model) {
+         *     $model->bindEvent('model.relation.afterDetach', function (string $relationName, array $attachedIdList) use (\Igniter\Flame\Database\Model $model) {
          *         traceLog("Relation {$relationName} was removed", $attachedIdList);
          *     });
          *

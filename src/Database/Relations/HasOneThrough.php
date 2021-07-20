@@ -40,7 +40,7 @@ class HasOneThrough extends HasOneThroughBase
     {
         $uses = class_uses_recursive(get_class($this->parent));
 
-        return in_array('October\Rain\Database\Traits\SoftDelete', $uses) ||
+        return in_array('Igniter\Flame\Database\Traits\SoftDelete', $uses) ||
             in_array('Illuminate\Database\Eloquent\SoftDeletes', $uses);
     }
 }

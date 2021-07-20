@@ -649,7 +649,7 @@ trait HasRelationships
      * @param string|null $relatedKey
      * @param bool $inverse
      * @param null $relationName
-     * @return \October\Rain\Database\Relations\MorphToMany
+     * @return \Igniter\Flame\Database\Relations\MorphToMany
      */
     public function morphToMany(
         $related, $name, $table = null, $foreignPivotKey = null,
@@ -697,7 +697,7 @@ trait HasRelationships
      * @param string|null $parentKey
      * @param string|null $relatedKey
      * @param null $relationName
-     * @return \October\Rain\Database\Relations\MorphToMany
+     * @return \Igniter\Flame\Database\Relations\MorphToMany
      */
     public function morphedByMany(
         $related, $name, $table = null, $foreignPivotKey = null,
