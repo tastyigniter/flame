@@ -29,7 +29,7 @@ class ArtisanServiceProvider extends BaseServiceProvider
         'Db' => DbCommand::class,
 //        'DbPrune' => 'command.db.prune',
 //        'DbWipe' => 'command.db.wipe',
-        'Down' => 'command.down',
+//        'Down' => 'command.down',
         'Environment' => 'command.environment',
 //        'EventCache' => 'command.event.cache',
 //        'EventClear' => 'command.event.clear',
@@ -60,7 +60,7 @@ class ArtisanServiceProvider extends BaseServiceProvider
         'ScheduleTest' => ScheduleTestCommand::class,
         'ScheduleWork' => ScheduleWorkCommand::class,
 //        'StorageLink' => 'command.storage.link',
-        'Up' => 'command.up',
+//        'Up' => 'command.up',
         'ViewCache' => 'command.view.cache',
         'ViewClear' => 'command.view.clear',
     ];
