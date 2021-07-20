@@ -71,7 +71,7 @@ class ArtisanServiceProvider extends BaseServiceProvider
      * @var array
      */
     protected $devCommands = [
-        'CacheTable' => 'command.cache.table',
+//        'CacheTable' => 'command.cache.table',
 //        'CastMake' => 'command.cast.make',
 //        'ChannelMake' => 'command.channel.make',
 //        'ComponentMake' => 'command.component.make',
@@ -91,16 +91,16 @@ class ArtisanServiceProvider extends BaseServiceProvider
 //        'ObserverMake' => 'command.observer.make',
         // 'PolicyMake' => 'command.policy.make',
         // 'ProviderMake' => 'command.provider.make',
-        'QueueFailedTable' => 'command.queue.failed-table',
-        'QueueTable' => 'command.queue.table',
-        'QueueBatchesTable' => 'command.queue.batches-table',
+//        'QueueFailedTable' => 'command.queue.failed-table',
+//        'QueueTable' => 'command.queue.table',
+//        'QueueBatchesTable' => 'command.queue.batches-table',
         // 'RequestMake' => 'command.request.make',
         // 'ResourceMake' => 'command.resource.make',
         // 'RuleMake' => 'command.rule.make',
         // 'SeederMake' => 'command.seeder.make',
-        'SessionTable' => 'command.session.table',
+//        'SessionTable' => 'command.session.table',
         'Serve' => 'command.serve',
-        'StubPublish' => 'command.stub.publish',
+//        'StubPublish' => 'command.stub.publish',
         'TestMake' => 'command.test.make',
         'VendorPublish' => 'command.vendor.publish',
     ];
