@@ -50,7 +50,7 @@ class BaseException extends Exception
      * @param int $code Error code.
      * @param Exception $previous Previous exception.
      */
-    public function __construct($message = "", $code = 0, Exception $previous = null)
+    public function __construct($message = '', $code = 0, Exception $previous = null)
     {
         if ($this->className === null) {
             $this->className = get_called_class();
@@ -328,7 +328,7 @@ class BaseException extends Exception
                         $value = $obj;
                     }
                     elseif ($obj === null) {
-                        $value = "null";
+                        $value = 'null';
                     }
                     else {
                         $value = "'".$obj."'";
@@ -348,7 +348,7 @@ class BaseException extends Exception
                 $arg = 'object('.get_class($argument).')';
             }
             elseif ($argument === null) {
-                $arg = "null";
+                $arg = 'null';
             }
             elseif (is_int($argument)) {
                 $arg = $argument;

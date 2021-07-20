@@ -16,12 +16,12 @@ class BelongsToMany extends BelongsToManyBase
     use DefinedConstraints;
 
     /**
-     * @var boolean This relation object is a 'count' helper.
+     * @var bool This relation object is a 'count' helper.
      */
     public $countMode = FALSE;
 
     /**
-     * @var boolean When a join is not used, don't select aliased columns.
+     * @var bool When a join is not used, don't select aliased columns.
      */
     public $orphanMode = FALSE;
 
@@ -142,7 +142,6 @@ class BelongsToMany extends BelongsToManyBase
          *             return false;
          *         }
          *     });
-         *
          */
         if ($this->parent->fireEvent('model.relation.beforeAttach', [$this->relationName, $attachedIdList, $insertData], TRUE) === FALSE) {
             return;
@@ -166,7 +165,6 @@ class BelongsToMany extends BelongsToManyBase
          *     $model->bindEvent('model.relation.afterAttach', function (string $relationName, array $attachedIdList, array $insertData) use (\Igniter\Flame\Database\Model $model) {
          *         traceLog("New relation {$relationName} was created", $attachedIdList);
          *     });
-         *
          */
         $this->parent->fireEvent('model.relation.afterAttach', [$this->relationName, $attachedIdList, $insertData]);
     }
@@ -197,7 +195,6 @@ class BelongsToMany extends BelongsToManyBase
          *             return false;
          *         }
          *     });
-         *
          */
         if ($this->parent->fireEvent('model.relation.beforeDetach', [$this->relationName, $attachedIdList], TRUE) === FALSE) {
             return;
@@ -217,7 +214,6 @@ class BelongsToMany extends BelongsToManyBase
          *     $model->bindEvent('model.relation.afterDetach', function (string $relationName, array $attachedIdList) use (\Igniter\Flame\Database\Model $model) {
          *         traceLog("Relation {$relationName} was removed", $attachedIdList);
          *     });
-         *
          */
         $this->parent->fireEvent('model.relation.afterDetach', [$this->relationName, $attachedIdList]);
     }
@@ -315,7 +311,7 @@ class BelongsToMany extends BelongsToManyBase
             $this->parent->setRelation($this->relationName, $relationModel->newCollection());
 
             // Perform sync when the model is saved
-            $this->parent->bindEventOnce('model.afterSave', function () use ($value) {
+            $this->parent->bindEventOnce('model.afterSave', function () {
                 $this->detach();
             });
 

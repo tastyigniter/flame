@@ -103,7 +103,7 @@ class Filesystem extends IlluminateFilesystem
         $publicPath = public_path();
 
         if (strpos($path, $publicPath) === 0) {
-            $result = str_replace("\\", "/", substr($path, strlen($publicPath)));
+            $result = str_replace('\\', '/', substr($path, strlen($publicPath)));
         }
         else {
             /**
@@ -119,7 +119,7 @@ class Filesystem extends IlluminateFilesystem
                 foreach ($this->symlinks as $source => $target) {
                     if (strpos($path, $target) === 0) {
                         $relativePath = substr($path, strlen($target));
-                        $result = str_replace("\\", "/", substr($source, strlen($publicPath)).$relativePath);
+                        $result = str_replace('\\', '/', substr($source, strlen($publicPath)).$relativePath);
                         break;
                     }
                 }
@@ -132,8 +132,8 @@ class Filesystem extends IlluminateFilesystem
     /**
      * Returns true if the specified path is within the path of the application
      * @param string $path The path to
-     * @param boolean $realpath Default true, uses realpath() to resolve the provided path before checking location. Set to false if you need to check if a potentially non-existent path would be within the application path
-     * @return boolean
+     * @param bool $realpath Default true, uses realpath() to resolve the provided path before checking location. Set to false if you need to check if a potentially non-existent path would be within the application path
+     * @return bool
      */
     public function isLocalPath($path, $realpath = TRUE)
     {
@@ -150,11 +150,11 @@ class Filesystem extends IlluminateFilesystem
      * Returns true if the provided disk is using the "local" driver
      *
      * @param \Illuminate\Filesystem\FilesystemAdapter $disk
-     * @return boolean
+     * @return bool
      */
     public function isLocalDisk($disk)
     {
-        return ($disk->getDriver()->getAdapter() instanceof Local);
+        return $disk->getDriver()->getAdapter() instanceof Local;
     }
 
     /**
@@ -228,7 +228,7 @@ class Filesystem extends IlluminateFilesystem
     /**
      * Returns true if the path uses a symbol.
      * @param string $path
-     * @return boolean
+     * @return bool
      */
     public function isPathSymbol($path)
     {

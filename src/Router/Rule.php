@@ -94,7 +94,7 @@ class Rule
      * Checks whether a given URL matches a given pattern.
      * @param string $url The URL to check.
      * @param array $parameters A reference to a PHP array variable to return the parameter list fetched from URL.
-     * @return boolean Returns true if the URL matches the pattern. Otherwise returns false.
+     * @return bool Returns true if the URL matches the pattern. Otherwise returns false.
      */
     public function resolveUrl($url, &$parameters)
     {
@@ -294,7 +294,7 @@ class Rule
         if ($callback !== null) {
             if (!is_callable($callback)) {
                 throw new InvalidArgumentException(sprintf(
-                    "Condition provided is not a valid callback. Given (%s)",
+                    'Condition provided is not a valid callback. Given (%s)',
                     gettype($callback)
                 ));
             }
@@ -319,7 +319,7 @@ class Rule
         if ($callback !== null) {
             if (!is_callable($callback)) {
                 throw new InvalidArgumentException(sprintf(
-                    "The after match callback provided is not valid. Given (%s)",
+                    'The after match callback provided is not valid. Given (%s)',
                     gettype($callback)
                 ));
             }

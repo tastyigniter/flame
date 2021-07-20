@@ -119,7 +119,7 @@ class RouterHelper
     /**
      * Checks whether an URL pattern segment is a wildcard.
      * @param string $segment The segment definition.
-     * @return boolean Returns boolean true if the segment is a wildcard. Returns false otherwise.
+     * @return bool Returns boolean true if the segment is a wildcard. Returns false otherwise.
      */
     public static function segmentIsWildcard($segment)
     {
@@ -129,7 +129,7 @@ class RouterHelper
     /**
      * Checks whether an URL pattern segment is optional.
      * @param string $segment The segment definition.
-     * @return boolean Returns boolean true if the segment is optional. Returns false otherwise.
+     * @return bool Returns boolean true if the segment is optional. Returns false otherwise.
      */
     public static function segmentIsOptional($segment)
     {

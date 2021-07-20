@@ -44,7 +44,7 @@ class Router
      * Match given URL string
      *
      * @param string $url Request URL to match for
-     * @return boolean
+     * @return bool
      */
     public function match($url)
     {
