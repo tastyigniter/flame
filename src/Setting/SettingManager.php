@@ -17,7 +17,7 @@ class SettingManager extends Manager
 
     public function createConfigDriver()
     {
-        $store = new DatabaseSettingStore($this->app['db'], $this->app['cache.store']);
+        $store = new DatabaseSettingStore($this->container['db'], $this->container['cache.store']);
         $store->setCacheKey('igniter.setting.system');
         $store->setExtraColumns(['sort' => 'config']);
 
@@ -26,7 +26,7 @@ class SettingManager extends Manager
 
     public function createPrefsDriver()
     {
-        $store = new DatabaseSettingStore($this->app['db'], $this->app['cache.store']);
+        $store = new DatabaseSettingStore($this->container['db'], $this->container['cache.store']);
         $store->setCacheKey('igniter.setting.parameters');
         $store->setExtraColumns(['sort' => 'prefs']);
 

@@ -2,7 +2,6 @@
 
 namespace Igniter\Flame\Database;
 
-use Illuminate\Database\Eloquent\Builder as BuilderBase;
 use Illuminate\Database\Eloquent\Model as ModelBase;
 
 class Pivot extends Model
@@ -73,7 +72,7 @@ class Pivot extends Model
      * @param \Illuminate\Database\Eloquent\Builder
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    protected function setKeysForSaveQuery(BuilderBase $query)
+    protected function setKeysForSaveQuery($query)
     {
         $query->where($this->foreignKey, $this->getAttribute($this->foreignKey));
 
