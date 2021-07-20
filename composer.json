@@ -34,6 +34,7 @@
     "guzzlehttp/guzzle": "~6.3",
     "kalnoy/nestedset": "~5.0",
     "natxet/cssmin": "~3.0",
+    "symfony/yaml": "~5.1",
     "scssphp/scssphp": "~1.0",
     "league/glide": "~1.5",
     "fruitcake/laravel-cors": "~2.0",

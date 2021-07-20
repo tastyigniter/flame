@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Closure;
 use DateTimeInterface;
 use Exception;
-use Igniter\Flame\Database\Query\Builder as QueryBuilder;
 use Igniter\Flame\Traits\EventEmitter;
 use Igniter\Flame\Traits\ExtendableTrait;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
@@ -203,9 +202,10 @@ class Model extends EloquentModel
 
         $instance->setRawAttributes((array)$attributes, TRUE);
 
-        $instance->fireModelEvent('fetched', FALSE);
+        $instance->setConnection($connection ?: $this->getConnectionName());
 
-        $instance->setConnection($connection ?: $this->connection);
+        $instance->fireModelEvent('fetched', FALSE);
+        $instance->fireModelEvent('retrieved', FALSE);
 
         return $instance;
     }
@@ -306,14 +306,16 @@ class Model extends EloquentModel
 
     public function setUpdatedAt($value)
     {
-        if (!is_null(static::UPDATED_AT)) $this->{static::UPDATED_AT} = $value;
+        if (!is_null(static::UPDATED_AT))
+            $this->{static::UPDATED_AT} = $value;
 
         return $this;
     }
 
     public function setCreatedAt($value)
     {
-        if (!is_null(static::CREATED_AT)) $this->{static::CREATED_AT} = $value;
+        if (!is_null(static::CREATED_AT))
+            $this->{static::CREATED_AT} = $value;
 
         return $this;
     }
@@ -330,7 +332,7 @@ class Model extends EloquentModel
      */
     public function addCasts($attributes)
     {
-        $this->casts = array_merge($this->casts, $attributes);
+        return $this->mergeCasts($attributes);
     }
 
     /**
@@ -341,9 +343,9 @@ class Model extends EloquentModel
     {
         return array_merge(
             [
-                'creating', 'created', 'updating', 'updated',
-                'deleting', 'deleted', 'saving', 'saved',
-                'restoring', 'restored', 'fetching', 'fetched',
+                'retrieved', 'creating', 'created', 'updating', 'updated',
+                'deleting', 'deleted', 'forceDeleted', 'saving', 'saved',
+                'restoring', 'restored', 'replicating', 'fetching', 'fetched',
             ],
             $this->observables
         );
@@ -351,7 +353,10 @@ class Model extends EloquentModel
 
     public function getAttribute($key)
     {
-        if (array_key_exists($key, $this->attributes) || $this->hasGetMutator($key)) {
+        if (array_key_exists($key, $this->attributes) ||
+            array_key_exists($key, $this->casts) ||
+            $this->hasGetMutator($key) ||
+            $this->isClassCastable($key)) {
             return $this->getAttributeValue($key);
         }
 
@@ -359,7 +364,7 @@ class Model extends EloquentModel
             return $this->relations[$key];
         }
 
-        if ($this->hasRelation($key) || method_exists($this, $key)) {
+        if ($this->hasRelation($key) || method_exists(self::class, $key)) {
             return $this->getRelationshipFromMethod($key);
         }
     }
@@ -393,9 +398,7 @@ class Model extends EloquentModel
             }
         }
 
-        $attributes = $this->addDateAttributesToArray(
-            $attributes = $this->getArrayableAttributes()
-        );
+        $attributes = $this->addDateAttributesToArray($attributes);
 
         $attributes = $this->addMutatedAttributesToArray(
             $attributes, $mutatedAttributes = $this->getMutatedAttributes()
@@ -462,6 +465,12 @@ class Model extends EloquentModel
             $value = $this->asSerialized($value);
         }
 
+        if ($this->isClassCastable($key)) {
+            $this->setClassCastableAttribute($key, $value);
+
+            return $this;
+        }
+
         if ($this->isJsonCastable($key) && !is_null($value)) {
             $value = $this->asJson($value);
         }
@@ -471,6 +480,10 @@ class Model extends EloquentModel
         // attribute in the array's value in the case of deeply nested items.
         if (Str::contains($key, '->')) {
             return $this->fillJsonAttribute($key, $value);
+        }
+
+        if (!is_null($value) && $this->isEncryptedCastable($key)) {
+            $value = $this->castAttributeAsEncryptedString($key, $value);
         }
 
         $this->attributes[$key] = $value;
@@ -607,34 +620,6 @@ class Model extends EloquentModel
     }
 
     /**
-     * Determine if the model or given attribute(s) have been modified.
-     *
-     * @param array|string|null $attributes
-     *
-     * @return bool
-     */
-    public function isDirty($attributes = null)
-    {
-        $dirty = $this->getDirty();
-
-        if (is_null($attributes)) {
-            return count($dirty) > 0;
-        }
-
-        if (!is_array($attributes)) {
-            $attributes = func_get_args();
-        }
-
-        foreach ($attributes as $attribute) {
-            if (array_key_exists($attribute, $dirty) AND !is_null($dirty[$attribute])) {
-                return TRUE;
-            }
-        }
-
-        return FALSE;
-    }
-
-    /**
      * Create a new Eloquent query builder for the model.
      *
      * @param \Illuminate\Database\Query\Builder $query
@@ -644,19 +629,6 @@ class Model extends EloquentModel
     public function newEloquentBuilder($query)
     {
         return new Builder($query);
-    }
-
-    /**
-     * Get a new query builder instance for the connection.
-     * @return \Igniter\Flame\Database\Query\Builder
-     */
-    protected function newBaseQueryBuilder()
-    {
-        $connection = $this->getConnection();
-
-        return new QueryBuilder(
-            $connection, $connection->getQueryGrammar(), $connection->getPostProcessor()
-        );
     }
 
     /**
