@@ -3,6 +3,7 @@
 namespace Igniter\Flame\Location\Models;
 
 use Geocoder;
+use Igniter\Flame\Database\Casts\Serialize;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Geolite\Contracts\CoordinatesInterface;
 use Igniter\Flame\Geolite\Contracts\LocationInterface;
@@ -33,8 +34,8 @@ abstract class AbstractArea extends Model implements AreaInterface
     ];
 
     protected $casts = [
-        'boundaries' => 'serialize',
-        'conditions' => 'serialize',
+        'boundaries' => Serialize::class,
+        'conditions' => Serialize::class,
         'is_default' => 'boolean',
     ];
 

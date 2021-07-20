@@ -3,6 +3,7 @@
 namespace Igniter\Flame\Location\Models;
 
 use DB;
+use Igniter\Flame\Database\Casts\Serialize;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Geolite\Contracts\CoordinatesInterface;
 use Igniter\Flame\Location\Contracts\LocationInterface;
@@ -38,7 +39,7 @@ class AbstractLocation extends Model implements LocationInterface
     ];
 
     protected $casts = [
-        'options' => 'serialize',
+        'options' => Serialize::class,
     ];
 
     public function getName()
