@@ -2,17 +2,18 @@
 
 namespace Igniter\Flame\Database\Concerns;
 
+use Igniter\Flame\Database\Relations\BelongsTo;
+use Igniter\Flame\Database\Relations\BelongsToMany;
+use Igniter\Flame\Database\Relations\HasMany;
+use Igniter\Flame\Database\Relations\HasManyThrough;
+use Igniter\Flame\Database\Relations\HasOne;
+use Igniter\Flame\Database\Relations\HasOneThrough;
+use Igniter\Flame\Database\Relations\MorphMany;
+use Igniter\Flame\Database\Relations\MorphOne;
+use Igniter\Flame\Database\Relations\MorphTo;
+use Igniter\Flame\Database\Relations\MorphToMany;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use October\Rain\Database\Relations\BelongsTo;
-use October\Rain\Database\Relations\BelongsToMany;
-use October\Rain\Database\Relations\HasMany;
-use October\Rain\Database\Relations\HasManyThrough;
-use October\Rain\Database\Relations\HasOne;
-use October\Rain\Database\Relations\MorphMany;
-use October\Rain\Database\Relations\MorphOne;
-use October\Rain\Database\Relations\MorphTo;
-use October\Rain\Database\Relations\MorphToMany;
 
 trait HasRelationships
 {
@@ -384,6 +385,32 @@ trait HasRelationships
             $localKey,
             $relationName
         );
+    }
+
+    /**
+     * Define a has-one-through relationship.
+     * This code is a duplicate of Eloquent but uses a Rain relation class.
+     * @return \Igniter\Flame\Database\Relations\HasOneThrough
+     */
+    public function hasOneThrough($related, $through, $primaryKey = null, $throughKey = null, $localKey = null, $secondLocalKey = null, $relationName = null)
+    {
+        if (is_null($relationName)) {
+            $relationName = $this->getRelationCaller();
+        }
+
+        $throughInstance = new $through;
+
+        $primaryKey = $primaryKey ?: $this->getForeignKey();
+
+        $throughKey = $throughKey ?: $throughInstance->getForeignKey();
+
+        $localKey = $localKey ?: $this->getKeyName();
+
+        $secondLocalKey = $secondLocalKey ?: $throughInstance->getKeyName();
+
+        $instance = $this->newRelatedInstance($related);
+
+        return new HasOneThrough($instance->newQuery(), $this, $throughInstance, $primaryKey, $throughKey, $localKey, $secondLocalKey, $relationName);
     }
 
     /**

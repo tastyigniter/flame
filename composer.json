@@ -30,7 +30,7 @@
     "ext-openssl": "*",
     "fideloper/proxy": "~4.0",
     "doctrine/instantiator": "~1.0",
-    "october/rain": "~1.1",
+    "doctrine/dbal": "~2.6",
     "guzzlehttp/guzzle": "~6.3",
     "kalnoy/nestedset": "~5.0",
     "natxet/cssmin": "~3.0",
