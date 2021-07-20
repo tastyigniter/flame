@@ -44,7 +44,6 @@ class Mailer extends MailerBase
          *     $mailerInstance->bindEvent('mailer.beforeSend', function ((string|array) $view, (array) $data, (\Closure|string) $callback) {
          *         return false;
          *     });
-         *
          */
         if (Event::fire('mailer.beforeSend', [$view, $data, $callback], TRUE) === FALSE) {
             return;
@@ -95,7 +94,6 @@ class Mailer extends MailerBase
          *     $mailerInstance->bindEvent('mailer.prepareSend', function ((string) $view, (\Illuminate\Mail\Message) $message) {
          *         return false;
          *     });
-         *
          */
         if (
             ($this->fireEvent('mailer.prepareSend', [$view, $message], TRUE) === FALSE) ||
@@ -125,7 +123,6 @@ class Mailer extends MailerBase
          *     $mailerInstance->bindEvent('mailer.send', function ((string) $view, (\Illuminate\Mail\Message) $message) {
          *         \Log::info("Message was rendered with $view and sent");
          *     });
-         *
          */
         $this->fireEvent('mailer.send', [$view, $message]);
         Event::fire('mailer.send', [$this, $view, $message]);
@@ -390,7 +387,6 @@ class Mailer extends MailerBase
          *     $mailerInstance->bindEvent('mailer.beforeAddContent', function ((\Illuminate\Mail\Message) $message, (string) $view, (array) $data, (string) $raw, (string) $plain) {
          *         return false;
          *     });
-         *
          */
         if (
             ($this->fireEvent('mailer.beforeAddContent', [$message, $view, $data, $raw, $plain], TRUE) === FALSE) ||
@@ -448,7 +444,6 @@ class Mailer extends MailerBase
          *     $mailerInstance->bindEvent('mailer.addContent', function ((\Illuminate\Mail\Message) $message, (string) $view, (array) $data) {
          *         \Log::info("$view has had content added to the message");
          *     });
-         *
          */
         $this->fireEvent('mailer.addContent', [$message, $view, $data]);
         Event::fire('mailer.addContent', [$this, $message, $view, $data]);
