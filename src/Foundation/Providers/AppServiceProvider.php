@@ -2,7 +2,7 @@
 
 namespace Igniter\Flame\Foundation\Providers;
 
-use File;
+use Igniter\Flame\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 
 abstract class AppServiceProvider extends ServiceProvider

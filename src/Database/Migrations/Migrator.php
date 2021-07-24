@@ -2,8 +2,8 @@
 
 namespace Igniter\Flame\Database\Migrations;
 
+use Igniter\Flame\Support\Str;
 use Illuminate\Database\Migrations\Migrator as BaseMigrator;
-use Str;
 
 class Migrator extends BaseMigrator
 {
@@ -48,7 +48,7 @@ class Migrator extends BaseMigrator
     /**
      * Resolve a migration instance from a file.
      *
-     * @param  string $file
+     * @param string $file
      *
      * @return object
      */

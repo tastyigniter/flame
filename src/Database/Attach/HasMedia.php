@@ -2,13 +2,13 @@
 
 namespace Igniter\Flame\Database\Attach;
 
-use Event;
 use Exception;
 use Igniter\Flame\Database\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Collection as BaseCollection;
+use Illuminate\Support\Facades\Event;
 
 trait HasMedia
 {
@@ -78,7 +78,6 @@ trait HasMedia
             !array_key_exists($key, $mediable = $this->mediable())
             OR $this->hasSetMutator($key)
         ) return parent::setAttribute($key, $value);
-
         // Do nothing
     }
 
@@ -231,8 +230,8 @@ trait HasMedia
         $newMediaIds = $this->parseIds($media);
         $this->getMedia($tag)
             ->reject(function (Media $tagMedia) use ($newMediaIds) {
-                 return in_array($tagMedia->getKey(), array_column($newMediaIds, 'id'));
-             })
+                return in_array($tagMedia->getKey(), array_column($newMediaIds, 'id'));
+            })
             ->each->delete();
     }
 

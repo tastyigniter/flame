@@ -4,10 +4,10 @@ namespace Igniter\Flame\Traits;
 
 use BadMethodCallException;
 use Exception;
+use Igniter\Flame\Exception\SystemException;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionMethod;
-use SystemException;
 
 /**
  * Extendable Trait
@@ -123,7 +123,7 @@ trait ExtendableTrait
      * @param string $extensionName
      *
      * @return void|self
-     * @throws \SystemException
+     * @throws \Igniter\Flame\Exception\SystemException
      */
     public function extendClassWith($extensionName)
     {

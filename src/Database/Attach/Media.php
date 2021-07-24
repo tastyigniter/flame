@@ -3,14 +3,14 @@
 namespace Igniter\Flame\Database\Attach;
 
 use Exception;
-use File;
 use FilesystemIterator;
 use Igniter\Flame\Database\Model;
-use Log;
-use Storage;
+use Igniter\Flame\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Symfony\Component\HttpFoundation\File\File as SymfonyFile;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use URL;
 
 class Media extends Model
 {

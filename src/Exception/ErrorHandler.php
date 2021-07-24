@@ -2,9 +2,9 @@
 
 namespace Igniter\Flame\Exception;
 
-use Config;
 use Exception;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
 
 /**

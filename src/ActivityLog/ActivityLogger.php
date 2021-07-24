@@ -2,12 +2,12 @@
 
 namespace Igniter\Flame\ActivityLog;
 
-use Event;
 use Igniter\Flame\ActivityLog\Contracts\ActivityInterface;
 use Igniter\Flame\ActivityLog\Models\Activity;
 use Igniter\Flame\Auth\Models\User;
 use Igniter\Flame\Database\Model;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Traits\Macroable;
 
 class ActivityLogger

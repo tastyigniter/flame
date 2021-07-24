@@ -2,7 +2,7 @@
 
 namespace Igniter\Flame\Support;
 
-use App;
+use Illuminate\Support\Facades\App;
 
 /**
  * Pagic helper class
