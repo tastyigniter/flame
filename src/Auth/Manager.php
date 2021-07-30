@@ -2,14 +2,14 @@
 
 namespace Igniter\Flame\Auth;
 
-use Cookie;
 use Exception;
-use Hash;
 use Igniter\Flame\Auth\Models\User;
 use Igniter\Flame\Auth\Models\User as UserModel;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
-use Session;
 
 /**
  * Auth Manager Class

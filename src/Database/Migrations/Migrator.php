@@ -2,8 +2,8 @@
 
 namespace Igniter\Flame\Database\Migrations;
 
+use Igniter\Flame\Support\Str;
 use Illuminate\Database\Migrations\Migrator as BaseMigrator;
-use Str;
 
 class Migrator extends BaseMigrator
 {
@@ -50,6 +50,7 @@ class Migrator extends BaseMigrator
      *
      * @param string $migrationName
      * @return string
+
      */
     protected function getMigrationClass($migrationName): string
     {

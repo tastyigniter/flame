@@ -2,10 +2,10 @@
 
 namespace Igniter\Flame\Location\Models;
 
-use Geocoder;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Geolite\Contracts\CoordinatesInterface;
 use Igniter\Flame\Geolite\Contracts\LocationInterface;
+use Igniter\Flame\Geolite\Facades\Geocoder;
 use Igniter\Flame\Location\Contracts\AreaInterface;
 use InvalidArgumentException;
 

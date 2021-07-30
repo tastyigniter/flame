@@ -4,9 +4,9 @@ namespace Igniter\Flame\Auth\Models;
 
 use Carbon\Carbon;
 use Exception;
-use Hash;
 use Igniter\Flame\Database\Model;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Model implements Authenticatable
 {

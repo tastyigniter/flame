@@ -4,10 +4,10 @@ namespace Igniter\Flame\ActivityLog\Traits;
 
 traceLog('LogsActivity traits has been Deprecated. Use activity()->logActivity() instead');
 
-use App;
 use Igniter\Flame\ActivityLog\ActivityLogger;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\App;
 
 /**
  * LogsActivity model trait

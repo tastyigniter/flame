@@ -2,18 +2,18 @@
 
 namespace Igniter\Flame\Notifications\Channels;
 
+use Igniter\Flame\Support\Str;
 use Illuminate\Notifications\Channels\MailChannel as BaseMailChannel;
-use Str;
 
 class MailChannel extends BaseMailChannel
 {
     /**
      * Build the mail message.
      *
-     * @param  \Illuminate\Mail\Message $mailMessage
-     * @param  mixed $notifiable
-     * @param  \Illuminate\Notifications\Notification $notification
-     * @param  \Illuminate\Notifications\Messages\MailMessage $message
+     * @param \Illuminate\Mail\Message $mailMessage
+     * @param mixed $notifiable
+     * @param \Illuminate\Notifications\Notification $notification
+     * @param \Illuminate\Notifications\Messages\MailMessage $message
      *
      * @return void
      */

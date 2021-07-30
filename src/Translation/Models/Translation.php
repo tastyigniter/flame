@@ -2,8 +2,8 @@
 
 namespace Igniter\Flame\Translation\Models;
 
-use Cache;
 use Igniter\Flame\Database\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Translation extends Model
 {

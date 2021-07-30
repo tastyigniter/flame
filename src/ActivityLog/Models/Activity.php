@@ -6,9 +6,9 @@ use Carbon\Carbon;
 use Igniter\Flame\ActivityLog\ActivityLogger;
 use Igniter\Flame\ActivityLog\Contracts\ActivityInterface;
 use Igniter\Flame\Database\Builder;
+use Igniter\Flame\Database\Model;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
-use Model;
 use ReflectionClass;
 
 /**
