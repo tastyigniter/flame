@@ -11,7 +11,7 @@ class BaseEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function fireBackwardsCompatibleEvent($name, $params)
+    public function fireBackwardsCompatibleEvent($name, $params = null)
     {
         Event::fire($name, $params);
     }
