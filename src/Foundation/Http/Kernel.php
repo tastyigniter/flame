@@ -33,8 +33,7 @@ class Kernel extends BaseKernel
      */
     protected $middleware = [
         \Igniter\Flame\Foundation\Http\Middleware\TrustProxies::class,
-        \Fruitcake\Cors\HandleCors::class,
-        \Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance::class,
+        \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \Igniter\Flame\Foundation\Http\Middleware\TrimStrings::class,
         //\Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
