@@ -196,7 +196,7 @@ abstract class Manager
     public function getById($identifier)
     {
         $query = $this->createLocationModelQuery();
-        $location = $query->find($identifier);
+        $location = $query->isEnabled()->find($identifier);
 
         return $location ?: null;
     }
