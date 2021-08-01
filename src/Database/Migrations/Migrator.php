@@ -46,20 +46,20 @@ class Migrator extends BaseMigrator
     }
 
     /**
-     * Generate a migration class name based on the migration file name.
+     * Resolve a migration instance from a file.
      *
-     * @param string $migrationName
-     * @return string
-
+     * @param string $file
+     *
+     * @return object
      */
-    protected function getMigrationClass($migrationName): string
+    public function resolve($file)
     {
-        $class = Str::studly(implode('_', array_slice(explode('_', $migrationName), 4)));
+        $class = Str::studly(implode('_', array_slice(explode('_', $file), 4)));
         if (!class_exists($class)) {
             $className = str_replace('.', '\\', $this->getRepository()->getGroup());
             $class = $className.'\\Database\\Migrations\\'.$class;
         }
 
-        return $class;
+        return new $class;
     }
 }
