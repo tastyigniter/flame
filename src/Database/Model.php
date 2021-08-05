@@ -676,7 +676,7 @@ class Model extends EloquentModel
 
     /**
      * Create a generic pivot model instance.
-     * @param \October\Rain\Database\Model $parent
+     * @param \Illuminate\Database\Eloquent\Model $parent
      * @param array $attributes
      * @param string $table
      * @param bool $exists
@@ -692,12 +692,12 @@ class Model extends EloquentModel
 
     /**
      * Create a pivot model instance specific to a relation.
-     * @param \October\Rain\Database\Model $parent
      * @param string $relationName
+     * @param \Illuminate\Database\Eloquent\Model $parent
      * @param array $attributes
      * @param string $table
      * @param bool $exists
-     * @return \October\Rain\Database\Pivot
+     * @return \Igniter\Flame\Database\Pivot
      */
     public function newRelationPivot($relationName, $parent, $attributes, $table, $exists)
     {

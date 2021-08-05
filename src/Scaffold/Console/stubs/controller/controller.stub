@@ -2,7 +2,7 @@
 
 namespace {{studly_author}}\{{studly_extension}}\Controllers;
 
-use AdminMenu;
+use Admin\Facades\AdminMenu;
 
 /**
  * {{title_name}} Admin Controller

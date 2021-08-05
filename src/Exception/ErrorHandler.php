@@ -2,17 +2,29 @@
 
 namespace Igniter\Flame\Exception;
 
-use Config;
 use Exception;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
+use Illuminate\View\View;
+use Throwable;
 
 /**
  * System Error Handler, this class handles application exception events.
  */
-class ErrorHandler extends \October\Rain\Exception\ErrorHandler
+class ErrorHandler
 {
-    public function handleException(Exception $proposedException)
+    /**
+     * @var mixed A prepared mask exception used to mask any exception fired.
+     */
+    protected static $activeMask;
+
+    /**
+     * @var array A collection of masks, so multiples can be applied in order.
+     */
+    protected static $maskLayers = [];
+
+    public function handleException(Throwable $proposedException)
     {
         // Disable the error handler for test and CLI environment
         if (App::runningUnitTests() || App::runningInConsole()) {
@@ -57,6 +69,34 @@ class ErrorHandler extends \October\Rain\Exception\ErrorHandler
     }
 
     /**
+     * Prepares a mask exception to be used when any exception fires.
+     * @param Exception $exception The mask exception.
+     * @return void
+     */
+    public static function applyMask(Exception $exception)
+    {
+        if (static::$activeMask !== null) {
+            static::$maskLayers[] = static::$activeMask;
+        }
+
+        static::$activeMask = $exception;
+    }
+
+    /**
+     * Destroys the prepared mask by applyMask()
+     * @return void
+     */
+    public static function removeMask()
+    {
+        if (count(static::$maskLayers) > 0) {
+            static::$activeMask = array_pop(static::$maskLayers);
+        }
+        else {
+            static::$activeMask = null;
+        }
+    }
+
+    /**
      * Returns a more descriptive error message if application
      * debug mode is turned on.
      * @param Exception $exception
@@ -77,5 +117,36 @@ class ErrorHandler extends \October\Rain\Exception\ErrorHandler
         }
 
         return $message;
+    }
+
+    //
+    // Overrides
+    //
+
+    /**
+     * We are about to display an error page to the user,
+     * provide an opportunity to handle extra functions.
+     * @return void
+     */
+    public function beforeHandleError($exception)
+    {
+    }
+
+    /**
+     * Check if using a custom error page, if so return the contents.
+     * Return NULL if a custom error is not set up.
+     * @return mixed Error page contents.
+     */
+    public function handleCustomError()
+    {
+    }
+
+    /**
+     * Displays the detailed system exception page.
+     * @return View Object containing the error page.
+     */
+    public function handleDetailedError($exception)
+    {
+        return 'Error: '.$exception->getMessage();
     }
 }

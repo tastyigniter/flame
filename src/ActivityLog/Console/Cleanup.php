@@ -2,10 +2,10 @@
 
 namespace Igniter\Flame\ActivityLog\Console;
 
-use App;
 use Carbon\Carbon;
 use Igniter\Flame\ActivityLog\ActivityLogger;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\App;
 
 class Cleanup extends Command
 {

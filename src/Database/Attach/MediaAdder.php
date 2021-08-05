@@ -2,10 +2,10 @@
 
 namespace Igniter\Flame\Database\Attach;
 
-use Event;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Filesystem\Filesystem;
-use Storage;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\File\File as SymfonyFile;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 

@@ -4,10 +4,10 @@ namespace Igniter\Flame\Traits;
 
 use BadMethodCallException;
 use Exception;
+use Igniter\Flame\Exception\SystemException;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionMethod;
-use SystemException;
 
 /**
  * Extendable Trait
@@ -123,7 +123,7 @@ trait ExtendableTrait
      * @param string $extensionName
      *
      * @return void|self
-     * @throws \SystemException
+     * @throws \Igniter\Flame\Exception\SystemException
      */
     public function extendClassWith($extensionName)
     {
@@ -158,7 +158,7 @@ trait ExtendableTrait
     {
         if (!method_exists($extensionObject, 'extensionIsHiddenMethod')) {
             throw new Exception(sprintf(
-                'Extension %s should inherit October\Rain\Extension\ExtensionBase or implement October\Rain\Extension\ExtensionTrait.',
+                'Extension %s should implement Igniter\Flame\Traits\ExtensionTrait.',
                 $extensionName
             ));
         }

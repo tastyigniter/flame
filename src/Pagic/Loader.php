@@ -2,11 +2,11 @@
 
 namespace Igniter\Flame\Pagic;
 
-use App;
 use Exception;
-use File;
 use Igniter\Flame\Pagic\Contracts\TemplateLoader;
 use Igniter\Flame\Pagic\Contracts\TemplateSource;
+use Igniter\Flame\Support\Facades\File;
+use Illuminate\Support\Facades\App;
 
 /**
  * Loader class

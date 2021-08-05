@@ -2,12 +2,12 @@
 
 namespace Igniter\Flame\Location\Models;
 
-use DB;
 use Igniter\Flame\Database\Casts\Serialize;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Geolite\Contracts\CoordinatesInterface;
 use Igniter\Flame\Location\Contracts\LocationInterface;
 use Igniter\Flame\Location\OrderTypes;
+use Illuminate\Support\Facades\DB;
 
 class AbstractLocation extends Model implements LocationInterface
 {

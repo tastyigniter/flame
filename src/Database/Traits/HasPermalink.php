@@ -3,8 +3,8 @@
 namespace Igniter\Flame\Database\Traits;
 
 use Exception;
+use Igniter\Flame\Database\Model;
 use Igniter\Flame\Database\PermalinkMaker;
-use Model;
 
 /**
  * HasPermalink model trait

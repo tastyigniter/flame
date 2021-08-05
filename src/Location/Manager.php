@@ -5,7 +5,7 @@ namespace Igniter\Flame\Location;
 use Closure;
 use Igniter\Flame\Geolite\Contracts\CoordinatesInterface;
 use Igniter\Flame\Traits\EventEmitter;
-use Session;
+use Illuminate\Support\Facades\Session;
 
 /**
  * Location Manager Class
@@ -196,7 +196,7 @@ abstract class Manager
     public function getById($identifier)
     {
         $query = $this->createLocationModelQuery();
-        $location = $query->isEnabled()->find($identifier);
+        $location = $query->find($identifier);
 
         return $location ?: null;
     }

@@ -2,13 +2,13 @@
 
 namespace Igniter\Flame\Pagic;
 
-use File;
 use Igniter\Flame\Pagic\Extension\AbstractExtension;
 use Igniter\Flame\Pagic\Extension\CoreExtension;
+use Igniter\Flame\Support\Facades\File;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\View;
 use Illuminate\View\Compilers\CompilerInterface;
 use LogicException;
-use View;
 
 class Environment
 {
