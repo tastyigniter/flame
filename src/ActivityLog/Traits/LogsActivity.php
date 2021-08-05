@@ -47,7 +47,7 @@ trait LogsActivity
                 if ($eventName == 'updated') {
                     //temporary hold the original attributes on the model
                     //as we'll need these in the updating event
-                    $oldValues = $model->replicate()->setRawAttributes($model->getOriginal());
+                    $oldValues = $model->replicate()->setRawAttributes($model->getRawOriginal());
                     $model->oldAttributes = static::logChanges($oldValues);
                 }
 

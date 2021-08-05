@@ -37,14 +37,14 @@ class Converter extends Manager
 
     public function createOpenExchangeRatesDriver()
     {
-        $config = $this->app['config']['currency.converters.openexchangerates'];
+        $config = $this->container['config']['currency.converters.openexchangerates'];
 
         return new $config['class']($config);
     }
 
     public function createFixerIODriver()
     {
-        $config = $this->app['config']['currency.converters.fixerio'];
+        $config = $this->container['config']['currency.converters.fixerio'];
 
         return new $config['class']($config);
     }

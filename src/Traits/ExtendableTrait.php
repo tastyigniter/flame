@@ -158,7 +158,7 @@ trait ExtendableTrait
     {
         if (!method_exists($extensionObject, 'extensionIsHiddenMethod')) {
             throw new Exception(sprintf(
-                'Extension %s should inherit October\Rain\Extension\ExtensionBase or implement October\Rain\Extension\ExtensionTrait.',
+                'Extension %s should implement Igniter\Flame\Traits\ExtensionTrait.',
                 $extensionName
             ));
         }

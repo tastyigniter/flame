@@ -3,7 +3,6 @@
 namespace Igniter\Flame\Router;
 
 use Illuminate\Routing\RoutingServiceProvider as BaseRoutingServiceProvider;
-use October\Rain\Router\CoreRouter;
 
 class RoutingServiceProvider extends BaseRoutingServiceProvider
 {
