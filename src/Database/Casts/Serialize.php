@@ -6,7 +6,6 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
 class Serialize implements CastsAttributes
 {
-
     public function get($model, string $key, $value, array $attributes)
     {
         return isset($value) ? @unserialize($value) : null;
