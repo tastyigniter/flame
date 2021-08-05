@@ -50,6 +50,41 @@ class Model extends EloquentModel
      */
     protected static $eventsBooted = [];
 
+    /**
+     * The built-in, primitive cast types supported by Eloquent.
+     *
+     * @var string[]
+     */
+    protected static $primitiveCastTypes = [
+        'array',
+        'bool',
+        'boolean',
+        'collection',
+        'custom_datetime',
+        'date',
+        'datetime',
+        'decimal',
+        'double',
+        'encrypted',
+        'encrypted:array',
+        'encrypted:collection',
+        'encrypted:json',
+        'encrypted:object',
+        'float',
+        'immutable_date',
+        'immutable_datetime',
+        'immutable_custom_datetime',
+        'int',
+        'integer',
+        'json',
+        'object',
+        'real',
+        'serialize',
+        'string',
+        'timestamp',
+        'time',
+    ];
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
