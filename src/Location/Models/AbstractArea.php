@@ -2,7 +2,6 @@
 
 namespace Igniter\Flame\Location\Models;
 
-use Igniter\Flame\Database\Casts\Serialize;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Geolite\Contracts\CoordinatesInterface;
 use Igniter\Flame\Geolite\Contracts\LocationInterface;
@@ -34,8 +33,8 @@ abstract class AbstractArea extends Model implements AreaInterface
     ];
 
     protected $casts = [
-        'boundaries' => Serialize::class,
-        'conditions' => Serialize::class,
+        'boundaries' => 'serialize',
+        'conditions' => 'serialize',
         'is_default' => 'boolean',
     ];
 
