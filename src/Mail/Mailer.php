@@ -2,6 +2,7 @@
 
 namespace Igniter\Flame\Mail;
 
+use Igniter\Flame\Traits\EventEmitter;
 use Illuminate\Contracts\Mail\Mailable as MailableContract;
 use Illuminate\Mail\Mailer as MailerBase;
 use Illuminate\Support\Collection;
@@ -14,6 +15,8 @@ use InvalidArgumentException;
  */
 class Mailer extends MailerBase
 {
+    use EventEmitter;
+
     /**
      * @var string Original driver before pretending.
      */
