@@ -467,7 +467,8 @@ class Manager
             $currentUser->fireEvent('model.auth.afterImpersonate', [$oldUser]);
         }
 
-        Session::put($this->sessionKey, $oldSession);
+        if ($oldSession)
+            Session::put($this->sessionKey, $oldSession);
     }
 
     public function isImpersonator()
