@@ -23,6 +23,9 @@ class WorkingTimeslot extends Collection
             if (!is_null($leadTime))
                 $start = $start->add($leadTime);
 
+            if ($interval->format('%i') < 5)
+                $interval->i = 5;
+
             $datePeriod = new DatePeriod($start, $interval, $end);
             foreach ($datePeriod as $dateTime) {
                 $items[] = $dateTime;
