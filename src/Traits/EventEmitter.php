@@ -184,8 +184,7 @@ trait EventEmitter
         $longArgs = array_merge([$this], $params);
 
         // Local event first
-        $response = $this->fireEvent($shortEvent, $params, $halt);
-        if (!is_null($response)) {
+        if ($response = $this->fireEvent($shortEvent, $params, $halt) AND !is_null($response)) {
             if ($halt)
                 return $response;
 
@@ -193,8 +192,7 @@ trait EventEmitter
         }
 
         // Global event second
-        $response = Event::fire($event, $longArgs, $halt);
-        if (!is_null($response)) {
+        if ($response = Event::fire($event, $longArgs, $halt) AND !is_null($response)) {
             if ($halt)
                 return $response;
 
