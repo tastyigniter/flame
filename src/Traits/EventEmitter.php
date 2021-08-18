@@ -188,7 +188,8 @@ trait EventEmitter
             if ($halt)
                 return $response;
 
-            $result = array_merge($result, $response);
+            if ($response === TRUE)
+                $result = array_merge($result, $response);
         }
 
         // Global event second
@@ -196,7 +197,8 @@ trait EventEmitter
             if ($halt)
                 return $response;
 
-            $result = array_merge($result, $response);
+            if ($response === TRUE)
+                $result = array_merge($result, $response);
         }
 
         return $result;
