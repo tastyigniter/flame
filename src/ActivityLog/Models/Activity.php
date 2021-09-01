@@ -151,7 +151,7 @@ class Activity extends Model
 
     public function scopeWhereIsRead($query)
     {
-        return $query->whereNotNull('read_at')->whereDate('read_at', '<=', Carbon::now());
+        return $query->whereNotNull('read_at')->where('read_at', '<=', Carbon::now());
     }
 
     public function scopeWhereIsUnread($query)
