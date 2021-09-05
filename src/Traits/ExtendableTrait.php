@@ -4,8 +4,8 @@ namespace Igniter\Flame\Traits;
 
 use BadMethodCallException;
 use Exception;
-use Igniter\Flame\Exception\SystemException;
-use Illuminate\Support\Str;
+use Igniter\Flame\Support\ClassLoader;
+use Illuminate\Support\Facades\App;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -45,6 +45,11 @@ trait ExtendableTrait
     protected static $extendableGuardProperties = TRUE;
 
     /**
+     * @var ClassLoader Class loader instance.
+     */
+    protected static $extendableClassLoader = null;
+
+    /**
      * Constructor.
      */
     public function extendableConstruct()
@@ -74,10 +79,10 @@ trait ExtendableTrait
         }
 
         foreach ($uses as $use) {
-            $useClass = str_replace('.', '\\', trim($use));
+            $useClass = $this->extensionNormalizeClassName($use);
 
             // Soft implement
-            if (Str::startsWith($useClass, '?')) {
+            if (substr($useClass, 0, 1) == '?') {
                 $useClass = substr($useClass, 1);
                 if (!class_exists($useClass)) {
                     continue;
@@ -118,22 +123,38 @@ trait ExtendableTrait
     }
 
     /**
+     * Normalizes the provided extension name allowing for the ClassLoader to inject aliased classes
+     *
+     * @param string $name
+     * @return string
+     */
+    protected function extensionNormalizeClassName(string $name): string
+    {
+        $name = str_replace('.', '\\', trim($name));
+        if (!is_null($this->extensionGetClassLoader()) && ($alias = $this->extensionGetClassLoader()->getAlias($name))) {
+            $name = $alias;
+        }
+
+        return $name;
+    }
+
+    /**
      * Dynamically extend a class with a specified behavior
      *
      * @param string $extensionName
      *
      * @return void|self
-     * @throws \Igniter\Flame\Exception\SystemException
+     * @throws \Exception
      */
     public function extendClassWith($extensionName)
     {
         if (!strlen($extensionName))
             return $this;
 
-        $extensionName = str_replace('.', '\\', trim($extensionName));
+        $extensionName = $this->extensionNormalizeClassName($extensionName);
 
         if (isset($this->extensionData['extensions'][$extensionName])) {
-            throw new SystemException(sprintf(
+            throw new Exception(sprintf(
                 'Class %s has already been extended with %s',
                 get_class($this),
                 $extensionName
@@ -176,7 +197,7 @@ trait ExtendableTrait
     }
 
     /**
-     * Programatically adds a method to the extendable class
+     * Programmatically adds a method to the extendable class
      *
      * @param string $dynamicName
      * @param callable $method
@@ -203,6 +224,10 @@ trait ExtendableTrait
      */
     public function addDynamicProperty($dynamicName, $value = null)
     {
+        if (array_key_exists($dynamicName, $this->getDynamicProperties())) {
+            return;
+        }
+
         self::$extendableGuardProperties = FALSE;
 
         if (!property_exists($this, $dynamicName)) {
@@ -239,9 +264,7 @@ trait ExtendableTrait
      */
     public function getClassExtension($name)
     {
-        $name = str_replace('.', '\\', trim($name));
-
-        return $this->extensionData['extensions'][$name] ?? null;
+        return $this->extensionData['extensions'][$this->extensionNormalizeClassName($name)] ?? null;
     }
 
     /**
@@ -277,10 +300,11 @@ trait ExtendableTrait
      */
     public function methodExists($name)
     {
-        return
+        return (
             method_exists($this, $name) ||
             isset($this->extensionData['methods'][$name]) ||
-            isset($this->extensionData['dynamicMethods'][$name]);
+            isset($this->extensionData['dynamicMethods'][$name])
+        );
     }
 
     /**
@@ -333,7 +357,7 @@ trait ExtendableTrait
             }
         }
 
-        return FALSE;
+        return array_key_exists($name, $this->getDynamicProperties());
     }
 
     /**
@@ -425,7 +449,7 @@ trait ExtendableTrait
             $extensionObject = $this->extensionData['extensions'][$extension];
 
             if (method_exists($extension, $name)) {
-                return call_user_func_array([$extensionObject, $name], $params);
+                return call_user_func_array([$extensionObject, $name], array_values($params));
             }
         }
 
@@ -433,7 +457,7 @@ trait ExtendableTrait
             $dynamicCallable = $this->extensionData['dynamicMethods'][$name];
 
             if (is_callable($dynamicCallable)) {
-                return call_user_func_array($dynamicCallable, $params);
+                return call_user_func_array($dynamicCallable, array_values($params));
             }
         }
 
@@ -484,6 +508,8 @@ trait ExtendableTrait
                 }
 
                 foreach ($uses as $use) {
+                    // Class alias checks not required here as the current name of the extension class doesn't
+                    // matter because as long as $useClassName is able to be instantiated the method will resolve
                     $useClassName = str_replace('.', '\\', trim($use));
 
                     $useClass = new ReflectionClass($useClassName);
@@ -517,5 +543,23 @@ trait ExtendableTrait
             $className,
             $name
         ));
+    }
+
+    /**
+     * Gets the class loader
+     *
+     * @return ClassLoader|null
+     */
+    protected function extensionGetClassLoader(): ?ClassLoader
+    {
+        if (!is_null(self::$extendableClassLoader)) {
+            return self::$extendableClassLoader;
+        }
+
+        if (!class_exists('App')) {
+            return null;
+        }
+
+        return self::$extendableClassLoader = App::make(ClassLoader::class);
     }
 }

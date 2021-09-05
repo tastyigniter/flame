@@ -11,7 +11,7 @@ class RegisterClassLoader
     /**
      * Register Auto Loader
      *
-     * @param  \Illuminate\Contracts\Foundation\Application $app
+     * @param \Illuminate\Contracts\Foundation\Application $app
      *
      * @return void
      */
@@ -33,7 +33,7 @@ class RegisterClassLoader
         ]);
 
         $app->after(function () use ($loader) {
-            $loader->store();
+            $loader->build();
         });
     }
 }

@@ -4,7 +4,14 @@ namespace Igniter\Flame\Support;
 
 use Exception;
 use Igniter\Flame\Filesystem\Filesystem;
+use Throwable;
 
+/**
+ * Class loader
+ *
+ * A simple autoloader used by Winter, it expects the folder names
+ * to be lower case and the file name to be capitalized as per the class name.
+ */
 class ClassLoader
 {
     /**
@@ -43,7 +50,39 @@ class ClassLoader
      */
     protected $registered = FALSE;
 
+    /**
+     * Determine if the manifest needs to be written.
+     * @var bool
+     */
     protected $manifestIsDirty = FALSE;
+
+    /**
+     * Class alias array.
+     *
+     * @var array
+     */
+    protected $aliases = [];
+
+    /**
+     * Namespace alias array.
+     *
+     * @var array
+     */
+    protected $namespaceAliases = [];
+
+    /**
+     * Aliases that have been explicitly loaded.
+     *
+     * @var array
+     */
+    protected $loadedAliases = [];
+
+    /**
+     * Reversed classes to ignore for alias checks.
+     *
+     * @var array
+     */
+    protected $reversedClasses = [];
 
     public function __construct(Filesystem $files, $basePath, $manifestPath)
     {
@@ -62,17 +101,32 @@ class ClassLoader
             return;
         }
 
-        $this->loadManifest();
+        $this->ensureManifestIsLoaded();
 
-        $this->registered = spl_autoload_register([$this, 'loadClass']);
+        $this->registered = spl_autoload_register([$this, 'load']);
     }
 
     /**
-     * Store the manifest array by writing it to filesystem.
+     * De-register the given class loader on the auto-loader stack.
      *
      * @return void
      */
-    public function store()
+    public function unregister()
+    {
+        if (!$this->registered) {
+            return;
+        }
+
+        spl_autoload_unregister([$this, 'load']);
+        $this->registered = FALSE;
+    }
+
+    /**
+     * Build the manifest and write it to disk.
+     *
+     * @return void
+     */
+    public function build()
     {
         if (!$this->manifestIsDirty) {
             return;
@@ -82,31 +136,68 @@ class ClassLoader
     }
 
     /**
-     * Loads the class file for a given class name.
+     * Load the given class file.
      *
-     * @param string $class The fully-qualified class name.
-     *
-     * @return mixed The mapped file name on success, or boolean false on
-     * failure.
+     * @param string $class
+     * @return bool|null
      */
-    public function loadClass($class)
+    public function load($class)
     {
+        $class = static::normalizeClass($class);
+
+        // If the class is already aliased, skip loading.
+        if (in_array($class, $this->loadedAliases) || in_array($class, $this->reversedClasses)) {
+            return TRUE;
+        }
+
         if (
             isset($this->manifest[$class]) &&
             $this->isRealFilePath($path = $this->manifest[$class])
         ) {
             require_once $this->basePath.DIRECTORY_SEPARATOR.$path;
 
+            if (!is_null($reverse = $this->getReverseAlias($class))) {
+                if (!class_exists($reverse, FALSE) && !in_array($reverse, $this->loadedAliases)) {
+                    class_alias($class, $reverse);
+                    $this->reversedClasses[] = $reverse;
+                }
+            }
+
             return TRUE;
         }
 
-        // Try to load a mapped file for the prefix and relative class
-        if ($mappedFile = $this->loadMappedClass($class)) {
-            return $mappedFile;
+        [$lowerClass, $upperClass, $lowerClassStudlyFile, $upperClassStudlyFile] = static::getPathsForClass($class);
+
+        foreach ($this->directories as $directory) {
+            $paths = [
+                $directory.DIRECTORY_SEPARATOR.$lowerClass,
+                $directory.DIRECTORY_SEPARATOR.$upperClass,
+                $directory.DIRECTORY_SEPARATOR.$lowerClassStudlyFile,
+                $directory.DIRECTORY_SEPARATOR.$upperClassStudlyFile,
+            ];
+
+            foreach ($paths as $path) {
+                if ($this->isRealFilePath($path)) {
+                    $this->includeClass($class, $path);
+
+                    if (!is_null($reverse = $this->getReverseAlias($class))) {
+                        if (!class_exists($reverse, FALSE) && !in_array($reverse, $this->loadedAliases)) {
+                            class_alias($class, $reverse);
+                            $this->reversedClasses[] = $reverse;
+                        }
+                    }
+
+                    return TRUE;
+                }
+            }
         }
 
-        // never found a mapped file
-        return FALSE;
+        if (!in_array($class, $this->reversedClasses) && !is_null($alias = $this->getAlias($class))) {
+            $this->loadedAliases[] = $class;
+            class_alias($alias, $class);
+
+            return TRUE;
+        }
     }
 
     /**
@@ -122,7 +213,7 @@ class ClassLoader
     /**
      * Add directories to the class loader.
      *
-     * @param  string|array $directories
+     * @param string|array $directories
      *
      * @return void
      */
@@ -136,7 +227,7 @@ class ClassLoader
     /**
      * Remove directories from the class loader.
      *
-     * @param  string|array $directories
+     * @param string|array $directories
      *
      * @return void
      */
@@ -155,34 +246,147 @@ class ClassLoader
     }
 
     /**
-     * Get the normal file name for a class.
+     * Adds alias to the class loader.
      *
-     * @param  string $class
+     * Aliases are first-come, first-served. If a real class already exists with the same name as an alias, the real
+     * class is used over the alias.
      *
+     * @param array $aliases
+     * @return void
+     */
+    public function addAliases(array $aliases)
+    {
+        foreach ($aliases as $original => $alias) {
+            if (!array_key_exists($alias, $this->aliases)) {
+                $this->aliases[$alias] = $original;
+            }
+        }
+    }
+
+    /**
+     * Adds namespace aliases to the class loader.
+     *
+     * Similar to the "addAliases" method, but applies across an entire namespace.
+     *
+     * Aliases are first-come, first-served. If a real class already exists with the same name as an alias, the real
+     * class is used over the alias.
+     *
+     * @param array $namespaceAliases
+     * @return void
+     */
+    public function addNamespaceAliases(array $namespaceAliases)
+    {
+        foreach ($namespaceAliases as $original => $alias) {
+            if (!array_key_exists($alias, $this->namespaceAliases)) {
+                $alias = ltrim($alias, '\\');
+                $original = ltrim($original, '\\');
+                $this->namespaceAliases[$alias] = $original;
+            }
+        }
+    }
+
+    /**
+     * Gets an alias for a class, if available.
+     *
+     * @param string $class
+     * @return string|null
+     */
+    public function getAlias($class)
+    {
+        if (count($this->namespaceAliases)) {
+            foreach ($this->namespaceAliases as $alias => $original) {
+                if (starts_with($class, $alias)) {
+                    return str_replace($alias, $original, $class);
+                }
+            }
+        }
+
+        return $this->aliases[$class] ?? null;
+    }
+
+    /**
+     * Gets aliases registered for a namespace, if available.
+     *
+     * @param string $namespace
      * @return array
      */
-    protected function normalizeClass($class)
+    public function getNamespaceAliases($namespace)
     {
-        // Strip first slash
-        $class = ltrim($class, '\\');
+        $aliases = [];
+        foreach ($this->namespaceAliases as $alias => $original) {
+            if ($namespace === $original) {
+                $aliases[] = $alias;
+            }
+        }
 
-        // Work backwards through the namespace names of the fully-qualified
-        // class name to find a mapped file name
-        $pos = strrpos($class, '\\');
+        return $aliases;
+    }
 
-        // Retain the trailing namespace separator in the prefix
-        $directory = substr($class, 0, $pos + 1);
+    /**
+     * Gets a reverse alias for a class, if available.
+     *
+     * @param string $class
+     * @return string|null
+     */
+    public function getReverseAlias($class)
+    {
+        if (count($this->namespaceAliases)) {
+            foreach ($this->namespaceAliases as $alias => $original) {
+                if (starts_with($class, $original)) {
+                    return str_replace($original, $alias, $class);
+                }
+            }
+        }
 
-        // The rest is the relative class name
-        $relativeClass = substr($class, $pos + 1);
-        $directory = str_replace(['\\', '.'], DIRECTORY_SEPARATOR, $directory);
+        $aliasKey = array_search($class, $this->aliases);
 
-        $directory = trim($directory, DIRECTORY_SEPARATOR);
+        return ($aliasKey !== FALSE)
+            ? $aliasKey
+            : null;
+    }
 
-        $lowerClass = strtolower($directory).DIRECTORY_SEPARATOR.$relativeClass;
-        $upperClass = $directory.DIRECTORY_SEPARATOR.$relativeClass;
+    /**
+     * Normalise the class name.
+     *
+     * @param string $class
+     * @return string
+     */
+    protected static function normalizeClass($class)
+    {
+        /*
+         * Strip first slash
+         */
+        if (substr($class, 0, 1) == '\\') {
+            $class = substr($class, 1);
+        }
 
-        return [$lowerClass, $upperClass];
+        return implode('\\', array_map(function ($part) {
+            return $part;
+        }, explode('\\', $class)));
+    }
+
+    /**
+     * Get the possible paths for a class.
+     *
+     * @param string $class
+     * @return array
+     */
+    protected static function getPathsForClass($class)
+    {
+        // Lowercase folders
+        $parts = explode('\\', $class);
+        $file = array_pop($parts);
+        $namespace = implode('\\', $parts);
+        $directory = str_replace(['\\', '_'], DIRECTORY_SEPARATOR, $namespace);
+
+        // Provide both alternatives
+        $lowerClass = strtolower($directory).DIRECTORY_SEPARATOR.$file.'.php';
+        $upperClass = $directory.DIRECTORY_SEPARATOR.$file.'.php';
+
+        $lowerClassStudlyFile = strtolower($directory).DIRECTORY_SEPARATOR.Str::studly($file).'.php';
+        $upperClassStudlyFile = $directory.DIRECTORY_SEPARATOR.Str::studly($file).'.php';
+
+        return [$lowerClass, $upperClass, $lowerClassStudlyFile, $upperClassStudlyFile];
     }
 
     /**
@@ -190,7 +394,8 @@ class ClassLoader
      *
      * @param string $class The class name.
      *
-     * @return mixed bool false if no mapped file can be loaded, or the
+     * @return bool|string bool false if no mapped file can be load
+     * ed, or the
      * name of the mapped file that was loaded.
      */
     protected function loadMappedClass($class)
@@ -199,7 +404,6 @@ class ClassLoader
 
         // Look through registered directories
         foreach ($this->directories as $directory) {
-
             // If the mapped class exists, require it
             if ($this->isRealFilePath($path = $directory.DIRECTORY_SEPARATOR.$lowerClass.'.php')) {
                 $this->requireClass($class, $path);
@@ -221,7 +425,7 @@ class ClassLoader
     /**
      * Determine if a relative path to a file exists and is real
      *
-     * @param  string $path
+     * @param string $path
      *
      * @return bool
      */
@@ -231,14 +435,13 @@ class ClassLoader
     }
 
     /**
-     * If a file exists, require it from the file system.
+     * Includes a class and adds to the manifest
      *
-     * @param $class
-     * @param string $path The file to require.
-     *
-     * @return void True if the file exists, false if not.
+     * @param string $class
+     * @param string $path
+     * @return void
      */
-    protected function requireClass($class, $path)
+    protected function includeClass($class, $path)
     {
         require_once $this->basePath.DIRECTORY_SEPARATOR.$path;
 
@@ -248,11 +451,11 @@ class ClassLoader
     }
 
     /**
-     * Load the manifest into memory.
+     * Ensure the manifest has been loaded into memory.
      *
      * @return void
      */
-    protected function loadManifest()
+    protected function ensureManifestIsLoaded()
     {
         if (!is_null($this->manifest)) {
             return;
@@ -265,7 +468,8 @@ class ClassLoader
                 if (!is_array($this->manifest)) {
                     $this->manifest = [];
                 }
-            } catch (Exception $ex) {
+            }
+            catch (Exception | Throwable $ex) {
                 $this->manifest = [];
             }
         }
@@ -277,7 +481,7 @@ class ClassLoader
     /**
      * Write the manifest array to filesystem.
      *
-     * @param  array $manifest
+     * @param array $manifest
      *
      * @return void
      * @throws \Exception
