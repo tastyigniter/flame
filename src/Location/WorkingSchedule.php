@@ -354,6 +354,11 @@ class WorkingSchedule
 
         return $this->forDate($date)
             ->timeslot($date, $interval, $leadTime)
+            ->filter(function ($timeslot) use ($date, $leadTime) {
+                $dateTime = $date->copy()->setTimeFromTimeString($timeslot->format('H:i'));
+
+                return $this->isTimeslotValid($timeslot, $dateTime, $leadTime->i);
+            })
             ->mapWithKeys(function ($timeslot) {
                 return [$timeslot->getTimestamp() => $timeslot];
             });

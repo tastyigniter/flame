@@ -43,9 +43,6 @@ class {{studly_name}} extends \Admin\Classes\AdminController
             'title'    => 'lang:admin::lang.form.preview_title',
             'redirect' => '{{lower_author}}/{{lower_extension}}/{{lower_name}}',
         ],
-        'delete'     => [
-            'redirect' => '{{lower_author}}/{{lower_extension}}/{{lower_name}}',
-        ],
         'configFile' => '{{snake_singular_name}}',
     ];
 

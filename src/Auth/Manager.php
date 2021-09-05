@@ -78,8 +78,14 @@ class Manager
             $this->user = $user;
         }
 
-        if (!($user = $this->getUser()) OR ($this->requireApproval AND !$user->is_activated))
+        if (!($user = $this->getUser()))
             return FALSE;
+
+        if ($this->requireApproval AND $user AND !$user->is_activated) {
+            $this->user = null;
+
+            return FALSE;
+        }
 
         return TRUE;
     }
@@ -467,7 +473,8 @@ class Manager
             $currentUser->fireEvent('model.auth.afterImpersonate', [$oldUser]);
         }
 
-        Session::put($this->sessionKey, $oldSession);
+        if ($oldSession)
+            Session::put($this->sessionKey, $oldSession);
     }
 
     public function isImpersonator()
