@@ -14,8 +14,8 @@ class Builder extends BuilderBase
     /**
      * Get an array with the values of a given column.
      *
-     * @param  string $column
-     * @param  string|null $key
+     * @param string $column
+     * @param string|null $key
      *
      * @return \Illuminate\Support\Collection
      */
@@ -27,8 +27,8 @@ class Builder extends BuilderBase
     /**
      * Get an array with the values of a given column.
      *
-     * @param  string $column
-     * @param  string|null $key
+     * @param string $column
+     * @param string|null $key
      *
      * @return \Illuminate\Support\Collection
      */
@@ -42,9 +42,9 @@ class Builder extends BuilderBase
     /**
      * Perform a search on this query for term found in columns.
      *
-     * @param  string $term Search query
-     * @param  array $columns Table columns to search
-     * @param  string $mode Search mode: all, any, exact.
+     * @param string $term Search query
+     * @param array $columns Table columns to search
+     * @param string $mode Search mode: all, any, exact.
      *
      * @return self
      */
@@ -56,9 +56,9 @@ class Builder extends BuilderBase
     /**
      * Add an "or search where" clause to the query.
      *
-     * @param  string $term Search query
-     * @param  array $columns Table columns to search
-     * @param  string $mode Search mode: all, any, exact.
+     * @param string $term Search query
+     * @param array $columns Table columns to search
+     * @param string $mode Search mode: all, any, exact.
      *
      * @return self
      */
@@ -70,7 +70,7 @@ class Builder extends BuilderBase
     /**
      * Convenient method for where like clause
      *
-     * @param  string $column
+     * @param string $column
      * @param $value
      * @param string $side
      * @param string $boolean
@@ -85,7 +85,7 @@ class Builder extends BuilderBase
     /**
      * Convenient method for or where like clause
      *
-     * @param  string $column
+     * @param string $column
      * @param $value
      * @param string $side
      *
@@ -110,7 +110,7 @@ class Builder extends BuilderBase
      *
      * @return $this
      */
-    protected function searchInternal($term, $columns = [], $mode, $boolean)
+    protected function searchInternal($term, $columns, $mode, $boolean)
     {
         if (!is_array($columns))
             $columns = [$columns];
@@ -169,7 +169,7 @@ class Builder extends BuilderBase
     /**
      * Get an array with the values of dates.
      *
-     * @param  string $column
+     * @param string $column
      * @param string $keyFormat
      * @param string $valueFormat
      *
@@ -180,7 +180,7 @@ class Builder extends BuilderBase
         $dates = [];
 
         $collection = $this->selectRaw("{$column}, MONTH({$column}) as month, YEAR({$column}) as year")
-                           ->groupBy([$column, 'month', 'year'])->orderBy($column, 'desc')->get();
+            ->groupBy([$column, 'month', 'year'])->orderBy($column, 'desc')->get();
 
         if ($collection) {
             foreach ($collection as $model) {
@@ -200,10 +200,10 @@ class Builder extends BuilderBase
     /**
      * Paginate the given query.
      *
-     * @param  int $perPage
-     * @param  array $columns
-     * @param  string $pageName
-     * @param  int|null $page
+     * @param int $perPage
+     * @param array $columns
+     * @param string $pageName
+     * @param int|null $page
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      * @throws \InvalidArgumentException
@@ -211,8 +211,13 @@ class Builder extends BuilderBase
     public function paginate($perPage = null, $page = null, $columns = ['*'], $pageName = 'page')
     {
         if (is_array($page)) {
-            $columns = $page;
-            $page = null;
+            $_columns = $columns;
+            $_currentPage = $page;
+            $_pageName = $pageName;
+
+            $columns = $_currentPage;
+            $pageName = is_string($_columns) ? $_columns : 'page';
+            $page = $_pageName === 'page' ? null : $_pageName;
         }
 
         $page = $page ?: Paginator::resolveCurrentPage($pageName);
@@ -232,18 +237,23 @@ class Builder extends BuilderBase
     /**
      * Paginate the given query into a simple paginator.
      *
-     * @param  int $perPage
-     * @param  array $columns
-     * @param  string $pageName
-     * @param  int|null $page
+     * @param int $perPage
+     * @param array $columns
+     * @param string $pageName
+     * @param int|null $page
      *
      * @return \Illuminate\Contracts\Pagination\Paginator
      */
     public function simplePaginate($perPage = null, $page = null, $columns = ['*'], $pageName = 'page')
     {
         if (is_array($page)) {
-            $columns = $page;
-            $page = null;
+            $_columns = $columns;
+            $_currentPage = $page;
+            $_pageName = $pageName;
+
+            $columns = $_currentPage;
+            $pageName = is_string($_columns) ? $_columns : 'page';
+            $page = $_pageName === 'page' ? null : $_pageName;
         }
 
         $page = $page ?: Paginator::resolveCurrentPage($pageName);
@@ -264,8 +274,8 @@ class Builder extends BuilderBase
      * Find a model by its primary key or return fresh model instance
      * with filled attributes to use with forms.
      *
-     * @param  mixed $id
-     * @param  array $columns
+     * @param mixed $id
+     * @param array $columns
      *
      * @return \Illuminate\Database\Eloquent\Model
      */

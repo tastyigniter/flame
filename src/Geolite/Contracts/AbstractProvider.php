@@ -2,9 +2,9 @@
 
 namespace Igniter\Flame\Geolite\Contracts;
 
-use Cache;
 use GuzzleHttp\Client;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 abstract class AbstractProvider
 {

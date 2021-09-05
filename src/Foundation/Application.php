@@ -2,6 +2,7 @@
 
 namespace Igniter\Flame\Foundation;
 
+use Closure;
 use Exception;
 use Igniter\Flame\Events\EventServiceProvider;
 use Igniter\Flame\Foundation\Providers\LogServiceProvider;
@@ -233,6 +234,17 @@ class Application extends BaseApplication
     }
 
     /**
+     * Register an application error handler.
+     *
+     * @param \Closure $callback
+     * @return void
+     */
+    public function error(Closure $callback)
+    {
+        $this->make('Illuminate\Contracts\Debug\ExceptionHandler')->error($callback);
+    }
+
+    /**
      * Register an "after" application filter.
      *
      * @param \Closure|string $callback
@@ -293,8 +305,8 @@ class Application extends BaseApplication
     {
         $aliases = [
             'app' => [\Igniter\Flame\Foundation\Application::class, \Illuminate\Contracts\Container\Container::class, \Illuminate\Contracts\Foundation\Application::class, \Psr\Container\ContainerInterface::class],
-//            'auth'                 => [\Illuminate\Auth\AuthManager::class, \Illuminate\Contracts\Auth\Factory::class],
-//            'auth.driver'          => [\Illuminate\Contracts\Auth\Guard::class],
+            //'auth' => [\Illuminate\Auth\AuthManager::class, \Illuminate\Contracts\Auth\Factory::class],
+            //'auth.driver' => [\Illuminate\Contracts\Auth\Guard::class],
             'blade.compiler' => [\Illuminate\View\Compilers\BladeCompiler::class],
             'cache' => [\Illuminate\Cache\CacheManager::class, \Illuminate\Contracts\Cache\Factory::class],
             'cache.store' => [\Illuminate\Cache\Repository::class, \Illuminate\Contracts\Cache\Repository::class],
@@ -312,8 +324,8 @@ class Application extends BaseApplication
             'translator' => [\Illuminate\Translation\Translator::class, \Illuminate\Contracts\Translation\Translator::class],
             'log' => [\Illuminate\Log\Logger::class, \Psr\Log\LoggerInterface::class],
             'mailer' => [\Illuminate\Mail\Mailer::class, \Illuminate\Contracts\Mail\Mailer::class, \Illuminate\Contracts\Mail\MailQueue::class],
-//            'auth.password'        => [\Illuminate\Auth\Passwords\PasswordBrokerManager::class, \Illuminate\Contracts\Auth\PasswordBrokerFactory::class],
-//            'auth.password.broker' => [\Illuminate\Auth\Passwords\PasswordBroker::class, \Illuminate\Contracts\Auth\PasswordBroker::class],
+            //'auth.password' => [\Illuminate\Auth\Passwords\PasswordBrokerManager::class, \Illuminate\Contracts\Auth\PasswordBrokerFactory::class],
+            //'auth.password.broker' => [\Illuminate\Auth\Passwords\PasswordBroker::class, \Illuminate\Contracts\Auth\PasswordBroker::class],
             'queue' => [\Illuminate\Queue\QueueManager::class, \Illuminate\Contracts\Queue\Factory::class, \Illuminate\Contracts\Queue\Monitor::class],
             'queue.connection' => [\Illuminate\Contracts\Queue\Queue::class],
             'queue.failer' => [\Illuminate\Queue\Failed\FailedJobProviderInterface::class],

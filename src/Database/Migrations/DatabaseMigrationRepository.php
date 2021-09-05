@@ -16,9 +16,9 @@ class DatabaseMigrationRepository extends BaseDatabaseMigrationRepository
     public function getRan()
     {
         return $this->table()
-                    ->orderBy('batch', 'asc')
-                    ->orderBy('migration', 'asc')
-                    ->pluck('migration')->all();
+            ->orderBy('batch', 'asc')
+            ->orderBy('migration', 'asc')
+            ->pluck('migration')->all();
     }
 
     /**
@@ -82,9 +82,9 @@ class DatabaseMigrationRepository extends BaseDatabaseMigrationRepository
     protected function table()
     {
         return $this->getConnection()
-                    ->table($this->table)
-                    ->where('group', $this->getGroup())
-                    ->useWritePdo();
+            ->table($this->table)
+            ->where('group', $this->getGroup())
+            ->useWritePdo();
     }
 
     /**

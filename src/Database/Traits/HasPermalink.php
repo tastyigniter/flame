@@ -3,8 +3,8 @@
 namespace Igniter\Flame\Database\Traits;
 
 use Exception;
+use Igniter\Flame\Database\Model;
 use Igniter\Flame\Database\PermalinkMaker;
-use Model;
 
 /**
  * HasPermalink model trait
@@ -102,7 +102,7 @@ trait HasPermalink
         $separator = $config['separator'];
 
         return $query->where($attribute, $slug)
-                     ->orWhere($attribute, 'LIKE', $slug.$separator.'%');
+            ->orWhere($attribute, 'LIKE', $slug.$separator.'%');
     }
 
     public function findSlug($slug, $columns = ['*'])

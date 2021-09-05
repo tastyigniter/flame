@@ -4,9 +4,9 @@ namespace Igniter\Flame\Auth\Models;
 
 use Carbon\Carbon;
 use Exception;
-use Hash;
 use Igniter\Flame\Database\Model;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Model implements Authenticatable
 {
@@ -247,7 +247,6 @@ class User extends Model implements Authenticatable
 
         if ($activationCode == $this->activation_code) {
             $this->activation_code = null;
-            $this->status = TRUE;
             $this->is_activated = TRUE;
             $this->date_activated = $this->freshTimestamp();
             $this->save();

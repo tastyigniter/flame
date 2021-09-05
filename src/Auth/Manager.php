@@ -2,14 +2,14 @@
 
 namespace Igniter\Flame\Auth;
 
-use Cookie;
 use Exception;
-use Hash;
 use Igniter\Flame\Auth\Models\User;
 use Igniter\Flame\Auth\Models\User as UserModel;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
-use Session;
 
 /**
  * Auth Manager Class
@@ -78,8 +78,14 @@ class Manager
             $this->user = $user;
         }
 
-        if (!($user = $this->getUser()) OR ($this->requireApproval AND !$user->is_activated))
+        if (!($user = $this->getUser()))
             return FALSE;
+
+        if ($this->requireApproval AND $user AND !$user->is_activated) {
+            $this->user = null;
+
+            return FALSE;
+        }
 
         return TRUE;
     }
@@ -270,7 +276,7 @@ class Manager
 
         $this->user = null;
 
-        Session::flush();
+        Session::forget($this->sessionKey);
 
         // delete the remember me cookies if they exist
         Cookie::queue(Cookie::forget($this->sessionKey));
@@ -467,7 +473,8 @@ class Manager
             $currentUser->fireEvent('model.auth.afterImpersonate', [$oldUser]);
         }
 
-        Session::put($this->sessionKey, $oldSession);
+        if ($oldSession)
+            Session::put($this->sessionKey, $oldSession);
     }
 
     public function isImpersonator()

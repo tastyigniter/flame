@@ -6,6 +6,7 @@ use ArrayAccess;
 use ArrayIterator;
 use Countable;
 use DateInterval;
+use DateTimeInterface;
 use Igniter\Flame\Location\Exceptions\WorkingHourException;
 use IteratorAggregate;
 
@@ -93,15 +94,11 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
     public function nextCloseAt(WorkingTime $time)
     {
         foreach ($this->ranges as $range) {
-            if ($range->containsTime($time) AND $nextCloseTime = next($range)) {
-                reset($range);
-
+            if ($range->containsTime($time) AND $nextCloseTime = $range->end()) {
                 return $nextCloseTime;
             }
 
             if ($nextCloseTime = $this->findNextTimeInFreeTime('end', $time, $range)) {
-                reset($range);
-
                 return $nextCloseTime;
             }
         }
@@ -130,9 +127,21 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
         return FALSE;
     }
 
-    public function timeslot(DateInterval $interval, DateInterval $leadTime = null)
+    public function opensLateAt(WorkingTime $time)
     {
-        traceLog('WorkingPeriod::timeslot is deprecated. See WorkingSchedule::getTimeslot.');
+        foreach ($this->ranges as $range) {
+            if ($range->endsNextDay() AND $range->containsTime($time))
+                return TRUE;
+        }
+
+        return FALSE;
+    }
+
+    public function timeslot(DateTimeInterface $dateTime, DateInterval $interval, ?DateInterval $leadTime = null)
+    {
+        return WorkingTimeslot::make($this->ranges)->generate(
+            $dateTime, $interval, $leadTime
+        );
     }
 
     protected function findTimeInRange(WorkingTime $time)

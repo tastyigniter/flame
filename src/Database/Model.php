@@ -2,19 +2,13 @@
 
 namespace Igniter\Flame\Database;
 
-use Carbon\Carbon;
 use Closure;
-use DateTimeInterface;
-use Igniter\Flame\Database\Query\Builder as QueryBuilder;
 use Igniter\Flame\Traits\EventEmitter;
 use Igniter\Flame\Traits\ExtendableTrait;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use InvalidArgumentException;
 
 /**
  * Model Class
@@ -23,6 +17,8 @@ class Model extends EloquentModel
 {
     use ExtendableTrait;
     use EventEmitter;
+    use Concerns\HasAttributes;
+    use Concerns\HasRelationships;
 
     /**
      * @var array Behaviors implemented by this model.
@@ -32,7 +28,7 @@ class Model extends EloquentModel
     /**
      * @var array Make the model's attributes public so actions can modify them.
      */
-    public $attributes = [];
+    protected $attributes = [];
 
     public $timestamps = FALSE;
 
@@ -43,54 +39,51 @@ class Model extends EloquentModel
     protected $timeFormat;
 
     /**
-     * The loaded relationships for the model.
-     * It should be declared with keys as the relation name, and value being a mixed array.
-     * The relation type $morphTo does not include a classname as the first value.
-     * ex:
-     * 1. string $table_name table name value mode, model_name, foreign key is auto-generated,
-     * by appending _id to the singular table_name
-     * $hasOne = [$relation => $model) associative array mode
-     * $hasMany = [$relation => [$model]] associative array mode
-     * $belongsTo = [$relation, [$model, 'foreignKey' => $foreignKey]] custom key/value mode
-     * $hasMany = [$relation, [$model, 'foreignKey' => $foreignKey, 'otherKey' => $otherKey]] custom key/value mode
-     * $belongsToMany = [$relation, [$model, 'foreignKey' => $foreignKey, 'otherKey' => $otherKey]] custom key/value
-     * mode
-     * $morphOne = [$relation, [$model, 'name' => 'name']] custom key/value mode
-     * $morphMany = [$relation, [$model, 'table' => 'table_name', 'name' => 'name']] custom key/value mode
-     */
-    public $relation = [
-        'hasMany' => [],
-        'hasOne' => [],
-        'belongsTo' => [],
-        'belongsToMany' => [],
-        'morphTo' => [],
-        'morphOne' => [],
-        'morphMany' => [],
-        'morphToMany' => [],
-        'morphedByMany' => [],
-        'hasManyThrough' => [],
-        'hasOneThrough' => [],
-    ];
-
-    /**
-     * @var array Excepted relationship types, used to cycle and verify relationships.
-     */
-    protected static $relationTypes = [
-        'hasOne', 'hasMany', 'belongsTo', 'belongsToMany', 'morphTo', 'morphOne',
-        'morphMany', 'morphToMany', 'morphedByMany', 'hasManyThrough', 'hasOneThrough',
-    ];
-
-    /**
      * The attributes that should be cast to native types.
      * New Custom types: serialize, time
      * @var array
      */
-    public $casts = [];
+    protected $casts = [];
 
     /**
      * @var array The array of models booted events.
      */
     protected static $eventsBooted = [];
+
+    /**
+     * The built-in, primitive cast types supported by Eloquent.
+     *
+     * @var string[]
+     */
+    protected static $primitiveCastTypes = [
+        'array',
+        'bool',
+        'boolean',
+        'collection',
+        'custom_datetime',
+        'date',
+        'datetime',
+        'decimal',
+        'double',
+        'encrypted',
+        'encrypted:array',
+        'encrypted:collection',
+        'encrypted:json',
+        'encrypted:object',
+        'float',
+        'immutable_date',
+        'immutable_datetime',
+        'immutable_custom_datetime',
+        'int',
+        'integer',
+        'json',
+        'object',
+        'real',
+        'serialize',
+        'string',
+        'timestamp',
+        'time',
+    ];
 
     public function __construct(array $attributes = [])
     {
@@ -241,9 +234,10 @@ class Model extends EloquentModel
 
         $instance->setRawAttributes((array)$attributes, TRUE);
 
-        $instance->fireModelEvent('fetched', FALSE);
+        $instance->setConnection($connection ?: $this->getConnectionName());
 
-        $instance->setConnection($connection ?: $this->connection);
+        $instance->fireModelEvent('fetched', FALSE);
+        $instance->fireModelEvent('retrieved', FALSE);
 
         return $instance;
     }
@@ -344,14 +338,16 @@ class Model extends EloquentModel
 
     public function setUpdatedAt($value)
     {
-        if (!is_null(static::UPDATED_AT)) $this->{static::UPDATED_AT} = $value;
+        if (!is_null(static::UPDATED_AT))
+            $this->{static::UPDATED_AT} = $value;
 
         return $this;
     }
 
     public function setCreatedAt($value)
     {
-        if (!is_null(static::CREATED_AT)) $this->{static::CREATED_AT} = $value;
+        if (!is_null(static::CREATED_AT))
+            $this->{static::CREATED_AT} = $value;
 
         return $this;
     }
@@ -368,283 +364,21 @@ class Model extends EloquentModel
     {
         return array_merge(
             [
-                'creating', 'created', 'updating', 'updated',
-                'deleting', 'deleted', 'saving', 'saved',
-                'restoring', 'restored', 'fetching', 'fetched',
+                'retrieved', 'creating', 'created', 'updating', 'updated',
+                'deleting', 'deleted', 'forceDeleted', 'saving', 'saved',
+                'restoring', 'restored', 'replicating', 'fetching', 'fetched',
             ],
             $this->observables
         );
     }
 
-    /**
-     * Fill the model with an array of attributes.
-     *
-     * @param array $attributes
-     *
-     * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Illuminate\Database\Eloquent\MassAssignmentException
-     */
-    public function fill(array $attributes)
+    protected function isRelationPurgeable($name)
     {
-        return parent::fill($attributes);
-    }
+        $purgeableAttributes = [];
+        if (method_exists($this, 'getPurgeableAttributes'))
+            $purgeableAttributes = $this->getPurgeableAttributes($name);
 
-    /**
-     * Cast an attribute to a native PHP type.
-     * Cast an attribute to a native PHP type.
-     *
-     * @param string $key
-     * @param mixed $value
-     *
-     * @return mixed
-     */
-    protected function castAttribute($key, $value)
-    {
-        if (is_null($value)) {
-            return $value;
-        }
-
-        switch ($this->getCastType($key)) {
-            case 'int':
-            case 'integer':
-                return (int)$value;
-            case 'real':
-            case 'float':
-            case 'double':
-                return (float)$value;
-            case 'string':
-                return (string)$value;
-            case 'bool':
-            case 'boolean':
-                return (bool)$value;
-            case 'object':
-                return $this->fromJson($value, TRUE);
-            case 'array':
-            case 'json':
-                return $this->fromJson($value);
-            case 'collection':
-                return new EloquentCollection($this->fromJson($value));
-            case 'date':
-                return $this->asDate($value);
-            case 'datetime':
-                return $this->asDateTime($value);
-            case 'timestamp':
-                return $this->asTimeStamp($value);
-//            case 'time':
-//                return $this->asTime($value);
-            case 'serialize':
-                return $this->fromSerialized($value);
-            default:
-                return $value;
-        }
-    }
-
-    public function getAttribute($key)
-    {
-        if (array_key_exists($key, $this->attributes) || $this->hasGetMutator($key)) {
-            return $this->getAttributeValue($key);
-        }
-
-        if ($this->relationLoaded($key)) {
-            return $this->relations[$key];
-        }
-
-        if ($this->hasRelation($key) || method_exists($this, $key)) {
-            return $this->getRelationshipFromMethod($key);
-        }
-    }
-
-    /**
-     * Set a given attribute on the model.
-     *
-     * @param string $key
-     * @param mixed $value
-     *
-     * @return self
-     */
-    public function setAttribute($key, $value)
-    {
-        // First we will check for the presence of a mutator for the set operation
-        // which simply lets the developers tweak the attribute as it is set on
-        // the model, such as "json_encoding" an listing of data for storage.
-        if ($this->hasSetMutator($key)) {
-            $method = 'set'.Str::studly($key).'Attribute';
-
-            return $this->{$method}($value);
-        }
-
-        // If an attribute is listed as a "date", we'll convert it from a DateTime
-        // instance into a form proper for storage on the database tables using
-        // the connection grammar's date format. We will auto set the values.
-        elseif ($value && (in_array($key, $this->getDates()) || $this->isDateCastable($key))) {
-            $value = $this->fromDateTime($value);
-        }
-
-        if (!is_null($value) && $this->isSerializedCastable($key)) {
-            $value = $this->asSerialized($value);
-        }
-
-        if ($this->isJsonCastable($key) && !is_null($value)) {
-            $value = $this->asJson($value);
-        }
-
-        // If this attribute contains a JSON ->, we'll set the proper value in the
-        // attribute's underlying array. This takes care of properly nesting an
-        // attribute in the array's value in the case of deeply nested items.
-        if (Str::contains($key, '->')) {
-            return $this->fillJsonAttribute($key, $value);
-        }
-
-        $this->attributes[$key] = $value;
-
-        $this->fireEvent('model.setAttribute', [$key, $value]);
-
-        return $this;
-    }
-
-    protected function asSerialized($value)
-    {
-        return isset($value) ? serialize($value) : null;
-    }
-
-    public function fromSerialized($value)
-    {
-        return isset($value) ? @unserialize($value) : null;
-    }
-
-    protected function isSerializedCastable($key)
-    {
-        return $this->hasCast($key, ['serialize']);
-    }
-
-    protected function asDateTime($value)
-    {
-        try {
-            $value = parent::asDateTime($value);
-        }
-        catch (InvalidArgumentException $ex) {
-            $value = Carbon::parse($value);
-        }
-
-        return $value;
-    }
-
-    protected function asTime($value)
-    {
-        // If this value is already a Carbon instance, we shall just return it as is.
-        // This prevents us having to re-instantiate a Carbon instance when we know
-        // it already is one, which wouldn't be fulfilled by the DateTime check.
-        if ($value instanceof Carbon) {
-            return $value;
-        }
-
-        // If the value is already a DateTime instance, we will just skip the rest of
-        // these checks since they will be a waste of time, and hinder performance
-        // when checking the field. We will just return the DateTime right away.
-        if ($value instanceof DateTimeInterface) {
-            return new Carbon(
-                $value->format('H:i:s.u'), $value->getTimezone()
-            );
-        }
-
-        // If this value is an integer, we will assume it is a UNIX timestamp's value
-        // and format a Carbon object from this timestamp. This allows flexibility
-        // when defining your time fields as they might be UNIX timestamps here.
-        if (is_numeric($value)) {
-            return Carbon::createFromTimestamp($value);
-        }
-
-        // If the value is in simply hour, minute, second format, we will instantiate the
-        // Carbon instances from that format. Again, this provides for simple time
-        // fields on the database, while still supporting Carbonized conversion.
-        if (preg_match('/^(\d{1,2}):(\d{2}):(\d{2})$/', $value)) {
-            return Carbon::createFromFormat('H:i:s', $value);
-        }
-
-        // Finally, we will just assume this date is in the format used by default on
-        // the database connection and use that format to create the Carbon object
-        // that is returned back out to the developers after we convert it here.
-        return Carbon::createFromFormat($this->getTimeFormat(), $value);
-    }
-
-    /**
-     * Convert a Carbon Time to a storable string.
-     *
-     * @param \Carbon\Carbon|int $value
-     *
-     * @return string
-     */
-    public function fromTime($value)
-    {
-//        if ($value == '00:00' OR $value == '00:00:00')
-//            return $value;
-//
-        $format = $this->getTimeFormat();
-
-        return $this->asTime($value)->format($format);
-    }
-
-    /**
-     * Determine whether a value is Time castable for inbound manipulation.
-     *
-     * @param string $key
-     *
-     * @return bool
-     */
-    protected function isTimeCastable($key)
-    {
-        return $this->hasCast($key, ['timee']);
-    }
-
-    /**
-     * Get the format for database stored times.
-     * @return string
-     */
-    protected function getTimeFormat()
-    {
-        return $this->timeFormat ?: 'H:i:s';
-    }
-
-    /**
-     * Set the time format used by the model.
-     *
-     * @param string $format
-     *
-     * @return self
-     */
-    public function setTimeFormat($format)
-    {
-        $this->timeFormat = $format;
-
-        return $this;
-    }
-
-    /**
-     * Determine if the model or given attribute(s) have been modified.
-     *
-     * @param array|string|null $attributes
-     *
-     * @return bool
-     */
-    public function isDirty($attributes = null)
-    {
-        $dirty = $this->getDirty();
-
-        if (is_null($attributes)) {
-            return count($dirty) > 0;
-        }
-
-        if (!is_array($attributes)) {
-            $attributes = func_get_args();
-        }
-
-        foreach ($attributes as $attribute) {
-            if (array_key_exists($attribute, $dirty) AND !is_null($dirty[$attribute])) {
-                return TRUE;
-            }
-        }
-
-        return FALSE;
+        return in_array($name, $purgeableAttributes);
     }
 
     /**
@@ -660,19 +394,6 @@ class Model extends EloquentModel
     }
 
     /**
-     * Get a new query builder instance for the connection.
-     * @return \Igniter\Flame\Database\Query\Builder
-     */
-    protected function newBaseQueryBuilder()
-    {
-        $connection = $this->getConnection();
-
-        return new QueryBuilder(
-            $connection, $connection->getQueryGrammar(), $connection->getPostProcessor()
-        );
-    }
-
-    /**
      * Get the default foreign key name for the model.
      * @return string
      */
@@ -681,15 +402,10 @@ class Model extends EloquentModel
         return Str::snake(Str::singular(str_replace('_model', '', class_basename($this)))).'_id';
     }
 
-    /**
-     * __get magic
-     * Allows models to access CI's loaded classes using the same
-     * syntax as controllers.
-     *
-     * @param string $key
-     *
-     * @return mixed
-     */
+    //
+    // Magic
+    //
+
     public function __get($key)
     {
         return $this->extendableGet($key);
@@ -716,352 +432,44 @@ class Model extends EloquentModel
         return $this->extendableCall($method, $params);
     }
 
-    /**
-     * Handle dynamic static method calls into the method.
-     *
-     * @param string $method
-     * @param array $parameters
-     *
-     * @return mixed
-     */
-    public static function __callStatic($method, $parameters)
-    {
-        return (new static)->$method(...$parameters);
-    }
-
-    public function hasRelation($name)
-    {
-        return $this->getRelationDefinition($name) !== null ? TRUE : FALSE;
-    }
+    //
+    // Pivot
+    //
 
     /**
-     * Returns relationship details from a supplied name.
-     *
-     * @param string $name Relation name
-     *
-     * @return array
+     * Create a generic pivot model instance.
+     * @param \Illuminate\Database\Eloquent\Model $parent
+     * @param array $attributes
+     * @param string $table
+     * @param bool $exists
+     * @param string|null $using
+     * @return \Igniter\Flame\Database\Pivot
      */
-    public function getRelationDefinition($name)
+    public function newPivot(EloquentModel $parent, array $attributes, $table, $exists, $using = null)
     {
-        if (($type = $this->getRelationType($name)) !== null) {
-            return (array)$this->relation[$type][$name] + $this->getRelationDefaults($type);
-        }
+        return $using
+            ? $using::fromRawAttributes($parent, $attributes, $table, $exists)
+            : new Pivot($parent, $attributes, $table, $exists);
     }
 
     /**
-     * Returns relationship details for all relations defined on this model.
-     * @return array
+     * Create a pivot model instance specific to a relation.
+     * @param string $relationName
+     * @param \Illuminate\Database\Eloquent\Model $parent
+     * @param array $attributes
+     * @param string $table
+     * @param bool $exists
+     * @return \Igniter\Flame\Database\Pivot
      */
-    public function getRelationDefinitions()
+    public function newRelationPivot($relationName, $parent, $attributes, $table, $exists)
     {
-        $result = [];
+        $definition = $this->getRelationDefinition($relationName);
 
-        foreach (static::$relationTypes as $type) {
-            if (!isset($this->relation[$type])) continue;
+        if (!is_null($definition) && array_key_exists('pivotModel', $definition)) {
+            $pivotModel = $definition['pivotModel'];
 
-            $result[$type] = $this->relation[$type];
-
-            // Apply default values for the relation type
-            if ($defaults = $this->getRelationDefaults($type)) {
-                foreach ($result[$type] as $relation => $options) {
-                    $result[$type][$relation] = (array)$options + $defaults;
-                }
-            }
+            return new $pivotModel($parent, $attributes, $table, $exists);
         }
-
-        return $result;
-    }
-
-    /**
-     * Returns a relationship type based on a supplied name.
-     *
-     * @param string $name Relation name
-     *
-     * @return string
-     */
-    public function getRelationType($name)
-    {
-        foreach (static::$relationTypes as $type) {
-            if (isset($this->relation[$type][$name])) {
-                return $type;
-            }
-        }
-    }
-
-    /**
-     * Get a relationship.
-     *
-     * @param string $key
-     *
-     * @return mixed
-     */
-    public function getRelationValue($key)
-    {
-        if ($this->relationLoaded($key)) {
-            return $this->relations[$key];
-        }
-
-        if ($this->hasRelation($key)) {
-            return $this->getRelationshipFromMethod($key);
-        }
-    }
-
-    /**
-     * Returns a relation class object
-     *
-     * @param string $name Relation name
-     *
-     * @return string
-     */
-    public function makeRelation($name)
-    {
-        $relationType = $this->getRelationType($name);
-        $relation = $this->getRelationDefinition($name);
-
-        if ($relationType == 'morphTo' || !isset($relation[0])) {
-            return null;
-        }
-
-        $relationClass = $relation[0];
-
-        return new $relationClass();
-    }
-
-    /**
-     * Determines whether the specified relation should be saved
-     * when push() is called instead of save() on the model. Default: true.
-     *
-     * @param string $name Relation name
-     *
-     * @return bool
-     */
-    public function isRelationPushable($name)
-    {
-        $definition = $this->getRelationDefinition($name);
-        if (is_null($definition) || !array_key_exists('push', $definition)) {
-            return TRUE;
-        }
-
-        return (bool)$definition['push'];
-    }
-
-    /**
-     * Returns default relation arguments for a given type.
-     *
-     * @param string $type Relation type
-     *
-     * @return array
-     */
-    protected function getRelationDefaults($type)
-    {
-        switch ($type) {
-            case 'attachOne':
-            case 'attachMany':
-                return ['order' => 'sort_order', 'delete' => TRUE];
-
-            default:
-                return [];
-        }
-    }
-
-    public function handleRelation($relationName)
-    {
-        $relationType = $this->getRelationType($relationName);
-        $relation = $this->getRelationDefinition($relationName);
-
-        if (!isset($relation[0]) && $relationType != 'morphTo')
-            throw new InvalidArgumentException(sprintf(
-                "Relation '%s' on model '%s' should have at least a classname.", $relationName, get_called_class()
-            ));
-
-        if (isset($relation[0]) && $relationType == 'morphTo')
-            throw new InvalidArgumentException(sprintf(
-                "Relation '%s' on model '%s' is a morphTo relation and should not contain additional arguments.", $relationName, get_called_class()
-            ));
-
-        switch ($relationType) {
-            case 'hasOne':
-            case 'hasMany':
-            case 'belongsTo':
-                $relation = $this->validateRelationArgs($relationName,
-                    ['foreignKey', 'otherKey']
-                );
-                $relationObj = $this->$relationType(
-                    $relation[0],
-                    $relation['foreignKey'],
-                    $relation['otherKey'],
-                    $relationName);
-                break;
-
-            case 'belongsToMany':
-                $relation = $this->validateRelationArgs($relationName,
-                    ['table', 'foreignKey', 'otherKey', 'parentKey', 'relatedKey', 'pivot', 'timestamps']
-                );
-
-                $relationObj = $this->$relationType(
-                    $relation[0],
-                    $relation['table'],
-                    $relation['foreignKey'],
-                    $relation['otherKey'],
-                    $relation['parentKey'],
-                    $relation['relatedKey'],
-                    $relationName);
-                break;
-
-            case 'morphTo':
-                $relation = $this->validateRelationArgs($relationName,
-                    ['name', 'type', 'id']
-                );
-                $relationObj = $this->$relationType($relation['name'] ?: $relationName, $relation['type'], $relation['id']);
-                break;
-
-            case 'morphOne':
-            case 'morphMany':
-                $relation = $this->validateRelationArgs($relationName,
-                    ['type', 'id', 'foreignKey'], ['name']
-                );
-                $relationObj = $this->$relationType(
-                    $relation[0],
-                    $relation['name'],
-                    $relation['type'],
-                    $relation['id'],
-                    $relation['foreignKey'], $relationName);
-                break;
-
-            case 'morphToMany':
-                $relation = $this->validateRelationArgs($relationName,
-                    ['table', 'foreignKey', 'otherKey', 'pivot', 'timestamps'], ['name']
-                );
-                $relationObj = $this->$relationType(
-                    $relation[0],
-                    $relation['name'],
-                    $relation['table'],
-                    $relation['pivot'],
-                    $relation['foreignKey'],
-                    $relation['otherKey'], null, FALSE);
-                break;
-
-            case 'morphedByMany':
-                $relation = $this->validateRelationArgs($relationName,
-                    ['table', 'foreignKey', 'otherKey', 'pivot', 'timestamps'], ['name']
-                );
-                $relationObj = $this->$relationType(
-                    $relation[0],
-                    $relation['name'],
-                    $relation['table'],
-                    $relation['foreignKey'],
-                    $relation['otherKey'], $relationName);
-                break;
-
-            case 'hasOneThrough':
-            case 'hasManyThrough':
-                $relation = $this->validateRelationArgs($relationName, ['foreignKey', 'throughKey', 'otherKey'], ['through']);
-                $relationObj = $this->$relationType(
-                    $relation[0],
-                    $relation['through'],
-                    $relation['foreignKey'],
-                    $relation['throughKey'],
-                    $relation['otherKey']);
-                break;
-
-            default:
-                throw new InvalidArgumentException(sprintf("There is no such relation type known as '%s' on model '%s'.", $relationType, get_called_class()));
-        }
-
-        return $relationObj;
-    }
-
-    /**
-     * Validate relation supplied arguments.
-     *
-     * @param $relationName
-     * @param $optional
-     * @param array $required
-     *
-     * @return array
-     */
-    protected function validateRelationArgs($relationName, $optional, $required = [])
-    {
-        $relation = $this->getRelationDefinition($relationName);
-
-        // Query filter arguments
-        $filters = ['scope', 'conditions', 'order', 'pivot', 'timestamps', 'push', 'count'];
-
-        foreach (array_merge($optional, $filters) as $key) {
-            if (!array_key_exists($key, $relation)) {
-                $relation[$key] = null;
-            }
-        }
-
-        $missingRequired = [];
-        foreach ($required as $key) {
-            if (!array_key_exists($key, $relation)) {
-                $missingRequired[] = $key;
-            }
-        }
-
-        if ($missingRequired) {
-            throw new InvalidArgumentException(sprintf('Relation "%s" on model "%s" should contain the following key(s): %s',
-                $relationName,
-                get_called_class(),
-                implode(', ', $missingRequired)
-            ));
-        }
-
-        return $relation;
-    }
-
-    public function belongsTo($related, $foreignKey = null, $otherKey = null, $relation = null)
-    {
-        if (is_null($relation)) {
-            $relation = $this->guessBelongsToRelation();
-        }
-
-        $instance = $this->newRelatedInstance($related);
-
-        if (is_null($foreignKey)) {
-            $foreignKey = snake_case($relation).'_id';
-        }
-
-        $otherKey = $otherKey ?: $instance->getKeyName();
-
-        return new BelongsTo(
-            $instance->newQuery(), $this, $foreignKey, $otherKey, $relation
-        );
-    }
-
-    public function belongsToMany($related,
-                                  $table = null, $foreignPivotKey = null, $relatedPivotKey = null,
-                                  $parentKey = null, $relatedKey = null, $relation = null)
-    {
-        // If no relationship name was passed, we will pull backtraces to get the
-        // name of the calling function. We will use that function name as the
-        // title of this relation since that is a great convention to apply.
-        if (is_null($relation)) {
-            $relation = $this->guessBelongsToManyRelation();
-        }
-
-        // First, we'll need to determine the foreign key and "other key" for the
-        // relationship. Once we have determined the keys we'll make the query
-        // instances as well as the relationship instances we need for this.
-        $instance = $this->newRelatedInstance($related);
-
-        $foreignPivotKey = $foreignPivotKey ?: $this->getForeignKey();
-
-        $relatedPivotKey = $relatedPivotKey ?: $instance->getForeignKey();
-
-        // If no table name was provided, we can guess it by concatenating the two
-        // models using underscores in alphabetical order. The two model names
-        // are transformed to snake case from their default CamelCase also.
-        if (is_null($table)) {
-            $table = $this->joiningTable($related);
-        }
-
-        return new BelongsToMany(
-            $instance->newQuery(), $this, $table, $foreignPivotKey,
-            $relatedPivotKey, $parentKey ?: $this->getKeyName(),
-            $relatedKey ?: $instance->getKeyName(), $relation
-        );
     }
 
     //
@@ -1166,7 +574,7 @@ class Model extends EloquentModel
      *
      * @return bool
      */
-    public function alwaysPush($options = null, $sessionKey)
+    public function alwaysPush($options = null, $sessionKey = null)
     {
         return $this->push(['always' => TRUE] + (array)$options, $sessionKey);
     }

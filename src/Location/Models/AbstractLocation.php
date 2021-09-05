@@ -2,10 +2,11 @@
 
 namespace Igniter\Flame\Location\Models;
 
-use DB;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Geolite\Contracts\CoordinatesInterface;
 use Igniter\Flame\Location\Contracts\LocationInterface;
+use Igniter\Flame\Location\OrderTypes;
+use Illuminate\Support\Facades\DB;
 
 class AbstractLocation extends Model implements LocationInterface
 {
@@ -36,7 +37,7 @@ class AbstractLocation extends Model implements LocationInterface
         ],
     ];
 
-    public $casts = [
+    protected $casts = [
         'options' => 'serialize',
     ];
 
@@ -62,24 +63,16 @@ class AbstractLocation extends Model implements LocationInterface
 
     public function getAddress()
     {
-        $row = $this;
-
-        $address_data = [
-            'address_1' => $row['location_address_1'],
-            'address_2' => $row['location_address_2'],
-            'city' => $row['location_city'],
-            'state' => $row['location_state'],
-            'postcode' => $row['location_postcode'],
-            'location_lat' => $row['location_lat'],
-            'location_lng' => $row['location_lng'],
-            'country_id' => $row['location_country_id'],
-            'country' => isset($row['country_name']) ? $row['country_name'] : null,
-            'iso_code_2' => isset($row['iso_code_2']) ? $row['iso_code_2'] : null,
-            'iso_code_3' => isset($row['iso_code_3']) ? $row['iso_code_3'] : null,
-            'format' => isset($row['format']) ? $row['format'] : null,
+        return [
+            'address_1' => $this->location_address_1,
+            'address_2' => $this->location_address_2,
+            'city' => $this->location_city,
+            'state' => $this->location_state,
+            'postcode' => $this->location_postcode,
+            'location_lat' => $this->location_lat,
+            'location_lng' => $this->location_lng,
+            'country_id' => $this->location_country_id,
         ];
-
-        return $address_data;
     }
 
     public function setOption($key, $value)
@@ -104,6 +97,11 @@ class AbstractLocation extends Model implements LocationInterface
         return (int)$this->getOption('reservation_lead_time', 0);
     }
 
+    public function getReservationStayTime()
+    {
+        return (int)$this->getOption('reservation_stay_time', 0);
+    }
+
     public function getOrderTimeInterval($orderType)
     {
         return (int)$this->getOption($orderType.'_time_interval', 15);
@@ -112,6 +110,11 @@ class AbstractLocation extends Model implements LocationInterface
     public function getOrderLeadTime($orderType)
     {
         return (int)$this->getOption($orderType.'_lead_time', 15);
+    }
+
+    public function getOrderTimeRestriction($orderType)
+    {
+        return (int)$this->getOption($orderType.'_time_restriction', 0);
     }
 
     public function deliveryMinutes()
@@ -138,7 +141,7 @@ class AbstractLocation extends Model implements LocationInterface
     {
         $orderType = $orderType ?: static::DELIVERY;
 
-        return (bool)$this->getOption("future_orders.{$orderType}_days", 0);
+        return (bool)$this->getOption("future_orders.enable_{$orderType}", 0);
     }
 
     public function futureOrderDays($orderType = null)
@@ -150,14 +153,15 @@ class AbstractLocation extends Model implements LocationInterface
 
     public function availableOrderTypes()
     {
-        $orderTypes = [];
-        if ($this->hasDelivery())
-            $orderTypes[1] = static::DELIVERY;
+        return OrderTypes::instance()->makeOrderTypes($this);
+    }
 
-        if ($this->hasCollection())
-            $orderTypes[2] = static::COLLECTION;
-
-        return $orderTypes;
+    public static function getOrderTypeOptions()
+    {
+        return collect(OrderTypes::instance()->listOrderTypes())
+            ->mapWithKeys(function ($orderType) {
+                return [$orderType['code'] => $orderType['name']];
+            });
     }
 
     public function calculateDistance(CoordinatesInterface $position)

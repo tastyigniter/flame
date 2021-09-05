@@ -2,8 +2,8 @@
 
 namespace Igniter\Flame\Database\Migrations;
 
+use Igniter\Flame\Support\Str;
 use Illuminate\Database\Migrations\Migrator as BaseMigrator;
-use Str;
 
 class Migrator extends BaseMigrator
 {
@@ -46,20 +46,19 @@ class Migrator extends BaseMigrator
     }
 
     /**
-     * Resolve a migration instance from a file.
+     * Generate a migration class name based on the migration file name.
      *
-     * @param  string $file
-     *
-     * @return object
+     * @param string $migrationName
+     * @return string
      */
-    public function resolve($file)
+    protected function getMigrationClass($migrationName): string
     {
-        $class = Str::studly(implode('_', array_slice(explode('_', $file), 4)));
+        $class = Str::studly(implode('_', array_slice(explode('_', $migrationName), 4)));
         if (!class_exists($class)) {
             $className = str_replace('.', '\\', $this->getRepository()->getGroup());
             $class = $className.'\\Database\\Migrations\\'.$class;
         }
 
-        return new $class;
+        return $class;
     }
 }

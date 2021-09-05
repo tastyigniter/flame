@@ -141,8 +141,8 @@ class Circle implements Contracts\CircleInterface
     {
         $distance = new Distance();
         $distance->in($this->unit)
-                 ->setFrom($coordinate)
-                 ->setTo($this->getCoordinate());
+            ->setFrom($coordinate)
+            ->setTo($this->getCoordinate());
 
         $radius = $distance->convertToUserUnit($this->getRadius());
 

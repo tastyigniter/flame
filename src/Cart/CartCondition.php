@@ -54,7 +54,7 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
      */
     protected $target;
 
-    protected $passed = FALSE;
+    protected $passed;
 
     protected $calculatedValue;
 
@@ -90,6 +90,20 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     public function isValid()
     {
         return $this->passed;
+    }
+
+    public function isApplied()
+    {
+        return $this->isValid();
+    }
+
+    public function isInclusive()
+    {
+        return collect($this->getActions())
+            ->filter(function ($action) {
+                return array_get($action, 'inclusive', FALSE);
+            })
+            ->isNotEmpty();
     }
 
     /**

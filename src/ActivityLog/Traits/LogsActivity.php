@@ -4,10 +4,10 @@ namespace Igniter\Flame\ActivityLog\Traits;
 
 traceLog('LogsActivity traits has been Deprecated. Use activity()->logActivity() instead');
 
-use App;
 use Igniter\Flame\ActivityLog\ActivityLogger;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\App;
 
 /**
  * LogsActivity model trait
@@ -44,11 +44,10 @@ trait LogsActivity
     {
         static::eventsToBeRecorded()->each(function ($eventName) {
             return static::$eventName(function (Model $model) use ($eventName) {
-
                 if ($eventName == 'updated') {
                     //temporary hold the original attributes on the model
                     //as we'll need these in the updating event
-                    $oldValues = $model->replicate()->setRawAttributes($model->getOriginal());
+                    $oldValues = $model->replicate()->setRawAttributes($model->getRawOriginal());
                     $model->oldAttributes = static::logChanges($oldValues);
                 }
 
@@ -62,10 +61,10 @@ trait LogsActivity
                 }
 
                 $model->getActivityLogger()
-                      ->useLog($model->getLogNameToUse($eventName))
-                      ->performedOn($model)
-                      ->withProperties($model->attributeValuesToBeLogged($eventName))
-                      ->log($description);
+                    ->useLog($model->getLogNameToUse($eventName))
+                    ->performedOn($model)
+                    ->withProperties($model->attributeValuesToBeLogged($eventName))
+                    ->log($description);
             });
         });
     }

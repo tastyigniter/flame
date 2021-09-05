@@ -366,7 +366,7 @@ class Cart
     {
         $this->fireEvent('condition.clearing');
 
-        $this->conditions->each(function (CartCondition $condition) {
+        $this->getConditions()->each(function (CartCondition $condition) {
             $condition->clearMetaData();
         });
 
@@ -396,7 +396,7 @@ class Cart
 
         $conditions = $this->getConditions();
 
-        if ($condition->getPriority() == 0) {
+        if (is_null($condition->getPriority())) {
             $last = $conditions->last();
             $condition->setPriority(!is_null($last) ? $last->getPriority() + 1 : 1);
         }
@@ -431,7 +431,7 @@ class Cart
                 $cartItem->conditions->put($itemCondition->name, $itemCondition);
             }
         }
-        else {
+        elseif ($cartItem->conditions) {
             $cartItem->conditions->forget($condition->name);
         }
     }
@@ -623,7 +623,7 @@ class Cart
 
         $storedConditions = array_get($storedData, 'conditions');
         foreach ($storedConditions as $cartCondition) {
-            $this->conditions->put($cartCondition->name, $cartCondition);
+            $this->getConditions()->put($cartCondition->name, $cartCondition);
         }
 
         $this->putSession('content', $content);

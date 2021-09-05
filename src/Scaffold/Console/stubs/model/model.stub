@@ -2,7 +2,7 @@
 
 namespace {{studly_author}}\{{studly_extension}}\Models;
 
-use Model;
+use Igniter\Flame\Database\Model;
 
 /**
  * {{name}} Model

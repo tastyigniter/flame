@@ -73,6 +73,8 @@ class Location implements Contracts\LocationInterface
      */
     protected $providedBy;
 
+    protected $data;
+
     /**
      * @param string $providedBy
      * @param array $data
@@ -471,7 +473,7 @@ class Location implements Contracts\LocationInterface
 
     protected function fillFromData(array $data)
     {
-        $data = $this->mergeWithDefaults($data);
+        $this->data = $data = $this->mergeWithDefaults($data);
 
         $this->adminLevels = $this->makeAdminLevels($data);
         $this->coordinates = $this->createCoordinates($data);

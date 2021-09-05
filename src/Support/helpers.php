@@ -266,13 +266,14 @@ if (!function_exists('input')) {
      */
     function input($name = null, $default = null)
     {
-        if ($name === null)
-            return Request::all();
+        $inputData = request()->input();
+        if (is_null($name))
+            return $inputData;
 
         // Array field name, eg: field[key][key2][key3]
         $name = implode('.', name_to_array($name));
 
-        return Request::get($name, $default);
+        return array_get($inputData, $name, $default);
     }
 }
 
@@ -287,13 +288,14 @@ if (!function_exists('post')) {
      */
     function post($name = null, $default = null)
     {
-        if ($name === null)
-            return $_POST;
+        $postData = request()->post();
+        if (is_null($name))
+            return $postData;
 
         // Array field name, eg: field[key][key2][key3]
         $name = implode('.', name_to_array($name));
 
-        return array_get($_POST, $name, $default);
+        return array_get($postData, $name, $default);
     }
 }
 
@@ -308,13 +310,14 @@ if (!function_exists('get')) {
      */
     function get($name = null, $default = null)
     {
-        if ($name === null)
-            return $_GET;
+        $inputData = request()->input();
+        if (is_null($name))
+            return $inputData;
 
         // Array field name, eg: field[key][key2][key3]
         $name = implode('.', name_to_array($name));
 
-        return array_get($_GET, $name, $default);
+        return array_get($inputData, $name, $default);
     }
 }
 
@@ -397,6 +400,21 @@ if (!function_exists('currency_format')) {
     function currency_format($amount = null, $currency = null, $include_symbol = TRUE)
     {
         return app('currency')->format($amount, $currency, $include_symbol);
+    }
+}
+
+if (!function_exists('currency_json')) {
+    /**
+     * Convert value to a currency array
+     *
+     * @param float $amount
+     * @param string $currency
+     *
+     * @return array
+     */
+    function currency_json($amount = null, $currency = null)
+    {
+        return app('currency')->formatToJson($amount, $currency);
     }
 }
 

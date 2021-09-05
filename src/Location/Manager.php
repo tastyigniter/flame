@@ -5,7 +5,7 @@ namespace Igniter\Flame\Location;
 use Closure;
 use Igniter\Flame\Geolite\Contracts\CoordinatesInterface;
 use Igniter\Flame\Traits\EventEmitter;
-use Session;
+use Illuminate\Support\Facades\Session;
 
 /**
  * Location Manager Class

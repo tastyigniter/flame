@@ -17,26 +17,49 @@ class Localization
      */
     public function handle($request, Closure $next)
     {
-        $localization = app('translator.localization');
+        if (!app()->hasDatabase())
+            return $next($request);
 
-        if (app()->runningInAdmin()) {
-            if (!$localization->loadLocaleFromSession()) {
-                $staff = app('admin.auth')->isLogged() ? app('admin.auth')->staff() : null;
-                if ($staff AND $staffLocale = $staff->language) {
-                    $localization->setLocale($staffLocale->code, TRUE);
-                }
-            }
-        }
-        else {
-            if (!$localization->loadLocaleFromRequest()) {
-                if (!$localization->loadLocaleFromBrowser()) {
-                    if (!$localization->loadLocaleFromSession()) {
-                        $localization->setLocale($localization->getDefaultLocale());
-                    }
-                }
-            }
-        }
+        app()->runningInAdmin()
+            ? $this->loadAdminLocale()
+            : $this->loadLocale();
 
         return $next($request);
+    }
+
+    protected function loadAdminLocale()
+    {
+        $localization = app('translator.localization');
+
+        $sessionLocale = $localization->getSessionLocale();
+        $userLocale = $this->getUserLocale() ?? $localization->getDefaultLocale();
+
+        $storeSession = $sessionLocale !== $userLocale;
+
+        $localization->setLocale($userLocale, $storeSession);
+    }
+
+    protected function loadLocale()
+    {
+        $localization = app('translator.localization');
+
+        if ($localization->loadLocaleFromRequest())
+            return;
+
+        if ($localization->loadLocaleFromBrowser())
+            return;
+
+        if ($localization->loadLocaleFromSession())
+            return;
+
+        $localization->setLocale($localization->getDefaultLocale());
+    }
+
+    protected function getUserLocale()
+    {
+        if (!app('admin.auth')->isLogged())
+            return null;
+
+        return optional(app('admin.auth')->staff()->language)->code;
     }
 }

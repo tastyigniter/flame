@@ -39,7 +39,7 @@ trait Sortable
             $sortOrderColumn = $model->getSortOrderColumn();
 
             // only automatically calculate next position with max+1 when a position has not been set already
-            if ($model->sortWhenCreating() AND $sortOrderColumn) {
+            if ($model->sortWhenCreating() AND $sortOrderColumn AND empty($model->getAttributeValue($sortOrderColumn))) {
                 $model->setAttribute($sortOrderColumn, static::on()->max($sortOrderColumn) + 1);
             }
         });
@@ -89,6 +89,6 @@ trait Sortable
 
     public function sortWhenCreating()
     {
-        return $this->sortable['sortWhenCreating'] ?? true;
+        return $this->sortable['sortWhenCreating'] ?? TRUE;
     }
 }

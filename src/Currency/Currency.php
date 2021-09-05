@@ -124,6 +124,9 @@ class Currency
         // Get default currency if one is not set
         $code = $code ?: $this->config('default');
 
+        if (is_numeric($code))
+            $code = optional($this->getCurrency($code))->getCode() ?: $code;
+
         // Remove unnecessary characters
         $value = preg_replace('/[\s\',!]/', '', $value);
 
@@ -170,6 +173,28 @@ class Currency
 
         // Return value
         return $negative.$value;
+    }
+
+    /**
+     * Format the value into a json array
+     *
+     * @param float $value
+     * @param string $code
+     *
+     * @return string
+     */
+    public function formatToJson($value, $code = null)
+    {
+        // Get default currency if one is not set
+        $code = $code ?: $this->config('default');
+
+        if (is_numeric($code))
+            $code = optional($this->getCurrency($code))->getCode() ?: $code;
+
+        return [
+            'currency' => $code,
+            'value' => $value,
+        ];
     }
 
     /**

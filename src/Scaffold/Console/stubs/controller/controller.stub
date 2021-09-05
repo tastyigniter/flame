@@ -2,7 +2,7 @@
 
 namespace {{studly_author}}\{{studly_extension}}\Controllers;
 
-use AdminMenu;
+use Admin\Facades\AdminMenu;
 
 /**
  * {{title_name}} Admin Controller
@@ -31,17 +31,16 @@ class {{studly_name}} extends \Admin\Classes\AdminController
             'title'         => 'lang:admin::lang.form.create_title',
             'redirect'      => '{{lower_author}}/{{lower_extension}}/{{lower_name}}/edit/{id}',
             'redirectClose' => '{{lower_author}}/{{lower_extension}}/{{lower_name}}',
+            'redirectNew'   => '{{lower_author}}/{{lower_extension}}/{{lower_name}}/create',
         ],
         'edit'       => [
             'title'         => 'lang:admin::lang.form.edit_title',
             'redirect'      => '{{lower_author}}/{{lower_extension}}/{{lower_name}}/edit/{id}',
             'redirectClose' => '{{lower_author}}/{{lower_extension}}/{{lower_name}}',
+            'redirectNew'   => '{{lower_author}}/{{lower_extension}}/{{lower_name}}/create',
         ],
         'preview'    => [
             'title'    => 'lang:admin::lang.form.preview_title',
-            'redirect' => '{{lower_author}}/{{lower_extension}}/{{lower_name}}',
-        ],
-        'delete'     => [
             'redirect' => '{{lower_author}}/{{lower_extension}}/{{lower_name}}',
         ],
         'configFile' => '{{snake_singular_name}}',

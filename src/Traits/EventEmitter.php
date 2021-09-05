@@ -2,7 +2,7 @@
 
 namespace Igniter\Flame\Traits;
 
-use Event;
+use Illuminate\Support\Facades\Event;
 
 /**
  * Adds event related features to any class.
@@ -59,7 +59,7 @@ trait EventEmitter
     /**
      * Sort the listeners for a given event by priority.
      *
-     * @param  string $eventName
+     * @param string $eventName
      *
      * @return void
      */
@@ -140,7 +140,6 @@ trait EventEmitter
 
         // Recurring events, with priority
         if (isset($this->emitterEvents[$event])) {
-
             if (!isset($this->emitterEventSorted[$event]))
                 $this->emitterEventSortEvents($event);
 
@@ -185,19 +184,21 @@ trait EventEmitter
         $longArgs = array_merge([$this], $params);
 
         // Local event first
-        if ($response = $this->fireEvent($shortEvent, $params, $halt)) {
+        if (!is_null($response = $this->fireEvent($shortEvent, $params, $halt))) {
             if ($halt)
                 return $response;
 
-            $result = array_merge($result, $response);
+            if ($response === TRUE)
+                $result = array_merge($result, $response);
         }
 
         // Global event second
-        if ($response = Event::fire($event, $longArgs, $halt)) {
+        if (!is_null($response = Event::fire($event, $longArgs, $halt))) {
             if ($halt)
                 return $response;
 
-            $result = array_merge($result, $response);
+            if ($response === TRUE)
+                $result = array_merge($result, $response);
         }
 
         return $result;

@@ -2,8 +2,8 @@
 
 namespace Igniter\Flame\Translation\Models;
 
-use Cache;
 use Igniter\Flame\Database\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Translation extends Model
 {
@@ -32,7 +32,7 @@ class Translation extends Model
      */
     protected $fillable = ['locale', 'namespace', 'group', 'item', 'text', 'unstable'];
 
-    public $casts = [
+    protected $casts = [
         'unstable' => 'boolean',
         'locked' => 'boolean',
     ];
@@ -113,10 +113,10 @@ class Translation extends Model
     public static function getFresh($locale, $group, $namespace = null)
     {
         return static::query()
-                     ->where('locale', $locale)
-                     ->where('group', $group)
-                     ->where('namespace', $namespace)
-                     ->get();
+            ->where('locale', $locale)
+            ->where('group', $group)
+            ->where('namespace', $namespace)
+            ->get();
     }
 
     public static function getCached($locale, $group, $namespace = null)

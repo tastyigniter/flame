@@ -16,7 +16,7 @@
     }
   ],
   "require": {
-    "php": ">=7.2",
+    "php": ">=7.3",
     "ext-ctype": "*",
     "ext-curl": "*",
     "ext-dom": "*",
@@ -26,15 +26,18 @@
     "ext-libxml": "*",
     "ext-PDO": "*",
     "ext-zip": "*",
+    "ext-mbstring": "*",
+    "ext-openssl": "*",
     "fideloper/proxy": "~4.0",
     "doctrine/instantiator": "~1.0",
-    "october/rain": "~1.0.468",
+    "doctrine/dbal": "~2.6",
     "guzzlehttp/guzzle": "~6.3",
     "kalnoy/nestedset": "~5.0",
-    "watson/validating": "~4.0",
     "natxet/cssmin": "~3.0",
+    "symfony/yaml": "~5.1",
     "scssphp/scssphp": "~1.0",
-    "league/glide": "~1.5"
+    "league/glide": "~1.5",
+    "laravel/tinker": "~2.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^8.0|^9.0",
@@ -51,8 +54,8 @@
     "illuminate/validation": "^6.0",
     "illuminate/view": "^6.0",
     "illuminate/cache": "^6.0",
-    "mockery/mockery": "^1.0",
-    "fzaninotto/faker": "^1.4"
+    "mockery/mockery": "^1.3",
+    "fakerphp/faker": "^1.14"
   },
   "suggest": {
     "ext-pdo_mysql": "Required to use MySQL databases"

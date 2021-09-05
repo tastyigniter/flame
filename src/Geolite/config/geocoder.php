@@ -66,14 +66,14 @@ return [
         | Cache Duration
         |-----------------------------------------------------------------------
         |
-        | Specify the cache duration in minutes. The default approximates a
-        | "forever" cache, but there are certain issues with Laravel's forever
-        | caching methods that prevent us from using them in this project.
+        | Specify the cache duration in minutes.
         |
-        | Default: 4320 (integer) 3 days
+        | Default: 4320 (integer) 30 days
         |
         */
 
-        'duration' => 4320,
+        'duration' => 43200,
     ],
+
+    'precision' => 8,
 ];

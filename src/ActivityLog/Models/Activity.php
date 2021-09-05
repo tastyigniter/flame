@@ -6,9 +6,9 @@ use Carbon\Carbon;
 use Igniter\Flame\ActivityLog\ActivityLogger;
 use Igniter\Flame\ActivityLog\Contracts\ActivityInterface;
 use Igniter\Flame\Database\Builder;
+use Igniter\Flame\Database\Model;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
-use Model;
 use ReflectionClass;
 
 /**
@@ -39,7 +39,7 @@ class Activity extends Model
 
     public $timestamps = TRUE;
 
-    public $casts = [
+    protected $casts = [
         'properties' => 'collection',
         'subject_id' => 'integer',
         'causer_id' => 'integer',
@@ -151,7 +151,7 @@ class Activity extends Model
 
     public function scopeWhereIsRead($query)
     {
-        return $query->whereNotNull('read_at')->whereDate('read_at', '<=', Carbon::now());
+        return $query->whereNotNull('read_at')->where('read_at', '<=', Carbon::now());
     }
 
     public function scopeWhereIsUnread($query)

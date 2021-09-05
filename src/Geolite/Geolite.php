@@ -48,22 +48,26 @@ class Geolite
 
     public function circle($coordinate, $radius)
     {
-        return new Circle($coordinate, $radius);
+        return (new Circle($coordinate, $radius))
+            ->setPrecision(config('geocoder.precision'));
     }
 
     public function polygon($coordinates)
     {
-        return new Polygon($coordinates);
+        return (new Polygon($coordinates))
+            ->setPrecision(config('geocoder.precision'));
     }
 
     public function vertex()
     {
-        return new Vertex;
+        return (new Vertex)
+            ->setPrecision(config('geocoder.precision'));
     }
 
     public function coordinates($latitude, $longitude)
     {
-        return new Coordinates($latitude, $longitude);
+        return (new Coordinates($latitude, $longitude))
+            ->setPrecision(config('geocoder.precision'));
     }
 
     public function addressMatch($components)

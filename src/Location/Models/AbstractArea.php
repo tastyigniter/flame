@@ -2,10 +2,10 @@
 
 namespace Igniter\Flame\Location\Models;
 
-use Geocoder;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Geolite\Contracts\CoordinatesInterface;
 use Igniter\Flame\Geolite\Contracts\LocationInterface;
+use Igniter\Flame\Geolite\Facades\Geocoder;
 use Igniter\Flame\Location\Contracts\AreaInterface;
 use InvalidArgumentException;
 
@@ -32,7 +32,7 @@ abstract class AbstractArea extends Model implements AreaInterface
         ],
     ];
 
-    public $casts = [
+    protected $casts = [
         'boundaries' => 'serialize',
         'conditions' => 'serialize',
         'is_default' => 'boolean',
@@ -57,9 +57,7 @@ abstract class AbstractArea extends Model implements AreaInterface
 
     protected function pickColor()
     {
-        $index = mt_rand(0, count(self::$areaColors) - 1);
-
-        return self::$areaColors[$index];
+        return array_random(self::$areaColors);
     }
 
     //

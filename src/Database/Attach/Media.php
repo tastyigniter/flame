@@ -3,14 +3,14 @@
 namespace Igniter\Flame\Database\Attach;
 
 use Exception;
-use File;
 use FilesystemIterator;
 use Igniter\Flame\Database\Model;
-use Log;
-use Storage;
+use Igniter\Flame\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Symfony\Component\HttpFoundation\File\File as SymfonyFile;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use URL;
 
 class Media extends Model
 {
@@ -39,7 +39,7 @@ class Media extends Model
      *
      * @var array
      */
-    public $casts = [
+    protected $casts = [
         'manipulations' => 'array',
         'custom_properties' => 'array',
     ];
@@ -79,9 +79,9 @@ class Media extends Model
     public function addFromRequest(UploadedFile $uploadedFile, $tag = null)
     {
         $this->getMediaAdder()
-             ->performedOn($this->attachment)
-             ->useMediaTag($tag)
-             ->fromFile($uploadedFile);
+            ->performedOn($this->attachment)
+            ->useMediaTag($tag)
+            ->fromFile($uploadedFile);
 
         return $this;
     }
@@ -98,9 +98,9 @@ class Media extends Model
             return;
 
         $this->getMediaAdder()
-             ->performedOn($this->attachment)
-             ->useMediaTag($tag)
-             ->fromFile(new SymfonyFile($filePath));
+            ->performedOn($this->attachment)
+            ->useMediaTag($tag)
+            ->fromFile(new SymfonyFile($filePath));
 
         return $this;
     }
