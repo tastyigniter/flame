@@ -199,7 +199,7 @@ class ActivityLogger
 
             $attributeValue = $attributeValue->toArray();
 
-            return array_get($attributeValue, $propertyName, $match);
+            return e(array_get($attributeValue, $propertyName, $match));
         }, $message);
     }
 }
