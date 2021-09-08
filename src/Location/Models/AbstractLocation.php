@@ -102,6 +102,16 @@ class AbstractLocation extends Model implements LocationInterface
         return (int)$this->getOption('reservation_stay_time', 0);
     }
 
+    public function getMinReservationAdvanceTime()
+    {
+        return (int)$this->getOption('min_reservation_advance_time', 2);
+    }
+
+    public function getMaxReservationAdvanceTime()
+    {
+        return (int)$this->getOption('max_reservation_advance_time', 30);
+    }
+
     public function getOrderTimeInterval($orderType)
     {
         return (int)$this->getOption($orderType.'_time_interval', 15);
