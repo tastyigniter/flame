@@ -285,8 +285,8 @@ class Rule
     /**
      * Condition callback
      *
-     * @param callback $callback Callback function to be used when providing custom route match conditions
-     * @return callback
+     * @param callable $callback Callback function to be used when providing custom route match conditions
+     * @return callable
      * @throws InvalidArgumentException When supplied argument is not a valid callback
      */
     public function condition($callback = null)
@@ -310,8 +310,8 @@ class Rule
     /**
      * After match callback
      *
-     * @param callback $callback Callback function to be used to modify params after a successful match
-     * @return callback
+     * @param callable $callback Callback function to be used to modify params after a successful match
+     * @return callable
      * @throws InvalidArgumentException When supplied argument is not a valid callback
      */
     public function afterMatch($callback = null)

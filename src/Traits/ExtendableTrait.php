@@ -300,11 +300,10 @@ trait ExtendableTrait
      */
     public function methodExists($name)
     {
-        return (
+        return
             method_exists($this, $name) ||
             isset($this->extensionData['methods'][$name]) ||
-            isset($this->extensionData['dynamicMethods'][$name])
-        );
+            isset($this->extensionData['dynamicMethods'][$name]);
     }
 
     /**

@@ -469,7 +469,7 @@ class ClassLoader
                     $this->manifest = [];
                 }
             }
-            catch (Exception | Throwable $ex) {
+            catch (Exception|Throwable $ex) {
                 $this->manifest = [];
             }
         }
