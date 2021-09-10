@@ -188,7 +188,7 @@ trait EventEmitter
             if ($halt)
                 return $response;
 
-            if ($response === TRUE)
+            if ($response !== FALSE)
                 $result = array_merge($result, $response);
         }
 
@@ -197,7 +197,7 @@ trait EventEmitter
             if ($halt)
                 return $response;
 
-            if ($response === TRUE)
+            if ($response !== FALSE)
                 $result = array_merge($result, $response);
         }
 
