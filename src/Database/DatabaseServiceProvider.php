@@ -39,6 +39,8 @@ class DatabaseServiceProvider extends BaseDatabaseServiceProvider
         $this->registerQueueableEntityResolver();
 
         $this->registerConnectionServices();
+
+        $this->registerDoctrineTypes();
     }
 
     /**
