@@ -48,7 +48,7 @@ class Database extends AbstractDriver
             'currency_rate' => 1,
             'currency_status' => 0,
             // 'created_at' => $created,
-            'date_modified' => $created,
+            'updated_at' => $created,
         ], $params);
 
         return $this->database->table($this->config('table'))->insert($params);
@@ -75,8 +75,8 @@ class Database extends AbstractDriver
                         : $item->currency_symbol.'1'.$format,
                     'currency_rate' => $item->currency_rate,
                     'currency_status' => $item->currency_status,
-                    'date_modified' => $item->date_modified,
-                    // 'date_modified' => $item->date_modified,
+                    'updated_at' => $item->updated_at,
+                    // 'updated_at' => $item->updated_at,
                 ];
             })
             ->all();
@@ -106,8 +106,8 @@ class Database extends AbstractDriver
         $table = $this->config('table');
 
         // Create timestamp
-        if (empty($attributes['date_modified']) === TRUE) {
-            $attributes['date_modified'] = new DateTime('now');
+        if (empty($attributes['updated_at']) === TRUE) {
+            $attributes['updated_at'] = new DateTime('now');
         }
 
         return $this->database->table($table)

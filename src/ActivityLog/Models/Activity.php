@@ -16,13 +16,6 @@ use ReflectionClass;
  */
 class Activity extends Model
 {
-    /**
-     * @var array Auto-fill the created date field on insert
-     */
-    const CREATED_AT = 'date_added';
-
-    const UPDATED_AT = 'date_updated';
-
     protected static $callbacks = [];
 
     protected static $activityTypes;

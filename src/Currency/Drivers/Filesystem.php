@@ -46,14 +46,14 @@ class Filesystem extends AbstractDriver
         $created = (new DateTime('now'))->format('Y-m-d H:i:s');
 
         $currencies[$params['code']] = array_merge([
-            'name'          => '',
-            'code'          => '',
-            'symbol'        => '',
-            'format'        => '',
+            'name' => '',
+            'code' => '',
+            'symbol' => '',
+            'format' => '',
             'currency_rate' => 1,
-            'active'        => 0,
-            'created_at'    => $created,
-            'updated_at'    => $created,
+            'active' => 0,
+            'created_at' => $created,
+            'updated_at' => $created,
         ], $params);
 
         return $this->filesystem->put($path, json_encode($currencies, JSON_PRETTY_PRINT));
@@ -107,8 +107,8 @@ class Filesystem extends AbstractDriver
         }
 
         // Create timestamp
-        if (empty($attributes['date_modified']) === TRUE) {
-            $attributes['date_modified'] = (new DateTime('now'))->format('Y-m-d H:i:s');
+        if (empty($attributes['updated_at']) === TRUE) {
+            $attributes['updated_at'] = (new DateTime('now'))->format('Y-m-d H:i:s');
         }
 
         // Merge values

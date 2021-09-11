@@ -30,7 +30,7 @@ class Cleanup extends Command
         $expiryDate = Carbon::now()->subDays($maxAgeInDays)->format('Y-m-d H:i:s');
 
         $activity = App::make(ActivityLogger::class)->getModelInstance();
-        $amountDeleted = $activity::where('date_added', '<', $expiryDate)->delete();
+        $amountDeleted = $activity::where('created_at', '<', $expiryDate)->delete();
 
         $this->info("Deleted {$amountDeleted} record(s) from the activity log.");
         $this->comment('All done!');

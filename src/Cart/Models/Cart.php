@@ -6,10 +6,6 @@ use Igniter\Flame\Database\Model;
 
 class Cart extends Model
 {
-    const CREATED_AT = 'created_at';
-
-    const UPDATED_AT = 'updated_at';
-
     protected static $unguarded = TRUE;
 
     protected $table = 'cart';

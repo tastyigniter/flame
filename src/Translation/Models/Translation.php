@@ -7,10 +7,6 @@ use Illuminate\Support\Facades\Cache;
 
 class Translation extends Model
 {
-    const CREATED_AT = 'created_at';
-
-    const UPDATED_AT = 'updated_at';
-
     protected static $cacheKey = 'igniter.translation';
 
     public $timestamps = TRUE;
