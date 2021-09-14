@@ -112,7 +112,7 @@ class Manipulator
         ]);
 
         if (!$extension = pathinfo($this->file, PATHINFO_EXTENSION))
-            return false;
+            return FALSE;
 
         if ($this->driver == 'gd')
             return in_array($extension, $gdExtensions);
@@ -212,7 +212,7 @@ class Manipulator
             return substr($path, strlen($base));
 
         if (starts_with($path, base_path()))
-            throw new Exception('The provided path must be a relative path to the file, from the source root');
+            throw new Exception("The provided path ($path) must be a relative path to the file, from the source root");
 
         return $path;
     }
