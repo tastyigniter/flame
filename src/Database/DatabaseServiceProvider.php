@@ -2,6 +2,7 @@
 
 namespace Igniter\Flame\Database;
 
+use Doctrine\DBAL\Types\Type;
 use Igniter\Flame\Database\Connectors\ConnectionFactory;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\DatabaseServiceProvider as BaseDatabaseServiceProvider;
@@ -71,5 +72,27 @@ class DatabaseServiceProvider extends BaseDatabaseServiceProvider
         $this->app->singleton('db.transactions', function ($app) {
             return new DatabaseTransactionsManager;
         });
+    }
+
+    /**
+     * Register custom types with the Doctrine DBAL library.
+     *
+     * @return void
+     */
+    protected function registerDoctrineTypes()
+    {
+        if (!class_exists(Type::class)) {
+            return;
+        }
+
+        $types = $this->app['config']->get('database.dbal.types', [
+            'timestamp' => \Illuminate\Database\DBAL\TimestampType::class,
+        ]);
+
+        foreach ($types as $name => $class) {
+            if (!Type::hasType($name)) {
+                Type::addType($name, $class);
+            }
+        }
     }
 }
