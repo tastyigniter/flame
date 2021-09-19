@@ -36,7 +36,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
         if ($coordinates instanceof Model\CoordinatesCollection) {
             $this->coordinates = $coordinates;
         }
-        elseif (is_array($coordinates) OR is_null($coordinates)) {
+        elseif (is_array($coordinates) || is_null($coordinates)) {
             $this->coordinates = new Model\CoordinatesCollection([]);
         }
         else {
@@ -215,17 +215,17 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
                     $nextVertex->getLatitude(),
                     $this->getPrecision()
                 ) === 0
-                AND bccomp(
+                && bccomp(
                     $currentVertex->getLatitude(),
                     $coordinate->getLatitude(),
                     $this->getPrecision()
                 ) === 0
-                AND bccomp(
+                && bccomp(
                     $coordinate->getLongitude(),
                     min($currentVertex->getLongitude(), $nextVertex->getLongitude()),
                     $this->getPrecision()
                 ) === 1
-                AND bccomp(
+                && bccomp(
                     $coordinate->getLongitude(),
                     max($currentVertex->getLongitude(), $nextVertex->getLongitude()),
                     $this->getPrecision()
@@ -240,17 +240,17 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
                     min($currentVertex->getLatitude(), $nextVertex->getLatitude()),
                     $this->getPrecision()
                 ) === 1
-                AND bccomp(
+                && bccomp(
                     $coordinate->getLatitude(),
                     max($currentVertex->getLatitude(), $nextVertex->getLatitude()),
                     $this->getPrecision()
                 ) <= 0
-                AND bccomp(
+                && bccomp(
                     $coordinate->getLongitude(),
                     max($currentVertex->getLongitude(), $nextVertex->getLongitude()),
                     $this->getPrecision()
                 ) <= 0
-                AND bccomp(
+                && bccomp(
                     $currentVertex->getLatitude(),
                     $nextVertex->getLatitude(),
                     $this->getPrecision()
@@ -286,7 +286,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
                     $vertexCoordinate->getLatitude(),
                     $coordinate->getLatitude(),
                     $this->getPrecision()
-                ) === 0 AND
+                ) === 0 &&
                 bccomp(
                     $vertexCoordinate->getLongitude(),
                     $coordinate->getLongitude(),
@@ -313,17 +313,17 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
                     min($currentVertex->getLatitude(), $nextVertex->getLatitude()),
                     $this->getPrecision()
                 ) === 1
-                AND bccomp(
+                && bccomp(
                     $coordinate->getLatitude(),
                     max($currentVertex->getLatitude(), $nextVertex->getLatitude()),
                     $this->getPrecision()
                 ) <= 0
-                AND bccomp(
+                && bccomp(
                     $coordinate->getLongitude(),
                     max($currentVertex->getLongitude(), $nextVertex->getLongitude()),
                     $this->getPrecision()
                 ) <= 0
-                AND bccomp(
+                && bccomp(
                     $currentVertex->getLatitude(),
                     $nextVertex->getLatitude(),
                     $this->getPrecision()
@@ -339,7 +339,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
                         $xinters,
                         $this->getPrecision()
                     ) <= 0
-                    OR bccomp(
+                    || bccomp(
                         $currentVertex->getLongitude(),
                         $nextVertex->getLongitude(),
                         $this->getPrecision()

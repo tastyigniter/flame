@@ -46,7 +46,7 @@ class GeoQuery implements Contracts\GeoQueryInterface
         if ($text instanceof Model\Coordinates) {
             $this->coordinates = $text;
         }
-        elseif (!empty($text) AND is_string($text)) {
+        elseif (!empty($text) && is_string($text)) {
             $this->text = $text;
         }
         elseif (empty($text)) {

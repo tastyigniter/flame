@@ -134,13 +134,13 @@ class FileParser
             $cachedInfo = $fileCache->getCached($path);
             $hasCache = $cachedInfo !== null;
 
-            if ($hasCache AND $cachedInfo['mTime'] == $this->object->mTime) {
+            if ($hasCache && $cachedInfo['mTime'] == $this->object->mTime) {
                 $result['className'] = $cachedInfo['className'];
 
                 return $result;
             }
 
-            if (!$hasCache AND filemtime($path) >= $this->object->mTime) {
+            if (!$hasCache && filemtime($path) >= $this->object->mTime) {
                 if ($className = $this->extractClassFromFile($path)) {
                     $cacheItem['className'] = $className;
                     $fileCache->storeCached($filePath, $cacheItem);
@@ -240,7 +240,7 @@ class FileParser
             self::$fileCache->load($data['filePath']);
         }
 
-        if (!class_exists($className) AND $data = $this->handleCorruptCache($data)) {
+        if (!class_exists($className) && $data = $this->handleCorruptCache($data)) {
             $className = $data['className'];
         }
 
@@ -251,7 +251,7 @@ class FileParser
     {
         $path = array_get($data, 'filePath', self::$fileCache->getCacheKey($data['className']));
         if (is_file($path)) {
-            if ($className = $this->extractClassFromFile($path) AND class_exists($className)) {
+            if ($className = $this->extractClassFromFile($path) && class_exists($className)) {
                 $data['className'] = $className;
 
                 return $data;

@@ -78,7 +78,7 @@ class WorkingRange
     {
         $diffInHours = $this->start()->diff($this->end());
 
-        return $diffInHours >= 23 OR $diffInHours == 0;
+        return $diffInHours >= 23 || $diffInHours == 0;
     }
 
     public function containsTime(WorkingTime $time): bool
@@ -91,12 +91,12 @@ class WorkingRange
             return $time->isBefore($this->end);
         }
 
-        return $time->isSameOrAfter($this->start) AND $time->isBefore($this->end);
+        return $time->isSameOrAfter($this->start) && $time->isBefore($this->end);
     }
 
     public function overlaps(self $timeRange): bool
     {
-        return $this->containsTime($timeRange->start) OR $this->containsTime($timeRange->end);
+        return $this->containsTime($timeRange->start) || $this->containsTime($timeRange->end);
     }
 
     public function format(string $timeFormat = 'H:i', string $rangeFormat = '%s-%s'): string

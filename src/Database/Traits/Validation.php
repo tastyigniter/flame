@@ -335,13 +335,13 @@ trait Validation
                             [explode(',', head($parameters)), $field]
                         );
                     }
-                    elseif ($validationRule === 'unique' AND $this->exists) {
+                    elseif ($validationRule === 'unique' && $this->exists) {
                         $ruleset[$key] = $this->processValidationUniqueRule($rule, $field);
                     }
-                    elseif (starts_with($rule, 'required:create') AND $this->exists) {
+                    elseif (starts_with($rule, 'required:create') && $this->exists) {
                         unset($ruleset[$key]);
                     }
-                    elseif (starts_with($rule, 'required:update') AND !$this->exists) {
+                    elseif (starts_with($rule, 'required:update') && !$this->exists) {
                         unset($ruleset[$key]);
                     }
                 }

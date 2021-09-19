@@ -110,7 +110,7 @@ class Coordinates implements CoordinatesInterface
     public function isEqual(CoordinatesInterface $coordinate)
     {
         return bccomp($this->latitude, $coordinate->getLatitude(), $this->getPrecision()) === 0
-            AND bccomp($this->longitude, $coordinate->getLongitude(), $this->getPrecision()) === 0;
+            && bccomp($this->longitude, $coordinate->getLongitude(), $this->getPrecision()) === 0;
     }
 
     /**

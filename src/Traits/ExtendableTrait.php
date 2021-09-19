@@ -186,8 +186,8 @@ trait ExtendableTrait
 
         $extensionMethods = get_class_methods($extensionName);
         foreach ($extensionMethods as $methodName) {
-            if ($methodName == '__construct' OR $methodName == '__remap'
-                OR $extensionObject->extensionIsHiddenMethod($methodName)
+            if ($methodName == '__construct' || $methodName == '__remap'
+                || $extensionObject->extensionIsHiddenMethod($methodName)
             ) {
                 continue;
             }

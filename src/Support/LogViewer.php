@@ -133,7 +133,7 @@ class LogViewer
             for ($i = 0, $j = count($h); $i < $j; $i++) {
                 foreach (self::$levels as $level) {
                     if (strpos(strtolower($h[$i]), '.'.$level)
-                        OR strpos(strtolower($h[$i]), $level.':')
+                        || strpos(strtolower($h[$i]), $level.':')
                     ) {
 
                         preg_match(

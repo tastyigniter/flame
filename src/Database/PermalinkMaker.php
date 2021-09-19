@@ -73,11 +73,11 @@ class PermalinkMaker
     {
         $slug = $this->model->getAttribute($attribute);
 
-        if ($force OR $this->needsSlugging($attribute, $config)) {
+        if ($force || $this->needsSlugging($attribute, $config)) {
 
             $source = $this->getSlugSource($config['source']);
 
-            if ($source OR is_numeric($source)) {
+            if ($source || is_numeric($source)) {
                 $slug = $this->generateSlug($source, $config, $attribute);
                 $slug = $this->validateSlug($slug, $config, $attribute);
                 $slug = $this->makeSlugUnique($slug, $config, $attribute);
@@ -98,14 +98,14 @@ class PermalinkMaker
     protected function needsSlugging($attribute, array $config)
     {
         if ($config['generateOnUpdate'] === TRUE
-            OR empty($this->model->getAttributeValue($attribute))
+            || empty($this->model->getAttributeValue($attribute))
         )
             return TRUE;
 
         if ($this->model->isDirty($attribute))
             return FALSE;
 
-        return $config['generateOnCreate'] === TRUE AND !$this->model->exists;
+        return $config['generateOnCreate'] === TRUE && !$this->model->exists;
     }
 
     /**
@@ -182,7 +182,7 @@ class PermalinkMaker
         // 	a) the list is empty, or
         // 	b) our slug isn't in the list
         // ... we are okay
-        if ($list->count() === 0 OR $list->contains($slug) === FALSE) {
+        if ($list->count() === 0 || $list->contains($slug) === FALSE) {
             return $slug;
         }
 
@@ -192,7 +192,7 @@ class PermalinkMaker
         // ... we are also okay (use the current slug)
         if ($list->has($this->model->getKey())) {
             $currentSlug = $list->get($this->model->getKey());
-            if ($currentSlug === $slug OR strpos($currentSlug, $slug) === 0)
+            if ($currentSlug === $slug || strpos($currentSlug, $slug) === 0)
                 return $currentSlug;
         }
 
@@ -220,7 +220,7 @@ class PermalinkMaker
         }
 
         // Include trashed models if required
-        if ($includeTrashed AND $this->usesSoftDeleting()) {
+        if ($includeTrashed && $this->usesSoftDeleting()) {
             $query->withTrashed();
         }
 

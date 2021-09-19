@@ -488,7 +488,7 @@ class Finder
     {
         $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-        if (strlen($extension) AND !in_array($extension, $allowedExtensions)) {
+        if (strlen($extension) && !in_array($extension, $allowedExtensions)) {
             throw (new InvalidExtensionException)
                 ->setInvalidExtension($extension)
                 ->setAllowedExtensions($allowedExtensions);
@@ -517,7 +517,7 @@ class Finder
         // @todo: A different approach to fix the file path issue.
         if (windows_os()) $filePath = str_replace('\\', '/', $filePath);
         $segments = explode('/', $filePath);
-        if ($maxNesting !== null AND count($segments) > $maxNesting) {
+        if ($maxNesting !== null && count($segments) > $maxNesting) {
             return FALSE;
         }
 
@@ -626,7 +626,7 @@ class Finder
         // If this is an old cache record, we can check if the cache has been busted
         // by comparing the modification times. If this is the case, forget the
         // cache and then prompt a recycle of the results.
-        if (!$isNewCache AND $this->isCacheBusted($result)) {
+        if (!$isNewCache && $this->isCacheBusted($result)) {
             $cache->forget($key);
             $isNewCache = TRUE;
 

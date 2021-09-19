@@ -39,7 +39,7 @@ class OpenExchangeRates extends AbstractConverter
 
             $result = json_decode($response->getBody(), TRUE);
 
-            if (isset($result['error']) AND $result['error'])
+            if (isset($result['error']) && $result['error'])
                 throw new Exception($result['description']);
 
             return $result['rates'] ?? [];

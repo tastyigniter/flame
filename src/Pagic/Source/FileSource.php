@@ -96,7 +96,7 @@ class FileSource extends AbstractSource implements SourceInterface
             return $result;
         }
 
-        if ($columns === ['*'] OR !is_array($columns)) {
+        if ($columns === ['*'] || !is_array($columns)) {
             $columns = null;
         }
         else {
@@ -112,11 +112,11 @@ class FileSource extends AbstractSource implements SourceInterface
         $iterator->filter(function (\SplFileInfo $file) use ($extensions, $fileMatch) {
             // Filter by extension
             $fileExt = $file->getExtension();
-            if (!is_null($extensions) AND !in_array($fileExt, $extensions))
+            if (!is_null($extensions) && !in_array($fileExt, $extensions))
                 return FALSE;
 
             // Filter by file name match
-            if (!is_null($fileMatch) AND !fnmatch($file->getBasename(), $fileMatch))
+            if (!is_null($fileMatch) && !fnmatch($file->getBasename(), $fileMatch))
                 return FALSE;
         });
 
@@ -129,11 +129,11 @@ class FileSource extends AbstractSource implements SourceInterface
 
             $item['fileName'] = $file->getRelativePathName();
 
-            if (!$columns OR array_key_exists('mTime', $columns)) {
+            if (!$columns || array_key_exists('mTime', $columns)) {
                 $item['mTime'] = $this->files->lastModified($path);
             }
 
-            if (!$columns OR array_key_exists('content', $columns)) {
+            if (!$columns || array_key_exists('content', $columns)) {
                 $item['content'] = $this->files->get($path);
             }
 
@@ -193,18 +193,18 @@ class FileSource extends AbstractSource implements SourceInterface
          * The same file is safe to rename when the case is changed
          * eg: FooBar -> foobar
          */
-        $iFileChanged = ($oldFileName !== null AND strcasecmp($oldFileName, $fileName) !== 0) ||
-            ($oldExtension !== null AND strcasecmp($oldExtension, $extension) !== 0);
+        $iFileChanged = ($oldFileName !== null && strcasecmp($oldFileName, $fileName) !== 0) ||
+            ($oldExtension !== null && strcasecmp($oldExtension, $extension) !== 0);
 
-        if ($iFileChanged AND $this->files->isFile($path)) {
+        if ($iFileChanged && $this->files->isFile($path)) {
             throw (new FileExistsException)->setInvalidPath($path);
         }
 
         /*
          * File to be renamed, as delete and recreate
          */
-        $fileChanged = ($oldFileName !== null AND strcmp($oldFileName, $fileName) !== 0) ||
-            ($oldExtension !== null AND strcmp($oldExtension, $extension) !== 0);
+        $fileChanged = ($oldFileName !== null && strcmp($oldFileName, $fileName) !== 0) ||
+            ($oldExtension !== null && strcmp($oldExtension, $extension) !== 0);
 
         if ($fileChanged) {
             $this->delete($dirName, $oldFileName, $oldExtension);
@@ -276,7 +276,7 @@ class FileSource extends AbstractSource implements SourceInterface
 
         // Create base directory
         if (
-            (!$this->files->exists($dirPath) || !$this->files->isDirectory($dirPath)) AND
+            (!$this->files->exists($dirPath) || !$this->files->isDirectory($dirPath)) &&
             !$this->files->makeDirectory($dirPath, 0777, TRUE, TRUE)
         ) {
             throw (new CreateDirectoryException)->setInvalidPath($dirPath);
@@ -287,7 +287,7 @@ class FileSource extends AbstractSource implements SourceInterface
             $fileDirPath = dirname($path);
 
             if (
-                !$this->files->isDirectory($fileDirPath) AND
+                !$this->files->isDirectory($fileDirPath) &&
                 !$this->files->makeDirectory($fileDirPath, 0777, TRUE, TRUE)
             ) {
                 throw (new CreateDirectoryException)->setInvalidPath($fileDirPath);

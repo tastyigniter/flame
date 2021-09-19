@@ -48,7 +48,7 @@ abstract class AppServiceProvider extends ServiceProvider
 
     public function getModule($args)
     {
-        $module = (isset($args[0]) and is_string($args[0])) ? $args[0] : null;
+        $module = (isset($args[0]) && is_string($args[0])) ? $args[0] : null;
 
         return $module;
     }

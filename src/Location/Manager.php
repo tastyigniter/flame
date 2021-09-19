@@ -101,7 +101,7 @@ abstract class Manager
 
         if (!$model) {
             $id = $this->getSession('id');
-            if (!$id OR !$model = $this->getById($id))
+            if (!$id || !$model = $this->getById($id))
                 $model = $this->getById($this->getDefaultLocation());
         }
 

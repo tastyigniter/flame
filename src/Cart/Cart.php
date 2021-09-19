@@ -296,7 +296,7 @@ class Cart
      */
     public function associate($rowId, $model)
     {
-        if (is_string($model) AND !class_exists($model)) {
+        if (is_string($model) && !class_exists($model)) {
             throw new UnknownModelException("The supplied model {$model} does not exist.");
         }
 
@@ -352,7 +352,7 @@ class Cart
 
         $this->fireEvent('condition.removing', $cartCondition);
 
-        if (!$cartCondition OR !$cartCondition->removeable)
+        if (!$cartCondition || !$cartCondition->removeable)
             return FALSE;
 
         $cartCondition->clearMetaData();
@@ -666,7 +666,7 @@ class Cart
     protected function createModel()
     {
         $modelClass = config('cart.model');
-        if (!$modelClass OR !class_exists($modelClass))
+        if (!$modelClass || !class_exists($modelClass))
             throw new Exception(sprintf('Missing model [%s] in %s', $modelClass, get_called_class()));
 
         return new $modelClass();

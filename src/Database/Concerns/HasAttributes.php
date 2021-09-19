@@ -47,7 +47,7 @@ trait HasAttributes
 
         $attr = parent::getAttributeValue($key);
 
-        if ($this->isSerializedCastable($key) AND !empty($attr) AND is_string($attr)) {
+        if ($this->isSerializedCastable($key) && !empty($attr) && is_string($attr)) {
             $attr = $this->fromSerialized($attr);
         }
 
@@ -123,7 +123,7 @@ trait HasAttributes
             $value = $this->fromDateTime($value);
         }
 
-        if ($this->hasRelation($key) AND !$this->isRelationPurgeable($key)) {
+        if ($this->hasRelation($key) && !$this->isRelationPurgeable($key)) {
             return $this->setRelationValue($key, $value);
         }
 

@@ -154,7 +154,7 @@ class HtmlBuilder
     {
         $url = $this->url->to($url, [], $secure);
 
-        if (is_null($title) OR $title === FALSE) {
+        if (is_null($title) || $title === FALSE) {
             $title = $url;
         }
 

@@ -30,7 +30,7 @@ class AddressMatch
 
     protected function matchComponentValue(LocationInterface $position, $type, $value)
     {
-        if (!is_string($value) AND !is_numeric($value))
+        if (!is_string($value) && !is_numeric($value))
             return FALSE;
 
         switch ($type) {

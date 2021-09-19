@@ -142,7 +142,7 @@ class TemplateCode extends Extendable implements ArrayAccess
      */
     public function __get($name)
     {
-        if (isset($this->page->components[$name]) OR isset($this->layout->components[$name])) {
+        if (isset($this->page->components[$name]) || isset($this->layout->components[$name])) {
             return $this[$name];
         }
 
