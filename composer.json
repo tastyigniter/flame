@@ -33,7 +33,7 @@
     "doctrine/dbal": "~2.6",
     "fruitcake/laravel-cors": "^2.0",
     "guzzlehttp/guzzle": "^6.3|^7.3",
-    "kalnoy/nestedset": "~5.0",
+    "kalnoy/nestedset": "~6.0",
     "natxet/cssmin": "~3.0",
     "symfony/yaml": "~5.1",
     "scssphp/scssphp": "~1.0",
