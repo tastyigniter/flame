@@ -624,7 +624,7 @@ class Model extends EloquentModel
              */
             if ($type == 'belongsToMany') {
                 foreach ($relations as $name => $options) {
-                    if (!Arr::get($options, 'delete', FALSE)) {
+                    if (!Arr::get($options, 'delete', Arr::get($options, 'detach', TRUE))) {
                         continue;
                     }
 
