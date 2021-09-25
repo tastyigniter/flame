@@ -34,6 +34,7 @@
     "fruitcake/laravel-cors": "^2.0",
     "guzzlehttp/guzzle": "^6.3|^7.3",
     "kalnoy/nestedset": "~6.0",
+    "linkorb/jsmin-php": "~1.0",
     "natxet/cssmin": "~3.0",
     "symfony/yaml": "~5.1",
     "scssphp/scssphp": "~1.0",
