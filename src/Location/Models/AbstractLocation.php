@@ -139,12 +139,12 @@ class AbstractLocation extends Model implements LocationInterface
 
     public function hasDelivery()
     {
-        return $this->getOption('offer_delivery') == 1;
+        return $this->getOption('offer_delivery', 1) == 1;
     }
 
     public function hasCollection()
     {
-        return $this->getOption('offer_collection') == 1;
+        return $this->getOption('offer_collection', 1) == 1;
     }
 
     public function hasFutureOrder($orderType = null)
@@ -168,10 +168,7 @@ class AbstractLocation extends Model implements LocationInterface
 
     public static function getOrderTypeOptions()
     {
-        return collect(OrderTypes::instance()->listOrderTypes())
-            ->mapWithKeys(function ($orderType) {
-                return [$orderType['code'] => $orderType['name']];
-            });
+        return collect(OrderTypes::instance()->listOrderTypes())->pluck('name', 'code');
     }
 
     public function calculateDistance(CoordinatesInterface $position)
