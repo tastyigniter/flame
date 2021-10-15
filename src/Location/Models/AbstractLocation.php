@@ -112,6 +112,11 @@ class AbstractLocation extends Model implements LocationInterface
         return (int)$this->getOption('max_reservation_advance_time', 30);
     }
 
+    public function getReservationCancellationTimeout()
+    {
+        return (int)$this->getOption('reservation_cancellation_timeout', 0);
+    }
+
     public function getOrderTimeInterval($orderType)
     {
         return (int)$this->getOption($orderType.'_time_interval', 15);
@@ -125,6 +130,11 @@ class AbstractLocation extends Model implements LocationInterface
     public function getOrderTimeRestriction($orderType)
     {
         return (int)$this->getOption($orderType.'_time_restriction', 0);
+    }
+
+    public function getOrderCancellationTimeout($orderType)
+    {
+        return (int)$this->getOption($orderType.'_cancellation_timeout', 0);
     }
 
     public function deliveryMinutes()
