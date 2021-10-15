@@ -303,13 +303,16 @@ trait HasRelationships
 
             case 'hasOneThrough':
             case 'hasManyThrough':
-                $relation = $this->validateRelationArgs($relationName, ['foreignKey', 'throughKey', 'otherKey'], ['through']);
+                $relation = $this->validateRelationArgs($relationName, ['foreignKey', 'throughKey', 'otherKey', 'secondOtherKey'], ['through']);
                 $relationObj = $this->$relationType(
                     $relation[0],
                     $relation['through'],
                     $relation['foreignKey'],
                     $relation['throughKey'],
-                    $relation['otherKey']);
+                    $relation['otherKey'],
+                    $relation['secondOtherKey'],
+                    $relationName
+                );
                 break;
 
             default:
