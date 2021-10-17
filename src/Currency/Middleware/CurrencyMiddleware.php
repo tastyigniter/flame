@@ -28,7 +28,8 @@ class CurrencyMiddleware
         }
 
         // Set user currency
-        $this->setUserCurrency($currency, $request);
+        if ($currency !== currency()->getUserCurrency())
+            $this->setUserCurrency($currency, $request);
 
         return $next($request);
     }
