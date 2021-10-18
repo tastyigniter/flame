@@ -30,11 +30,15 @@ trait HasAttributes
             return $this->getAttributeValue($key);
         }
 
+        if (method_exists(self::class, $key)) {
+            return;
+        }
+
         if ($this->relationLoaded($key)) {
             return $this->relations[$key];
         }
 
-        if ($this->hasRelation($key) || method_exists(self::class, $key)) {
+        if ($this->hasRelation($key) || method_exists($this, $key)) {
             return $this->getRelationshipFromMethod($key);
         }
     }
