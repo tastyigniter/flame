@@ -28,9 +28,11 @@ class Migrator extends BaseMigrator
 
     public function rollDown($paths = [], array $options = [])
     {
-        $this->requireFiles(
-            $migrations = $this->getMigrationFiles($paths)
-        );
+        $migrations = $this->getMigrationFiles($paths);
+
+        $migrations = array_reverse($migrations);
+
+        $this->requireFiles($migrations);
 
         if (count($migrations) === 0) {
             $this->note('<info>Nothing to rollback.</info>');
