@@ -117,9 +117,9 @@ class Cart
 
         $content->put($cartItem->rowId, $cartItem);
 
-        $this->fireEvent('added', $cartItem);
-
         $this->putSession('content', $content);
+
+        $this->fireEvent('added', $cartItem);
 
         return $cartItem;
     }
@@ -169,9 +169,9 @@ class Cart
 
         $content->put($cartItem->rowId, $cartItem);
 
-        $this->fireEvent('updated', $cartItem);
-
         $this->putSession('content', $content);
+
+        $this->fireEvent('updated', $cartItem);
 
         return $cartItem;
     }
@@ -193,9 +193,9 @@ class Cart
 
         $content->pull($cartItem->rowId);
 
-        $this->fireEvent('removed', $cartItem);
-
         $this->putSession('content', $content);
+
+        $this->fireEvent('removed', $cartItem);
     }
 
     /**
