@@ -70,7 +70,7 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
                 if (count($this->ranges) === 1) {
                     return $range->start();
                 }
-                if (next($range) !== $range AND $nextOpenTime = next($range)) {
+                if (next($range) !== $range && $nextOpenTime = next($range)) {
                     reset($range);
 
                     return $nextOpenTime;
@@ -94,7 +94,7 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
     public function nextCloseAt(WorkingTime $time)
     {
         foreach ($this->ranges as $range) {
-            if ($range->containsTime($time) AND $nextCloseTime = $range->end()) {
+            if ($range->containsTime($time) && $nextCloseTime = $range->end()) {
                 return $nextCloseTime;
             }
 
@@ -114,7 +114,7 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
             $diffInHours += (int)$interval->format('%H');
         }
 
-        return $diffInHours >= 23 OR $diffInHours == 0;
+        return $diffInHours >= 23 || $diffInHours == 0;
     }
 
     public function closesLate()
@@ -130,7 +130,7 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
     public function opensLateAt(WorkingTime $time)
     {
         foreach ($this->ranges as $range) {
-            if ($range->endsNextDay() AND $range->containsTime($time))
+            if ($range->endsNextDay() && $range->containsTime($time))
                 return TRUE;
         }
 
@@ -160,7 +160,7 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
 
         if (
             $timeOffRange->containsTime($time)
-            OR $timeOffRange->start()->isSame($time)
+            || $timeOffRange->start()->isSame($time)
         ) return $timeRange->{$type}();
 
         $prevTimeRange = $timeRange;
@@ -174,7 +174,7 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
     {
         foreach ($ranges as $index => $range) {
             $nextRange = $ranges[$index + 1] ?? null;
-            if ($nextRange AND $range->overlaps($nextRange)) {
+            if ($nextRange && $range->overlaps($nextRange)) {
                 throw new WorkingHourException(sprintf(
                     'Time ranges %s and %s overlap.',
                     $range, $nextRange

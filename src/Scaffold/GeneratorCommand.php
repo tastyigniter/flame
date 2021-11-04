@@ -91,7 +91,7 @@ abstract class GeneratorCommand extends Command
     {
         if (
             !isset($this->stubs[$stubName])
-            OR $this->stubs[$stubName] != $className
+            || $this->stubs[$stubName] != $className
         ) {
             return;
         }
@@ -101,7 +101,7 @@ abstract class GeneratorCommand extends Command
         $stubContent = $this->files->get($stubFile);
 
         // Make sure this file does not already exist
-        if ($this->files->exists($destinationFile) AND !$this->option('force')) {
+        if ($this->files->exists($destinationFile) && !$this->option('force')) {
             $this->error($this->type.' already exists! '.$destinationFile);
 
             return;

@@ -771,9 +771,9 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
      */
     public function __isset($key)
     {
-        return isset($this->attributes[$key]) OR
+        return isset($this->attributes[$key]) ||
             (
-                $this->hasGetMutator($key) AND
+                $this->hasGetMutator($key) &&
                 !is_null($this->getAttribute($key))
             );
     }

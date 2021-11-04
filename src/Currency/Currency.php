@@ -144,7 +144,7 @@ class Currency
         // Match decimal and thousand separators
         preg_match_all('/[\s\',.!]/', $format, $separators);
 
-        if (($thousand = array_get($separators, '0.0', null)) AND $thousand == '!') {
+        if (($thousand = array_get($separators, '0.0', null)) && $thousand == '!') {
             $thousand = '';
         }
 
@@ -240,7 +240,7 @@ class Currency
      */
     public function isActive($code)
     {
-        return $code AND (bool)optional($this->getCurrency($code))->isEnabled();
+        return $code && (bool)optional($this->getCurrency($code))->isEnabled();
     }
 
     /**
@@ -260,7 +260,7 @@ class Currency
         $code = $code ?: $this->getUserCurrency();
 
         $currency = $this->getCurrencies()->first(function (CurrencyInterface $currency) use ($code) {
-            return $currency->isEnabled() AND ((int)$code === $currency->getId()) OR ($code === $currency->getCode());
+            return $currency->isEnabled() && ((int)$code === $currency->getId()) || ($code === $currency->getCode());
         });
 
         return $this->currenciesCache[$code] = $currency;

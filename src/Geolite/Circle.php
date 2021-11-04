@@ -122,8 +122,8 @@ class Circle implements Contracts\CircleInterface
     public function isEmpty()
     {
         return !$this->getCoordinate()->getLatitude()
-            OR !$this->getCoordinate()->getLongitude()
-            OR !$this->getRadius();
+            || !$this->getCoordinate()->getLongitude()
+            || !$this->getRadius();
     }
 
     public function distanceUnit($unit)

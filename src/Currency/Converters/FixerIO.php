@@ -42,7 +42,7 @@ class FixerIO extends AbstractConverter
 
             $result = json_decode($response->getBody(), TRUE);
 
-            if (isset($result['success']) AND !$result['success'])
+            if (isset($result['success']) && !$result['success'])
                 throw new Exception('An error occurred when requesting currency exchange rates from fixer.io, check your api key.');
 
             return $result['rates'] ?? [];

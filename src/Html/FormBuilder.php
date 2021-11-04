@@ -752,7 +752,7 @@ class FormBuilder
     protected function getSelectedValue($value, $selected)
     {
         if (is_array($selected)) {
-            return in_array($value, $selected, TRUE) OR in_array((string)$value, $selected, TRUE) ? 'selected' : null;
+            return in_array($value, $selected, TRUE) || in_array((string)$value, $selected, TRUE) ? 'selected' : null;
         }
         elseif ($selected instanceof Collection) {
             return $selected->contains($value) ? 'selected' : null;

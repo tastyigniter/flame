@@ -58,7 +58,7 @@ class Activity extends Model
     public function getTitleAttribute()
     {
         $className = $this->getActivityTypeClass();
-        if ($className AND method_exists($className, 'getTitle'))
+        if ($className && method_exists($className, 'getTitle'))
             return $className::getTitle($this);
 
         return '';
@@ -67,7 +67,7 @@ class Activity extends Model
     public function getUrlAttribute()
     {
         $className = $this->getActivityTypeClass();
-        if ($className AND method_exists($className, 'getUrl'))
+        if ($className && method_exists($className, 'getUrl'))
             return $className::getUrl($this);
 
         return '';
@@ -76,7 +76,7 @@ class Activity extends Model
     public function getMessageAttribute()
     {
         $className = $this->getActivityTypeClass();
-        if (!($className AND method_exists($className, 'getMessage')))
+        if (!($className && method_exists($className, 'getMessage')))
             return '';
 
         $message = $className::getMessage($this);
@@ -158,7 +158,7 @@ class Activity extends Model
 
     public function isRead()
     {
-        return $this->read_at AND $this->read_at->lte(Carbon::now());
+        return $this->read_at && $this->read_at->lte(Carbon::now());
     }
 
     public function isUnread()

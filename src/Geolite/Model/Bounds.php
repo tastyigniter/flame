@@ -169,9 +169,9 @@ class Bounds implements Contracts\BoundsInterface
     public function pointInBounds(Contracts\CoordinatesInterface $coordinate)
     {
         return !(bccomp($coordinate->getLatitude(), $this->getSouth(), $this->getPrecision()) === -1
-            OR bccomp($coordinate->getLatitude(), $this->getNorth(), $this->getPrecision()) === 1
-            OR bccomp($coordinate->getLongitude(), $this->getEast(), $this->getPrecision()) === 1
-            OR bccomp($coordinate->getLongitude(), $this->getWest(), $this->getPrecision()) === -1);
+            || bccomp($coordinate->getLatitude(), $this->getNorth(), $this->getPrecision()) === 1
+            || bccomp($coordinate->getLongitude(), $this->getEast(), $this->getPrecision()) === 1
+            || bccomp($coordinate->getLongitude(), $this->getWest(), $this->getPrecision()) === -1);
     }
 
     /**
@@ -238,7 +238,7 @@ class Bounds implements Contracts\BoundsInterface
         $latitude = $coordinate->getLatitude();
         $longitude = $coordinate->getLongitude();
 
-        if (!$this->north AND !$this->south AND !$this->east AND !$this->west) {
+        if (!$this->north && !$this->south && !$this->east && !$this->west) {
             $this->setNorth($latitude);
             $this->setSouth($latitude);
             $this->setEast($longitude);

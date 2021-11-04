@@ -198,7 +198,7 @@ class Handler extends IlluminateHandler
             // If this handler returns a "non-null" response, we will return it so it will
             // get sent back to the browsers. Once the handler returns a valid response
             // we will cease iterating through them and calling these other handlers.
-            if (isset($response) AND !is_null($response)) {
+            if (isset($response) && !is_null($response)) {
                 return $response;
             }
         }
@@ -215,7 +215,7 @@ class Handler extends IlluminateHandler
     {
         $reflection = new ReflectionFunction($handler);
 
-        return $reflection->getNumberOfParameters() == 0 OR $this->hints($reflection, $exception);
+        return $reflection->getNumberOfParameters() == 0 || $this->hints($reflection, $exception);
     }
 
     /**

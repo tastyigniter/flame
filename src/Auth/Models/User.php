@@ -24,7 +24,7 @@ class User extends Model implements Authenticatable
 
     public function setPasswordAttribute($value)
     {
-        if ($this->exists AND empty($value)) {
+        if ($this->exists && empty($value)) {
             unset($this->attributes['password']);
         }
         else {
@@ -106,7 +106,7 @@ class User extends Model implements Authenticatable
      */
     public function checkRememberToken($token)
     {
-        if (!$token OR !$this->remember_token) {
+        if (!$token || !$this->remember_token) {
             return FALSE;
         }
 
@@ -124,7 +124,7 @@ class User extends Model implements Authenticatable
 
     public function hasShaPassword($plainPassword)
     {
-        if (!isset($this->attributes['salt']) OR is_null($this->attributes['salt']))
+        if (!isset($this->attributes['salt']) || is_null($this->attributes['salt']))
             return FALSE;
 
         $salt = $this->attributes['salt'];

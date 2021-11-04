@@ -95,7 +95,7 @@ trait CartConditionHelper
 
     protected function actionHasReachedMax($actionMax, $value)
     {
-        return ($actionMax AND $value > $actionMax) ? $actionMax : FALSE;
+        return ($actionMax && $value > $actionMax) ? $actionMax : FALSE;
     }
 
     /**
@@ -116,7 +116,7 @@ trait CartConditionHelper
         if (property_exists($this, $key))
             return $this->{$key};
 
-        if ($key !== 'total' AND $this->target AND method_exists($this->target, $key))
+        if ($key !== 'total' && $this->target && method_exists($this->target, $key))
             return call_user_func([$this->target, $key]);
 
         return $key;

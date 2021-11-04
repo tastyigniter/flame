@@ -537,7 +537,7 @@ if (!function_exists('form_error')) {
      */
     function form_error($field = null, $prefix = '', $suffix = '')
     {
-        $errors = (Config::get('session.driver') AND Session::has('errors'))
+        $errors = (Config::get('session.driver') && Session::has('errors'))
             ? Session::get('errors')
             : new \Illuminate\Support\ViewErrorBag;
 

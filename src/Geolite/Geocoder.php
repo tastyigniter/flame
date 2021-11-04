@@ -71,11 +71,11 @@ class Geocoder extends Manager implements Contracts\GeocoderInterface
     public function geocodeQuery(GeoQueryInterface $query)
     {
         $limit = $query->getLimit();
-        if (!$limit AND $this->limit)
+        if (!$limit && $this->limit)
             $query = $query->withLimit($this->limit);
 
         $locale = $query->getLocale();
-        if (!$locale AND $this->locale)
+        if (!$locale && $this->locale)
             $query = $query->withLocale($this->locale);
 
         return $this->driver()->geocodeQuery($query);
@@ -84,11 +84,11 @@ class Geocoder extends Manager implements Contracts\GeocoderInterface
     public function reverseQuery(GeoQueryInterface $query)
     {
         $limit = $query->getLimit();
-        if (!$limit AND $this->limit)
+        if (!$limit && $this->limit)
             $query = $query->withLimit($this->limit);
 
         $locale = $query->getLocale();
-        if (!$locale AND $this->locale)
+        if (!$locale && $this->locale)
             $query = $query->withLocale($this->locale);
 
         return $this->driver()->reverseQuery($query);
