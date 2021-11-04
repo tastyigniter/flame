@@ -62,7 +62,7 @@ trait HasMedia
     {
         if (
             !array_key_exists($key, $mediable = $this->mediable())
-            OR $this->hasGetMutator($key)
+            || $this->hasGetMutator($key)
         ) return parent::getAttribute($key);
 
         $mediableConfig = array_get($mediable, $key, []);
@@ -76,7 +76,7 @@ trait HasMedia
     {
         if (
             !array_key_exists($key, $mediable = $this->mediable())
-            OR $this->hasSetMutator($key)
+            || $this->hasSetMutator($key)
         ) return parent::setAttribute($key, $value);
         // Do nothing
     }
@@ -159,7 +159,7 @@ trait HasMedia
 
         return collect($collection)
             ->filter(function (Media $mediaItem) use ($tag) {
-                return $tag === '*' OR $mediaItem->tag === $tag;
+                return $tag === '*' || $mediaItem->tag === $tag;
             })
             ->sortBy('priority')->values();
     }
@@ -193,7 +193,7 @@ trait HasMedia
             ->map(function (array $newMedia) use ($tag) {
                 $foundMedia = Media::findOrFail($newMedia['id']);
 
-                if ($tag !== '*' AND $foundMedia->tag !== $tag)
+                if ($tag !== '*' && $foundMedia->tag !== $tag)
                     throw new Exception("Media id {$foundMedia->getKey()} is not part of collection '{$tag}''");
 
                 $foundMedia->fill($newMedia);
@@ -293,7 +293,7 @@ trait HasMedia
     protected function handleHasMediaDeletion()
     {
         // only cascade soft deletes when configured
-        if (static::hasGlobalScope(SoftDeletingScope::class) AND !$this->forceDeleting)
+        if (!$this->forceDeleting && static::hasGlobalScope(SoftDeletingScope::class))
             return;
 
         $this->media()->get()->each->delete();

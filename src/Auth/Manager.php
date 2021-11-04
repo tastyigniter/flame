@@ -64,7 +64,7 @@ class Manager
                 return FALSE;
             }
 
-            if (!is_array($userData) OR count($userData) !== 2)
+            if (!is_array($userData) || count($userData) !== 2)
                 return FALSE;
 
             [$userId, $rememberToken] = $userData;
@@ -81,7 +81,7 @@ class Manager
         if (!($user = $this->getUser()))
             return FALSE;
 
-        if ($this->requireApproval AND $user AND !$user->is_activated) {
+        if ($this->requireApproval && $user && !$user->is_activated) {
             $this->user = null;
 
             return FALSE;
@@ -156,7 +156,7 @@ class Manager
 
         // Validate the user against the given credentials,
         // if valid log the user into the application
-        if (is_null($user) OR !$this->validateCredentials($user, $credentials)) {
+        if (is_null($user) || !$this->validateCredentials($user, $credentials)) {
             return FALSE;
         }
 
@@ -214,7 +214,7 @@ class Manager
         $user->beforeLogin();
 
         // Approval is required, user not approved
-        if ($this->requireApproval AND !$user->is_activated) {
+        if ($this->requireApproval && !$user->is_activated) {
             throw new Exception(sprintf(
                 'Cannot login user "%s" until activated.', $user->getAuthIdentifier()
             ));
@@ -261,7 +261,7 @@ class Manager
      **/
     public function logout()
     {
-        if (is_null($this->user) AND !$this->check())
+        if (is_null($this->user) && !$this->check())
             return;
 
         if ($this->isImpersonator()) {
@@ -487,7 +487,7 @@ class Manager
         $impersonateArray = Session::get($this->sessionKey.'_impersonate');
 
         // Check supplied session/cookie is an array (user id, persist code)
-        if (!is_array($impersonateArray) OR count($impersonateArray) !== 2)
+        if (!is_array($impersonateArray) || count($impersonateArray) !== 2)
             return FALSE;
 
         $id = $impersonateArray[0];

@@ -347,12 +347,12 @@ class AssetFactory
         return new HttpAsset($sourceUrl, [], FALSE, $vars);
     }
 
-    protected function createGlobAsset($glob, $root = null, $vars)
+    protected function createGlobAsset($glob, $root = null, $vars = [])
     {
         return new GlobAsset($glob, [], $root, $vars);
     }
 
-    protected function createFileAsset($source, $root = null, $path = null, $vars)
+    protected function createFileAsset($source, $root = null, $path = null, $vars = [])
     {
         return new FileAsset($source, [], $root, $path, $vars);
     }

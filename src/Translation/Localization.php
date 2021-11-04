@@ -37,7 +37,7 @@ class Localization
             return FALSE;
 
         $locale = $this->getBrowserLocale();
-        if (!$locale OR !$this->isValid($locale))
+        if (!$locale || !$this->isValid($locale))
             return FALSE;
 
         $remember = $this->getLocale() != $locale;
@@ -50,7 +50,7 @@ class Localization
     public function loadLocaleFromRequest()
     {
         $locale = $this->getRequestLocale();
-        if (!$locale OR !$this->isValid($locale))
+        if (!$locale || !$this->isValid($locale))
             return FALSE;
 
         $remember = $this->getLocale() != $locale;
@@ -63,7 +63,7 @@ class Localization
     public function loadLocaleFromSession()
     {
         $locale = $this->getSessionLocale();
-        if (!$locale OR !$this->isValid($locale))
+        if (!$locale || !$this->isValid($locale))
             return FALSE;
 
         $remember = $this->getLocale() != $locale;
@@ -90,7 +90,7 @@ class Localization
     public function getLocale()
     {
         $sessionLocale = $this->getSessionLocale();
-        if ($sessionLocale AND $this->isValid($sessionLocale)) {
+        if ($sessionLocale && $this->isValid($sessionLocale)) {
             return $sessionLocale;
         }
 

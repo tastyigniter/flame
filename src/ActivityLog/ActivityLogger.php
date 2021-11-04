@@ -187,7 +187,7 @@ class ActivityLogger
             $match = $match[0];
             preg_match('/:(.*?)\./', $match, $match2);
 
-            if (isset($match2[1]) AND !in_array($match2[1], ['subject', 'causer', 'properties'])) {
+            if (isset($match2[1]) && !in_array($match2[1], ['subject', 'causer', 'properties'])) {
                 return $match;
             }
 

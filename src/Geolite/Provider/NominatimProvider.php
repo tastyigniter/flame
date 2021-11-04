@@ -164,7 +164,7 @@ class NominatimProvider extends AbstractProvider
         }
 
         $statusCode = $response->getStatusCode();
-        if ($statusCode === 401 OR $statusCode === 403)
+        if ($statusCode === 401 || $statusCode === 403)
             throw new GeoliteException(sprintf(
                 'API access denied. Message: %s', $json->error_message ?? 'empty error message'
             ));

@@ -89,7 +89,7 @@ class CartItem implements Arrayable, Jsonable
         if (!strlen($name)) {
             throw new \InvalidArgumentException('Please supply a valid cart item name.');
         }
-        if (strlen($price) < 0 OR !is_numeric($price)) {
+        if (!is_numeric($price) || strlen($price) < 0) {
             throw new \InvalidArgumentException('Please supply a valid cart item price.');
         }
 
@@ -249,7 +249,7 @@ class CartItem implements Arrayable, Jsonable
             return $this->subtotal();
         }
 
-        if ($attribute === 'model' AND !is_null($this->associatedModel)) {
+        if ($attribute === 'model' && !is_null($this->associatedModel)) {
             return with(new $this->associatedModel)->find($this->id);
         }
 

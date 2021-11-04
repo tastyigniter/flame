@@ -30,8 +30,8 @@ class Translator extends BaseTranslator
     {
         if (
             starts_with($key, 'validation.')
-            AND !starts_with($key, 'validation.custom.')
-            AND !starts_with($key, 'validation.attributes.')
+            && !starts_with($key, 'validation.custom.')
+            && !starts_with($key, 'validation.attributes.')
         ) {
             $systemKey = 'system::'.$key;
             $line = $this->get($systemKey, $replace, $locale);

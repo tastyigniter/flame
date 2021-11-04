@@ -52,7 +52,7 @@ class CartItemOptionValue implements Arrayable, Jsonable
         if (!strlen($name)) {
             throw new \InvalidArgumentException('Please supply a valid cart item option value name.');
         }
-        if (strlen($price) < 0 OR !is_numeric($price)) {
+        if (!is_numeric($price) || strlen($price) < 0) {
             throw new \InvalidArgumentException('Please supply a valid cart item option value price.');
         }
 

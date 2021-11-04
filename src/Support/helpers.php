@@ -230,7 +230,7 @@ if (!function_exists('parse_values')) {
      * @param array $columns Expected key names to parse
      * @param string $string URL template
      *
-     * @return bool
+     * @return string
      */
     function parse_values(array $columns, $string)
     {

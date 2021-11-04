@@ -203,7 +203,7 @@ class Environment
         $fileCache = $this->getCache();
         $isFresh = $this->isTemplateFresh($name, $fileCache->getTimestamp($path));
 
-        if (!$isFresh OR !File::isFile($path)) {
+        if (!$isFresh || !File::isFile($path)) {
             $markup = $this->getLoader()->getMarkup($name);
             $compiled = $this->getCompiler()->compileString($markup);
 

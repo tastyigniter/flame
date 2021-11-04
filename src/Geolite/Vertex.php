@@ -54,7 +54,7 @@ class Vertex implements Contracts\VertexInterface
     {
         $this->from = $from;
 
-        if (empty($this->to) || ($this->to->getLatitude() - $this->from->getLatitude() === 0)) {
+        if (empty($this->to) || ($this->to->getLatitude() - $this->from->getLatitude()) === 0) {
             return $this;
         }
 
@@ -85,7 +85,7 @@ class Vertex implements Contracts\VertexInterface
     {
         $this->to = $to;
 
-        if (empty($this->from) || ($this->to->getLatitude() - $this->from->getLatitude() === 0)) {
+        if (empty($this->from) || ($this->to->getLatitude() - $this->from->getLatitude()) === 0) {
             return $this;
         }
 
@@ -134,7 +134,7 @@ class Vertex implements Contracts\VertexInterface
     }
 
     /**
-     * @param  int $precision
+     * @param int $precision
      * @return $this
      */
     public function setPrecision($precision)
@@ -253,19 +253,19 @@ class Vertex implements Contracts\VertexInterface
     /**
      * Returns true if the vertex passed on argument is on the same line as this object
      *
-     * @param  Vertex $vertex The vertex to compare
+     * @param Vertex $vertex The vertex to compare
      * @return bool
      */
     public function isOnSameLine(Vertex $vertex)
     {
-        if (is_null($this->getGradient()) AND is_null($vertex->getGradient()) AND $this->from->getLongitude() == $vertex->getFrom()->getLongitude()) {
+        if (is_null($this->getGradient()) && is_null($vertex->getGradient()) && $this->from->getLongitude() == $vertex->getFrom()->getLongitude()) {
             return TRUE;
         }
 
-        if (!is_null($this->getGradient()) AND !is_null($vertex->getGradient())) {
+        if (!is_null($this->getGradient()) && !is_null($vertex->getGradient())) {
             return
                 bccomp($this->getGradient(), $vertex->getGradient(), $this->getPrecision()) === 0
-                AND
+                &&
                 bccomp($this->getOrdinateIntercept(), $vertex->getOrdinateIntercept(), $this->getPrecision()) === 0;
         }
 
@@ -274,7 +274,7 @@ class Vertex implements Contracts\VertexInterface
 
     /**
      * Returns the other coordinate who is not the coordinate passed on argument
-     * @param  Contracts\CoordinatesInterface $coordinate
+     * @param Contracts\CoordinatesInterface $coordinate
      * @return null|Contracts\CoordinatesInterface
      */
     public function getOtherCoordinate(Contracts\CoordinatesInterface $coordinate)
@@ -291,7 +291,7 @@ class Vertex implements Contracts\VertexInterface
     /**
      * Returns the determinant value between $this (vertex) and another vertex.
      *
-     * @param  Vertex $vertex
+     * @param Vertex $vertex
      * @return string
      */
     public function getDeterminant(Vertex $vertex)

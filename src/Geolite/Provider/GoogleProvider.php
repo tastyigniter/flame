@@ -168,8 +168,8 @@ class GoogleProvider extends AbstractProvider
         }
 
         if (!isset($json->results)
-            OR !count($json->results)
-            OR $json->status !== 'OK'
+            || !count($json->results)
+            || $json->status !== 'OK'
         ) throw new GeoliteException($json->error_message ?? 'empty error message');
 
         return $json;

@@ -21,7 +21,7 @@ class MailChannel extends BaseMailChannel
     {
         $this->addressMessage($mailMessage, $notifiable, $message);
 
-        if (method_exists($notification, 'applySubject') AND $notification->applySubject()) {
+        if (method_exists($notification, 'applySubject') && $notification->applySubject()) {
             $mailMessage->subject($message->subject ?: Str::title(
                 Str::snake(class_basename($notification), ' ')
             ));

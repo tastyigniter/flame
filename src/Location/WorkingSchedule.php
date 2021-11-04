@@ -280,14 +280,14 @@ class WorkingSchedule
     {
         $time = $this->nextOpenAt(new DateTime());
 
-        return ($time AND $format) ? $time->format($format) : $time;
+        return ($time && $format) ? $time->format($format) : $time;
     }
 
     public function getCloseTime($format = null)
     {
         $time = $this->nextCloseAt(new DateTime());
 
-        return ($time AND $format) ? $time->format($format) : $time;
+        return ($time && $format) ? $time->format($format) : $time;
     }
 
     /**
@@ -418,7 +418,7 @@ class WorkingSchedule
 
     protected function applyTimezone(DateTimeInterface $date)
     {
-        if ($this->timezone AND method_exists($date, 'setTimezone'))
+        if ($this->timezone && method_exists($date, 'setTimezone'))
             $date = $date->setTimezone($this->timezone);
 
         return $date;

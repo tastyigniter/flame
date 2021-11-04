@@ -46,7 +46,7 @@ class FileSystem
     public function write($path, $content)
     {
         $dir = dirname($path);
-        if (!File::isDirectory($dir) AND !File::makeDirectory($dir, 0777, TRUE))
+        if (!File::isDirectory($dir) && !File::makeDirectory($dir, 0777, TRUE))
             throw new RuntimeException(sprintf('Unable to create the cache directory (%s).', $dir));
 
         $tmpFile = tempnam($dir, basename($path));
@@ -82,7 +82,7 @@ class FileSystem
         $cached = Cache::get($this->dataCacheKey, FALSE);
 
         if (
-            $cached !== FALSE AND
+            $cached !== FALSE &&
             ($cached = @unserialize(@base64_decode($cached))) !== FALSE
         ) {
             if (is_null($filePath))

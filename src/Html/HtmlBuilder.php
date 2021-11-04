@@ -154,7 +154,7 @@ class HtmlBuilder
     {
         $url = $this->url->to($url, [], $secure);
 
-        if (is_null($title) OR $title === FALSE) {
+        if (is_null($title) || $title === FALSE) {
             $title = $url;
         }
 
@@ -481,7 +481,7 @@ class HtmlBuilder
             // To properly obfuscate the value, we will randomly convert each letter to
             // its entity or hexadecimal representation, keeping a bot from sniffing
             // the randomly obfuscated letters out of the string on the responses.
-            switch (rand(1, 3)) {
+            switch (random_int(1, 3)) {
                 case 1:
                     $safe .= '&#'.ord($letter).';';
                     break;
@@ -547,8 +547,8 @@ class HtmlBuilder
     /**
      * Dynamically handle calls to the class.
      *
-     * @param  string $method
-     * @param  array $parameters
+     * @param string $method
+     * @param array $parameters
      *
      * @return \Illuminate\Contracts\View\View|mixed
      *
