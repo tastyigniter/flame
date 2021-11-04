@@ -293,7 +293,7 @@ trait HasMedia
     protected function handleHasMediaDeletion()
     {
         // only cascade soft deletes when configured
-        if (static::hasGlobalScope(SoftDeletingScope::class) && !$this->forceDeleting)
+        if (!$this->forceDeleting && static::hasGlobalScope(SoftDeletingScope::class))
             return;
 
         $this->media()->get()->each->delete();
