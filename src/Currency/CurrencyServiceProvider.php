@@ -44,7 +44,7 @@ class CurrencyServiceProvider extends ServiceProvider
     {
         $this->app->singleton('currency', function ($app) {
 
-            $this->app['events']->fire('currency.beforeRegister', [$this]);
+            $this->app['events']->dispatch('currency.beforeRegister', [$this]);
 
             return new Currency(
                 $app->config->get('currency', []),
