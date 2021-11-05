@@ -9,11 +9,11 @@ class MailServiceProvider extends BaseMailServiceProvider
     protected function registerIlluminateMailer()
     {
         $this->app->singleton('mail.manager', function ($app) {
-            $this->app['events']->fire('mailer.beforeRegister', [$this]);
+            $this->app['events']->dispatch('mailer.beforeRegister', [$this]);
 
             $mailManager = new MailManager($app);
 
-            $this->app['events']->fire('mailer.register', [$this, $mailManager]);
+            $this->app['events']->dispatch('mailer.register', [$this, $mailManager]);
 
             return $mailManager;
         });
