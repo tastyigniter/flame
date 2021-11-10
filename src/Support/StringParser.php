@@ -66,15 +66,15 @@ class StringParser
             $str = '';
             foreach ($data as $row) {
                 $temp = [];
-                foreach ($row as $key => $val) {
+                foreach ($row as $rowKey => $val) {
                     if (is_array($val)) {
-                        $pair = $this->parsePair($key, $val, $match[1]);
+                        $pair = $this->parsePair($rowKey, $val, $match[1]);
                         if (!empty($pair)) {
                             $temp = array_merge($temp, $pair);
                         }
                         continue;
                     }
-                    $temp[$this->left.$key.$this->right] = $val;
+                    $temp[$this->left.$rowKey.$this->right] = $val;
                 }
                 $str .= strtr($match[1], $temp);
             }

@@ -4,6 +4,7 @@ namespace Igniter\Flame\Html;
 
 use BadMethodCallException;
 use DateTime;
+use DateTimeInterface;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\View\Factory;
@@ -103,9 +104,9 @@ class FormBuilder
      * Create a new form builder instance.
      *
      * @param \Igniter\Flame\Html\HtmlBuilder $html
-     * @param  \Illuminate\Contracts\Routing\UrlGenerator $url
-     * @param  \Illuminate\Contracts\View\Factory $view
-     * @param  string $csrfToken
+     * @param \Illuminate\Contracts\Routing\UrlGenerator $url
+     * @param \Illuminate\Contracts\View\Factory $view
+     * @param string $csrfToken
      * @param \Illuminate\Http\Request|null $request
      */
     public function __construct(HtmlBuilder $html, UrlGenerator $url, Factory $view, $csrfToken, Request $request = null)
@@ -120,7 +121,7 @@ class FormBuilder
     /**
      * Open up a new HTML form.
      *
-     * @param  array $options
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -166,8 +167,8 @@ class FormBuilder
     /**
      * Create a new model based form builder.
      *
-     * @param  mixed $model
-     * @param  array $options
+     * @param mixed $model
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -181,7 +182,7 @@ class FormBuilder
     /**
      * Set the model instance on the form builder.
      *
-     * @param  mixed $model
+     * @param mixed $model
      *
      * @return void
      */
@@ -219,10 +220,10 @@ class FormBuilder
     /**
      * Create a form label element.
      *
-     * @param  string $name
-     * @param  string $value
-     * @param  array $options
-     * @param  bool $escape_html
+     * @param string $name
+     * @param string $value
+     * @param array $options
+     * @param bool $escape_html
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -244,8 +245,8 @@ class FormBuilder
     /**
      * Format the label value.
      *
-     * @param  string $name
-     * @param  string|null $value
+     * @param string $name
+     * @param string|null $value
      *
      * @return string
      */
@@ -257,10 +258,10 @@ class FormBuilder
     /**
      * Create a form input field.
      *
-     * @param  string $type
-     * @param  string $name
-     * @param  string $value
-     * @param  array $options
+     * @param string $type
+     * @param string $name
+     * @param string $value
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -294,9 +295,9 @@ class FormBuilder
     /**
      * Create a text input field.
      *
-     * @param  string $name
-     * @param  string $value
-     * @param  array $options
+     * @param string $name
+     * @param string $value
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -308,8 +309,8 @@ class FormBuilder
     /**
      * Create a password input field.
      *
-     * @param  string $name
-     * @param  array $options
+     * @param string $name
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -321,9 +322,9 @@ class FormBuilder
     /**
      * Create a hidden input field.
      *
-     * @param  string $name
-     * @param  string $value
-     * @param  array $options
+     * @param string $name
+     * @param string $value
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -335,9 +336,9 @@ class FormBuilder
     /**
      * Create a search input field.
      *
-     * @param  string $name
-     * @param  string $value
-     * @param  array $options
+     * @param string $name
+     * @param string $value
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -349,9 +350,9 @@ class FormBuilder
     /**
      * Create an e-mail input field.
      *
-     * @param  string $name
-     * @param  string $value
-     * @param  array $options
+     * @param string $name
+     * @param string $value
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -363,9 +364,9 @@ class FormBuilder
     /**
      * Create a tel input field.
      *
-     * @param  string $name
-     * @param  string $value
-     * @param  array $options
+     * @param string $name
+     * @param string $value
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -377,9 +378,9 @@ class FormBuilder
     /**
      * Create a number input field.
      *
-     * @param  string $name
-     * @param  string $value
-     * @param  array $options
+     * @param string $name
+     * @param string $value
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -391,9 +392,9 @@ class FormBuilder
     /**
      * Create a date input field.
      *
-     * @param  string $name
-     * @param  string $value
-     * @param  array $options
+     * @param string $name
+     * @param string $value
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -409,16 +410,16 @@ class FormBuilder
     /**
      * Create a datetime input field.
      *
-     * @param  string $name
-     * @param  string $value
-     * @param  array $options
+     * @param string $name
+     * @param string $value
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
     public function datetime($name, $value = null, $options = [])
     {
         if ($value instanceof DateTime) {
-            $value = $value->format(DateTime::RFC3339);
+            $value = $value->format(DateTimeInterface::RFC3339);
         }
 
         return $this->input('datetime', $name, $value, $options);
@@ -427,9 +428,9 @@ class FormBuilder
     /**
      * Create a datetime-local input field.
      *
-     * @param  string $name
-     * @param  string $value
-     * @param  array $options
+     * @param string $name
+     * @param string $value
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -445,9 +446,9 @@ class FormBuilder
     /**
      * Create a time input field.
      *
-     * @param  string $name
-     * @param  string $value
-     * @param  array $options
+     * @param string $name
+     * @param string $value
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -459,9 +460,9 @@ class FormBuilder
     /**
      * Create a url input field.
      *
-     * @param  string $name
-     * @param  string $value
-     * @param  array $options
+     * @param string $name
+     * @param string $value
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -473,8 +474,8 @@ class FormBuilder
     /**
      * Create a file input field.
      *
-     * @param  string $name
-     * @param  array $options
+     * @param string $name
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -486,9 +487,9 @@ class FormBuilder
     /**
      * Create a textarea input field.
      *
-     * @param  string $name
-     * @param  string $value
-     * @param  array $options
+     * @param string $name
+     * @param string $value
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -522,7 +523,7 @@ class FormBuilder
     /**
      * Set the text area size on the attributes.
      *
-     * @param  array $options
+     * @param array $options
      *
      * @return array
      */
@@ -545,7 +546,7 @@ class FormBuilder
     /**
      * Set the text area size using the quick "size" attribute.
      *
-     * @param  array $options
+     * @param array $options
      *
      * @return array
      */
@@ -559,11 +560,11 @@ class FormBuilder
     /**
      * Create a select box field.
      *
-     * @param  string $name
-     * @param  array $list
-     * @param  string $selected
-     * @param  array $selectAttributes
-     * @param  array $optionsAttributes
+     * @param string $name
+     * @param array $list
+     * @param string $selected
+     * @param array $selectAttributes
+     * @param array $optionsAttributes
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -573,8 +574,7 @@ class FormBuilder
         $selected = null,
         array $selectAttributes = [],
         array $optionsAttributes = []
-    )
-    {
+    ) {
         $this->type = 'select';
 
         // When building a select box the "value" attribute is really the selected one
@@ -616,11 +616,11 @@ class FormBuilder
     /**
      * Create a select range field.
      *
-     * @param  string $name
-     * @param  string $begin
-     * @param  string $end
-     * @param  string $selected
-     * @param  array $options
+     * @param string $name
+     * @param string $begin
+     * @param string $end
+     * @param string $selected
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -644,10 +644,10 @@ class FormBuilder
     /**
      * Create a select month field.
      *
-     * @param  string $name
-     * @param  string $selected
-     * @param  array $options
-     * @param  string $format
+     * @param string $name
+     * @param string $selected
+     * @param array $options
+     * @param string $format
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -665,10 +665,10 @@ class FormBuilder
     /**
      * Get the select option for the given value.
      *
-     * @param  string $display
-     * @param  string $value
-     * @param  string $selected
-     * @param  array $attributes
+     * @param string $display
+     * @param string $value
+     * @param string $selected
+     * @param array $attributes
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -684,10 +684,10 @@ class FormBuilder
     /**
      * Create an option group form element.
      *
-     * @param  array $list
-     * @param  string $label
-     * @param  string $selected
-     * @param  array $attributes
+     * @param array $list
+     * @param string $label
+     * @param string $selected
+     * @param array $attributes
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -705,10 +705,10 @@ class FormBuilder
     /**
      * Create a select element option.
      *
-     * @param  string $display
-     * @param  string $value
-     * @param  string $selected
-     * @param  array $attributes
+     * @param string $display
+     * @param string $value
+     * @param string $selected
+     * @param array $attributes
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -735,7 +735,7 @@ class FormBuilder
 
         $options = [
             'selected' => $selected,
-            'value'    => '',
+            'value' => '',
         ];
 
         return $this->toHtmlString('<option'.$this->html->attributes($options).'>'.e($display).'</option>');
@@ -744,8 +744,8 @@ class FormBuilder
     /**
      * Determine if the value is selected.
      *
-     * @param  string $value
-     * @param  string $selected
+     * @param string $value
+     * @param string $selected
      *
      * @return null|string
      */
@@ -764,10 +764,10 @@ class FormBuilder
     /**
      * Create a checkbox input field.
      *
-     * @param  string $name
-     * @param  mixed $value
-     * @param  bool $checked
-     * @param  array $options
+     * @param string $name
+     * @param mixed $value
+     * @param bool $checked
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -779,10 +779,10 @@ class FormBuilder
     /**
      * Create a radio button input field.
      *
-     * @param  string $name
-     * @param  mixed $value
-     * @param  bool $checked
-     * @param  array $options
+     * @param string $name
+     * @param mixed $value
+     * @param bool $checked
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -798,11 +798,11 @@ class FormBuilder
     /**
      * Create a checkable input field.
      *
-     * @param  string $type
-     * @param  string $name
-     * @param  mixed $value
-     * @param  bool $checked
-     * @param  array $options
+     * @param string $type
+     * @param string $name
+     * @param mixed $value
+     * @param bool $checked
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -822,10 +822,10 @@ class FormBuilder
     /**
      * Get the check state for a checkable input.
      *
-     * @param  string $type
-     * @param  string $name
-     * @param  mixed $value
-     * @param  bool $checked
+     * @param string $type
+     * @param string $name
+     * @param mixed $value
+     * @param bool $checked
      *
      * @return bool
      */
@@ -846,9 +846,9 @@ class FormBuilder
     /**
      * Get the check state for a checkbox input.
      *
-     * @param  string $name
-     * @param  mixed $value
-     * @param  bool $checked
+     * @param string $name
+     * @param mixed $value
+     * @param bool $checked
      *
      * @return bool
      */
@@ -880,9 +880,9 @@ class FormBuilder
     /**
      * Get the check state for a radio input.
      *
-     * @param  string $name
-     * @param  mixed $value
-     * @param  bool $checked
+     * @param string $name
+     * @param mixed $value
+     * @param bool $checked
      *
      * @return bool
      */
@@ -900,7 +900,7 @@ class FormBuilder
     /**
      * Determine if old input or model input exists for a key.
      *
-     * @param  string $name
+     * @param string $name
      *
      * @return bool
      */
@@ -912,8 +912,8 @@ class FormBuilder
     /**
      * Create a HTML reset input element.
      *
-     * @param  string $value
-     * @param  array $attributes
+     * @param string $value
+     * @param array $attributes
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -925,9 +925,9 @@ class FormBuilder
     /**
      * Create a HTML image input element.
      *
-     * @param  string $url
-     * @param  string $name
-     * @param  array $attributes
+     * @param string $url
+     * @param string $name
+     * @param array $attributes
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -941,9 +941,9 @@ class FormBuilder
     /**
      * Create a color input field.
      *
-     * @param  string $name
-     * @param  string $value
-     * @param  array $options
+     * @param string $name
+     * @param string $value
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -955,8 +955,8 @@ class FormBuilder
     /**
      * Create a submit button element.
      *
-     * @param  string $value
-     * @param  array $options
+     * @param string $value
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -968,8 +968,8 @@ class FormBuilder
     /**
      * Create a button element.
      *
-     * @param  string $value
-     * @param  array $options
+     * @param string $value
+     * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
@@ -985,7 +985,7 @@ class FormBuilder
     /**
      * Parse the form action method.
      *
-     * @param  string $method
+     * @param string $method
      *
      * @return string
      */
@@ -999,7 +999,7 @@ class FormBuilder
     /**
      * Get the form action from the options.
      *
-     * @param  array $options
+     * @param array $options
      *
      * @return string
      */
@@ -1029,7 +1029,7 @@ class FormBuilder
     /**
      * Get the action for a "url" option.
      *
-     * @param  array|string $options
+     * @param array|string $options
      *
      * @return string
      */
@@ -1045,7 +1045,7 @@ class FormBuilder
     /**
      * Get the action for a "route" option.
      *
-     * @param  array|string $options
+     * @param array|string $options
      *
      * @return string
      */
@@ -1061,7 +1061,7 @@ class FormBuilder
     /**
      * Get the action for an "action" option.
      *
-     * @param  array|string $options
+     * @param array|string $options
      *
      * @return string
      */
@@ -1077,7 +1077,7 @@ class FormBuilder
     /**
      * Get the form appendage for the given method.
      *
-     * @param  string $method
+     * @param string $method
      *
      * @return string
      */
@@ -1105,8 +1105,8 @@ class FormBuilder
     /**
      * Get the ID attribute for a field name.
      *
-     * @param  string $name
-     * @param  array $attributes
+     * @param string $name
+     * @param array $attributes
      *
      * @return string
      */
@@ -1124,8 +1124,8 @@ class FormBuilder
     /**
      * Get the value that should be assigned to the field.
      *
-     * @param  string $name
-     * @param  string $value
+     * @param string $name
+     * @param string $value
      *
      * @return mixed
      */
@@ -1188,7 +1188,7 @@ class FormBuilder
     /**
      * Get the model value that should be assigned to the field.
      *
-     * @param  string $name
+     * @param string $name
      *
      * @return mixed
      */
@@ -1206,7 +1206,7 @@ class FormBuilder
     /**
      * Get a value from the session's old input.
      *
-     * @param  string $name
+     * @param string $name
      *
      * @return mixed
      */
@@ -1249,7 +1249,7 @@ class FormBuilder
     /**
      * Transform key from array to dot syntax.
      *
-     * @param  string $key
+     * @param string $key
      *
      * @return mixed
      */
@@ -1283,7 +1283,7 @@ class FormBuilder
     /**
      * Set the session store implementation.
      *
-     * @param  \Illuminate\Contracts\Session\Session $session
+     * @param \Illuminate\Contracts\Session\Session $session
      *
      * @return $this
      */
@@ -1297,8 +1297,8 @@ class FormBuilder
     /**
      * Dynamically handle calls to the class.
      *
-     * @param  string $method
-     * @param  array $parameters
+     * @param string $method
+     * @param array $parameters
      *
      * @return \Illuminate\Contracts\View\View|mixed
      *

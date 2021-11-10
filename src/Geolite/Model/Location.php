@@ -495,8 +495,8 @@ class Location implements Contracts\LocationInterface
     protected function createCoordinates($data)
     {
         if (
-            !$latitude = array_get($data, 'latitude')
-            || !$longitude = array_get($data, 'longitude')
+            !($latitude = array_get($data, 'latitude'))
+            || !($longitude = array_get($data, 'longitude'))
         ) {
             return null;
         }
@@ -510,10 +510,10 @@ class Location implements Contracts\LocationInterface
      */
     protected function createBounds($data)
     {
-        if (!$south = array_get($data, 'bounds.south')
-            || !$west = array_get($data, 'bounds.west')
-            || !$north = array_get($data, 'bounds.north')
-            || !$east = array_get($data, 'bounds.east')
+        if (!($south = array_get($data, 'bounds.south'))
+            || !($west = array_get($data, 'bounds.west'))
+            || !($north = array_get($data, 'bounds.north'))
+            || !($east = array_get($data, 'bounds.east'))
         ) return null;
 
         return new Bounds($south, $west, $north, $east);

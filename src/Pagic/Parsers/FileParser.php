@@ -251,7 +251,7 @@ class FileParser
     {
         $path = array_get($data, 'filePath', self::$fileCache->getCacheKey($data['className']));
         if (is_file($path)) {
-            if ($className = $this->extractClassFromFile($path) && class_exists($className)) {
+            if (($className = $this->extractClassFromFile($path)) && class_exists($className)) {
                 $data['className'] = $className;
 
                 return $data;

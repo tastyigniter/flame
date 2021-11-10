@@ -260,7 +260,7 @@ class Currency
         $code = $code ?: $this->getUserCurrency();
 
         $currency = $this->getCurrencies()->first(function (CurrencyInterface $currency) use ($code) {
-            return $currency->isEnabled() && ((int)$code === $currency->getId()) || ($code === $currency->getCode());
+            return ($currency->isEnabled() && $code == $currency->getId()) || ($code === $currency->getCode());
         });
 
         return $this->currenciesCache[$code] = $currency;

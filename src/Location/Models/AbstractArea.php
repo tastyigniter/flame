@@ -136,7 +136,8 @@ abstract class AbstractArea extends Model implements AreaInterface
                 $coordinate->getLatitude(), $coordinate->getLongitude()
             )->first();
 
-            return $this->matchAddressComponents($position);
+            if ($position)
+                return $this->matchAddressComponents($position);
         }
 
         return $this->isPolygonBoundary()
