@@ -6,7 +6,6 @@ use ErrorException;
 use Exception;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Facades\View;
-use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Throwable;
 
 class Template
@@ -121,11 +120,8 @@ class Template
         try {
             include $path;
         }
-        catch (Exception $e) {
+        catch (Exception | Throwable $e) {
             $this->handleException($e, $obLevel);
-        }
-        catch (Throwable $e) {
-            $this->handleException(new FatalThrowableError($e), $obLevel);
         }
 
         if ($silenceNotice) {
