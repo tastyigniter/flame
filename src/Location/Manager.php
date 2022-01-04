@@ -286,5 +286,6 @@ abstract class Manager
         unset($sessionData[$key]);
 
         Session::put($this->sessionKey, $sessionData);
+        Session::save();
     }
 }
