@@ -8,22 +8,6 @@ use System\Classes\BaseExtension;
 class Extension extends BaseExtension
 {
     /**
-     * Returns information about this extension.
-     *
-     * @return array
-     */
-    public function extensionMeta()
-    {
-        return [
-            'name'        => '{{name}}',
-            'author'      => '{{author}}',
-            'description' => 'No description provided yet...',
-            'icon'        => 'fa-plug',
-            'version'     => '1.0.0'
-        ];
-    }
-
-    /**
      * Register method, called when the extension is first registered.
      *
      * @return void

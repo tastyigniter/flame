@@ -36,6 +36,7 @@ class CreateExtension extends GeneratorCommand
      */
     protected $stubs = [
         'extension.stub' => 'Extension.php',
+        'composer.stub' => 'composer.json',
     ];
 
     protected function prepareVars()
@@ -49,14 +50,14 @@ class CreateExtension extends GeneratorCommand
         [$author, $name] = $code;
 
         $this->vars = [
-            'name'        => $name,
-            'lower_name'  => strtolower($name),
-            'title_name'  => title_case($name),
+            'name' => $name,
+            'lower_name' => strtolower($name),
+            'title_name' => title_case($name),
             'studly_name' => studly_case($name),
 
-            'author'        => $author,
-            'lower_author'  => strtolower($author),
-            'title_author'  => title_case($author),
+            'author' => $author,
+            'lower_author' => strtolower($author),
+            'title_author' => title_case($author),
             'studly_author' => studly_case($author),
         ];
     }
