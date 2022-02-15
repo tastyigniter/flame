@@ -43,9 +43,12 @@ class Pivot extends Model
      * @param bool $exists
      * @return void
      */
-    public function __construct(ModelBase $parent, $attributes, $table, $exists = FALSE)
+    public function __construct(ModelBase $parent = null, $attributes = [], $table = null, $exists = FALSE)
     {
         parent::__construct();
+
+        if (is_null($parent))
+            return;
 
         // The pivot model is a "dynamic" model since we will set the tables dynamically
         // for the instance. This allows it work for any intermediate tables for the
