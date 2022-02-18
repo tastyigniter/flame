@@ -19,6 +19,7 @@ class ScaffoldServiceProvider extends ServiceProvider
         'CreateController' => 'command.create.controller',
         'CreateModel' => 'command.create.model',
         'CreateCommand' => 'command.create.command',
+        'CreatePipeline' => 'command.create.pipeline',
     ];
 
     /**
@@ -79,6 +80,13 @@ class ScaffoldServiceProvider extends ServiceProvider
     {
         $this->app->singleton($command, function ($app) {
             return new Console\CreateCommand($app['files']);
+        });
+    }
+
+    protected function registerCreatePipelineCommand($command)
+    {
+        $this->app->singleton($command, function ($app) {
+            return new Console\CreatePipeline($app['files']);
         });
     }
 

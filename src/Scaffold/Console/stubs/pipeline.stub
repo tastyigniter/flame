@@ -1,0 +1,15 @@
+<?php
+
+namespace {{studly_author}}\{{studly_extension}}\Pipelines;
+
+/**
+ * {{studly_name}} Pipeline File
+ */
+class {{studly_name}}
+{
+    public function handle($payload, Closure $next)
+    {
+        // do something with $payload
+        return $next($payload);
+    }
+}
