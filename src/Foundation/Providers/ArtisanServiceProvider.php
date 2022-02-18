@@ -28,7 +28,7 @@ class ArtisanServiceProvider extends BaseServiceProvider
         'ConfigClear' => 'command.config.clear',
         'Db' => DbCommand::class,
         // 'DbPrune' => 'command.db.prune',
-        // 'DbWipe' => 'command.db.wipe',
+        'DbWipe' => 'command.db.wipe',
         // 'Down' => 'command.down',
         'Environment' => 'command.environment',
         'EventCache' => 'command.event.cache',
