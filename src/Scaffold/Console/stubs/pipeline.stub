@@ -7,7 +7,7 @@ namespace {{studly_author}}\{{studly_extension}}\Pipelines;
  */
 class {{studly_name}}
 {
-    public function handle($payload, Closure $next)
+    public function handle($payload, \Closure $next)
     {
         // do something with $payload
         return $next($payload);
