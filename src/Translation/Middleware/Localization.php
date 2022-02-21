@@ -60,6 +60,6 @@ class Localization
         if (!app('admin.auth')->isLogged())
             return null;
 
-        return optional(app('admin.auth')->staff()->language)->code;
+        return optional(app('admin.auth')->user()->language)->code;
     }
 }
