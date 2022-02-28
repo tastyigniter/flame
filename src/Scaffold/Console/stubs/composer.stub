@@ -1,0 +1,22 @@
+{
+  "name": "{{lower_author}}/{{lower_name}}",
+  "type": "tastyigniter-extension",
+  "description": "No description provided yet...",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "{{lower_author}}",
+    }
+  ],
+  "extra": {
+    "tastyigniter-extension": {
+      "code": "{{lower_author}}.{{lower_name}}",
+      "name": "{{name}}",
+      "icon": {
+        "class": "fa fa-plug",
+        "backgroundColor": "#000000",
+        "color": "#FFF"
+      }
+    }
+  }
+}

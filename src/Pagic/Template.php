@@ -131,7 +131,7 @@ class Template
         return ltrim(ob_get_clean());
     }
 
-    protected function handleException(Exception $ex, $level)
+    protected function handleException($ex, $level)
     {
         $ex = new ErrorException($this->getMessage($ex), 0, 1, $ex->getFile(), $ex->getLine(), $ex);
 
@@ -148,7 +148,7 @@ class Template
      * @param \Exception $e
      * @return string
      */
-    protected function getMessage(Exception $e)
+    protected function getMessage($e)
     {
         return $e->getMessage().' (View: '.realpath(last($this->lastCompiled)).')';
     }
