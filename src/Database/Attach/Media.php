@@ -35,6 +35,11 @@ class Media extends Model
     protected $hidden = ['attachment_type', 'attachment_id', 'is_public'];
 
     /**
+     * @var array Add fields to array/json access
+     */
+    protected $appends = ['path', 'extension'];
+
+    /**
      * The attributes that should be casted to native types.
      *
      * @var array
@@ -184,6 +189,15 @@ class Media extends Model
     //
     // Attribute mutators
     //
+
+    /**
+     * Helper attribute for getPath.
+     * @return string
+     */
+    public function getPathAttribute()
+    {
+        return $this->getPath();
+    }
 
     /**
      * Determine the type of a file.
