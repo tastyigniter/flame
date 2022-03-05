@@ -28,7 +28,7 @@ abstract class AbstractArea extends Model implements AreaInterface
 
     public $relation = [
         'belongsTo' => [
-            'location' => ['Admin\Models\Locations_model'],
+            'location' => [\Admin\Models\Locations_model::class],
         ],
     ];
 
