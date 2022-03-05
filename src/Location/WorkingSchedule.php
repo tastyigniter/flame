@@ -322,6 +322,7 @@ class WorkingSchedule
     {
         $dateTime = Carbon::instance($this->parseDate($dateTime));
         $interval = new DateInterval('PT'.($interval ?: 15).'M');
+        $leadTime = new DateInterval('PT'.$leadTimeMinutes.'M');
 
         $timeslots = [];
         $datePeriod = $this->createPeriodForDays($dateTime);
@@ -330,7 +331,7 @@ class WorkingSchedule
             $dateString = $date->toDateString();
 
             $periodTimeslot = $this->forDate($date)
-                ->timeslot($date, $interval)
+                ->timeslot($date, $interval, $leadTime)
                 ->filter(function ($timeslot) use ($dateTime, $leadTimeMinutes) {
                     return $this->isTimeslotValid($timeslot, $dateTime, $leadTimeMinutes);
                 })
