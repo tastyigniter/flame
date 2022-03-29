@@ -551,3 +551,26 @@ if (!function_exists('form_error')) {
         return $prefix.$errors->first($field).$suffix;
     }
 }
+
+// ------------------------------------------------------------------------
+
+if (!function_exists('has_form_error')) {
+    /**
+     * Form Error
+     * Returns the error for a specific form field. This is a helper for the
+     * form validation class.
+     *
+     * @return    string
+     */
+    function has_form_error($field = null)
+    {
+        $errors = (Config::get('session.driver') && Session::has('errors'))
+            ? Session::get('errors')
+            : new \Illuminate\Support\ViewErrorBag;
+
+        if (is_null($field))
+            return $errors;
+
+        return $errors->has($field);
+    }
+}
