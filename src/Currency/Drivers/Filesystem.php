@@ -56,7 +56,7 @@ class Filesystem extends AbstractDriver
             'updated_at' => $created,
         ], $params);
 
-        return $this->filesystem->put($path, json_encode($currencies, JSON_PRETTY_PRINT));
+        return $this->filesystem->put($path, json_encode($currencies, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     }
 
     /**
@@ -114,7 +114,7 @@ class Filesystem extends AbstractDriver
         // Merge values
         $currencies[$code] = array_merge($currencies[$code], $attributes);
 
-        return $this->filesystem->put($path, json_encode($currencies, JSON_PRETTY_PRINT));
+        return $this->filesystem->put($path, json_encode($currencies, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     }
 
     /**
@@ -135,6 +135,6 @@ class Filesystem extends AbstractDriver
 
         unset($currencies[$code]);
 
-        return $this->filesystem->put($path, json_encode($currencies, JSON_PRETTY_PRINT));
+        return $this->filesystem->put($path, json_encode($currencies, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     }
 }

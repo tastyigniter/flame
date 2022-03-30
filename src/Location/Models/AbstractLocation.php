@@ -32,8 +32,8 @@ class AbstractLocation extends Model implements LocationInterface
 
     public $relation = [
         'hasMany' => [
-            'working_hours' => ['Admin\Models\Working_hours_model'],
-            'delivery_areas' => ['Admin\Models\Location_areas_model'],
+            'working_hours' => [\Admin\Models\Working_hours_model::class],
+            'delivery_areas' => [\Admin\Models\Location_areas_model::class],
         ],
     ];
 

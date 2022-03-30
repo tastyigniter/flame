@@ -27,7 +27,7 @@ abstract class AbstractWorkingHour extends Model implements Contracts\WorkingHou
 
     public $relation = [
         'belongsTo' => [
-            'location' => ['Admin\Models\Locations_model'],
+            'location' => [\Admin\Models\Locations_model::class],
         ],
     ];
 
