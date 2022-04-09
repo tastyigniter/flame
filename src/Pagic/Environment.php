@@ -67,7 +67,7 @@ class Environment
         $options = array_merge([
             'debug' => FALSE,
             'charset' => 'UTF-8',
-            'templateClass' => 'Igniter\Flame\Pagic\Template',
+            'templateClass' => \Igniter\Flame\Pagic\Template::class,
             'cache' => null,
         ], $options);
 

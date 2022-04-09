@@ -267,7 +267,7 @@ class BaseException extends Exception
         foreach ($traceInfo as $event) {
             if (
                 isset($event['class']) &&
-                $event['class'] == 'Illuminate\Foundation\Bootstrap\HandleExceptions' &&
+                $event['class'] == \Illuminate\Foundation\Bootstrap\HandleExceptions::class &&
                 $event['function'] == 'handleError'
             ) {
                 $useFilter = TRUE;
@@ -286,7 +286,7 @@ class BaseException extends Exception
              */
             if (
                 isset($event['class']) &&
-                $event['class'] == 'Illuminate\Foundation\Bootstrap\HandleExceptions' &&
+                $event['class'] == \Illuminate\Foundation\Bootstrap\HandleExceptions::class &&
                 $event['function'] == 'handleError'
             ) {
                 $pruneResult = FALSE;

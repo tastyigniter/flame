@@ -241,7 +241,7 @@ class Application extends BaseApplication
      */
     public function error(Closure $callback)
     {
-        $this->make('Illuminate\Contracts\Debug\ExceptionHandler')->error($callback);
+        $this->make(\Illuminate\Contracts\Debug\ExceptionHandler::class)->error($callback);
     }
 
     /**

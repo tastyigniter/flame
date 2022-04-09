@@ -23,7 +23,7 @@ abstract class Manager
 
     protected $defaultLocation;
 
-    protected $locationModel = 'Igniter\Flame\Location\Models\AbstractLocation';
+    protected $locationModel = \Igniter\Flame\Location\Models\AbstractLocation::class;
 
     protected $loaded;
 
