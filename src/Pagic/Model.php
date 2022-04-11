@@ -797,7 +797,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
      *
      * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return isset($this->$offset);
     }
@@ -809,7 +809,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
      *
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->$offset;
     }
@@ -822,7 +822,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->$offset = $value;
     }
@@ -834,7 +834,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->$offset);
     }
@@ -865,7 +865,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
      *
      * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }
