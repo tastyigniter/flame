@@ -32,7 +32,7 @@ class FilesystemServiceProvider extends BaseFilesystemServiceProvider
             $files->filePermissions = $config->get('system.filePermissions', null);
             $files->folderPermissions = $config->get('system.folderPermissions', null);
             $files->pathSymbols = [
-                '$' => $config->get('system.extensionsPath', base_path('extensions')),
+                '$' => $this->app->extensionsPath(),
                 '~' => base_path(),
             ];
 
