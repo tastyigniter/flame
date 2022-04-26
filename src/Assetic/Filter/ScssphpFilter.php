@@ -50,10 +50,10 @@ class ScssphpFilter implements DependencyExtractorInterface
     public function setFormatter($formatter)
     {
         $legacyFormatters = [
-            'scss_formatter' => 'ScssPhp\ScssPhp\Formatter\Expanded',
-            'scss_formatter_nested' => 'ScssPhp\ScssPhp\Formatter\Nested',
-            'scss_formatter_compressed' => 'ScssPhp\ScssPhp\Formatter\Compressed',
-            'scss_formatter_crunched' => 'ScssPhp\ScssPhp\Formatter\Crunched',
+            'scss_formatter' => \ScssPhp\ScssPhp\Formatter\Expanded::class,
+            'scss_formatter_nested' => \ScssPhp\ScssPhp\Formatter\Nested::class,
+            'scss_formatter_compressed' => \ScssPhp\ScssPhp\Formatter\Compressed::class,
+            'scss_formatter_crunched' => \ScssPhp\ScssPhp\Formatter\Crunched::class,
         ];
 
         if (isset($legacyFormatters[$formatter])) {
