@@ -26,10 +26,6 @@ abstract class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         if ($module = $this->getModule(func_get_args())) {
-            // Register paths for: config, translator, view
-            $modulePath = app_path($module);
-            $this->loadTranslationsFrom($modulePath.DIRECTORY_SEPARATOR.'language', $module);
-            $this->loadViewsFrom($modulePath.DIRECTORY_SEPARATOR.'views', $module);
         }
     }
 
@@ -40,6 +36,11 @@ abstract class AppServiceProvider extends ServiceProvider
     public function register()
     {
         if ($module = $this->getModule(func_get_args())) {
+            // Register paths for: config, translator, view
+            $modulePath = app_path($module);
+            $this->loadTranslationsFrom($modulePath.DIRECTORY_SEPARATOR.'language', $module);
+            $this->loadViewsFrom($modulePath.DIRECTORY_SEPARATOR.'views', $module);
+
             $routesFile = app_path($module.'/routes.php');
             if (File::isFile($routesFile))
                 require $routesFile;

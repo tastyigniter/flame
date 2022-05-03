@@ -147,6 +147,5 @@ class ErrorHandler
      */
     public function handleDetailedError($exception)
     {
-        return 'Error: '.$exception->getMessage();
     }
 }
