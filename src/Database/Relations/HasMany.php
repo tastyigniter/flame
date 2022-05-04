@@ -70,7 +70,7 @@ class HasMany extends HasManyBase
                 $this->whereNotIn($this->localKey, $existingIds)->update([$this->getForeignKeyName() => null]);
                 $collection->each(function ($instance) {
                     $instance->setAttribute($this->getForeignKeyName(), $this->getParentKey());
-                    $instance->save(['timestamps' => FALSE]);
+                    $instance->save(['timestamps' => false]);
                 });
             });
         }

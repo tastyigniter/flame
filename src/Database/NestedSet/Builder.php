@@ -30,7 +30,7 @@ class Builder extends BuilderBase
      * @return array
      * @since 2.0
      */
-    public function getNodeData($id, $required = FALSE)
+    public function getNodeData($id, $required = false)
     {
         $query = $this->toBase();
 
@@ -56,7 +56,7 @@ class Builder extends BuilderBase
      * @return array
      * @since 2.0
      */
-    public function getPlainNodeData($id, $required = FALSE)
+    public function getPlainNodeData($id, $required = false)
     {
         return array_values($this->getNodeData($id, $required));
     }
@@ -84,7 +84,7 @@ class Builder extends BuilderBase
      * @return $this
      * @since 2.0
      */
-    public function whereAncestorOf($id, $andSelf = FALSE, $boolean = 'and')
+    public function whereAncestorOf($id, $andSelf = false, $boolean = 'and')
     {
         $keyName = $this->model->getKeyName();
 
@@ -128,7 +128,7 @@ class Builder extends BuilderBase
      *
      * @return $this
      */
-    public function orWhereAncestorOf($id, $andSelf = FALSE)
+    public function orWhereAncestorOf($id, $andSelf = false)
     {
         return $this->whereAncestorOf($id, $andSelf, 'or');
     }
@@ -140,7 +140,7 @@ class Builder extends BuilderBase
      */
     public function whereAncestorOrSelf($id)
     {
-        return $this->whereAncestorOf($id, TRUE);
+        return $this->whereAncestorOf($id, true);
     }
 
     /**
@@ -165,7 +165,7 @@ class Builder extends BuilderBase
      */
     public function ancestorsAndSelf($id, array $columns = ['*'])
     {
-        return $this->whereAncestorOf($id, TRUE)->get($columns);
+        return $this->whereAncestorOf($id, true)->get($columns);
     }
 
     /**
@@ -178,7 +178,7 @@ class Builder extends BuilderBase
      * @return $this
      * @since 2.0
      */
-    public function whereNodeBetween($values, $boolean = 'and', $not = FALSE)
+    public function whereNodeBetween($values, $boolean = 'and', $not = false)
     {
         $this->query->whereBetween($this->model->getLftName(), $values, $boolean, $not);
 
@@ -209,15 +209,15 @@ class Builder extends BuilderBase
      * @return $this
      * @since 2.0
      */
-    public function whereDescendantOf($id, $boolean = 'and', $not = FALSE,
-                                      $andSelf = FALSE
+    public function whereDescendantOf($id, $boolean = 'and', $not = false,
+                                      $andSelf = false
     ) {
         if (NestedSet::isNode($id)) {
             $data = $id->getBounds();
         }
         else {
             $data = $this->model->newNestedSetQuery()
-                ->getPlainNodeData($id, TRUE);
+                ->getPlainNodeData($id, true);
         }
 
         // Don't include the node
@@ -235,7 +235,7 @@ class Builder extends BuilderBase
      */
     public function whereNotDescendantOf($id)
     {
-        return $this->whereDescendantOf($id, 'and', TRUE);
+        return $this->whereDescendantOf($id, 'and', true);
     }
 
     /**
@@ -255,7 +255,7 @@ class Builder extends BuilderBase
      */
     public function orWhereNotDescendantOf($id)
     {
-        return $this->whereDescendantOf($id, 'or', TRUE);
+        return $this->whereDescendantOf($id, 'or', true);
     }
 
     /**
@@ -265,9 +265,9 @@ class Builder extends BuilderBase
      *
      * @return $this
      */
-    public function whereDescendantOrSelf($id, $boolean = 'and', $not = FALSE)
+    public function whereDescendantOrSelf($id, $boolean = 'and', $not = false)
     {
-        return $this->whereDescendantOf($id, $boolean, $not, TRUE);
+        return $this->whereDescendantOf($id, $boolean, $not, true);
     }
 
     /**
@@ -280,10 +280,10 @@ class Builder extends BuilderBase
      * @return Collection
      * @since 2.0
      */
-    public function descendantsOf($id, array $columns = ['*'], $andSelf = FALSE)
+    public function descendantsOf($id, array $columns = ['*'], $andSelf = false)
     {
         try {
-            return $this->whereDescendantOf($id, 'and', FALSE, $andSelf)->get($columns);
+            return $this->whereDescendantOf($id, 'and', false, $andSelf)->get($columns);
         }
         catch (ModelNotFoundException $e) {
             return $this->model->newCollection();
@@ -298,7 +298,7 @@ class Builder extends BuilderBase
      */
     public function descendantsAndSelf($id, array $columns = ['*'])
     {
-        return $this->descendantsOf($id, $columns, TRUE);
+        return $this->descendantsOf($id, $columns, true);
     }
 
     /**
@@ -532,7 +532,7 @@ class Builder extends BuilderBase
     public function moveNode($key, $position)
     {
         [$lft, $rgt] = $this->model->newNestedSetQuery()
-            ->getPlainNodeData($key, TRUE);
+            ->getPlainNodeData($key, true);
 
         if ($lft < $position && $position <= $rgt) {
             throw new LogicException('Cannot move node into itself.');
@@ -796,7 +796,7 @@ class Builder extends BuilderBase
                 $this->model->applyNestedSetScope($existsCheck, $alias);
 
                 $inner->whereRaw("{$parentIdName} is not null")
-                    ->addWhereExistsQuery($existsCheck, 'and', TRUE);
+                    ->addWhereExistsQuery($existsCheck, 'and', true);
             });
     }
 
@@ -921,7 +921,7 @@ class Builder extends BuilderBase
      *
      * @return int
      */
-    public function rebuildTree(array $data, $delete = FALSE)
+    public function rebuildTree(array $data, $delete = false)
     {
         if ($this->model->usesSoftDelete()) {
             $this->withTrashed();

@@ -12,7 +12,7 @@ use LogicException;
 
 class Environment
 {
-    protected $extensionInitialized = FALSE;
+    protected $extensionInitialized = false;
 
     protected $loadedTemplates;
 
@@ -65,7 +65,7 @@ class Environment
         $this->setLoader($loader);
 
         $options = array_merge([
-            'debug' => FALSE,
+            'debug' => false,
             'charset' => 'UTF-8',
             'templateClass' => \Igniter\Flame\Pagic\Template::class,
             'cache' => null,
@@ -183,7 +183,7 @@ class Environment
      */
     public function load($name)
     {
-        return $this->loadTemplate($name, $this->getCache()->getCacheKey($name, TRUE));
+        return $this->loadTemplate($name, $this->getCache()->getCacheKey($name, true));
     }
 
     /**
@@ -224,8 +224,8 @@ class Environment
      */
     public function createTemplate($template)
     {
-        $name = hash('sha256', $template, FALSE);
-        $key = $this->getCache()->getCacheKey($name, TRUE);
+        $name = hash('sha256', $template, false);
+        $key = $this->getCache()->getCacheKey($name, true);
 
         $loader = new ArrayLoader([$name => $template]);
 
@@ -318,7 +318,7 @@ class Environment
             $this->initExtension($extension);
         }
 
-        $this->extensionInitialized = TRUE;
+        $this->extensionInitialized = true;
     }
 
     protected function initExtension(AbstractExtension $extension)

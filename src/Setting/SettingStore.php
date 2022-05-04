@@ -16,13 +16,13 @@ abstract class SettingStore
      * Whether the store has changed since it was last loaded.
      * @var bool
      */
-    protected $unsaved = FALSE;
+    protected $unsaved = false;
 
     /**
      * Whether the settings data are loaded.
      * @var bool
      */
-    protected $loaded = FALSE;
+    protected $loaded = false;
 
     /**
      * Get a specific key from the settings data.
@@ -62,7 +62,7 @@ abstract class SettingStore
     public function set($key, $value = null)
     {
         $this->load();
-        $this->unsaved = TRUE;
+        $this->unsaved = true;
 
         if (is_array($key)) {
             foreach ($key as $k => $v) {
@@ -83,7 +83,7 @@ abstract class SettingStore
      */
     public function forget($key)
     {
-        $this->unsaved = TRUE;
+        $this->unsaved = true;
 
         if ($this->has($key)) {
             Arr::forget($this->items, $key);
@@ -96,7 +96,7 @@ abstract class SettingStore
      */
     public function forgetAll()
     {
-        $this->unsaved = TRUE;
+        $this->unsaved = true;
         $this->items = [];
     }
 
@@ -124,7 +124,7 @@ abstract class SettingStore
         }
 
         $this->write($this->items);
-        $this->unsaved = FALSE;
+        $this->unsaved = false;
     }
 
     /**
@@ -132,11 +132,11 @@ abstract class SettingStore
      *
      * @param bool $force Force a reload of data. Default false.
      */
-    public function load($force = FALSE)
+    public function load($force = false)
     {
         if (!$this->loaded || $force) {
             $this->items = $this->read();
-            $this->loaded = TRUE;
+            $this->loaded = true;
         }
     }
 

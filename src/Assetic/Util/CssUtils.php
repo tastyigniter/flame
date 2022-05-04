@@ -35,7 +35,7 @@ abstract class CssUtils
     public static function filterReferences($content, $callback)
     {
         $content = static::filterUrls($content, $callback);
-        $content = static::filterImports($content, $callback, FALSE);
+        $content = static::filterImports($content, $callback, false);
         $content = static::filterIEFilters($content, $callback);
 
         return $content;
@@ -67,7 +67,7 @@ abstract class CssUtils
      *
      * @return string The filtered CSS
      */
-    public static function filterImports($content, $callback, $includeUrl = TRUE)
+    public static function filterImports($content, $callback, $includeUrl = true)
     {
         $pattern = $includeUrl ? static::REGEX_IMPORTS : static::REGEX_IMPORTS_NO_URLS;
 

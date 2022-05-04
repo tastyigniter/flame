@@ -65,7 +65,7 @@ trait CartConditionHelper
         $actionValue = array_get($action, 'value', 0);
         $calculatedValue = array_get($action, 'cleanValue', 0);
         $actionMultiplier = array_get($action, 'multiplier');
-        $actionMax = array_get($action, 'max', FALSE);
+        $actionMax = array_get($action, 'max', false);
 
         $result = $total;
         if ($this->actionIsInclusive($action)) {
@@ -95,7 +95,7 @@ trait CartConditionHelper
 
     protected function actionHasReachedMax($actionMax, $value)
     {
-        return ($actionMax && $value > $actionMax) ? $actionMax : FALSE;
+        return ($actionMax && $value > $actionMax) ? $actionMax : false;
     }
 
     /**
@@ -145,7 +145,7 @@ trait CartConditionHelper
                 return $leftOperand >= $rightOperand;
         }
 
-        return FALSE;
+        return false;
     }
 
     protected function parseRule($rule)
@@ -173,7 +173,7 @@ trait CartConditionHelper
 
     protected function actionIsInclusive($action)
     {
-        return array_get($action, 'inclusive', FALSE);
+        return array_get($action, 'inclusive', false);
     }
 
     /**

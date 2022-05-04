@@ -34,49 +34,49 @@ class Localization
     public function loadLocaleFromBrowser()
     {
         if (!$this->detectBrowserLocale())
-            return FALSE;
+            return false;
 
         $locale = $this->getBrowserLocale();
         if (!$locale || !$this->isValid($locale))
-            return FALSE;
+            return false;
 
         $remember = $this->getLocale() != $locale;
 
         $this->setLocale($locale, $remember);
 
-        return TRUE;
+        return true;
     }
 
     public function loadLocaleFromRequest()
     {
         $locale = $this->getRequestLocale();
         if (!$locale || !$this->isValid($locale))
-            return FALSE;
+            return false;
 
         $remember = $this->getLocale() != $locale;
 
         $this->setLocale($locale, $remember);
 
-        return TRUE;
+        return true;
     }
 
     public function loadLocaleFromSession()
     {
         $locale = $this->getSessionLocale();
         if (!$locale || !$this->isValid($locale))
-            return FALSE;
+            return false;
 
         $remember = $this->getLocale() != $locale;
 
         $this->setLocale($locale, $remember);
 
-        return TRUE;
+        return true;
     }
 
-    public function setLocale($locale, $remember = TRUE)
+    public function setLocale($locale, $remember = true)
     {
         if (!$this->isValid($locale)) {
-            return FALSE;
+            return false;
         }
 
         app()->setLocale($locale);
@@ -109,7 +109,7 @@ class Localization
 
     public function detectBrowserLocale()
     {
-        return (bool)$this->getConfig('detectBrowserLocale', FALSE);
+        return (bool)$this->getConfig('detectBrowserLocale', false);
     }
 
     public function isValid($locale)

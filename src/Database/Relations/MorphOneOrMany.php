@@ -27,7 +27,7 @@ trait MorphOneOrMany
 
         $this->add($model, $sessionKey);
 
-        return $model->save() ? $model : FALSE;
+        return $model->save() ? $model : false;
     }
 
     /**
@@ -77,7 +77,7 @@ trait MorphOneOrMany
         if ($sessionKey === null) {
             $options = $this->parent->getRelationDefinition($this->relationName);
 
-            if (array_get($options, 'delete', FALSE)) {
+            if (array_get($options, 'delete', false)) {
                 $model->delete();
             }
             else {

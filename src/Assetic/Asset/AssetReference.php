@@ -27,7 +27,7 @@ class AssetReference implements AssetInterface
 
     private $filters = [];
 
-    private $clone = FALSE;
+    private $clone = false;
 
     private $asset;
 
@@ -39,7 +39,7 @@ class AssetReference implements AssetInterface
 
     public function __clone()
     {
-        $this->clone = TRUE;
+        $this->clone = true;
 
         if ($this->asset) {
             $this->asset = clone $this->asset;

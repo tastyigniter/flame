@@ -42,7 +42,7 @@ trait ExtendableTrait
     /**
      * @var bool Indicates if dynamic properties can be created.
      */
-    protected static $extendableGuardProperties = TRUE;
+    protected static $extendableGuardProperties = true;
 
     /**
      * @var ClassLoader Class loader instance.
@@ -228,7 +228,7 @@ trait ExtendableTrait
             return;
         }
 
-        self::$extendableGuardProperties = FALSE;
+        self::$extendableGuardProperties = false;
 
         if (!property_exists($this, $dynamicName)) {
             $this->{$dynamicName} = $value;
@@ -236,7 +236,7 @@ trait ExtendableTrait
 
         $this->extensionData['dynamicProperties'][] = $dynamicName;
 
-        self::$extendableGuardProperties = TRUE;
+        self::$extendableGuardProperties = true;
     }
 
     /**
@@ -344,7 +344,7 @@ trait ExtendableTrait
     public function propertyExists($name)
     {
         if (property_exists($this, $name)) {
-            return TRUE;
+            return true;
         }
 
         foreach ($this->extensionData['extensions'] as $extensionObject) {
@@ -352,7 +352,7 @@ trait ExtendableTrait
                 property_exists($extensionObject, $name) &&
                 $this->extendableIsAccessible($extensionObject, $name)
             ) {
-                return TRUE;
+                return true;
             }
         }
 
@@ -394,7 +394,7 @@ trait ExtendableTrait
         }
 
         $parent = get_parent_class();
-        if ($parent !== FALSE && method_exists($parent, '__get')) {
+        if ($parent !== false && method_exists($parent, '__get')) {
             return parent::__get($name);
         }
     }
@@ -421,7 +421,7 @@ trait ExtendableTrait
          * This targets trait usage in particular
          */
         $parent = get_parent_class();
-        if ($parent !== FALSE && method_exists($parent, '__set')) {
+        if ($parent !== false && method_exists($parent, '__set')) {
             parent::__set($name, $value);
         }
 
@@ -461,7 +461,7 @@ trait ExtendableTrait
         }
 
         $parent = get_parent_class();
-        if ($parent !== FALSE && method_exists($parent, '__call')) {
+        if ($parent !== false && method_exists($parent, '__call')) {
             return parent::__call($name, $params);
         }
 

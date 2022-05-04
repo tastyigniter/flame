@@ -17,7 +17,7 @@ abstract class AppServiceProvider extends ServiceProvider
     /**
      * @var bool Indicates if loading of the provider is deferred.
      */
-    protected $defer = FALSE;
+    protected $defer = false;
 
     /**
      * Boot the service provider.

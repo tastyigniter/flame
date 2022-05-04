@@ -9,7 +9,7 @@ use Illuminate\Support\ServiceProvider;
  */
 class ActivityLogServiceProvider extends ServiceProvider
 {
-    public $defer = TRUE;
+    public $defer = true;
 
     /**
      * Register the service provider.

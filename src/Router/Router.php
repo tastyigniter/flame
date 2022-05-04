@@ -64,7 +64,7 @@ class Router
                     $callbackResult = call_user_func($callback, $parameters, $url);
 
                     // Callback responded to abort
-                    if ($callbackResult === FALSE) {
+                    if ($callbackResult === false) {
                         $parameters = [];
                         $this->matchedRouteRule = null;
                         continue;
@@ -86,7 +86,7 @@ class Router
 
         $this->parameters = $parameters;
 
-        return $this->matchedRouteRule ? TRUE : FALSE;
+        return $this->matchedRouteRule ? true : false;
     }
 
     /**
@@ -232,7 +232,7 @@ class Router
     public function matchedRoute()
     {
         if (!$this->matchedRouteRule) {
-            return FALSE;
+            return false;
         }
 
         return $this->matchedRouteRule->name();

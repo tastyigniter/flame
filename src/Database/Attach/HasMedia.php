@@ -66,7 +66,7 @@ trait HasMedia
         ) return parent::getAttribute($key);
 
         $mediableConfig = array_get($mediable, $key, []);
-        if (array_get($mediableConfig, 'multiple', FALSE))
+        if (array_get($mediableConfig, 'multiple', false))
             return $this->getMedia($key);
 
         return $this->getFirstMedia($key);
@@ -309,13 +309,13 @@ trait HasMedia
         return function (Media $media) use ($filters) {
             foreach ($filters as $property => $value) {
                 if (!array_has($media->custom_properties, $property))
-                    return FALSE;
+                    return false;
 
                 if (array_get($media->custom_properties, $property) !== $value)
-                    return FALSE;
+                    return false;
             }
 
-            return TRUE;
+            return true;
         };
     }
 

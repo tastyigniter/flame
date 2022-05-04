@@ -227,7 +227,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function label($name, $value = null, $options = [], $escape_html = TRUE)
+    public function label($name, $value = null, $options = [], $escape_html = true)
     {
         $this->labels[] = $name;
 
@@ -752,7 +752,7 @@ class FormBuilder
     protected function getSelectedValue($value, $selected)
     {
         if (is_array($selected)) {
-            return in_array($value, $selected, TRUE) || in_array((string)$value, $selected, TRUE) ? 'selected' : null;
+            return in_array($value, $selected, true) || in_array((string)$value, $selected, true) ? 'selected' : null;
         }
         elseif ($selected instanceof Collection) {
             return $selected->contains($value) ? 'selected' : null;
@@ -857,7 +857,7 @@ class FormBuilder
         $request = $this->request($name);
 
         if (isset($this->session) && !$this->oldInputIsEmpty() && is_null($this->old($name)) && !$request) {
-            return FALSE;
+            return false;
         }
 
         if ($this->missingOldAndModel($name) && !$request) {

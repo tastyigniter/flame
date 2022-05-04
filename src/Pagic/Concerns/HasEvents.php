@@ -163,7 +163,7 @@ trait HasEvents
                 return $model->afterBoot();
         });
 
-        static::$eventsBooted[$class] = TRUE;
+        static::$eventsBooted[$class] = true;
     }
 
     /**
@@ -174,10 +174,10 @@ trait HasEvents
      *
      * @return mixed
      */
-    protected function fireModelEvent($event, $halt = TRUE)
+    protected function fireModelEvent($event, $halt = true)
     {
         if (!isset(static::$dispatcher)) {
-            return TRUE;
+            return true;
         }
 
         // First, we will get the proper method to call on the event dispatcher, and then we
@@ -189,8 +189,8 @@ trait HasEvents
             $this->fireCustomModelEvent($event, $method)
         );
 
-        if ($result === FALSE) {
-            return FALSE;
+        if ($result === false) {
+            return false;
         }
 
         return !empty($result) ? $result : static::$dispatcher->{$method}(

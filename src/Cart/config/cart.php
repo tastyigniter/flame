@@ -24,9 +24,9 @@ return [
     |
     */
 
-    'destroyOnLogout' => FALSE,
+    'destroyOnLogout' => false,
 
     'conditions' => [],
 
-    'abandonedCart' => FALSE,
+    'abandonedCart' => false,
 ];

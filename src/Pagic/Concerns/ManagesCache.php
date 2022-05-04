@@ -13,7 +13,7 @@ trait ManagesCache
     /**
      * @var bool Indicated whether the object was loaded from the cache.
      */
-    protected $loadedFromCache = FALSE;
+    protected $loadedFromCache = false;
 
     /**
      * Get the cache manager instance.

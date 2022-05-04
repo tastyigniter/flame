@@ -27,7 +27,7 @@ use Exception;
  */
 class ConfigRewrite
 {
-    public function toFile($filePath, $newValues, $useValidation = TRUE)
+    public function toFile($filePath, $newValues, $useValidation = true)
     {
         $contents = file_get_contents($filePath);
         $contents = $this->toContent($contents, $newValues, $useValidation);
@@ -36,7 +36,7 @@ class ConfigRewrite
         return $contents;
     }
 
-    public function toContent($contents, $newValues, $useValidation = TRUE)
+    public function toContent($contents, $newValues, $useValidation = true)
     {
         $contents = $this->parseContent($contents, $newValues);
         if (!$useValidation) {
@@ -98,10 +98,10 @@ class ConfigRewrite
 
     protected function writeValueToPhp($value)
     {
-        if (is_string($value) && strpos($value, "'") === FALSE) {
+        if (is_string($value) && strpos($value, "'") === false) {
             $replaceValue = "'".$value."'";
         }
-        elseif (is_string($value) && strpos($value, '"') === FALSE) {
+        elseif (is_string($value) && strpos($value, '"') === false) {
             $replaceValue = '"'.$value.'"';
         }
         elseif (is_bool($value)) {

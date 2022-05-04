@@ -168,7 +168,7 @@ class FileParser
         $code = trim($this->object->code);
         $parentClass = trim($this->object->getCodeClassParent());
 
-        $uniqueName = str_replace('.', '', uniqid('', TRUE)).'_'.md5(mt_rand());
+        $uniqueName = str_replace('.', '', uniqid('', true)).'_'.md5(mt_rand());
         $className = 'Pagic'.$uniqueName.'Class';
 
         $code = preg_replace('/^\s*function/m', 'public function', $code);

@@ -115,7 +115,7 @@ class Rule
          * If the number of URL segments is more than the number of pattern segments - return false
          */
         if (count($urlSegments) > count($patternSegments)) {
-            return FALSE;
+            return false;
         }
 
         /*
@@ -132,7 +132,7 @@ class Rule
                     !array_key_exists($index, $urlSegments) ||
                     $patternSegmentLower != mb_strtolower($urlSegments[$index])
                 ) {
-                    return FALSE;
+                    return false;
                 }
             }
             else {
@@ -140,7 +140,7 @@ class Rule
                  * Dynamic segment. Initialize the parameter
                  */
                 $paramName = RouterHelper::getParameterName($patternSegment);
-                $parameters[$paramName] = FALSE;
+                $parameters[$paramName] = false;
 
                 /*
                  * Determine whether it is optional
@@ -153,7 +153,7 @@ class Rule
                 if ($optional && $index < $patternSegmentNum - 1) {
                     for ($i = $index + 1; $i < $patternSegmentNum; $i++) {
                         if (!RouterHelper::segmentIsOptional($patternSegments[$i])) {
-                            $optional = FALSE;
+                            $optional = false;
                             break;
                         }
                     }
@@ -174,7 +174,7 @@ class Rule
                  * If the segment is not optional and there is no corresponding value in the URL, return false
                  */
                 if (!$optional && !$urlSegmentExists) {
-                    return FALSE;
+                    return false;
                 }
 
                 /*
@@ -185,7 +185,7 @@ class Rule
                 if ($regexp) {
                     try {
                         if (!preg_match($regexp, $urlSegments[$index])) {
-                            return FALSE;
+                            return false;
                         }
                     }
                     catch (\Exception $ex) {
@@ -206,7 +206,7 @@ class Rule
             }
         }
 
-        return TRUE;
+        return true;
     }
 
     /**
@@ -221,7 +221,7 @@ class Rule
         $wildSegments = [];
         $patternSegments = $this->segments;
         $segmentDiff = count($urlSegments) - count($patternSegments);
-        $wildMode = FALSE;
+        $wildMode = false;
         $wildCount = 0;
 
         foreach ($urlSegments as $index => $urlSegment) {
@@ -238,7 +238,7 @@ class Rule
 
             $patternSegment = $patternSegments[$index];
             if (RouterHelper::segmentIsWildcard($patternSegment)) {
-                $wildMode = TRUE;
+                $wildMode = true;
             }
         }
 

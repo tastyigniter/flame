@@ -12,7 +12,7 @@ class PermalinkMaker
     /** @var \Model */
     protected $model;
 
-    public function slug(Model $model, $force = FALSE)
+    public function slug(Model $model, $force = false)
     {
         $this->setModel($model);
 
@@ -48,12 +48,12 @@ class PermalinkMaker
                 'controller' => 'pages',
                 'maximumLength' => 250,
                 'separator' => '-',
-                'generateUnique' => TRUE,
-                'generateOnCreate' => TRUE,
-                'generateOnUpdate' => FALSE,
+                'generateUnique' => true,
+                'generateOnCreate' => true,
+                'generateOnUpdate' => false,
                 'reserved' => [],
                 'uniqueSuffix' => null,
-                'includeTrashed' => FALSE,
+                'includeTrashed' => false,
             ];
         }
 
@@ -97,15 +97,15 @@ class PermalinkMaker
      */
     protected function needsSlugging($attribute, array $config)
     {
-        if ($config['generateOnUpdate'] === TRUE
+        if ($config['generateOnUpdate'] === true
             || empty($this->model->getAttributeValue($attribute))
         )
-            return TRUE;
+            return true;
 
         if ($this->model->isDirty($attribute))
-            return FALSE;
+            return false;
 
-        return $config['generateOnCreate'] === TRUE && !$this->model->exists;
+        return $config['generateOnCreate'] === true && !$this->model->exists;
     }
 
     /**
@@ -182,7 +182,7 @@ class PermalinkMaker
         // 	a) the list is empty, or
         // 	b) our slug isn't in the list
         // ... we are okay
-        if ($list->count() === 0 || $list->contains($slug) === FALSE) {
+        if ($list->count() === 0 || $list->contains($slug) === false) {
             return $slug;
         }
 

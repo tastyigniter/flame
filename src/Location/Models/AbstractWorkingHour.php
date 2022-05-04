@@ -21,7 +21,7 @@ abstract class AbstractWorkingHour extends Model implements Contracts\WorkingHou
 
     protected $primaryKey = 'location_id';
 
-    public $incrementing = FALSE;
+    public $incrementing = false;
 
     protected $timeFormat = 'H:i';
 

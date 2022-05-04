@@ -48,7 +48,7 @@ class Mailer extends MailerBase
          *         return false;
          *     });
          */
-        if (Event::fire('mailer.beforeSend', [$view, $data, $callback], TRUE) === FALSE) {
+        if (Event::fire('mailer.beforeSend', [$view, $data, $callback], true) === false) {
             return;
         }
 
@@ -67,7 +67,7 @@ class Mailer extends MailerBase
             call_user_func($callback, $message);
         }
 
-        if (is_bool($raw) && $raw === TRUE) {
+        if (is_bool($raw) && $raw === true) {
             $this->addContentRaw($message, $view, $plain);
         }
         else {
@@ -99,8 +99,8 @@ class Mailer extends MailerBase
          *     });
          */
         if (
-            ($this->fireEvent('mailer.prepareSend', [$view, $message], TRUE) === FALSE) ||
-            (Event::fire('mailer.prepareSend', [$this, $view, $message], TRUE) === FALSE)
+            ($this->fireEvent('mailer.prepareSend', [$view, $message], true) === false) ||
+            (Event::fire('mailer.prepareSend', [$this, $view, $message], true) === false)
         ) {
             return;
         }
@@ -150,20 +150,20 @@ class Mailer extends MailerBase
 
         if (is_bool($options)) {
             $queue = $options;
-            $bcc = FALSE;
+            $bcc = false;
         }
         else {
             extract(array_merge([
-                'queue' => FALSE,
-                'bcc' => FALSE,
+                'queue' => false,
+                'bcc' => false,
             ], $options));
         }
 
-        $method = $queue === TRUE ? 'queue' : 'send';
+        $method = $queue === true ? 'queue' : 'send';
         $recipients = $this->processRecipients($recipients);
 
         return $this->{$method}($view, $data, function ($message) use ($recipients, $callback, $bcc) {
-            $method = $bcc === TRUE ? 'bcc' : 'to';
+            $method = $bcc === true ? 'bcc' : 'to';
 
             foreach ($recipients as $address => $name) {
                 $message->{$method}($address, $name);
@@ -287,7 +287,7 @@ class Mailer extends MailerBase
             $view = ['raw' => $view];
         }
         elseif (!array_key_exists('raw', $view)) {
-            $view['raw'] = TRUE;
+            $view['raw'] = true;
         }
 
         $this->send($view, [], $callback);
@@ -307,7 +307,7 @@ class Mailer extends MailerBase
             $view = ['raw' => $view];
         }
         elseif (!array_key_exists('raw', $view)) {
-            $view['raw'] = TRUE;
+            $view['raw'] = true;
         }
 
         return $this->sendTo($recipients, $view, [], $callback, $options);
@@ -392,8 +392,8 @@ class Mailer extends MailerBase
          *     });
          */
         if (
-            ($this->fireEvent('mailer.beforeAddContent', [$message, $view, $data, $raw, $plain], TRUE) === FALSE) ||
-            (Event::fire('mailer.beforeAddContent', [$this, $message, $view, $data, $raw, $plain], TRUE) === FALSE)
+            ($this->fireEvent('mailer.beforeAddContent', [$message, $view, $data, $raw, $plain], true) === false) ||
+            (Event::fire('mailer.beforeAddContent', [$this, $message, $view, $data, $raw, $plain], true) === false)
         ) {
             return;
         }
@@ -477,7 +477,7 @@ class Mailer extends MailerBase
      * @param bool $value
      * @return void
      */
-    public function pretend($value = TRUE)
+    public function pretend($value = true)
     {
         if ($value) {
             $this->pretendingOriginal = Config::get('mail.driver');
@@ -489,13 +489,13 @@ class Mailer extends MailerBase
         }
     }
 
-    public function sendToMany($recipients, $view, array $data = [], $callback = null, $queue = FALSE)
+    public function sendToMany($recipients, $view, array $data = [], $callback = null, $queue = false)
     {
         if ($callback && !$queue && !is_callable($callback)) {
             $queue = $callback;
         }
 
-        $method = $queue === TRUE ? 'queue' : 'send';
+        $method = $queue === true ? 'queue' : 'send';
         $recipients = $this->processRecipients($recipients);
 
         foreach ($recipients as $address => $name) {
@@ -530,7 +530,7 @@ class Mailer extends MailerBase
             // to mail the raw value is expected to be bool
             if (isset($view['raw'])) {
                 $view['text'] = $view['raw'];
-                $view['raw'] = TRUE;
+                $view['raw'] = true;
             }
 
             return [

@@ -11,7 +11,7 @@ class CartServiceProvider extends ServiceProvider
      *
      * @var bool
      */
-    protected $defer = TRUE;
+    protected $defer = true;
 
     public function register()
     {

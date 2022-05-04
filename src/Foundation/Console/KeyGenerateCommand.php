@@ -56,12 +56,12 @@ class KeyGenerateCommand extends BaseKeyGenerateCommand
         $currentKey = $this->laravel['config']['app.key'];
 
         if (strlen($currentKey) !== 0 && (!$this->confirmToProceed())) {
-            return FALSE;
+            return false;
         }
 
         $this->writeNewConfigFileWith($key, $currentKey);
 
-        return TRUE;
+        return true;
     }
 
     protected function writeNewConfigFileWith($key, $currentKey)

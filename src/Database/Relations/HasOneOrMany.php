@@ -27,7 +27,7 @@ trait HasOneOrMany
 
         $this->add($model, $sessionKey);
 
-        return $model->save() ? $model : FALSE;
+        return $model->save() ? $model : false;
     }
 
     /**

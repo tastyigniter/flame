@@ -158,7 +158,7 @@ class WorkingSchedule
 
     public function isOpening()
     {
-        return $this->nextOpenAt(new DateTime()) ? TRUE : FALSE;
+        return $this->nextOpenAt(new DateTime()) ? true : false;
     }
 
     public function isClosed()
@@ -181,7 +181,7 @@ class WorkingSchedule
         $workingTime = WorkingTime::fromDateTime($dateTime);
 
         if ($this->forDate($dateTime)->isOpenAt($workingTime))
-            return TRUE;
+            return true;
 
         // Cover the edge case where we have late night opening,
         // but are closed the next day and the date range falls
@@ -208,14 +208,14 @@ class WorkingSchedule
         if (!$this->hasPeriod())
             return null;
 
-        while ($nextOpenAt === FALSE) {
+        while ($nextOpenAt === false) {
             $dateTime = $dateTime->modify('+1 day')->setTime(0, 0);
             $workingTime = WorkingTime::fromDateTime($dateTime);
 
             $forDate = $this->forDate($dateTime);
             $nextOpenAt = !$forDate->isEmpty()
                 ? $forDate->nextOpenAt($workingTime)
-                : FALSE;
+                : false;
         }
 
         $dateTime = $dateTime->setTime(
@@ -244,14 +244,14 @@ class WorkingSchedule
         if (!$this->hasPeriod())
             return null;
 
-        while ($nextCloseAt === FALSE) {
+        while ($nextCloseAt === false) {
             $dateTime = $dateTime->modify('+1 day')->setTime(0, 0);
             $workingTime = WorkingTime::fromDateTime($dateTime);
 
             $forDate = $this->forDate($dateTime);
             $nextCloseAt = !$forDate->isEmpty()
                 ? $forDate->nextCloseAt($workingTime)
-                : FALSE;
+                : false;
         }
 
         $dateTime = $dateTime->setTime(
@@ -428,38 +428,38 @@ class WorkingSchedule
     protected function isTimeslotValid(DateTimeInterface $date, DateTimeInterface $dateTime, int $leadTimeMinutes)
     {
         if (Carbon::instance($dateTime)->gt($date) || Carbon::now()->gt($date))
-            return FALSE;
+            return false;
 
         if (Carbon::now()->diffInMinutes($date) < $leadTimeMinutes)
-            return FALSE;
+            return false;
 
         // +2 as we subtracted a day and need to count the current day
         if (Carbon::instance($dateTime)->addDays($this->days + 2)->lt($date))
-            return FALSE;
+            return false;
 
-        $result = Event::fire('igniter.workingSchedule.timeslotValid', [$this, $date], TRUE);
+        $result = Event::fire('igniter.workingSchedule.timeslotValid', [$this, $date], true);
 
-        return is_bool($result) ? $result : TRUE;
+        return is_bool($result) ? $result : true;
     }
 
     protected function hasPeriod()
     {
         foreach ($this->periods as $period) {
             if (!$period->isEmpty())
-                return TRUE;
+                return true;
         }
 
         if (!empty($this->exceptions))
-            return TRUE;
+            return true;
 
-        return FALSE;
+        return false;
     }
 
     protected function createPeriodForDays($dateTime)
     {
         $startDate = $dateTime->copy()->startOfDay()->subDays(2);
         if (!$startDate = $this->nextOpenAt($startDate))
-            return FALSE;
+            return false;
 
         $endDate = $dateTime->copy()->endOfDay()->addDays($this->days);
         if ($this->forDate($endDate)->closesLate())

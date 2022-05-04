@@ -259,7 +259,7 @@ class Vertex implements Contracts\VertexInterface
     public function isOnSameLine(Vertex $vertex)
     {
         if (is_null($this->getGradient()) && is_null($vertex->getGradient()) && $this->from->getLongitude() == $vertex->getFrom()->getLongitude()) {
-            return TRUE;
+            return true;
         }
 
         if (!is_null($this->getGradient()) && !is_null($vertex->getGradient())) {
@@ -269,7 +269,7 @@ class Vertex implements Contracts\VertexInterface
                 bccomp($this->getOrdinateIntercept(), $vertex->getOrdinateIntercept(), $this->getPrecision()) === 0;
         }
 
-        return FALSE;
+        return false;
     }
 
     /**

@@ -60,7 +60,7 @@ class CssMinFilter implements FilterInterface
         $filters = $this->filters;
         $plugins = $this->plugins;
 
-        if (isset($filters['ImportImports']) && TRUE === $filters['ImportImports']) {
+        if (isset($filters['ImportImports']) && true === $filters['ImportImports']) {
             if ($dir = $asset->getSourceDirectory()) {
                 $filters['ImportImports'] = ['BasePath' => $dir];
             }

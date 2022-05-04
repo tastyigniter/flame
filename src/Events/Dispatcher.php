@@ -12,7 +12,7 @@ class Dispatcher extends \Illuminate\Events\Dispatcher
      * @param  bool $halt
      * @return array|null
      */
-    public function fire($event, $payload = [], $halt = FALSE)
+    public function fire($event, $payload = [], $halt = false)
     {
         return $this->dispatch($event, $payload, $halt);
     }

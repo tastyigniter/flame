@@ -69,10 +69,10 @@ trait FormAccessible
     public function isNestedModel($key)
     {
         if (in_array($key, array_keys($this->getRelations()))) {
-            return TRUE;
+            return true;
         }
 
-        return FALSE;
+        return false;
     }
 
     /**

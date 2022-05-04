@@ -37,7 +37,7 @@ class OpenExchangeRates extends AbstractConverter
                 sprintf(self::API_URL, $this->appId, $base, implode(',', $currencies))
             );
 
-            $result = json_decode($response->getBody(), TRUE);
+            $result = json_decode($response->getBody(), true);
 
             if (isset($result['error']) && $result['error'])
                 throw new Exception($result['description']);

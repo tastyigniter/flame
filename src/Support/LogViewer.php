@@ -166,7 +166,7 @@ class LogViewer
      *
      * @return array
      */
-    public static function getFiles($basename = FALSE)
+    public static function getFiles($basename = false)
     {
         $files = glob(storage_path().'/logs/*.log');
         $files = array_reverse($files);

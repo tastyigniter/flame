@@ -47,7 +47,7 @@ class AssetFactory
      * @param string $root The default root directory
      * @param bool $debug Filters prefixed with a "?" will be omitted in debug mode
      */
-    public function __construct($root, $debug = FALSE)
+    public function __construct($root, $debug = false)
     {
         $this->root = rtrim($root, '/');
         $this->debug = $debug;
@@ -192,7 +192,7 @@ class AssetFactory
             }
             else {
                 $asset->add($this->parseInput($input, $options));
-                $extensions[pathinfo($input, PATHINFO_EXTENSION)] = TRUE;
+                $extensions[pathinfo($input, PATHINFO_EXTENSION)] = true;
             }
         }
 
@@ -210,7 +210,7 @@ class AssetFactory
         if (!empty($options['vars'])) {
             $toAdd = [];
             foreach ($options['vars'] as $var) {
-                if (FALSE !== strpos($options['output'], '{'.$var.'}')) {
+                if (false !== strpos($options['output'], '{'.$var.'}')) {
                     continue;
                 }
 
@@ -303,7 +303,7 @@ class AssetFactory
             return $this->createAssetReference(substr($input, 1));
         }
 
-        if (FALSE !== strpos($input, '://') || 0 === strpos($input, '//')) {
+        if (false !== strpos($input, '://') || 0 === strpos($input, '//')) {
             return $this->createHttpAsset($input, $options['vars']);
         }
 
@@ -321,7 +321,7 @@ class AssetFactory
             $input = $this->root.'/'.$path;
         }
 
-        if (FALSE !== strpos($input, '*')) {
+        if (false !== strpos($input, '*')) {
             return $this->createGlobAsset($input, $root, $options['vars']);
         }
 
@@ -344,7 +344,7 @@ class AssetFactory
 
     protected function createHttpAsset($sourceUrl, $vars)
     {
-        return new HttpAsset($sourceUrl, [], FALSE, $vars);
+        return new HttpAsset($sourceUrl, [], false, $vars);
     }
 
     protected function createGlobAsset($glob, $root = null, $vars = [])

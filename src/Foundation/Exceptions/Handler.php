@@ -66,7 +66,7 @@ class Handler extends IlluminateHandler
          *         }
          *     });
          */
-        if (Event::fire('exception.beforeReport', [$e], TRUE) === FALSE) {
+        if (Event::fire('exception.beforeReport', [$e], true) === false) {
             return;
         }
 
@@ -115,7 +115,7 @@ class Handler extends IlluminateHandler
             return Response::make($response, $statusCode);
         }
 
-        if ($event = Event::fire('exception.beforeRender', [$e, $statusCode, $request], TRUE)) {
+        if ($event = Event::fire('exception.beforeRender', [$e, $statusCode, $request], true)) {
             return Response::make($event, $statusCode);
         }
 
@@ -174,7 +174,7 @@ class Handler extends IlluminateHandler
      * @param \Throwable $exception
      * @param bool $fromConsole
      */
-    protected function callCustomHandlers($exception, $fromConsole = FALSE)
+    protected function callCustomHandlers($exception, $fromConsole = false)
     {
         foreach ($this->handlers as $handler) {
             // If this exception handler does not handle the given exception, we will just
@@ -235,7 +235,7 @@ class Handler extends IlluminateHandler
                 ->isInstance($exception);
         }
         catch (Throwable $t) {
-            return FALSE;
+            return false;
         }
     }
 }

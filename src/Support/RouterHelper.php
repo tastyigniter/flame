@@ -136,20 +136,20 @@ class RouterHelper
         $name = mb_substr($segment, 1);
 
         $optMarkerPos = mb_strpos($name, '?');
-        if ($optMarkerPos === FALSE) {
-            return FALSE;
+        if ($optMarkerPos === false) {
+            return false;
         }
 
         $regexMarkerPos = mb_strpos($name, '|');
-        if ($regexMarkerPos === FALSE) {
-            return TRUE;
+        if ($regexMarkerPos === false) {
+            return true;
         }
 
-        if ($optMarkerPos !== FALSE && $regexMarkerPos !== FALSE) {
+        if ($optMarkerPos !== false && $regexMarkerPos !== false) {
             return $optMarkerPos < $regexMarkerPos;
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
@@ -165,15 +165,15 @@ class RouterHelper
         $wildMarkerPos = mb_strpos($name, '*');
         $regexMarkerPos = mb_strpos($name, '|');
 
-        if ($wildMarkerPos !== FALSE) {
-            if ($optMarkerPos !== FALSE) {
+        if ($wildMarkerPos !== false) {
+            if ($optMarkerPos !== false) {
                 return mb_substr($name, 0, $optMarkerPos);
             }
 
             return mb_substr($name, 0, $wildMarkerPos);
         }
 
-        if ($optMarkerPos !== FALSE && $regexMarkerPos !== FALSE) {
+        if ($optMarkerPos !== false && $regexMarkerPos !== false) {
             if ($optMarkerPos < $regexMarkerPos) {
                 return mb_substr($name, 0, $optMarkerPos);
             }
@@ -181,11 +181,11 @@ class RouterHelper
             return mb_substr($name, 0, $regexMarkerPos);
         }
 
-        if ($optMarkerPos !== FALSE) {
+        if ($optMarkerPos !== false) {
             return mb_substr($name, 0, $optMarkerPos);
         }
 
-        if ($regexMarkerPos !== FALSE) {
+        if ($regexMarkerPos !== false) {
             return mb_substr($name, 0, $regexMarkerPos);
         }
 
@@ -199,16 +199,16 @@ class RouterHelper
      */
     public static function getSegmentRegExp($segment)
     {
-        if (($pos = mb_strpos($segment, '|')) !== FALSE) {
+        if (($pos = mb_strpos($segment, '|')) !== false) {
             $regexp = mb_substr($segment, $pos + 1);
             if (!mb_strlen($regexp)) {
-                return FALSE;
+                return false;
             }
 
             return '/'.$regexp.'/';
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
@@ -219,23 +219,23 @@ class RouterHelper
     public static function getSegmentDefaultValue($segment)
     {
         $optMarkerPos = mb_strpos($segment, '?');
-        if ($optMarkerPos === FALSE) {
-            return FALSE;
+        if ($optMarkerPos === false) {
+            return false;
         }
 
         $regexMarkerPos = mb_strpos($segment, '|');
         $wildMarkerPos = mb_strpos($segment, '*');
 
-        if ($regexMarkerPos !== FALSE) {
+        if ($regexMarkerPos !== false) {
             $value = mb_substr($segment, $optMarkerPos + 1, $regexMarkerPos - $optMarkerPos - 1);
         }
-        elseif ($wildMarkerPos !== FALSE) {
+        elseif ($wildMarkerPos !== false) {
             $value = mb_substr($segment, $optMarkerPos + 1, $wildMarkerPos - $optMarkerPos - 1);
         }
         else {
             $value = mb_substr($segment, $optMarkerPos + 1);
         }
 
-        return strlen($value) ? $value : FALSE;
+        return strlen($value) ? $value : false;
     }
 }

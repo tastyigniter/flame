@@ -50,12 +50,12 @@ class AssetCollectionFilterIterator extends \RecursiveFilterIterator
      */
     public function accept()
     {
-        $asset = $this->getInnerIterator()->current(TRUE);
-        $duplicate = FALSE;
+        $asset = $this->getInnerIterator()->current(true);
+        $duplicate = false;
 
         // check strict equality
-        if (in_array($asset, $this->visited, TRUE)) {
-            $duplicate = TRUE;
+        if (in_array($asset, $this->visited, true)) {
+            $duplicate = true;
         }
         else {
             $this->visited[] = $asset;
@@ -67,7 +67,7 @@ class AssetCollectionFilterIterator extends \RecursiveFilterIterator
         if ($sourceRoot && $sourcePath) {
             $source = $sourceRoot.'/'.$sourcePath;
             if (in_array($source, $this->sources)) {
-                $duplicate = TRUE;
+                $duplicate = true;
             }
             else {
                 $this->sources[] = $source;

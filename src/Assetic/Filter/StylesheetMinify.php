@@ -24,7 +24,7 @@ class StylesheetMinify implements FilterInterface
     /**
      * Minifies CSS
      * @return string Minified CSS.
-     * @var $css string CSS code to minify.
+     * @var string CSS code to minify.
      */
     protected function minify($css)
     {
