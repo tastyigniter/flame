@@ -35,12 +35,12 @@ class CssRewriteFilter extends BaseCssFilter
         }
 
         // learn how to get from the target back to the source
-        if (FALSE !== strpos($sourceBase, '://')) {
+        if (false !== strpos($sourceBase, '://')) {
             [$scheme, $url] = explode('://', $sourceBase.'/'.$sourcePath, 2);
             [$host, $path] = explode('/', $url, 2);
 
             $host = $scheme.'://'.$host.'/';
-            $path = FALSE === strpos($path, '/') ? '' : dirname($path);
+            $path = false === strpos($path, '/') ? '' : dirname($path);
             $path .= '/';
         }
         else {
@@ -57,7 +57,7 @@ class CssRewriteFilter extends BaseCssFilter
             else {
                 $path = '';
                 while (0 !== strpos($sourcePath, $targetDir)) {
-                    if (FALSE !== $pos = strrpos($targetDir, '/')) {
+                    if (false !== $pos = strrpos($targetDir, '/')) {
                         $targetDir = substr($targetDir, 0, $pos);
                         $path .= '../';
                     }
@@ -72,7 +72,7 @@ class CssRewriteFilter extends BaseCssFilter
         }
 
         $content = $this->filterReferences($asset->getContent(), function ($matches) use ($host, $path) {
-            if (FALSE !== strpos($matches['url'], '://') || 0 === strpos($matches['url'], '//') || 0 === strpos($matches['url'], 'data:')) {
+            if (false !== strpos($matches['url'], '://') || 0 === strpos($matches['url'], '//') || 0 === strpos($matches['url'], 'data:')) {
                 // absolute or protocol-relative or data uri
                 return $matches[0];
             }

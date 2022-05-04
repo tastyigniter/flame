@@ -30,7 +30,7 @@ class Activity extends Model
      */
     public $primaryKey = 'activity_id';
 
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     protected $casts = [
         'properties' => 'collection',

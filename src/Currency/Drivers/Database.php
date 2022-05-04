@@ -91,7 +91,7 @@ class Database extends AbstractDriver
             ->where('currency_code', strtoupper($code));
 
         // Make active optional
-        if (is_null($active) === FALSE) {
+        if (is_null($active) === false) {
             $query->where('currency_status', $active);
         }
 
@@ -106,7 +106,7 @@ class Database extends AbstractDriver
         $table = $this->config('table');
 
         // Create timestamp
-        if (empty($attributes['updated_at']) === TRUE) {
+        if (empty($attributes['updated_at']) === true) {
             $attributes['updated_at'] = new DateTime('now');
         }
 

@@ -178,7 +178,7 @@ trait HasRelationships
     {
         $definition = $this->getRelationDefinition($name);
         if (is_null($definition) || !array_key_exists('push', $definition)) {
-            return TRUE;
+            return true;
         }
 
         return (bool)$definition['push'];
@@ -196,7 +196,7 @@ trait HasRelationships
         switch ($type) {
             case 'attachOne':
             case 'attachMany':
-                return ['order' => 'sort_order', 'delete' => TRUE];
+                return ['order' => 'sort_order', 'delete' => true];
 
             default:
                 return [];
@@ -281,7 +281,7 @@ trait HasRelationships
                     $relation['foreignKey'],
                     $relation['otherKey'],
                     null,
-                    FALSE,
+                    false,
                     $relationName);
                 break;
 
@@ -657,7 +657,7 @@ trait HasRelationships
     public function morphToMany(
         $related, $name, $table = null, $foreignPivotKey = null,
         $relatedPivotKey = null, $parentKey = null,
-        $relatedKey = null, $inverse = FALSE, $relationName = null
+        $relatedKey = null, $inverse = false, $relationName = null
     ) {
         $relationName = $relationName ?: $this->guessBelongsToManyRelation();
 
@@ -720,7 +720,7 @@ trait HasRelationships
             $relatedPivotKey,
             $parentKey,
             $relatedKey,
-            TRUE,
+            true,
             $relationName
         );
     }

@@ -30,7 +30,7 @@ class Model extends EloquentModel
      */
     protected $attributes = [];
 
-    public $timestamps = FALSE;
+    public $timestamps = false;
 
     /**
      * The storage format of the model's time columns.
@@ -132,7 +132,7 @@ class Model extends EloquentModel
             $this->syncOriginal();
         }
         elseif ($fresh = static::find($this->getKey())) {
-            $this->setRawAttributes($fresh->getAttributes(), TRUE);
+            $this->setRawAttributes($fresh->getAttributes(), true);
         }
 
         return $this;
@@ -201,7 +201,7 @@ class Model extends EloquentModel
                 return $model->afterBoot();
         });
 
-        static::$eventsBooted[$class] = TRUE;
+        static::$eventsBooted[$class] = true;
     }
 
     /**
@@ -228,16 +228,16 @@ class Model extends EloquentModel
      */
     public function newFromBuilder($attributes = [], $connection = null)
     {
-        $instance = $this->newInstance([], TRUE);
-        if ($instance->fireModelEvent('fetching') === FALSE)
+        $instance = $this->newInstance([], true);
+        if ($instance->fireModelEvent('fetching') === false)
             return $instance;
 
-        $instance->setRawAttributes((array)$attributes, TRUE);
+        $instance->setRawAttributes((array)$attributes, true);
 
         $instance->setConnection($connection ?: $this->getConnectionName());
 
-        $instance->fireModelEvent('fetched', FALSE);
-        $instance->fireModelEvent('retrieved', FALSE);
+        $instance->fireModelEvent('fetched', false);
+        $instance->fireModelEvent('retrieved', false);
 
         return $instance;
     }
@@ -487,23 +487,23 @@ class Model extends EloquentModel
     protected function saveInternal($options = [])
     {
         // Event
-        if ($this->fireEvent('model.saveInternal', [$this->attributes, $options], TRUE) === FALSE) {
-            return FALSE;
+        if ($this->fireEvent('model.saveInternal', [$this->attributes, $options], true) === false) {
+            return false;
         }
 
         // Save the record
         $result = parent::save($options);
 
         // Halted by event
-        if ($result === FALSE) {
+        if ($result === false) {
             return $result;
         }
 
         //If there is nothing to update, Eloquent will not fire afterSave(),
         // events should still fire for consistency.
         if ($result === null) {
-            $this->fireModelEvent('updated', FALSE);
-            $this->fireModelEvent('saved', FALSE);
+            $this->fireModelEvent('updated', false);
+            $this->fireModelEvent('saved', false);
         }
 
         return $result;
@@ -520,7 +520,7 @@ class Model extends EloquentModel
      */
     public function save(array $options = null, $sessionKey = null)
     {
-        return $this->saveInternal(['force' => FALSE] + (array)$options);
+        return $this->saveInternal(['force' => false] + (array)$options);
     }
 
     /**
@@ -534,10 +534,10 @@ class Model extends EloquentModel
      */
     public function push($options = null, $sessionKey = null)
     {
-        $always = Arr::get($options, 'always', FALSE);
+        $always = Arr::get($options, 'always', false);
 
         if (!$this->save(null, $sessionKey) && !$always) {
-            return FALSE;
+            return false;
         }
 
         foreach ($this->relations as $name => $models) {
@@ -557,12 +557,12 @@ class Model extends EloquentModel
 
             foreach (array_filter($models) as $model) {
                 if (!$model->push(null, $sessionKey)) {
-                    return FALSE;
+                    return false;
                 }
             }
         }
 
-        return TRUE;
+        return true;
     }
 
     /**
@@ -576,7 +576,7 @@ class Model extends EloquentModel
      */
     public function alwaysPush($options = null, $sessionKey = null)
     {
-        return $this->push(['always' => TRUE] + (array)$options, $sessionKey);
+        return $this->push(['always' => true] + (array)$options, $sessionKey);
     }
 
     /**
@@ -601,7 +601,7 @@ class Model extends EloquentModel
              * Hard 'delete' definition
              */
             foreach ($relations as $name => $options) {
-                if (!Arr::get($options, 'delete', FALSE)) {
+                if (!Arr::get($options, 'delete', false)) {
                     continue;
                 }
 
@@ -624,7 +624,7 @@ class Model extends EloquentModel
              */
             if ($type == 'belongsToMany') {
                 foreach ($relations as $name => $options) {
-                    if (!Arr::get($options, 'delete', Arr::get($options, 'detach', TRUE))) {
+                    if (!Arr::get($options, 'delete', Arr::get($options, 'detach', true))) {
                         continue;
                     }
 

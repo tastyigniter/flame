@@ -185,7 +185,7 @@ class FlashBag
     public function overlay($message = null, $title = '')
     {
         if (!$message) {
-            return $this->updateLastMessage(['title' => $title, 'overlay' => TRUE, 'important' => TRUE]);
+            return $this->updateLastMessage(['title' => $title, 'overlay' => true, 'important' => true]);
         }
 
         return $this->message(
@@ -199,7 +199,7 @@ class FlashBag
      */
     public function now()
     {
-        return $this->updateLastMessage(['now' => TRUE]);
+        return $this->updateLastMessage(['now' => true]);
     }
 
     /**
@@ -208,7 +208,7 @@ class FlashBag
      */
     public function important()
     {
-        return $this->updateLastMessage(['important' => TRUE]);
+        return $this->updateLastMessage(['important' => true]);
     }
 
     /**

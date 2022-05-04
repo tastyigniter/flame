@@ -41,7 +41,7 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
      */
     public $priority = 0;
 
-    public $removeable = FALSE;
+    public $removeable = false;
 
     //
     // Object properties
@@ -101,7 +101,7 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     {
         return collect($this->getActions())
             ->filter(function ($action) {
-                return array_get($action, 'inclusive', FALSE);
+                return array_get($action, 'inclusive', false);
             })
             ->isNotEmpty();
     }
@@ -115,7 +115,7 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
      */
     public function apply($subTotal)
     {
-        if ($this->beforeApply() === FALSE)
+        if ($this->beforeApply() === false)
             return $subTotal;
 
         if ($this->validate($this->getRules()))

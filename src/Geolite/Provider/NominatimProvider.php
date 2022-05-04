@@ -155,7 +155,7 @@ class NominatimProvider extends AbstractProvider
 
     protected function parseResponse(ResponseInterface $response)
     {
-        $json = json_decode($response->getBody()->getContents(), FALSE);
+        $json = json_decode($response->getBody()->getContents(), false);
 
         if (empty($json)) {
             throw new GeoliteException(

@@ -27,6 +27,6 @@ class Update extends Command
      */
     public function handle()
     {
-        app('currency')->updateRates(TRUE);
+        app('currency')->updateRates(true);
     }
 }

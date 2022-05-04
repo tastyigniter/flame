@@ -65,7 +65,7 @@ class MorphToMany extends BelongsToMany
         $parentKey,
         $relatedKey,
         $relationName = null,
-        $inverse = FALSE
+        $inverse = false
     ) {
         $this->inverse = $inverse;
 
@@ -163,7 +163,7 @@ class MorphToMany extends BelongsToMany
      * @param bool $exists
      * @return \Illuminate\Database\Eloquent\Relations\Pivot
      */
-    public function newPivot(array $attributes = [], $exists = FALSE)
+    public function newPivot(array $attributes = [], $exists = false)
     {
         $using = $this->using;
 

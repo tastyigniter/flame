@@ -45,7 +45,7 @@ trait HasAttributes
 
     public function getAttributeValue($key)
     {
-        if (($attr = $this->fireEvent('model.beforeGetAttribute', [$key], TRUE)) !== null) {
+        if (($attr = $this->fireEvent('model.beforeGetAttribute', [$key], true)) !== null) {
             return $attr;
         }
 
@@ -55,7 +55,7 @@ trait HasAttributes
             $attr = $this->fromSerialized($attr);
         }
 
-        if (($_attr = $this->fireEvent('model.getAttribute', [$key, $attr], TRUE)) !== null) {
+        if (($_attr = $this->fireEvent('model.getAttribute', [$key, $attr], true)) !== null) {
             return $_attr;
         }
 
@@ -67,7 +67,7 @@ trait HasAttributes
         $attributes = $this->getArrayableAttributes();
 
         foreach ($attributes as $key => $value) {
-            if (($eventValue = $this->fireEvent('model.beforeGetAttribute', [$key], TRUE)) !== null) {
+            if (($eventValue = $this->fireEvent('model.beforeGetAttribute', [$key], true)) !== null) {
                 $attributes[$key] = $eventValue;
             }
         }
@@ -92,7 +92,7 @@ trait HasAttributes
         }
 
         foreach ($attributes as $key => $value) {
-            if (($eventValue = $this->fireEvent('model.getAttribute', [$key, $value], TRUE)) !== null) {
+            if (($eventValue = $this->fireEvent('model.getAttribute', [$key, $value], true)) !== null) {
                 $attributes[$key] = $eventValue;
             }
         }
@@ -131,7 +131,7 @@ trait HasAttributes
             return $this->setRelationValue($key, $value);
         }
 
-        if (($_value = $this->fireEvent('model.beforeSetAttribute', [$key, $value], TRUE)) !== null) {
+        if (($_value = $this->fireEvent('model.beforeSetAttribute', [$key, $value], true)) !== null) {
             $value = $_value;
         }
 

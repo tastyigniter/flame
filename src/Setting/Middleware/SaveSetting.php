@@ -18,11 +18,11 @@ class SaveSetting
      *
      * @var bool
      */
-    protected $settingHandled = FALSE;
+    protected $settingHandled = false;
 
     public function handle($request, Closure $next)
     {
-        $this->settingHandled = TRUE;
+        $this->settingHandled = true;
 
         return $next($request);
     }

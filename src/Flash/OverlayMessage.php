@@ -16,5 +16,5 @@ class OverlayMessage extends Message
      *
      * @var bool
      */
-    public $overlay = TRUE;
+    public $overlay = true;
 }

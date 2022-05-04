@@ -13,7 +13,7 @@ class ConsoleSupportServiceProvider extends BaseServiceProvider
      *
      * @var bool
      */
-    protected $defer = TRUE;
+    protected $defer = true;
 
     /**
      * The provider class names.

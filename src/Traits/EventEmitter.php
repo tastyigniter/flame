@@ -121,7 +121,7 @@ trait EventEmitter
      *
      * @return string|array Collection of event results / Or single result (if halted)
      */
-    public function fireEvent($event, $params = [], $halt = FALSE)
+    public function fireEvent($event, $params = [], $halt = false)
     {
         if (!is_array($params)) $params = [$params];
         $result = [];
@@ -175,7 +175,7 @@ trait EventEmitter
      *
      * @return mixed
      */
-    public function fireSystemEvent($event, $params = [], $halt = TRUE)
+    public function fireSystemEvent($event, $params = [], $halt = true)
     {
         $result = [];
 
@@ -188,7 +188,7 @@ trait EventEmitter
             if ($halt)
                 return $response;
 
-            if ($response !== FALSE)
+            if ($response !== false)
                 $result = array_merge($result, $response);
         }
 
@@ -197,7 +197,7 @@ trait EventEmitter
             if ($halt)
                 return $response;
 
-            if ($response !== FALSE)
+            if ($response !== false)
                 $result = array_merge($result, $response);
         }
 

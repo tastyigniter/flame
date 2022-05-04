@@ -41,7 +41,7 @@ class Migrator extends BaseMigrator
         }
 
         foreach ($migrations as $migration => $file) {
-            $this->runDown($file, $migration, $options['pretend'] ?? FALSE);
+            $this->runDown($file, $migration, $options['pretend'] ?? false);
         }
 
         return $this;

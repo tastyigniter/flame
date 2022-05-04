@@ -84,7 +84,7 @@ class ArrayLoader extends Loader
             throw new Exception(sprintf('Template "%s" is not defined.', $name));
         }
 
-        return TRUE;
+        return true;
     }
 
     public function getFilePath()

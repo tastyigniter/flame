@@ -20,7 +20,7 @@ class Media extends Model
 
     protected $table = 'media_attachments';
 
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     protected $guarded = ['disk'];
 
@@ -309,7 +309,7 @@ class Media extends Model
     public function isPublic()
     {
         if (is_null($this->is_public))
-            return TRUE;
+            return true;
 
         return $this->is_public;
     }
@@ -352,7 +352,7 @@ class Media extends Model
 
         $ext = strtolower($this->getExtension());
 
-        $name = str_replace('.', '', uniqid(null, TRUE));
+        $name = str_replace('.', '', uniqid(null, true));
 
         return $this->name = $name.(strlen($ext) ? '.'.$ext : '');
     }
@@ -683,7 +683,7 @@ class Media extends Model
         $path = temp_path().'/attachments';
 
         if (!File::isDirectory($path))
-            File::makeDirectory($path, 0777, TRUE, TRUE);
+            File::makeDirectory($path, 0777, true, true);
 
         return $path;
     }

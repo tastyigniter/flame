@@ -105,22 +105,22 @@ class FileSource extends AbstractSource implements SourceInterface
 
         $iterator = $this->finder->create()
             ->files()
-            ->ignoreVCS(TRUE)
-            ->ignoreDotFiles(TRUE)
+            ->ignoreVCS(true)
+            ->ignoreDotFiles(true)
             ->depth('<= 1');  // Support only a single level of subdirectories
 
         $iterator->filter(function (\SplFileInfo $file) use ($extensions, $fileMatch) {
             // Filter by extension
             $fileExt = $file->getExtension();
             if (!is_null($extensions) && !in_array($fileExt, $extensions))
-                return FALSE;
+                return false;
 
             // Filter by file name match
             if (!is_null($fileMatch) && !fnmatch($file->getBasename(), $fileMatch))
-                return FALSE;
+                return false;
         });
 
-        $files = iterator_to_array($iterator->in($dirPath), FALSE);
+        $files = iterator_to_array($iterator->in($dirPath), false);
 
         foreach ($files as $file) {
             $item = [];
@@ -277,18 +277,18 @@ class FileSource extends AbstractSource implements SourceInterface
         // Create base directory
         if (
             (!$this->files->exists($dirPath) || !$this->files->isDirectory($dirPath)) &&
-            !$this->files->makeDirectory($dirPath, 0777, TRUE, TRUE)
+            !$this->files->makeDirectory($dirPath, 0777, true, true)
         ) {
             throw (new CreateDirectoryException)->setInvalidPath($dirPath);
         }
 
         // Create base file directory
-        if (strpos($fileName, '/') !== FALSE) {
+        if (strpos($fileName, '/') !== false) {
             $fileDirPath = dirname($path);
 
             if (
                 !$this->files->isDirectory($fileDirPath) &&
-                !$this->files->makeDirectory($fileDirPath, 0777, TRUE, TRUE)
+                !$this->files->makeDirectory($fileDirPath, 0777, true, true)
             ) {
                 throw (new CreateDirectoryException)->setInvalidPath($fileDirPath);
             }
@@ -349,8 +349,8 @@ class FileSource extends AbstractSource implements SourceInterface
     {
         $iterator = $this->finder->create();
         $iterator->files();
-        $iterator->ignoreVCS(TRUE);
-        $iterator->ignoreDotFiles(TRUE);
+        $iterator->ignoreVCS(true);
+        $iterator->ignoreDotFiles(true);
         $iterator->exclude('node_modules');
         $iterator->in($this->basePath);
 

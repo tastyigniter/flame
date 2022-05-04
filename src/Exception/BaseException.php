@@ -235,7 +235,7 @@ class BaseException extends Exception
 
             $args = null;
             if (isset($event['args']) && count($event['args'])) {
-                $args = $this->formatStackArguments($event['args'], FALSE);
+                $args = $this->formatStackArguments($event['args'], false);
             }
 
             $result[] = (object)[
@@ -263,14 +263,14 @@ class BaseException extends Exception
         /*
          * Determine if filter should be used at all.
          */
-        $useFilter = FALSE;
+        $useFilter = false;
         foreach ($traceInfo as $event) {
             if (
                 isset($event['class']) &&
                 $event['class'] == \Illuminate\Foundation\Bootstrap\HandleExceptions::class &&
                 $event['function'] == 'handleError'
             ) {
-                $useFilter = TRUE;
+                $useFilter = true;
             }
         }
 
@@ -279,7 +279,7 @@ class BaseException extends Exception
         }
 
         $filterResult = [];
-        $pruneResult = TRUE;
+        $pruneResult = true;
         foreach ($traceInfo as $index => $event) {
             /*
              * Prune the tail end of the trace from the framework exception handler.
@@ -289,7 +289,7 @@ class BaseException extends Exception
                 $event['class'] == \Illuminate\Foundation\Bootstrap\HandleExceptions::class &&
                 $event['function'] == 'handleError'
             ) {
-                $pruneResult = FALSE;
+                $pruneResult = false;
                 continue;
             }
 

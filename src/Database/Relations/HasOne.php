@@ -87,7 +87,7 @@ class HasOne extends HasOneBase
 
                 $this->update([$this->getForeignKeyName() => null]);
                 $instance->setAttribute($this->getForeignKeyName(), $this->getParentKey());
-                $instance->save(['timestamps' => FALSE]);
+                $instance->save(['timestamps' => false]);
             });
         }
     }

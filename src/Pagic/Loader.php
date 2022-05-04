@@ -116,10 +116,10 @@ class Loader implements TemplateLoader
         try {
             $this->findTemplate($name);
 
-            return TRUE;
+            return true;
         }
         catch (Exception $exception) {
-            return FALSE;
+            return false;
         }
     }
 

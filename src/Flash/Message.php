@@ -30,14 +30,14 @@ class Message implements \ArrayAccess
      *
      * @var bool
      */
-    public $important = FALSE;
+    public $important = false;
 
     /**
      * Whether the message is an overlay.
      *
      * @var bool
      */
-    public $overlay = FALSE;
+    public $overlay = false;
 
     /**
      * Create a new message instance.

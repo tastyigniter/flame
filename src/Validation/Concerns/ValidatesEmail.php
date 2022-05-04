@@ -26,7 +26,7 @@ trait ValidatesEmail
     public function validateEmail($attribute, $value, $parameters)
     {
         if (!is_string($value) && !(is_object($value) && method_exists($value, '__toString'))) {
-            return FALSE;
+            return false;
         }
 
         $validations = collect($parameters)

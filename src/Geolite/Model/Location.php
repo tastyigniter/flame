@@ -425,7 +425,7 @@ class Location implements Contracts\LocationInterface
     public function hasCoordinates()
     {
         if (!$coordinates = $this->getCoordinates())
-            return FALSE;
+            return false;
 
         [$latitude, $longitude] = $coordinates->toArray();
 

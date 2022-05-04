@@ -32,17 +32,17 @@ class Manager
      */
     protected $model;
 
-    protected $requireApproval = FALSE;
+    protected $requireApproval = false;
 
     /**
      * @var bool Internal flag to toggle using the session for the current authentication request
      */
-    protected $useSession = TRUE;
+    protected $useSession = true;
 
     /**
      * @var bool Indicates if the user was authenticated via a recaller cookie.
      */
-    protected $viaRemember = FALSE;
+    protected $viaRemember = false;
 
     /**
      * Determine if the current user is authenticated.
@@ -57,37 +57,37 @@ class Manager
             // If no user is found in session,
             // load the user using cookie token
             elseif ($cookieData = Cookie::get($this->sessionKey)) {
-                $this->viaRemember = TRUE;
-                $userData = @json_decode($cookieData, TRUE);
+                $this->viaRemember = true;
+                $userData = @json_decode($cookieData, true);
             }
             else {
-                return FALSE;
+                return false;
             }
 
             if (!is_array($userData) || count($userData) !== 2)
-                return FALSE;
+                return false;
 
             [$userId, $rememberToken] = $userData;
 
             if (!$user = $this->getById($userId))
-                return FALSE;
+                return false;
 
             if (!$user->checkRememberToken($rememberToken))
-                return FALSE;
+                return false;
 
             $this->user = $user;
         }
 
         if (!($user = $this->getUser()))
-            return FALSE;
+            return false;
 
         if ($this->requireApproval && $user && !$user->is_activated) {
             $this->user = null;
 
-            return FALSE;
+            return false;
         }
 
-        return TRUE;
+        return true;
     }
 
     /**
@@ -150,14 +150,14 @@ class Manager
      * @return \Igniter\Flame\Auth\Models\User|bool
      * @throws \Exception
      */
-    public function authenticate(array $credentials = [], $remember = FALSE, $login = TRUE)
+    public function authenticate(array $credentials = [], $remember = false, $login = true)
     {
         $user = $this->getByCredentials($credentials);
 
         // Validate the user against the given credentials,
         // if valid log the user into the application
         if (is_null($user) || !$this->validateCredentials($user, $credentials)) {
-            return FALSE;
+            return false;
         }
 
         $user->clearResetPasswordCode();
@@ -175,11 +175,11 @@ class Manager
      */
     public function once($credentials = [])
     {
-        $this->useSession = FALSE;
+        $this->useSession = false;
 
         $user = $this->authenticate($credentials);
 
-        $this->useSession = TRUE;
+        $this->useSession = true;
 
         return (bool)$user;
     }
@@ -198,7 +198,7 @@ class Manager
             return $user;
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
@@ -209,7 +209,7 @@ class Manager
      *
      * @throws \Exception
      */
-    public function login(Authenticatable $user, $remember = FALSE)
+    public function login(Authenticatable $user, $remember = false)
     {
         $user->beforeLogin();
 
@@ -244,7 +244,7 @@ class Manager
      * @return mixed
      * @throws \Exception
      */
-    public function loginUsingId($id, $remember = FALSE)
+    public function loginUsingId($id, $remember = false)
     {
         if (!is_null($user = $this->getById($id))) {
             $this->login($user, $remember);
@@ -252,7 +252,7 @@ class Manager
             return $user;
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
@@ -451,10 +451,10 @@ class Manager
     public function impersonate($user)
     {
         $oldSession = Session::get($this->sessionKey);
-        $oldUser = !empty($oldSession[0]) ? $this->getById($oldSession[0]) : FALSE;
+        $oldUser = !empty($oldSession[0]) ? $this->getById($oldSession[0]) : false;
 
         $user->fireEvent('model.auth.beforeImpersonate', [$oldUser]);
-        $this->login($user, FALSE);
+        $this->login($user, false);
 
         if (!$this->isImpersonator()) {
             Session::put($this->sessionKey.'_impersonate', $oldSession);
@@ -464,10 +464,10 @@ class Manager
     public function stopImpersonate()
     {
         $currentSession = Session::get($this->sessionKey);
-        $currentUser = !empty($currentSession[0]) ? $this->getById($currentSession[0]) : FALSE;
+        $currentUser = !empty($currentSession[0]) ? $this->getById($currentSession[0]) : false;
 
         $oldSession = Session::pull($this->sessionKey.'_impersonate');
-        $oldUser = !empty($oldSession[0]) ? $this->getById($oldSession[0]) : FALSE;
+        $oldUser = !empty($oldSession[0]) ? $this->getById($oldSession[0]) : false;
 
         if ($currentUser) {
             $currentUser->fireEvent('model.auth.afterImpersonate', [$oldUser]);
@@ -488,7 +488,7 @@ class Manager
 
         // Check supplied session/cookie is an array (user id, persist code)
         if (!is_array($impersonateArray) || count($impersonateArray) !== 2)
-            return FALSE;
+            return false;
 
         $id = $impersonateArray[0];
 

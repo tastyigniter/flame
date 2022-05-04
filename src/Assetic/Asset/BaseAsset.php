@@ -60,7 +60,7 @@ abstract class BaseAsset implements AssetInterface
         }
         $this->vars = $vars;
         $this->values = [];
-        $this->loaded = FALSE;
+        $this->loaded = false;
     }
 
     public function __clone()
@@ -102,7 +102,7 @@ abstract class BaseAsset implements AssetInterface
         $filter->filterLoad($asset);
         $this->content = $asset->getContent();
 
-        $this->loaded = TRUE;
+        $this->loaded = true;
     }
 
     public function dump(FilterInterface $additionalFilter = null)
@@ -156,7 +156,7 @@ abstract class BaseAsset implements AssetInterface
     {
         if ($this->vars) {
             foreach ($this->vars as $var) {
-                if (FALSE === strpos($targetPath, $var)) {
+                if (false === strpos($targetPath, $var)) {
                     throw new \RuntimeException(sprintf('The asset target path "%s" must contain the variable "{%s}".', $targetPath, $var));
                 }
             }
@@ -173,13 +173,13 @@ abstract class BaseAsset implements AssetInterface
     public function setValues(array $values)
     {
         foreach ($values as $var => $v) {
-            if (!in_array($var, $this->vars, TRUE)) {
+            if (!in_array($var, $this->vars, true)) {
                 throw new \InvalidArgumentException(sprintf('The asset with source path "%s" has no variable named "%s".', $this->sourcePath, $var));
             }
         }
 
         $this->values = $values;
-        $this->loaded = FALSE;
+        $this->loaded = false;
     }
 
     public function getValues()

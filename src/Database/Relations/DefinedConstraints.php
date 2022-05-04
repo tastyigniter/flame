@@ -42,7 +42,7 @@ trait DefinedConstraints
          * Default models (belongsTo)
          */
         if ($defaultData = array_get($args, 'default')) {
-            $relation->withDefault($defaultData === TRUE ? null : $defaultData);
+            $relation->withDefault($defaultData === true ? null : $defaultData);
         }
 
         /*
@@ -64,7 +64,7 @@ trait DefinedConstraints
          */
         if ($count = array_get($args, 'count')) {
             if ($relation instanceof BelongsToManyBase) {
-                $relation->countMode = TRUE;
+                $relation->countMode = true;
             }
 
             $countSql = $this->parent->getConnection()->raw('count(*) as count');

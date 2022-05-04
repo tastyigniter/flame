@@ -6,13 +6,13 @@ use Igniter\Flame\Database\Model;
 
 class Cart extends Model
 {
-    protected static $unguarded = TRUE;
+    protected static $unguarded = true;
 
     protected $table = 'cart';
 
     protected $primaryKey = 'identifier';
 
-    public $incrementing = FALSE;
+    public $incrementing = false;
 
-    public $timestamps = TRUE;
+    public $timestamps = true;
 }

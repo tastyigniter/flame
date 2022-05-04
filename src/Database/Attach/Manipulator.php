@@ -77,7 +77,7 @@ class Manipulator
             $this->file, $this->extractWatermarkDirectory($manipulations)
         );
 
-        $glideServer->setGroupCacheInFolders(FALSE);
+        $glideServer->setGroupCacheInFolders(false);
 
         $tempImage = $glideServer->makeImage(
             $this->convertToRelativeFilePath($this->file),
@@ -112,7 +112,7 @@ class Manipulator
         ]);
 
         if (!$extension = pathinfo($this->file, PATHINFO_EXTENSION))
-            return FALSE;
+            return false;
 
         if ($this->driver == 'gd')
             return in_array($extension, $gdExtensions);

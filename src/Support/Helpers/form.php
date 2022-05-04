@@ -310,7 +310,7 @@ if (!function_exists('form_label')) {
      *
      * @return    string
      */
-    function form_label($name, $value = null, $options = [], $escape_html = TRUE)
+    function form_label($name, $value = null, $options = [], $escape_html = true)
     {
         return app(FormBuilder::class)->label($name, $value, $options, $escape_html);
     }
@@ -423,10 +423,10 @@ if (!function_exists('set_select')) {
      *
      * @return    string
      */
-    function set_select($field, $value = '', $default = FALSE)
+    function set_select($field, $value = '', $default = false)
     {
-        if (($input = set_value($field, FALSE)) === null) {
-            return ($default === TRUE) ? ' selected="selected"' : '';
+        if (($input = set_value($field, false)) === null) {
+            return ($default === true) ? ' selected="selected"' : '';
         }
 
         $value = (string)$value;
@@ -459,11 +459,11 @@ if (!function_exists('set_checkbox')) {
      *
      * @return    string
      */
-    function set_checkbox($field, $value = '', $default = FALSE)
+    function set_checkbox($field, $value = '', $default = false)
     {
         // Form inputs are always strings ...
         $value = (string)$value;
-        $input = set_value($field, FALSE);
+        $input = set_value($field, false);
 
         if (is_array($input)) {
             // Note: in_array('', array(0)) returns TRUE, do not use it
@@ -479,7 +479,7 @@ if (!function_exists('set_checkbox')) {
             return ($input === $value) ? ' checked="checked"' : '';
         }
 
-        return ($default === TRUE) ? ' checked="checked"' : '';
+        return ($default === true) ? ' checked="checked"' : '';
     }
 }
 
@@ -497,11 +497,11 @@ if (!function_exists('set_radio')) {
      *
      * @return    string
      */
-    function set_radio($field, $value = '', $default = FALSE)
+    function set_radio($field, $value = '', $default = false)
     {
         // Form inputs are always strings ...
         $value = (string)$value;
-        $input = set_value($field, FALSE);
+        $input = set_value($field, false);
 
         if (is_array($input)) {
             // Note: in_array('', array(0)) returns TRUE, do not use it
@@ -517,7 +517,7 @@ if (!function_exists('set_radio')) {
             return ($input === $value) ? ' checked="checked"' : '';
         }
 
-        return ($default === TRUE) ? ' checked="checked"' : '';
+        return ($default === true) ? ' checked="checked"' : '';
     }
 }
 

@@ -36,7 +36,7 @@ use Illuminate\Support\Facades\App;
  */
 trait LogsActivity
 {
-    protected $enableLoggingModelsEvents = TRUE;
+    protected $enableLoggingModelsEvents = true;
 
     protected $oldAttributes = [];
 
@@ -71,14 +71,14 @@ trait LogsActivity
 
     public function disableLogging()
     {
-        $this->enableLoggingModelsEvents = FALSE;
+        $this->enableLoggingModelsEvents = false;
 
         return $this;
     }
 
     public function enableLogging()
     {
-        $this->enableLoggingModelsEvents = TRUE;
+        $this->enableLoggingModelsEvents = true;
 
         return $this;
     }
@@ -140,7 +140,7 @@ trait LogsActivity
     public function shouldLogOnlyDirty()
     {
         if (!isset(static::$logOnlyDirty)) {
-            return FALSE;
+            return false;
         }
 
         return static::$logOnlyDirty;
@@ -158,16 +158,16 @@ trait LogsActivity
     protected function shouldLogEvent($eventName)
     {
         if (!$this->enableLoggingModelsEvents) {
-            return FALSE;
+            return false;
         }
 
         if (!in_array($eventName, ['created', 'updated'])) {
-            return TRUE;
+            return true;
         }
 
         if (array_has($this->getDirty(), 'date_deleted')) {
             if ($this->getDirty()['date_deleted'] === null) {
-                return FALSE;
+                return false;
             }
         }
 

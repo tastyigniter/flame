@@ -33,7 +33,7 @@ abstract class VarUtils
     {
         $map = [];
         foreach ($vars as $var) {
-            if (FALSE === strpos($template, '{'.$var.'}')) {
+            if (false === strpos($template, '{'.$var.'}')) {
                 continue;
             }
 
@@ -56,7 +56,7 @@ abstract class VarUtils
         $combinations = [];
         $nbValues = [];
         foreach ($values as $var => $vals) {
-            if (!in_array($var, $vars, TRUE)) {
+            if (!in_array($var, $vars, true)) {
                 continue;
             }
 

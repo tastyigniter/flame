@@ -48,7 +48,7 @@ class CssImportFilter extends BaseCssFilter implements DependencyExtractorInterf
 
             $importRoot = $sourceRoot;
 
-            if (FALSE !== strpos($matches['url'], '://')) {
+            if (false !== strpos($matches['url'], '://')) {
                 // absolute
                 [$importScheme, $tmp] = explode('://', $matches['url'], 2);
                 [$importHost, $importPath] = explode('/', $tmp, 2);
@@ -75,8 +75,8 @@ class CssImportFilter extends BaseCssFilter implements DependencyExtractorInterf
             }
 
             $importSource = $importRoot.'/'.$importPath;
-            if (FALSE !== strpos($importSource, '://') || 0 === strpos($importSource, '//')) {
-                $import = new HttpAsset($importSource, [$importFilter], TRUE);
+            if (false !== strpos($importSource, '://') || 0 === strpos($importSource, '//')) {
+                $import = new HttpAsset($importSource, [$importFilter], true);
             }
             elseif ('css' != pathinfo($importPath, PATHINFO_EXTENSION) || !file_exists($importSource)) {
                 // ignore non-css and non-existant imports

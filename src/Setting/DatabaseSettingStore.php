@@ -102,7 +102,7 @@ class DatabaseSettingStore extends SettingStore
     public function setConstraint(\Closure $callback)
     {
         $this->items = [];
-        $this->loaded = FALSE;
+        $this->loaded = false;
         $this->queryConstraint = $callback;
     }
 
@@ -175,7 +175,7 @@ class DatabaseSettingStore extends SettingStore
         }
 
         if ($insertData) {
-            $this->newQuery(TRUE)
+            $this->newQuery(true)
                 ->insert($this->prepareInsertData($insertData));
         }
 
@@ -270,7 +270,7 @@ class DatabaseSettingStore extends SettingStore
      *
      * @return \Illuminate\Database\Query\Builder
      */
-    protected function newQuery($insert = FALSE)
+    protected function newQuery($insert = false)
     {
         $query = $this->db->table($this->table);
 
@@ -291,7 +291,7 @@ class DatabaseSettingStore extends SettingStore
     protected function parseKeyValue($value)
     {
         $_value = @unserialize($value);
-        if ($_value === FALSE && $_value !== 'b:0;') {
+        if ($_value === false && $_value !== 'b:0;') {
             return $value;
         }
 
@@ -327,7 +327,7 @@ class DatabaseSettingStore extends SettingStore
     {
         if ($cacheKey = $this->getCacheKey()) {
             $this->cache->forget($this->getCacheKey());
-            $this->loaded = FALSE;
+            $this->loaded = false;
         }
     }
 
@@ -345,7 +345,7 @@ class DatabaseSettingStore extends SettingStore
             return $this->db->getSchemaBuilder()->hasTable($this->table);
         }
         catch (Exception $ex) {
-            return FALSE;
+            return false;
         }
     }
 }

@@ -89,6 +89,6 @@ trait Sortable
 
     public function sortWhenCreating()
     {
-        return $this->sortable['sortWhenCreating'] ?? TRUE;
+        return $this->sortable['sortWhenCreating'] ?? true;
     }
 }

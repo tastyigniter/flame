@@ -106,7 +106,7 @@ class ErrorHandler
     {
         $message = $exception->getMessage();
 
-        if (!($exception instanceof ApplicationException) && Config::get('app.debug', FALSE)) {
+        if (!($exception instanceof ApplicationException) && Config::get('app.debug', false)) {
             $message = sprintf('"%s" on line %s of %s',
                 $exception->getMessage(),
                 $exception->getLine(),

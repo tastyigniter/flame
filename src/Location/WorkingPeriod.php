@@ -84,7 +84,7 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
             }
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
@@ -103,7 +103,7 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
             }
         }
 
-        return FALSE;
+        return false;
     }
 
     public function opensAllDay()
@@ -121,20 +121,20 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
     {
         foreach ($this->ranges as $range) {
             if ($range->endsNextDay())
-                return TRUE;
+                return true;
         }
 
-        return FALSE;
+        return false;
     }
 
     public function opensLateAt(WorkingTime $time)
     {
         foreach ($this->ranges as $range) {
             if ($range->endsNextDay() && $range->containsTime($time))
-                return TRUE;
+                return true;
         }
 
-        return FALSE;
+        return false;
     }
 
     public function timeslot(DateTimeInterface $dateTime, DateInterval $interval, ?DateInterval $leadTime = null)

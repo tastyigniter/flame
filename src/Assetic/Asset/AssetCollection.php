@@ -77,46 +77,46 @@ class AssetCollection implements \IteratorAggregate, AssetCollectionInterface
         $this->assets[] = $asset;
     }
 
-    public function removeLeaf(AssetInterface $needle, $graceful = FALSE)
+    public function removeLeaf(AssetInterface $needle, $graceful = false)
     {
         foreach ($this->assets as $i => $asset) {
             $clone = isset($this->clones[$asset]) ? $this->clones[$asset] : null;
-            if (in_array($needle, [$asset, $clone], TRUE)) {
+            if (in_array($needle, [$asset, $clone], true)) {
                 unset($this->clones[$asset], $this->assets[$i]);
 
-                return TRUE;
+                return true;
             }
 
-            if ($asset instanceof AssetCollectionInterface && $asset->removeLeaf($needle, TRUE)) {
-                return TRUE;
+            if ($asset instanceof AssetCollectionInterface && $asset->removeLeaf($needle, true)) {
+                return true;
             }
         }
 
         if ($graceful) {
-            return FALSE;
+            return false;
         }
 
         throw new \InvalidArgumentException('Leaf not found.');
     }
 
-    public function replaceLeaf(AssetInterface $needle, AssetInterface $replacement, $graceful = FALSE)
+    public function replaceLeaf(AssetInterface $needle, AssetInterface $replacement, $graceful = false)
     {
         foreach ($this->assets as $i => $asset) {
             $clone = isset($this->clones[$asset]) ? $this->clones[$asset] : null;
-            if (in_array($needle, [$asset, $clone], TRUE)) {
+            if (in_array($needle, [$asset, $clone], true)) {
                 unset($this->clones[$asset]);
                 $this->assets[$i] = $replacement;
 
-                return TRUE;
+                return true;
             }
 
-            if ($asset instanceof AssetCollectionInterface && $asset->replaceLeaf($needle, $replacement, TRUE)) {
-                return TRUE;
+            if ($asset instanceof AssetCollectionInterface && $asset->replaceLeaf($needle, $replacement, true)) {
+                return true;
             }
         }
 
         if ($graceful) {
-            return FALSE;
+            return false;
         }
 
         throw new \InvalidArgumentException('Leaf not found.');

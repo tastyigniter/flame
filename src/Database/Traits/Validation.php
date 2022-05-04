@@ -33,7 +33,7 @@ trait Validation
      *
      * @var bool
      */
-    protected $validating = TRUE;
+    protected $validating = true;
 
     /**
      * The Validator factory class used for validation.
@@ -191,7 +191,7 @@ trait Validation
      */
     public function getThrowValidationExceptions()
     {
-        return $this->throwValidationExceptions ?? TRUE;
+        return $this->throwValidationExceptions ?? true;
     }
 
     /**
@@ -202,7 +202,7 @@ trait Validation
      */
     public function getInjectUniqueIdentifier()
     {
-        return isset($this->injectUniqueIdentifier) ? $this->injectUniqueIdentifier : TRUE;
+        return isset($this->injectUniqueIdentifier) ? $this->injectUniqueIdentifier : true;
     }
 
     /**
@@ -234,7 +234,7 @@ trait Validation
                 return;
             }
 
-            if ($this->validate() === FALSE) {
+            if ($this->validate() === false) {
                 // Fire the validating failed event.
                 $this->fireValidatedEvents('failed');
                 $this->fireEvent('model.afterValidate', ['failed']);
@@ -243,7 +243,7 @@ trait Validation
                     $this->throwValidationException();
                 }
 
-                return FALSE;
+                return false;
             }
             // Fire the validating.passed event.
             $this->fireValidatedEvents('passed');
@@ -284,10 +284,10 @@ trait Validation
     protected function fireValidatingEvents($event)
     {
         if (Event::until('eloquent.validating: '.get_class($this), [$this, $event]) !== null)
-            return TRUE;
+            return true;
 
-        if ($this->fireEvent('model.beforeValidate', [], TRUE) === FALSE)
-            return TRUE;
+        if ($this->fireEvent('model.beforeValidate', [], true) === false)
+            return true;
 
         if ($this->methodExists('beforeValidate')) {
             $this->beforeValidate();
@@ -362,7 +362,7 @@ trait Validation
     {
         $method = 'prepare'.Str::studly($validationRule).'Rule';
 
-        return method_exists($this, $method) ? $method : FALSE;
+        return method_exists($this, $method) ? $method : false;
     }
 
     /**

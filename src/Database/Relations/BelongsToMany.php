@@ -18,12 +18,12 @@ class BelongsToMany extends BelongsToManyBase
     /**
      * @var bool This relation object is a 'count' helper.
      */
-    public $countMode = FALSE;
+    public $countMode = false;
 
     /**
      * @var bool When a join is not used, don't select aliased columns.
      */
-    public $orphanMode = FALSE;
+    public $orphanMode = false;
 
     /**
      * Create a new belongs to many relationship instance.
@@ -100,7 +100,7 @@ class BelongsToMany extends BelongsToManyBase
      * @param bool $detaching
      * @return array
      */
-    public function sync($ids, $detaching = TRUE)
+    public function sync($ids, $detaching = true)
     {
         parent::sync($ids, $detaching);
         $this->flushDuplicateCache();
@@ -125,7 +125,7 @@ class BelongsToMany extends BelongsToManyBase
      * @param array $attributes
      * @param bool $touch
      */
-    public function attach($id, array $attributes = [], $touch = TRUE)
+    public function attach($id, array $attributes = [], $touch = true)
     {
         $insertData = $this->formatAttachRecords($this->parseIds($id), $attributes);
         $attachedIdList = array_pluck($insertData, $this->relatedPivotKey);
@@ -143,7 +143,7 @@ class BelongsToMany extends BelongsToManyBase
          *         }
          *     });
          */
-        if ($this->parent->fireEvent('model.relation.beforeAttach', [$this->relationName, $attachedIdList, $insertData], TRUE) === FALSE) {
+        if ($this->parent->fireEvent('model.relation.beforeAttach', [$this->relationName, $attachedIdList, $insertData], true) === false) {
             return;
         }
 
@@ -176,7 +176,7 @@ class BelongsToMany extends BelongsToManyBase
      * @param bool $touch
      * @return int|void
      */
-    public function detach($ids = null, $touch = TRUE)
+    public function detach($ids = null, $touch = true)
     {
         $attachedIdList = $this->parseIds($ids);
         if (empty($attachedIdList)) {
@@ -196,7 +196,7 @@ class BelongsToMany extends BelongsToManyBase
          *         }
          *     });
          */
-        if ($this->parent->fireEvent('model.relation.beforeDetach', [$this->relationName, $attachedIdList], TRUE) === FALSE) {
+        if ($this->parent->fireEvent('model.relation.beforeDetach', [$this->relationName, $attachedIdList], true) === false) {
             return;
         }
 
@@ -228,7 +228,7 @@ class BelongsToMany extends BelongsToManyBase
             $sessionKey = null;
         }
 
-        if ($sessionKey === null || $sessionKey === FALSE) {
+        if ($sessionKey === null || $sessionKey === false) {
             $this->attach($model->getKey(), $pivotData);
             $this->parent->reloadRelations($this->relationName);
         }
@@ -278,7 +278,7 @@ class BelongsToMany extends BelongsToManyBase
      * @param bool $exists
      * @return \Illuminate\Database\Eloquent\Relations\Pivot
      */
-    public function newPivot(array $attributes = [], $exists = FALSE)
+    public function newPivot(array $attributes = [], $exists = false)
     {
         /*
          * October looks to the relationship parent

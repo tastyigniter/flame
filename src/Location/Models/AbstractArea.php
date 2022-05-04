@@ -67,13 +67,13 @@ abstract class AbstractArea extends Model implements AreaInterface
     public function getVerticesAttribute()
     {
         return isset($this->boundaries['vertices']) ?
-            json_decode($this->boundaries['vertices'], FALSE) : [];
+            json_decode($this->boundaries['vertices'], false) : [];
     }
 
     public function getCircleAttribute()
     {
         return isset($this->boundaries['circle']) ?
-            json_decode($this->boundaries['circle'], FALSE) : null;
+            json_decode($this->boundaries['circle'], false) : null;
     }
 
     //
@@ -149,7 +149,7 @@ abstract class AbstractArea extends Model implements AreaInterface
     public function pointInVertices(CoordinatesInterface $coordinate)
     {
         if (!$this->vertices)
-            return FALSE;
+            return false;
 
         return $this->getPolygon()->pointInPolygon($coordinate);
     }
@@ -157,7 +157,7 @@ abstract class AbstractArea extends Model implements AreaInterface
     public function pointInCircle(CoordinatesInterface $coordinate)
     {
         if (!$this->circle)
-            return FALSE;
+            return false;
 
         $circle = $this->getCircle();
 

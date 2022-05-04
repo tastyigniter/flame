@@ -41,7 +41,7 @@ class AssetCollectionIterator implements \RecursiveIterator
         $this->output = $coll->getTargetPath();
         $this->clones = $clones;
 
-        if (FALSE === $pos = strrpos($this->output, '.')) {
+        if (false === $pos = strrpos($this->output, '.')) {
             $this->output .= '_*';
         }
         else {
@@ -56,7 +56,7 @@ class AssetCollectionIterator implements \RecursiveIterator
      *
      * @return \Igniter\Flame\Assetic\Asset\AssetInterface
      */
-    public function current($raw = FALSE)
+    public function current($raw = false)
     {
         $asset = current($this->assets);
 
@@ -104,7 +104,7 @@ class AssetCollectionIterator implements \RecursiveIterator
 
     public function valid()
     {
-        return FALSE !== current($this->assets);
+        return false !== current($this->assets);
     }
 
     public function hasChildren()
@@ -124,7 +124,7 @@ class AssetCollectionIterator implements \RecursiveIterator
     {
         foreach ($this->vars as $var) {
             $var = '{'.$var.'}';
-            if (FALSE !== strpos($name, $var) && FALSE !== strpos($this->output, $var)) {
+            if (false !== strpos($name, $var) && false !== strpos($this->output, $var)) {
                 $name = str_replace($var, '', $name);
             }
         }

@@ -332,7 +332,7 @@ if (!function_exists('lang')) {
      *
      * @return mixed
      */
-    function lang($key, $replace = [], $locale = null, $fallback = TRUE)
+    function lang($key, $replace = [], $locale = null, $fallback = true)
     {
         return Lang::get($key, $replace, $locale, $fallback);
     }
@@ -377,7 +377,7 @@ if (!function_exists('currency')) {
      *
      * @return \Igniter\Flame\Currency\Currency|string
      */
-    function currency($amount = null, $from = null, $to = null, $format = TRUE)
+    function currency($amount = null, $from = null, $to = null, $format = true)
     {
         if (is_null($amount)) {
             return app('currency');
@@ -397,7 +397,7 @@ if (!function_exists('currency_format')) {
      *
      * @return string
      */
-    function currency_format($amount = null, $currency = null, $include_symbol = TRUE)
+    function currency_format($amount = null, $currency = null, $include_symbol = true)
     {
         return app('currency')->format($amount, $currency, $include_symbol);
     }

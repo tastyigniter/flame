@@ -107,7 +107,7 @@ class Finder
      * Internal variable to specify if the record was loaded from cache.
      * @var bool
      */
-    protected $loadedFromCache = FALSE;
+    protected $loadedFromCache = false;
 
     /**
      * Create a new query finder instance.
@@ -272,7 +272,7 @@ class Finder
     public function insert(array $values)
     {
         if (empty($values)) {
-            return TRUE;
+            return true;
         }
 
         $this->validateFileName();
@@ -431,7 +431,7 @@ class Finder
                 $model->setLoadedFromCache($this->loadedFromCache);
             });
 
-            $this->loadedFromCache = FALSE;
+            $this->loadedFromCache = false;
         }
 
         return $models->all();
@@ -473,7 +473,7 @@ class Finder
 
         $this->validateFileNameExtension($fileName, $this->model->getAllowedExtensions());
 
-        return TRUE;
+        return true;
     }
 
     /**
@@ -506,28 +506,28 @@ class Finder
      */
     protected function validateFileNamePath($filePath, $maxNesting = 2)
     {
-        if (strpos($filePath, '..') !== FALSE) {
-            return FALSE;
+        if (strpos($filePath, '..') !== false) {
+            return false;
         }
 
-        if (strpos($filePath, './') !== FALSE || strpos($filePath, '//') !== FALSE) {
-            return FALSE;
+        if (strpos($filePath, './') !== false || strpos($filePath, '//') !== false) {
+            return false;
         }
 
         // @todo: A different approach to fix the file path issue.
         if (windows_os()) $filePath = str_replace('\\', '/', $filePath);
         $segments = explode('/', $filePath);
         if ($maxNesting !== null && count($segments) > $maxNesting) {
-            return FALSE;
+            return false;
         }
 
         foreach ($segments as $segment) {
             if (!preg_match('/^[a-z0-9\_\-\.\/]+$/i', $segment)) {
-                return FALSE;
+                return false;
             }
         }
 
-        return TRUE;
+        return true;
     }
 
     //
@@ -628,7 +628,7 @@ class Finder
         // cache and then prompt a recycle of the results.
         if (!$isNewCache && $this->isCacheBusted($result)) {
             $cache->forget($key);
-            $isNewCache = TRUE;
+            $isNewCache = true;
 
             if ($seconds < 0) {
                 $result = $cache->rememberForever($key, $callback);
@@ -654,7 +654,7 @@ class Finder
     protected function isCacheBusted($result)
     {
         if (!$this->select) {
-            return FALSE;
+            return false;
         }
 
         $mTime = $result ? array_get(reset($result), 'mTime') : null;
