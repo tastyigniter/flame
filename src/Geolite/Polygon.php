@@ -21,7 +21,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
     /**
      * @var bool
      */
-    protected $hasCoordinate = FALSE;
+    protected $hasCoordinate = false;
 
     /**
      * @var int
@@ -181,16 +181,16 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
     public function pointInPolygon(Contracts\CoordinatesInterface $coordinate)
     {
         if ($this->isEmpty())
-            return FALSE;
+            return false;
 
         if (!$this->bounds->pointInBounds($coordinate))
-            return FALSE;
+            return false;
 
         if ($this->pointOnVertex($coordinate))
-            return TRUE;
+            return true;
 
         if ($this->pointOnBoundary($coordinate))
-            return TRUE;
+            return true;
 
         return $this->pointOnIntersections($coordinate);
     }
@@ -231,7 +231,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
                     $this->getPrecision()
                 ) === -1
             ) {
-                return TRUE;
+                return true;
             }
 
             // Check if coordinate is on a boundary
@@ -267,12 +267,12 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
                         $this->getPrecision()
                     ) === 0
                 ) {
-                    return TRUE;
+                    return true;
                 }
             }
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
@@ -293,11 +293,11 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
                     $this->getPrecision()
                 ) === 0
             ) {
-                return TRUE;
+                return true;
             }
         }
 
-        return FALSE;
+        return false;
     }
 
     protected function pointOnIntersections(Contracts\CoordinatesInterface $coordinate): bool

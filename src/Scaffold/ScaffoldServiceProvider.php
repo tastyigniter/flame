@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 
 class ScaffoldServiceProvider extends ServiceProvider
 {
-    protected $defer = TRUE;
+    protected $defer = true;
 
     /**
      * The commands to be registered.

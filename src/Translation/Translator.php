@@ -7,7 +7,7 @@ use Illuminate\Translation\Translator as BaseTranslator;
 
 class Translator extends BaseTranslator
 {
-    public function get($key, array $replace = [], $locale = null, $fallback = TRUE)
+    public function get($key, array $replace = [], $locale = null, $fallback = true)
     {
         if (Str::startsWith($key, 'lang:'))
             $key = substr($key, 5);

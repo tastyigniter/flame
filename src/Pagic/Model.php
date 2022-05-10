@@ -71,7 +71,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
      * Indicates if the model exists.
      * @var bool
      */
-    public $exists = FALSE;
+    public $exists = false;
 
     /**
      * @var array Allowable file extensions.
@@ -116,13 +116,13 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     protected function bootIfNotBooted()
     {
         if (!isset(static::$booted[static::class])) {
-            static::$booted[static::class] = TRUE;
+            static::$booted[static::class] = true;
 
-            $this->fireModelEvent('booting', FALSE);
+            $this->fireModelEvent('booting', false);
 
             static::boot();
 
-            $this->fireModelEvent('booted', FALSE);
+            $this->fireModelEvent('booted', false);
         }
     }
 
@@ -330,7 +330,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     public function getBaseFileNameAttribute()
     {
         $pos = strrpos($this->fileName, '.');
-        if ($pos === FALSE) {
+        if ($pos === false) {
             return $this->fileName;
         }
 
@@ -476,7 +476,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
      *
      * @return static
      */
-    public function newInstance($attributes = [], $exists = FALSE)
+    public function newInstance($attributes = [], $exists = false)
     {
         // This method just provides a convenient way for us to generate fresh model
         // instances of this current model. It is particularly useful during the
@@ -498,13 +498,13 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
      */
     public function newFromFinder($attributes = [], $source = null)
     {
-        $instance = $this->newInstance([], TRUE);
+        $instance = $this->newInstance([], true);
 
-        $instance->setRawAttributes((array)$attributes, TRUE);
+        $instance->setRawAttributes((array)$attributes, true);
 
         $instance->setSource($source ?: $this->source);
 
-        $instance->fireModelEvent('retrieved', FALSE);
+        $instance->fireModelEvent('retrieved', false);
 
         return $instance;
     }
@@ -534,7 +534,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
      */
     public function save(array $options = [])
     {
-        return $this->saveInternal(['force' => FALSE] + $options);
+        return $this->saveInternal(['force' => false] + $options);
     }
 
     /**
@@ -547,8 +547,8 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     public function saveInternal(array $options = [])
     {
         // Event
-        if ($this->fireEvent('model.saveInternal', [$this->attributes, $options], TRUE) === FALSE) {
-            return FALSE;
+        if ($this->fireEvent('model.saveInternal', [$this->attributes, $options], true) === false) {
+            return false;
         }
 
         $query = $this->newFinder();
@@ -556,8 +556,8 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
         // If the "saving" event returns false we'll bail out of the save and return
         // false, indicating that the save failed. This provides a chance for any
         // listeners to cancel save operations if validations fail or whatever.
-        if ($this->fireModelEvent('saving') === FALSE) {
-            return FALSE;
+        if ($this->fireModelEvent('saving') === false) {
+            return false;
         }
 
         if ($this->exists) {
@@ -583,7 +583,7 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
      */
     protected function finishSave(array $options)
     {
-        $this->fireModelEvent('saved', FALSE);
+        $this->fireModelEvent('saved', false);
 
         $this->mTime = $this->newFinder()->lastModified();
 
@@ -606,8 +606,8 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
             // If the updating event returns false, we will cancel the update operation so
             // developers can hook Validation systems into their models and cancel this
             // operation if the model does not pass validation. Otherwise, we update.
-            if ($this->fireModelEvent('updating') === FALSE) {
-                return FALSE;
+            if ($this->fireModelEvent('updating') === false) {
+                return false;
             }
 
             $dirty = $this->getDirty();
@@ -615,11 +615,11 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
             if (count($dirty) > 0) {
                 $query->update($dirty);
 
-                $this->fireModelEvent('updated', FALSE);
+                $this->fireModelEvent('updated', false);
             }
         }
 
-        return TRUE;
+        return true;
     }
 
     /**
@@ -632,8 +632,8 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
      */
     protected function performInsert(Finder $query, array $options = [])
     {
-        if ($this->fireModelEvent('creating') === FALSE) {
-            return FALSE;
+        if ($this->fireModelEvent('creating') === false) {
+            return false;
         }
 
         // Ensure the settings attribute is passed through so this distinction
@@ -645,11 +645,11 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
         // We will go ahead and set the exists property to true, so that it is set when
         // the created event is fired, just in case the developer tries to update it
         // during the event. This will allow them to do so and run an update here.
-        $this->exists = TRUE;
+        $this->exists = true;
 
-        $this->fireModelEvent('created', FALSE);
+        $this->fireModelEvent('created', false);
 
-        return TRUE;
+        return true;
     }
 
     /**
@@ -666,20 +666,20 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
         }
 
         if ($this->exists) {
-            if ($this->fireModelEvent('deleting') === FALSE) {
-                return FALSE;
+            if ($this->fireModelEvent('deleting') === false) {
+                return false;
             }
 
             $this->performDeleteOnModel();
 
-            $this->exists = FALSE;
+            $this->exists = false;
 
             // Once the model has been deleted, we will fire off the deleted event so that
             // the developers may hook into post-delete operations. We will then return
             // a boolean true as the delete is presumably successful on the database.
-            $this->fireModelEvent('deleted', FALSE);
+            $this->fireModelEvent('deleted', false);
 
-            return TRUE;
+            return true;
         }
     }
 

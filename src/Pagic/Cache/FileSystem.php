@@ -23,7 +23,7 @@ class FileSystem
         $this->path = $path ?? storage_path().'/system/cache/';
     }
 
-    public function getCacheKey($name, $hashName = FALSE)
+    public function getCacheKey($name, $hashName = false)
     {
         $hash = md5($name);
         $result = $this->path.'/';
@@ -46,11 +46,11 @@ class FileSystem
     public function write($path, $content)
     {
         $dir = dirname($path);
-        if (!File::isDirectory($dir) && !File::makeDirectory($dir, 0777, TRUE))
+        if (!File::isDirectory($dir) && !File::makeDirectory($dir, 0777, true))
             throw new RuntimeException(sprintf('Unable to create the cache directory (%s).', $dir));
 
         $tmpFile = tempnam($dir, basename($path));
-        if (@file_put_contents($tmpFile, $content) === FALSE)
+        if (@file_put_contents($tmpFile, $content) === false)
             throw new RuntimeException(sprintf('Failed to write cache file "%s".', $tmpFile));
 
         if (!@rename($tmpFile, $path))
@@ -59,9 +59,9 @@ class FileSystem
         File::chmod($path);
 
         // Compile cached file into bytecode cache
-        if (Config::get('system.forceBytecodeInvalidation', FALSE)) {
+        if (Config::get('system.forceBytecodeInvalidation', false)) {
             if (function_exists('opcache_invalidate')) {
-                opcache_invalidate($path, TRUE);
+                opcache_invalidate($path, true);
             }
             elseif (function_exists('apc_compile_file')) {
                 apc_compile_file($path);
@@ -79,11 +79,11 @@ class FileSystem
 
     public function getCached($filePath = null)
     {
-        $cached = Cache::get($this->dataCacheKey, FALSE);
+        $cached = Cache::get($this->dataCacheKey, false);
 
         if (
-            $cached !== FALSE &&
-            ($cached = @unserialize(@base64_decode($cached))) !== FALSE
+            $cached !== false &&
+            ($cached = @unserialize(@base64_decode($cached))) !== false
         ) {
             if (is_null($filePath))
                 return $cached;

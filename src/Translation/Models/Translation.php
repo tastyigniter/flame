@@ -9,7 +9,7 @@ class Translation extends Model
 {
     protected static $cacheKey = 'igniter.translation';
 
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     /**
      *  Table name in the database.

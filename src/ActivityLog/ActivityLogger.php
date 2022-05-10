@@ -43,7 +43,7 @@ class ActivityLogger
         $this->events = $app['events'];
         $this->properties = collect();
         $this->logName = $app['config']->get('system.activityLogName', 'default');
-        $this->logEnabled = $app['config']->get('system.activityLogEnabled', TRUE);
+        $this->logEnabled = $app['config']->get('system.activityLogEnabled', true);
     }
 
     public function sendTo(User $user)
@@ -122,7 +122,7 @@ class ActivityLogger
     public function log()
     {
         if (!$this->logEnabled)
-            return FALSE;
+            return false;
 
         $activity = $this->getModelInstance();
 

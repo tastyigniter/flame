@@ -290,7 +290,7 @@ class Application extends BaseApplication
                 : $this->hasDatabase;
         }
         catch (Exception $ex) {
-            $hasDatabase = FALSE;
+            $hasDatabase = false;
         }
 
         return $this->hasDatabase = $hasDatabase;

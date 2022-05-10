@@ -38,7 +38,7 @@ class Filesystem extends AbstractDriver
         $currencies = $this->all();
 
         // Verify the currency doesn't exists
-        if (isset($currencies[$params['code']]) === TRUE) {
+        if (isset($currencies[$params['code']]) === true) {
             return 'exists';
         }
 
@@ -72,7 +72,7 @@ class Filesystem extends AbstractDriver
             ? $this->filesystem->get($path)
             : '{}';
 
-        return json_decode($contents, TRUE);
+        return json_decode($contents, true);
     }
 
     /**
@@ -102,12 +102,12 @@ class Filesystem extends AbstractDriver
         $currencies = $this->all();
 
         // Verify the currency exists
-        if (isset($currencies[$code]) === FALSE) {
+        if (isset($currencies[$code]) === false) {
             return 'doesn\'t exists';
         }
 
         // Create timestamp
-        if (empty($attributes['updated_at']) === TRUE) {
+        if (empty($attributes['updated_at']) === true) {
             $attributes['updated_at'] = (new DateTime('now'))->format('Y-m-d H:i:s');
         }
 
@@ -129,8 +129,8 @@ class Filesystem extends AbstractDriver
         $currencies = $this->all();
 
         // Verify the currency exists
-        if (isset($currencies[$code]) === FALSE) {
-            return FALSE;
+        if (isset($currencies[$code]) === false) {
+            return false;
         }
 
         unset($currencies[$code]);

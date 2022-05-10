@@ -27,7 +27,7 @@ use ScssPhp\ScssPhp\Compiler;
  */
 class ScssphpFilter implements DependencyExtractorInterface
 {
-    private $compass = FALSE;
+    private $compass = false;
 
     private $importPaths = [];
 
@@ -37,7 +37,7 @@ class ScssphpFilter implements DependencyExtractorInterface
 
     private $variables = [];
 
-    public function enableCompass($enable = TRUE)
+    public function enableCompass($enable = true)
     {
         $this->compass = (bool)$enable;
     }

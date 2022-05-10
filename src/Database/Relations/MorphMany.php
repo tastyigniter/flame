@@ -78,7 +78,7 @@ class MorphMany extends MorphManyBase
                 $collection->each(function ($instance) {
                     $instance->setAttribute($this->getForeignKeyName(), $this->getParentKey());
                     $instance->setAttribute($this->getMorphType(), $this->morphClass);
-                    $instance->save(['timestamps' => FALSE]);
+                    $instance->save(['timestamps' => false]);
                 });
             });
         }

@@ -54,11 +54,11 @@ class WorkingTime
     public function isAfter(self $time): bool
     {
         if ($this->isSame($time)) {
-            return FALSE;
+            return false;
         }
 
         if ($this->hours > $time->hours) {
-            return TRUE;
+            return true;
         }
 
         return $this->hours === $time->hours && $this->minutes >= $time->minutes;
@@ -67,7 +67,7 @@ class WorkingTime
     public function isBefore(self $time): bool
     {
         if ($this->isSame($time)) {
-            return FALSE;
+            return false;
         }
 
         return !$this->isAfter($time);

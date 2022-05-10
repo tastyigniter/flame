@@ -40,7 +40,7 @@ class FixerIO extends AbstractConverter
                 sprintf(self::API_URL, $this->accessKey, $base, implode(',', $currencies))
             );
 
-            $result = json_decode($response->getBody(), TRUE);
+            $result = json_decode($response->getBody(), true);
 
             if (isset($result['success']) && !$result['success'])
                 throw new Exception('An error occurred when requesting currency exchange rates from fixer.io, check your api key.');

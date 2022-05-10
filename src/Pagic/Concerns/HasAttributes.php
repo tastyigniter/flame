@@ -34,7 +34,7 @@ trait HasAttributes
      *
      * @var bool
      */
-    public static $snakeAttributes = TRUE;
+    public static $snakeAttributes = true;
 
     /**
      * The cache of the mutated attributes for each class.
@@ -151,7 +151,7 @@ trait HasAttributes
     public function getAttribute($key)
     {
         // Before Event
-        if (($attr = $this->fireEvent('model.beforeGetAttribute', [$key], TRUE)) !== null) {
+        if (($attr = $this->fireEvent('model.beforeGetAttribute', [$key], true)) !== null) {
             return $attr;
         }
 
@@ -170,7 +170,7 @@ trait HasAttributes
         }
 
         // After Event
-        if (($_attr = $this->fireEvent('model.getAttribute', [$key, $attr], TRUE)) !== null) {
+        if (($_attr = $this->fireEvent('model.getAttribute', [$key, $attr], true)) !== null) {
             return $_attr;
         }
 
@@ -306,7 +306,7 @@ trait HasAttributes
      *
      * @return $this
      */
-    public function setRawAttributes(array $attributes, $sync = FALSE)
+    public function setRawAttributes(array $attributes, $sync = false)
     {
         $this->attributes = $attributes;
 
@@ -448,11 +448,11 @@ trait HasAttributes
         // all of the attributes for the entire array we will return false at end.
         foreach (Arr::wrap($attributes) as $attribute) {
             if (array_key_exists($attribute, $changes)) {
-                return TRUE;
+                return true;
             }
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
@@ -494,16 +494,16 @@ trait HasAttributes
     protected function originalIsEquivalent($key, $current)
     {
         if (!array_key_exists($key, $this->original)) {
-            return FALSE;
+            return false;
         }
 
         $original = $this->getOriginal($key);
 
         if ($current === $original) {
-            return TRUE;
+            return true;
         }
         elseif (is_null($current)) {
-            return FALSE;
+            return false;
         }
 
         return is_numeric($current) && is_numeric($original)

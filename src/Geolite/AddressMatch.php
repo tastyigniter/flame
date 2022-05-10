@@ -19,10 +19,10 @@ class AddressMatch
                 $value = array_get($item, 'value');
 
                 if ($this->matchComponentValue($position, $type, $value))
-                    return TRUE;
+                    return true;
             }
 
-            return FALSE;
+            return false;
         });
 
         return $matched->isNotEmpty();
@@ -31,7 +31,7 @@ class AddressMatch
     protected function matchComponentValue(LocationInterface $position, $type, $value)
     {
         if (!is_string($value) && !is_numeric($value))
-            return FALSE;
+            return false;
 
         switch ($type) {
             case 'street':
@@ -65,7 +65,7 @@ class AddressMatch
         if (empty($right))
             return $right;
 
-        if (@preg_match($left, '') !== FALSE)
+        if (@preg_match($left, '') !== false)
             return preg_match($left, $right) > 0;
 
         return strtolower($left) === strtolower($right);

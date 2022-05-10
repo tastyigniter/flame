@@ -38,7 +38,7 @@ class Builder extends IlluminateQueryBuilder
      *
      * @var bool
      */
-    protected $cachingDuplicateQueries = FALSE;
+    protected $cachingDuplicateQueries = false;
 
     /**
      * The aliased concatenation columns.
@@ -402,7 +402,7 @@ class Builder extends IlluminateQueryBuilder
      */
     public function enableDuplicateCache()
     {
-        $this->cachingDuplicateQueries = TRUE;
+        $this->cachingDuplicateQueries = true;
 
         return $this;
     }
@@ -414,7 +414,7 @@ class Builder extends IlluminateQueryBuilder
      */
     public function disableDuplicateCache()
     {
-        $this->cachingDuplicateQueries = FALSE;
+        $this->cachingDuplicateQueries = false;
 
         return $this;
     }

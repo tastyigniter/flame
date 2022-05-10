@@ -12,7 +12,7 @@ class GeoliteServiceProvider extends ServiceProvider
      *
      * @var bool
      */
-    protected $defer = TRUE;
+    protected $defer = true;
 
     /**
      * Register the service provider.

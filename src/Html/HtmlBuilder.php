@@ -50,7 +50,7 @@ class HtmlBuilder
      */
     public function entities($value)
     {
-        return htmlentities($value, ENT_QUOTES, 'UTF-8', FALSE);
+        return htmlentities($value, ENT_QUOTES, 'UTF-8', false);
     }
 
     /**
@@ -150,11 +150,11 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function link($url, $title = null, $attributes = [], $secure = null, $escape = TRUE)
+    public function link($url, $title = null, $attributes = [], $secure = null, $escape = true)
     {
         $url = $this->url->to($url, [], $secure);
 
-        if (is_null($title) || $title === FALSE) {
+        if (is_null($title) || $title === false) {
             $title = $url;
         }
 
@@ -176,7 +176,7 @@ class HtmlBuilder
      */
     public function secureLink($url, $title = null, $attributes = [])
     {
-        return $this->link($url, $title, $attributes, TRUE);
+        return $this->link($url, $title, $attributes, true);
     }
 
     /**
@@ -207,7 +207,7 @@ class HtmlBuilder
      */
     public function linkSecureAsset($url, $title = null, $attributes = [])
     {
-        return $this->linkAsset($url, $title, $attributes, TRUE);
+        return $this->linkAsset($url, $title, $attributes, true);
     }
 
     /**
@@ -250,7 +250,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function mailto($email, $title = null, $attributes = [], $escape = TRUE)
+    public function mailto($email, $title = null, $attributes = [], $escape = true)
     {
         $email = $this->email($email);
 

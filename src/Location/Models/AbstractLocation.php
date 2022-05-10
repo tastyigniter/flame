@@ -75,18 +75,6 @@ class AbstractLocation extends Model implements LocationInterface
         ];
     }
 
-    public function setOption($key, $value)
-    {
-        $options = $this->options;
-        array_set($options, $key, $value);
-        $this->options = $options;
-    }
-
-    public function getOption($key = null, $default = null)
-    {
-        return array_get($this->options, $key, $default);
-    }
-
     public function getReservationInterval()
     {
         return (int)$this->getOption('reservation_time_interval', 0);

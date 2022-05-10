@@ -26,7 +26,7 @@ trait DeferOneOrMany
          * No join table will be used, strip the selected "pivot_" columns
          */
         if ($this instanceof BelongsToManyBase) {
-            $this->orphanMode = TRUE;
+            $this->orphanMode = true;
         }
 
         $newQuery->where(function ($query) use ($sessionKey) {

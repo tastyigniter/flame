@@ -80,7 +80,7 @@ class Currency
      *
      * @return string
      */
-    public function convert($amount, $from = null, $to = null, $format = TRUE)
+    public function convert($amount, $from = null, $to = null, $format = true)
     {
         // Get currencies involved
         $from = $from ?: $this->config('default');
@@ -102,7 +102,7 @@ class Currency
         $value = $amount * $toRate * (1 / $fromRate);
 
         // Should the result be formatted?
-        if ($format === TRUE) {
+        if ($format === true) {
             return $this->format($value, $to);
         }
 
@@ -119,7 +119,7 @@ class Currency
      *
      * @return string
      */
-    public function format($value, $code = null, $includeSymbol = TRUE)
+    public function format($value, $code = null, $includeSymbol = true)
     {
         // Get default currency if one is not set
         $code = $code ?: $this->config('default');
@@ -357,7 +357,7 @@ class Currency
     //
     //
 
-    public function updateRates($skipCache = FALSE)
+    public function updateRates($skipCache = false)
     {
         $base = $this->config('default');
 
@@ -369,7 +369,7 @@ class Currency
         });
     }
 
-    protected function getRates($base, $skipCache = FALSE)
+    protected function getRates($base, $skipCache = false)
     {
         $duration = Carbon::now()->addHours($this->config('ratesCacheDuration', 0));
 

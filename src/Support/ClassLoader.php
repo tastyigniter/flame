@@ -48,13 +48,13 @@ class ClassLoader
      * Indicates if a loader has been registered.
      * @var bool
      */
-    protected $registered = FALSE;
+    protected $registered = false;
 
     /**
      * Determine if the manifest needs to be written.
      * @var bool
      */
-    protected $manifestIsDirty = FALSE;
+    protected $manifestIsDirty = false;
 
     /**
      * Class alias array.
@@ -118,7 +118,7 @@ class ClassLoader
         }
 
         spl_autoload_unregister([$this, 'load']);
-        $this->registered = FALSE;
+        $this->registered = false;
     }
 
     /**
@@ -147,7 +147,7 @@ class ClassLoader
 
         // If the class is already aliased, skip loading.
         if (in_array($class, $this->loadedAliases) || in_array($class, $this->reversedClasses)) {
-            return TRUE;
+            return true;
         }
 
         if (
@@ -157,13 +157,13 @@ class ClassLoader
             require_once $this->basePath.DIRECTORY_SEPARATOR.$path;
 
             if (!is_null($reverse = $this->getReverseAlias($class))) {
-                if (!class_exists($reverse, FALSE) && !in_array($reverse, $this->loadedAliases)) {
+                if (!class_exists($reverse, false) && !in_array($reverse, $this->loadedAliases)) {
                     class_alias($class, $reverse);
                     $this->reversedClasses[] = $reverse;
                 }
             }
 
-            return TRUE;
+            return true;
         }
 
         [$lowerClass, $upperClass, $lowerClassStudlyFile, $upperClassStudlyFile] = static::getPathsForClass($class);
@@ -181,13 +181,13 @@ class ClassLoader
                     $this->includeClass($class, $path);
 
                     if (!is_null($reverse = $this->getReverseAlias($class))) {
-                        if (!class_exists($reverse, FALSE) && !in_array($reverse, $this->loadedAliases)) {
+                        if (!class_exists($reverse, false) && !in_array($reverse, $this->loadedAliases)) {
                             class_alias($class, $reverse);
                             $this->reversedClasses[] = $reverse;
                         }
                     }
 
-                    return TRUE;
+                    return true;
                 }
             }
         }
@@ -196,7 +196,7 @@ class ClassLoader
             $this->loadedAliases[] = $class;
             class_alias($alias, $class);
 
-            return TRUE;
+            return true;
         }
     }
 
@@ -340,7 +340,7 @@ class ClassLoader
 
         $aliasKey = array_search($class, $this->aliases);
 
-        return ($aliasKey !== FALSE)
+        return ($aliasKey !== false)
             ? $aliasKey
             : null;
     }
@@ -414,12 +414,12 @@ class ClassLoader
             if ($this->isRealFilePath($path = $directory.DIRECTORY_SEPARATOR.$upperClass.'.php')) {
                 $this->requireClass($class, $path);
 
-                return TRUE;
+                return true;
             }
         }
 
         // never found it
-        return FALSE;
+        return false;
     }
 
     /**
@@ -447,7 +447,7 @@ class ClassLoader
 
         $this->manifest[$class] = $path;
 
-        $this->manifestIsDirty = TRUE;
+        $this->manifestIsDirty = true;
     }
 
     /**
@@ -493,7 +493,7 @@ class ClassLoader
         }
 
         $this->files->put(
-            $this->manifestPath, '<?php return '.var_export($manifest, TRUE).';'
+            $this->manifestPath, '<?php return '.var_export($manifest, true).';'
         );
     }
 }

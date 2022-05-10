@@ -48,17 +48,17 @@ class Filesystem extends IlluminateFilesystem
         }
 
         $handle = opendir($directory);
-        while (FALSE !== ($entry = readdir($handle))) {
+        while (false !== ($entry = readdir($handle))) {
             if ($entry != '.' && $entry != '..') {
                 closedir($handle);
 
-                return FALSE;
+                return false;
             }
         }
 
         closedir($handle);
 
-        return TRUE;
+        return true;
     }
 
     /**
@@ -135,7 +135,7 @@ class Filesystem extends IlluminateFilesystem
      * @param bool $realpath Default true, uses realpath() to resolve the provided path before checking location. Set to false if you need to check if a potentially non-existent path would be within the application path
      * @return bool
      */
-    public function isLocalPath($path, $realpath = TRUE)
+    public function isLocalPath($path, $realpath = true)
     {
         $base = base_path();
 
@@ -143,7 +143,7 @@ class Filesystem extends IlluminateFilesystem
             $path = realpath($path);
         }
 
-        return !($path === FALSE || strncmp($path, $base, strlen($base)) !== 0);
+        return !($path === false || strncmp($path, $base, strlen($base)) !== 0);
     }
 
     /**
@@ -185,7 +185,7 @@ class Filesystem extends IlluminateFilesystem
         $pathLower = strtolower($path);
 
         if (!$files = $this->glob($directoryName.'/*', GLOB_NOSORT)) {
-            return FALSE;
+            return false;
         }
 
         foreach ($files as $file) {
@@ -194,7 +194,7 @@ class Filesystem extends IlluminateFilesystem
             }
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
@@ -214,10 +214,10 @@ class Filesystem extends IlluminateFilesystem
      * @param mixed $default
      * @return string
      */
-    public function symbolizePath($path, $default = FALSE)
+    public function symbolizePath($path, $default = false)
     {
         if (!$firstChar = $this->isPathSymbol($path)) {
-            return $default === FALSE ? $path : $default;
+            return $default === false ? $path : $default;
         }
 
         $_path = substr($path, 1);
@@ -237,7 +237,7 @@ class Filesystem extends IlluminateFilesystem
             return $firstChar;
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
@@ -246,7 +246,7 @@ class Filesystem extends IlluminateFilesystem
      * @param string $contents
      * @return int
      */
-    public function put($path, $contents, $lock = FALSE)
+    public function put($path, $contents, $lock = false)
     {
         $result = parent::put($path, $contents, $lock);
         $this->chmod($path);
@@ -276,7 +276,7 @@ class Filesystem extends IlluminateFilesystem
      * @param bool $force
      * @return bool
      */
-    public function makeDirectory($path, $mode = 0777, $recursive = FALSE, $force = FALSE)
+    public function makeDirectory($path, $mode = 0777, $recursive = false, $force = false)
     {
         if ($mask = $this->getFolderPermissions()) {
             $mode = $mask;
@@ -287,7 +287,7 @@ class Filesystem extends IlluminateFilesystem
          */
         if ($recursive && $mask) {
             $chmodPath = $path;
-            while (TRUE) {
+            while (true) {
                 $basePath = dirname($chmodPath);
                 if ($chmodPath == $basePath) {
                     break;
@@ -411,7 +411,7 @@ class Filesystem extends IlluminateFilesystem
     public function fileNameMatch($fileName, $pattern)
     {
         if ($pattern === $fileName) {
-            return TRUE;
+            return true;
         }
 
         $regex = strtr(preg_quote($pattern, '#'), ['\*' => '.*', '\?' => '.']);
@@ -426,16 +426,16 @@ class Filesystem extends IlluminateFilesystem
      */
     protected function findSymlinks()
     {
-        $restrictBaseDir = Config::get('system.restrictBaseDir', TRUE);
-        $deep = Config::get('develop.allowDeepSymlinks', FALSE);
+        $restrictBaseDir = Config::get('system.restrictBaseDir', true);
+        $deep = Config::get('develop.allowDeepSymlinks', false);
         $basePath = base_path();
         $symlinks = [];
 
         $iterator = function ($path) use (&$iterator, &$symlinks, $basePath, $restrictBaseDir, $deep) {
             foreach (new DirectoryIterator($path) as $directory) {
                 if (
-                    $directory->isDir() === FALSE
-                    || $directory->isDot() === TRUE
+                    $directory->isDir() === false
+                    || $directory->isDot() === true
                 ) {
                     continue;
                 }

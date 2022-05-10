@@ -42,7 +42,7 @@ interface AssetCollectionInterface extends AssetInterface, \Traversable
      *
      * @throws \InvalidArgumentException If the asset cannot be found
      */
-    public function removeLeaf(AssetInterface $leaf, $graceful = FALSE);
+    public function removeLeaf(AssetInterface $leaf, $graceful = false);
 
     /**
      * Replaces an existing leaf with a new one.
@@ -55,5 +55,5 @@ interface AssetCollectionInterface extends AssetInterface, \Traversable
      *
      * @throws \InvalidArgumentException If the asset cannot be found
      */
-    public function replaceLeaf(AssetInterface $needle, AssetInterface $replacement, $graceful = FALSE);
+    public function replaceLeaf(AssetInterface $needle, AssetInterface $replacement, $graceful = false);
 }

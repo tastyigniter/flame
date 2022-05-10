@@ -33,7 +33,7 @@ class MemoryCache
     /**
      * @var bool Store enabled state.
      */
-    protected $enabled = TRUE;
+    protected $enabled = true;
 
     /**
      * Check if the memory cache is enabled.

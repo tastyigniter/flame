@@ -353,7 +353,7 @@ class Cart
         $this->fireEvent('condition.removing', $cartCondition);
 
         if (!$cartCondition || !$cartCondition->removeable)
-            return FALSE;
+            return false;
 
         $cartCondition->clearMetaData();
 
@@ -571,7 +571,7 @@ class Cart
      */
     protected function isMulti($item)
     {
-        if (!is_array($item)) return FALSE;
+        if (!is_array($item)) return false;
 
         return is_array(head($item)) || head($item) instanceof Buyable;
     }

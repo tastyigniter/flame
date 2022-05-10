@@ -43,7 +43,7 @@ class Pivot extends Model
      * @param bool $exists
      * @return void
      */
-    public function __construct(ModelBase $parent = null, $attributes = [], $table = null, $exists = FALSE)
+    public function __construct(ModelBase $parent = null, $attributes = [], $table = null, $exists = false)
     {
         parent::__construct();
 
@@ -53,7 +53,7 @@ class Pivot extends Model
         // The pivot model is a "dynamic" model since we will set the tables dynamically
         // for the instance. This allows it work for any intermediate tables for the
         // many to many relationship that are defined by this developer's classes.
-        $this->setRawAttributes($attributes, TRUE);
+        $this->setRawAttributes($attributes, true);
 
         $this->setTable($table);
 

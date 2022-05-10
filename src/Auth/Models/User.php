@@ -107,7 +107,7 @@ class User extends Model implements Authenticatable
     public function checkRememberToken($token)
     {
         if (!$token || !$this->remember_token) {
-            return FALSE;
+            return false;
         }
 
         return $token == $this->remember_token;
@@ -125,7 +125,7 @@ class User extends Model implements Authenticatable
     public function hasShaPassword($plainPassword)
     {
         if (!isset($this->attributes['salt']) || is_null($this->attributes['salt']))
-            return FALSE;
+            return false;
 
         $salt = $this->attributes['salt'];
         $hashedPassword = $this->attributes['password'];
@@ -182,7 +182,7 @@ class User extends Model implements Authenticatable
     public function completeResetPassword($code, $password)
     {
         if (!$this->checkResetPasswordCode($code))
-            return FALSE;
+            return false;
 
         $this->password = $password;
         $this->reset_time = null;
@@ -201,7 +201,7 @@ class User extends Model implements Authenticatable
     public function checkResetPasswordCode($resetCode)
     {
         if ($this->reset_code != $resetCode)
-            return FALSE;
+            return false;
 
         $expiration = self::$resetExpiration;
         if ($expiration > 0) {
@@ -209,11 +209,11 @@ class User extends Model implements Authenticatable
                 // Reset password request has expired, so clear code.
                 $this->clearResetPasswordCode();
 
-                return FALSE;
+                return false;
             }
         }
 
-        return TRUE;
+        return true;
     }
 
     public function getReminderEmail()
@@ -247,14 +247,14 @@ class User extends Model implements Authenticatable
 
         if ($activationCode == $this->activation_code) {
             $this->activation_code = null;
-            $this->is_activated = TRUE;
+            $this->is_activated = true;
             $this->date_activated = $this->freshTimestamp();
             $this->save();
 
-            return TRUE;
+            return true;
         }
 
-        return FALSE;
+        return false;
     }
 
     protected function generateActivationCode()
