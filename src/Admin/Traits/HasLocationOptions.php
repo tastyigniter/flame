@@ -1,8 +1,8 @@
 <?php
 
-namespace Admin\Traits;
+namespace Igniter\Admin\Traits;
 
-use Admin\Models\LocationOption;
+use Igniter\Admin\Models\LocationOption;
 
 trait HasLocationOptions
 {

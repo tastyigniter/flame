@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Database\Seeds;
+namespace Igniter\System\Database\Seeds;
 
 use Illuminate\Database\Seeder;
 

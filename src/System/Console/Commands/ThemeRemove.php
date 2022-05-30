@@ -1,12 +1,12 @@
 <?php
 
-namespace System\Console\Commands;
+namespace Igniter\System\Console\Commands;
 
+use Igniter\Main\Classes\ThemeManager;
+use Igniter\Main\Models\Theme;
 use Illuminate\Console\Command;
-use Main\Classes\ThemeManager;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use System\Models\Theme;
 
 class ThemeRemove extends Command
 {
@@ -32,7 +32,7 @@ class ThemeRemove extends Command
     {
         $forceDelete = $this->option('force');
         $themeName = $this->argument('name');
-        $themeManager = ThemeManager::instance();
+        $themeManager = resolve(ThemeManager::class);
 
         $themeName = strtolower($themeName);
         if (!$themeManager->hasTheme($themeName)) {

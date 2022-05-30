@@ -1,8 +1,8 @@
 <?php
 
-namespace Main\Helpers;
+namespace Igniter\Main\Helpers;
 
-use Main\Classes\MediaLibrary;
+use Igniter\Main\Classes\MediaLibrary;
 
 class ImageHelper
 {
@@ -13,7 +13,7 @@ class ImageHelper
             'height' => $height,
         ], is_array($width) ? $width : []);
 
-        $rootFolder = config('system.assets.media.folder', 'data').'/';
+        $rootFolder = config('igniter.system.assets.media.folder', 'data').'/';
         if (starts_with($path, $rootFolder))
             $path = substr($path, strlen($rootFolder));
 

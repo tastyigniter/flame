@@ -1,12 +1,12 @@
 <?php
 
-namespace Admin\Database\Factories;
+namespace Igniter\Admin\Database\Factories;
 
 use Igniter\Flame\Database\Factories\Factory;
 
 class AddressFactory extends Factory
 {
-    protected $model = \Admin\Models\Address::class;
+    protected $model = \Igniter\Admin\Models\Address::class;
 
     public function definition(): array
     {

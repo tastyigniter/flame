@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Traits;
+namespace Igniter\Admin\Traits;
 
 trait Stockable
 {
@@ -8,7 +8,7 @@ trait Stockable
     {
         self::extend(function (self $model) {
             $model->relation['morphMany']['stocks'] = [
-                \Admin\Models\Stock::class, 'name' => 'stockable', 'delete' => TRUE,
+                \Igniter\Admin\Models\Stock::class, 'name' => 'stockable', 'delete' => TRUE,
             ];
 
             $model->appends[] = 'stock_qty';

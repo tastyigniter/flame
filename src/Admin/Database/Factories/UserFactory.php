@@ -1,12 +1,13 @@
 <?php
 
-namespace Admin\Database\Factories;
+namespace Igniter\Admin\Database\Factories;
 
+use DateTimeInterface;
 use Igniter\Flame\Database\Factories\Factory;
 
 class UserFactory extends Factory
 {
-    protected $model = \Admin\Models\User::class;
+    protected $model = \Igniter\Admin\Models\User::class;
 
     public function definition(): array
     {
@@ -14,7 +15,7 @@ class UserFactory extends Factory
             'name' => $this->faker->name,
             'email' => $this->faker->email,
             'username' => str_slug($this->faker->userName()),
-            'date_activated' => $this->faker->dateTime(),
+            'date_activated' => $this->faker->dateTime()->format(DateTimeInterface::ATOM),
             'is_activated' => $this->faker->boolean(),
             'super_user' => $this->faker->boolean(),
             'status' => $this->faker->boolean(),

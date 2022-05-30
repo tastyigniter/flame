@@ -1,14 +1,14 @@
 <?php
 
-namespace Admin\Controllers;
+namespace Igniter\Admin\Http\Controllers;
 
-use Admin\Facades\AdminAuth;
-use Admin\Facades\AdminMenu;
-use Admin\Facades\Template;
-use Admin\Widgets\DashboardContainer;
+use Igniter\Admin\Facades\AdminAuth;
+use Igniter\Admin\Facades\AdminMenu;
+use Igniter\Admin\Facades\Template;
+use Igniter\Admin\Widgets\DashboardContainer;
 use Illuminate\Support\Facades\Request;
 
-class Dashboard extends \Admin\Classes\AdminController
+class Dashboard extends \Igniter\Admin\Classes\AdminController
 {
     public $containerConfig = [];
 
@@ -24,8 +24,8 @@ class Dashboard extends \Admin\Classes\AdminController
         if (is_null(Request::segment(2)))
             return $this->redirect('dashboard');
 
-        Template::setTitle(lang('admin::lang.dashboard.text_title'));
-        Template::setHeading(lang('admin::lang.dashboard.text_heading'));
+        Template::setTitle(lang('igniter::admin.dashboard.text_title'));
+        Template::setHeading(lang('igniter::admin.dashboard.text_heading'));
 
         $this->initDashboardContainer();
 
@@ -45,23 +45,23 @@ class Dashboard extends \Admin\Classes\AdminController
     {
         return [
             'onboarding' => [
-                'class' => \Admin\DashboardWidgets\Onboarding::class,
+                'class' => \Igniter\Admin\DashboardWidgets\Onboarding::class,
                 'priority' => 1,
                 'config' => [
-                    'title' => 'admin::lang.dashboard.onboarding.title',
+                    'title' => 'igniter::admin.dashboard.onboarding.title',
                     'width' => '6',
                 ],
             ],
             'news' => [
-                'class' => \System\DashboardWidgets\News::class,
+                'class' => \Igniter\System\DashboardWidgets\News::class,
                 'priority' => 2,
                 'config' => [
-                    'title' => 'admin::lang.dashboard.text_news',
+                    'title' => 'igniter::admin.dashboard.text_news',
                     'width' => '6',
                 ],
             ],
             'order_stats' => [
-                'class' => \Admin\DashboardWidgets\Statistics::class,
+                'class' => \Igniter\Admin\DashboardWidgets\Statistics::class,
                 'priority' => 3,
                 'config' => [
                     'context' => 'sale',
@@ -69,7 +69,7 @@ class Dashboard extends \Admin\Classes\AdminController
                 ],
             ],
             'reservation_stats' => [
-                'class' => \Admin\DashboardWidgets\Statistics::class,
+                'class' => \Igniter\Admin\DashboardWidgets\Statistics::class,
                 'priority' => 4,
                 'config' => [
                     'context' => 'lost_sale',
@@ -77,7 +77,7 @@ class Dashboard extends \Admin\Classes\AdminController
                 ],
             ],
             'customer_stats' => [
-                'class' => \Admin\DashboardWidgets\Statistics::class,
+                'class' => \Igniter\Admin\DashboardWidgets\Statistics::class,
                 'priority' => 5,
                 'config' => [
                     'context' => 'cash_payment',
@@ -85,10 +85,10 @@ class Dashboard extends \Admin\Classes\AdminController
                 ],
             ],
             'charts' => [
-                'class' => \Admin\DashboardWidgets\Charts::class,
+                'class' => \Igniter\Admin\DashboardWidgets\Charts::class,
                 'priority' => 6,
                 'config' => [
-                    'title' => 'admin::lang.dashboard.text_reports_chart',
+                    'title' => 'igniter::admin.dashboard.text_reports_chart',
                     'width' => '12',
                 ],
             ],

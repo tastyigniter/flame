@@ -1,8 +1,9 @@
 <?php
 
-namespace Admin\Traits;
+namespace Igniter\Admin\Traits;
 
-use Admin\Facades\AdminAuth;
+use Igniter\Admin\Facades\AdminAuth;
+use Illuminate\Contracts\Auth\Access\Gate;
 
 /**
  * Has Authentication Trait Class
@@ -10,13 +11,7 @@ use Admin\Facades\AdminAuth;
 trait HasAuthentication
 {
     /**
-     * @var bool If TRUE, this class requires the user to be logged in before
-     * accessing any method.
-     */
-    protected $requireAuthentication = true;
-
-    /**
-     * @var \Admin\Models\User Stores the logged in admin user model.
+     * @var \Igniter\Admin\Models\User Stores the logged in admin user model.
      */
     protected $currentUser;
 
@@ -33,5 +28,10 @@ trait HasAuthentication
     public function getUser()
     {
         return $this->currentUser;
+    }
+
+    public function authorize($ability)
+    {
+        return app(Gate::class)->authorize($ability);
     }
 }

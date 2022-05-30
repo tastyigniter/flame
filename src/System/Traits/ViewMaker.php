@@ -1,16 +1,16 @@
 <?php
 
-namespace System\Traits;
+namespace Igniter\System\Traits;
 
-use Admin\Facades\Template;
 use ErrorException;
 use Exception;
+use Igniter\Admin\Facades\Template;
 use Igniter\Flame\Exception\SystemException;
 use Igniter\Flame\Support\Facades\File;
 use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Str;
+use Illuminate\View\ViewFinderInterface;
 use Throwable;
 
 trait ViewMaker
@@ -21,7 +21,7 @@ trait ViewMaker
     public $vars = [];
 
     /**
-     * @var array Specifies a path to the views directory.
+     * @var array Specifies a path to the views directory. ex. ['package::view' => 'package']
      */
     public $viewPath;
 
@@ -45,64 +45,44 @@ trait ViewMaker
      */
     public $suppressLayout = false;
 
-    protected $viewFileExtension = '.blade.php';
-
-    public function getViewPath($view, $viewPath = null)
+    public function getViewPath($view, $paths = [], $prefix = null)
     {
-        $view = File::symbolizePath($view);
+        if (!is_array($paths))
+            $paths = [$paths];
 
-        if (File::isLocalPath($view, false)) {
-            return $this->guessViewFileExtension($view) ?? $view;
-        }
+        $guess = collect($paths)
+            ->prepend($prefix, $view)
+            ->reduce(function ($carry, $directory, $prefix) use ($view) {
+                if (!is_null($carry)) {
+                    return $carry;
+                }
 
-        if (!isset($this->viewPath)) {
-            $this->viewPath = $this->guessViewPath();
-        }
+                $viewName = Str::after($view, $prefix.'::');
 
-        if (!$viewPath) {
-            $viewPath = $this->viewPath;
-        }
+                if (view()->exists($view = $this->guessViewName($viewName, $directory))) {
+                    return view()->getFinder()->find($view);
+                }
 
-        if (!is_array($viewPath))
-            $viewPath = [$viewPath];
+                if (view()->exists($view = $this->guessViewName($viewName, $directory).'.index')) {
+                    return view()->getFinder()->find($view);
+                }
+            });
 
-        foreach ($viewPath as $path) {
-            if ($vPath = $this->guessViewFileExtension(File::symbolizePath($path).'/'.$view)) {
-                return $vPath;
-            }
-        }
-
-        return $this->guessViewFileExtension($view) ?? $view;
+        return $guess ?: $view;
     }
 
-    public function guessViewFileExtension($path)
+    public function guessViewName($name, $prefix = 'components.')
     {
-        if (strlen(File::extension($path)))
-            return $path;
+        if ($prefix && !Str::endsWith($prefix, '.') && !Str::endsWith($prefix, '::'))
+            $prefix .= '.';
 
-        $path = preg_replace('#/+#', '/', $path);
+        $delimiter = ViewFinderInterface::HINT_PATH_DELIMITER;
 
-        if (File::isFile($path.$this->viewFileExtension)) {
-            return $path.$this->viewFileExtension;
+        if (Str::contains($name, $delimiter)) {
+            return Str::replaceFirst($delimiter, $delimiter.$prefix, $name);
         }
-    }
 
-    /**
-     * Guess the package path from a specified class.
-     *
-     * @param string $suffix An extra path to attach to the end
-     * @param bool $isPublic
-     *
-     * @return string
-     */
-    public function guessViewPath($suffix = '', $isPublic = false)
-    {
-        $classFolder = strtolower(class_basename($class = get_called_class()));
-        $classFile = realpath(dirname(File::fromClass(strtolower($class))));
-
-        $guessedPath = $classFile ? $classFile.'/'.$classFolder.$suffix : null;
-
-        return ($isPublic) ? File::localToPublic($guessedPath) : $guessedPath;
+        return $prefix.$name;
     }
 
     /**
@@ -118,16 +98,15 @@ trait ViewMaker
      */
     public function makeLayout($name = null, $vars = [], $throwException = true)
     {
-        $layout = $name === null ? $this->layout : $name;
-        if ($layout == '') {
+        $layout = $name ?? $this->layout;
+        if ($layout == '')
             return '';
-        }
 
-        $layoutPath = $this->getViewPath($layout, $this->layoutPath);
+        $layoutPath = $this->getViewPath(strtolower($layout), $this->layoutPath, '_layouts');
 
         if (!File::exists($layoutPath)) {
             if ($throwException)
-                throw new SystemException(Lang::get('system::lang.not_found.layout', ['name' => $layoutPath]));
+                throw new SystemException(sprintf(lang('system::lang.not_found.layout'), $layout));
 
             return false;
         }
@@ -146,7 +125,7 @@ trait ViewMaker
      */
     public function makeView($view)
     {
-        $viewPath = $this->getViewPath(strtolower($view));
+        $viewPath = $this->getViewPath(strtolower($view), $this->viewPath);
         $contents = $this->makeFileContent($viewPath);
 
         if ($this->suppressLayout || $this->layout === '')
@@ -163,20 +142,17 @@ trait ViewMaker
      *
      * @param string $partial The view to load.
      * @param array $vars Parameter variables to pass to the view.
-     * @param bool $throwException Throw an exception if the partial is not found.
+     * @param string $prefix
      *
-     * @return mixed Partial contents or false if not throwing an exception.
-     * @throws \Igniter\Flame\Exception\SystemException
+     * @return string Partial contents or false if not throwing an exception.
      */
     public function makePartial($partial, $vars = [], $throwException = true)
     {
-        $partial = strtolower($partial);
-
-        $partialPath = $this->getViewPath($partial, $this->partialPath);
+        $partialPath = $this->getViewPath(strtolower($partial), $this->partialPath, '_partials');
 
         if (!File::exists($partialPath)) {
             if ($throwException)
-                throw new SystemException(Lang::get('system::lang.not_found.partial', ['name' => $partialPath]));
+                throw new SystemException(sprintf(lang('system::lang.not_found.partial'), $partial));
 
             return false;
         }
@@ -236,9 +212,7 @@ trait ViewMaker
 
     public function compileFileContent($filePath)
     {
-        $pagic = App::make('pagic.environment');
-
-        $compiler = $pagic->getCompiler();
+        $compiler = resolve('blade.compiler');
 
         if ($compiler->isExpired($filePath)) {
             $compiler->compile($filePath);

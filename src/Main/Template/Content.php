@@ -1,6 +1,6 @@
 <?php
 
-namespace Main\Template;
+namespace Igniter\Main\Template;
 
 use Igniter\Flame\Mail\Markdown;
 use Igniter\Flame\Support\Facades\File;

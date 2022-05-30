@@ -1,17 +1,17 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
-use Admin\Traits\Assignable;
-use Admin\Traits\Locationable;
-use Admin\Traits\LogsStatusHistory;
 use Carbon\Carbon;
+use Igniter\Admin\Traits\Assignable;
+use Igniter\Admin\Traits\Locationable;
+use Igniter\Admin\Traits\LogsStatusHistory;
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Database\Traits\Purgeable;
-use Illuminate\Support\Facades\Request;
-use Main\Classes\MainController;
-use System\Traits\SendsMailTemplate;
+use Igniter\Main\Classes\MainController;
+use Igniter\Main\Models\Customer;
+use Igniter\System\Traits\SendsMailTemplate;
 
 /**
  * Reservation Model Class
@@ -66,11 +66,11 @@ class Reservation extends Model
 
     public $relation = [
         'belongsTo' => [
-            'related_table' => [\Admin\Models\Table::class, 'foreignKey' => 'table_id'],
-            'location' => \Admin\Models\Location::class,
+            'related_table' => [\Igniter\Admin\Models\Table::class, 'foreignKey' => 'table_id'],
+            'location' => \Igniter\Admin\Models\Location::class,
         ],
         'belongsToMany' => [
-            'tables' => [\Admin\Models\Table::class, 'table' => 'reservation_tables'],
+            'tables' => [\Igniter\Admin\Models\Table::class, 'table' => 'reservation_tables'],
         ],
     ];
 
@@ -91,8 +91,8 @@ class Reservation extends Model
     {
         $this->generateHash();
 
-        $this->ip_address = Request::getClientIp();
-        $this->user_agent = Request::userAgent();
+        $this->ip_address = request()->getClientIp();
+        $this->user_agent = request()->userAgent();
     }
 
     protected function afterSave()
@@ -437,8 +437,8 @@ class Reservation extends Model
         $data['reservation'] = $model;
         $data['reservation_number'] = $model->reservation_id;
         $data['reservation_id'] = $model->reservation_id;
-        $data['reservation_time'] = Carbon::createFromTimeString($model->reserve_time)->format(lang('system::lang.php.time_format'));
-        $data['reservation_date'] = $model->reserve_date->format(lang('system::lang.php.date_format_long'));
+        $data['reservation_time'] = Carbon::createFromTimeString($model->reserve_time)->format(lang('igniter::system.php.time_format'));
+        $data['reservation_date'] = $model->reserve_date->format(lang('igniter::system.php.date_format_long'));
         $data['reservation_guest_no'] = $model->guest_num;
         $data['first_name'] = $model->first_name;
         $data['last_name'] = $model->last_name;

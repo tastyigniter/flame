@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Classes;
+namespace Igniter\System\Classes;
 
 use Carbon\Carbon;
 use Exception;
@@ -86,7 +86,7 @@ class HubManager
             $extensions = [];
             foreach ($response['items'] as $item) {
                 if ($item['type'] == 'extension' &&
-                    (!ExtensionManager::instance()->findExtension($item['type']) || ExtensionManager::instance()->isDisabled($item['code']))
+                    (!resolve(ExtensionManager::class)->findExtension($item['type']) || resolve(ExtensionManager::class)->isDisabled($item['code']))
                 ) {
                     if (isset($item['tags']))
                         arsort($item['tags']);
@@ -215,7 +215,7 @@ class HubManager
     {
         $curl = curl_init();
 
-        curl_setopt($curl, CURLOPT_URL, Config::get('system.hubEndpoint', static::ENDPOINT).'/'.$uri);
+        curl_setopt($curl, CURLOPT_URL, Config::get('igniter.system.hubEndpoint', static::ENDPOINT).'/'.$uri);
         curl_setopt($curl, CURLOPT_USERAGENT, Request::userAgent());
         curl_setopt($curl, CURLOPT_TIMEOUT, 3600);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -230,7 +230,7 @@ class HubManager
             'version' => params('ti_version', 'v3.0.0'),
         ]));
 
-        if (Config::get('system.edgeUpdates', false)) {
+        if (Config::get('igniter.system.edgeUpdates', false)) {
             $params['edge'] = 1;
         }
 

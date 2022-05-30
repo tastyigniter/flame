@@ -2,13 +2,13 @@
 $config['list']['toolbar'] = [
     'buttons' => [
         'browse' => [
-            'label' => 'lang:system::lang.themes.button_browse',
+            'label' => 'lang:igniter::system.themes.button_browse',
             'class' => 'btn btn-primary',
             'href' => 'https://tastyigniter.com/marketplace/themes',
             'target' => '_blank',
         ],
         'check' => [
-            'label' => 'lang:system::lang.updates.button_check',
+            'label' => 'lang:igniter::system.updates.button_check',
             'class' => 'btn btn-success',
             'href' => 'updates',
         ],
@@ -37,7 +37,7 @@ $config['list']['columns'] = [
         'iconCssClass' => 'fa fa-star-o',
         'attributes' => [
             'class' => 'btn btn-outline-warning mr-2 bg-transparent',
-            'title' => 'lang:system::lang.themes.text_set_default',
+            'title' => 'lang:igniter::system.themes.text_set_default',
             'data-request' => 'onSetDefault',
             'data-request-form' => '#list-form',
             'data-request-data' => 'code:\'{code}\'',
@@ -52,21 +52,21 @@ $config['list']['columns'] = [
         ],
     ],
     'name' => [
-        'label' => 'lang:admin::lang.label_name',
+        'label' => 'lang:igniter::admin.label_name',
         'type' => 'text',
         'searchable' => true,
     ],
     'theme_id' => [
-        'label' => 'lang:admin::lang.column_id',
+        'label' => 'lang:igniter::admin.column_id',
         'invisible' => true,
     ],
     'created_at' => [
-        'label' => 'lang:admin::lang.column_date_added',
+        'label' => 'lang:igniter::admin.column_date_added',
         'invisible' => true,
         'type' => 'timesense',
     ],
     'updated_at' => [
-        'label' => 'lang:admin::lang.column_date_updated',
+        'label' => 'lang:igniter::admin.column_date_updated',
         'invisible' => true,
         'type' => 'timesense',
     ],
@@ -75,34 +75,34 @@ $config['list']['columns'] = [
 $config['form']['toolbar'] = [
     'buttons' => [
         'back' => [
-            'label' => 'lang:admin::lang.button_icon_back',
+            'label' => 'lang:igniter::admin.button_icon_back',
             'class' => 'btn btn-default ml-0',
             'href' => 'themes',
         ],
         'save' => [
-            'label' => 'lang:admin::lang.button_save',
+            'label' => 'lang:igniter::admin.button_save',
             'class' => 'btn btn-primary',
             'data-request' => 'onSave',
-            'data-progress-indicator' => 'admin::lang.text_saving',
+            'data-progress-indicator' => 'igniter::admin.text_saving',
         ],
     ],
 ];
 
 $config['form']['fields'] = [
     'name' => [
-        'label' => 'lang:admin::lang.label_name',
+        'label' => 'lang:igniter::admin.label_name',
         'type' => 'text',
         'span' => 'left',
         'disabled' => true,
     ],
     'code' => [
-        'label' => 'lang:system::lang.themes.label_code',
+        'label' => 'lang:igniter::system.themes.label_code',
         'type' => 'text',
         'span' => 'right',
         'disabled' => true,
     ],
     'template' => [
-        'label' => 'lang:system::lang.themes.label_template',
+        'label' => 'lang:igniter::system.themes.label_template',
         'type' => 'templateeditor',
         'context' => ['source'],
     ],

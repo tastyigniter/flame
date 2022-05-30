@@ -4,18 +4,18 @@ return [
     'form' => [
         'fields' => [
             'type' => [
-                'label' => 'lang:admin::lang.locations.label_schedule_type',
+                'label' => 'lang:igniter::admin.locations.label_schedule_type',
                 'type' => 'radiotoggle',
                 'default' => 'daily',
                 'options' => [
-                    '24_7' => 'lang:admin::lang.locations.text_24_7',
-                    'daily' => 'lang:admin::lang.locations.text_daily',
-                    'timesheet' => 'lang:admin::lang.locations.text_timesheet',
-                    'flexible' => 'lang:admin::lang.locations.text_flexible',
+                    '24_7' => 'lang:igniter::admin.locations.text_24_7',
+                    'daily' => 'lang:igniter::admin.locations.text_daily',
+                    'timesheet' => 'lang:igniter::admin.locations.text_timesheet',
+                    'flexible' => 'lang:igniter::admin.locations.text_flexible',
                 ],
             ],
             'days' => [
-                'label' => 'lang:admin::lang.locations.label_schedule_days',
+                'label' => 'lang:igniter::admin.locations.label_schedule_days',
                 'type' => 'checkboxtoggle',
                 'options' => 'getWeekDaysOptions',
                 'default' => [0, 1, 2, 3, 4, 5, 6],
@@ -26,7 +26,7 @@ return [
                 ],
             ],
             'open' => [
-                'label' => 'lang:admin::lang.locations.label_schedule_open',
+                'label' => 'lang:igniter::admin.locations.label_schedule_open',
                 'type' => 'datepicker',
                 'default' => '12:00 AM',
                 'mode' => 'time',
@@ -38,7 +38,7 @@ return [
                 ],
             ],
             'close' => [
-                'label' => 'lang:admin::lang.locations.label_schedule_close',
+                'label' => 'lang:igniter::admin.locations.label_schedule_close',
                 'type' => 'datepicker',
                 'default' => '11:59 PM',
                 'mode' => 'time',
@@ -50,9 +50,9 @@ return [
                 ],
             ],
             'timesheet' => [
-                'label' => 'lang:admin::lang.locations.text_timesheet',
+                'label' => 'lang:igniter::admin.locations.text_timesheet',
                 'type' => 'partial',
-                'path' => 'locations/form/timesheet',
+                'path' => 'locations/timesheet',
                 'trigger' => [
                     'action' => 'show',
                     'field' => 'type',
@@ -60,10 +60,10 @@ return [
                 ],
             ],
             'flexible' => [
-                'label' => 'lang:admin::lang.locations.text_flexible',
+                'label' => 'lang:igniter::admin.locations.text_flexible',
                 'type' => 'partial',
-                'path' => 'locations/form/flexible_hours',
-                'commentAbove' => 'lang:admin::lang.locations.help_flexible_hours',
+                'path' => 'locations/flexible_hours',
+                'commentAbove' => 'lang:igniter::admin.locations.help_flexible_hours',
                 'trigger' => [
                     'action' => 'show',
                     'field' => 'type',

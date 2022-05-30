@@ -4,7 +4,7 @@ return [
     'form' => [
         'fields' => [
             'name' => [
-                'label' => 'lang:admin::lang.locations.label_area_name',
+                'label' => 'lang:igniter::admin.locations.label_area_name',
                 'type' => 'text',
                 'span' => 'left',
                 'attributes' => [
@@ -12,44 +12,44 @@ return [
                 ],
             ],
             'is_default' => [
-                'label' => 'lang:admin::lang.locations.label_area_default',
+                'label' => 'lang:igniter::admin.locations.label_area_default',
                 'type' => 'radiotoggle',
                 'span' => 'right',
                 'options' => [
-                    'lang:admin::lang.text_no',
-                    'lang:admin::lang.text_yes',
+                    'lang:igniter::admin.text_no',
+                    'lang:igniter::admin.text_yes',
                 ],
                 'attributes' => [
                     'data-toggle' => 'area-default',
                 ],
             ],
             'conditions' => [
-                'label' => 'lang:admin::lang.locations.label_delivery_condition',
+                'label' => 'lang:igniter::admin.locations.label_delivery_condition',
                 'type' => 'repeater',
                 'sortable' => true,
-                'commentAbove' => 'lang:admin::lang.locations.help_delivery_condition',
+                'commentAbove' => 'lang:igniter::admin.locations.help_delivery_condition',
                 'form' => [
                     'fields' => [
                         'priority' => [
                             'type' => 'hidden',
                         ],
                         'amount' => [
-                            'label' => 'lang:admin::lang.locations.label_area_charge',
+                            'label' => 'lang:igniter::admin.locations.label_area_charge',
                             'type' => 'currency',
                             'default' => 0,
                         ],
                         'type' => [
-                            'label' => 'lang:admin::lang.locations.label_charge_condition',
+                            'label' => 'lang:igniter::admin.locations.label_charge_condition',
                             'type' => 'radiotoggle',
                             'default' => 'above',
                             'options' => [
-                                'all' => 'lang:admin::lang.locations.text_all_orders',
-                                'below' => 'lang:admin::lang.locations.text_below_order_total',
-                                'above' => 'lang:admin::lang.locations.text_above_order_total',
+                                'all' => 'lang:igniter::admin.locations.text_all_orders',
+                                'below' => 'lang:igniter::admin.locations.text_below_order_total',
+                                'above' => 'lang:igniter::admin.locations.text_above_order_total',
                             ],
                         ],
                         'total' => [
-                            'label' => 'lang:admin::lang.locations.label_area_min_amount',
+                            'label' => 'lang:igniter::admin.locations.label_area_min_amount',
                             'type' => 'currency',
                             'default' => 0,
                         ],
@@ -57,17 +57,17 @@ return [
                 ],
             ],
             'boundaries[distance]' => [
-                'label' => 'lang:admin::lang.locations.label_delivery_distance',
+                'label' => 'lang:igniter::admin.locations.label_delivery_distance',
                 'type' => 'repeater',
                 'sortable' => true,
-                'commentAbove' => 'lang:admin::lang.locations.help_delivery_distance',
+                'commentAbove' => 'lang:igniter::admin.locations.help_delivery_distance',
                 'form' => [
                     'fields' => [
                         'priority' => [
                             'type' => 'hidden',
                         ],
                         'type' => [
-                            'label' => 'lang:admin::lang.locations.label_charge_condition',
+                            'label' => 'lang:igniter::admin.locations.label_charge_condition',
                             'type' => 'select',
                             'options' => [
                                 'greater' => 'greater than',
@@ -77,24 +77,24 @@ return [
                             ],
                         ],
                         'distance' => [
-                            'label' => 'lang:admin::lang.locations.label_area_distance',
+                            'label' => 'lang:igniter::admin.locations.label_area_distance',
                             'type' => 'text',
                         ],
                         'charge' => [
-                            'label' => 'lang:admin::lang.locations.label_area_charge',
+                            'label' => 'lang:igniter::admin.locations.label_area_charge',
                             'type' => 'text',
                         ],
                     ],
                 ],
             ],
             'type' => [
-                'label' => 'lang:admin::lang.locations.label_area_type',
+                'label' => 'lang:igniter::admin.locations.label_area_type',
                 'type' => 'radiotoggle',
                 'default' => 'address',
                 'options' => [
-                    'address' => 'lang:admin::lang.locations.text_custom',
-                    'polygon' => 'lang:admin::lang.locations.text_shape',
-                    'circle' => 'lang:admin::lang.locations.text_circle',
+                    'address' => 'lang:igniter::admin.locations.text_custom',
+                    'polygon' => 'lang:igniter::admin.locations.text_shape',
+                    'circle' => 'lang:igniter::admin.locations.text_circle',
                 ],
                 'attributes' => [
                     'data-toggle' => 'map-shape',
@@ -103,7 +103,7 @@ return [
             'boundaries[components]' => [
                 'type' => 'repeater',
                 'sortable' => true,
-                'commentAbove' => 'lang:admin::lang.locations.help_delivery_components',
+                'commentAbove' => 'lang:igniter::admin.locations.help_delivery_components',
                 'trigger' => [
                     'action' => 'show',
                     'field' => 'type',
@@ -115,20 +115,20 @@ return [
                             'type' => 'hidden',
                         ],
                         'type' => [
-                            'label' => 'lang:admin::lang.locations.label_address_component_type',
+                            'label' => 'lang:igniter::admin.locations.label_address_component_type',
                             'type' => 'select',
                             'default' => 'region',
                             'options' => [
-                                'street' => 'lang:admin::lang.locations.text_address_component_street',
-                                'sub_locality' => 'lang:admin::lang.locations.text_address_component_town',
-                                'locality' => 'lang:admin::lang.locations.text_address_component_city',
-                                'admin_level_2' => 'lang:admin::lang.locations.text_address_component_region',
-                                'admin_level_1' => 'lang:admin::lang.locations.text_address_component_state',
-                                'postal_code' => 'lang:admin::lang.locations.text_address_component_postal_code',
+                                'street' => 'lang:igniter::admin.locations.text_address_component_street',
+                                'sub_locality' => 'lang:igniter::admin.locations.text_address_component_town',
+                                'locality' => 'lang:igniter::admin.locations.text_address_component_city',
+                                'admin_level_2' => 'lang:igniter::admin.locations.text_address_component_region',
+                                'admin_level_1' => 'lang:igniter::admin.locations.text_address_component_state',
+                                'postal_code' => 'lang:igniter::admin.locations.text_address_component_postal_code',
                             ],
                         ],
                         'value' => [
-                            'label' => 'lang:admin::lang.locations.label_address_component_value',
+                            'label' => 'lang:igniter::admin.locations.label_address_component_value',
                             'type' => 'text',
                         ],
                     ],

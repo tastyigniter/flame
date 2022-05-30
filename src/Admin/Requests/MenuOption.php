@@ -1,21 +1,21 @@
 <?php
 
-namespace Admin\Requests;
+namespace Igniter\Admin\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class MenuOption extends FormRequest
 {
     public function attributes()
     {
         return [
-            'option_name' => lang('admin::lang.menu_options.label_option_name'),
-            'display_type' => lang('admin::lang.menu_options.label_display_type'),
-            'is_required' => lang('admin::lang.menu_options.label_option_required'),
-            'min_selected' => lang('admin::lang.menu_options.label_min_selected'),
-            'max_selected' => lang('admin::lang.menu_options.label_max_selected'),
-            'locations.*' => lang('admin::lang.label_location'),
-            'option_values' => lang('admin::lang.menu_options.label_option_values'),
+            'option_name' => lang('igniter::admin.menu_options.label_option_name'),
+            'display_type' => lang('igniter::admin.menu_options.label_display_type'),
+            'is_required' => lang('igniter::admin.menu_options.label_option_required'),
+            'min_selected' => lang('igniter::admin.menu_options.label_min_selected'),
+            'max_selected' => lang('igniter::admin.menu_options.label_max_selected'),
+            'locations.*' => lang('igniter::admin.label_location'),
+            'option_values' => lang('igniter::admin.menu_options.label_option_values'),
         ];
     }
 

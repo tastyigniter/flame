@@ -1,4 +1,4 @@
-@unless ($this->previewMode)
+@unless($this->previewMode)
     <div
         id="{{ $this->getId() }}"
         class="control-template-editor progress-indicator-container"
@@ -9,7 +9,7 @@
 
         {!! $this->makePartial('templateeditor/modal') !!}
 
-        @if ($templateWidget)
+        @if($templateWidget)
             <div
                 id="{{ $this->getId($templatePrimaryTabs->section.'-tabs') }}"
                 class="{{ $templatePrimaryTabs->cssClass }}">

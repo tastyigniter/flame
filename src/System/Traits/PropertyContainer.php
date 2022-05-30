@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Traits;
+namespace Igniter\System\Traits;
 
 trait PropertyContainer
 {

@@ -14,7 +14,7 @@
         <input type="hidden" name="recordId" value="{{ $formRecordId }}">
         <div class="modal-body">
             <div class="form-fields p-0">
-                @foreach ($formWidget->getFields() as $field)
+                @foreach($formWidget->getFields() as $field)
                     {!! $formWidget->renderField($field) !!}
                 @endforeach
             </div>
@@ -24,11 +24,11 @@
                 type="button"
                 class="btn btn-link"
                 data-bs-dismiss="modal"
-            >@lang('admin::lang.button_close')</button>
+            >@lang('igniter::admin.button_close')</button>
             <button
                 type="submit"
                 class="btn btn-primary"
-            >@lang('admin::lang.button_save')</button>
+            >@lang('igniter::admin.button_save')</button>
         </div>
     </div>
     {!! form_close() !!}

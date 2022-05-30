@@ -1,12 +1,12 @@
 <?php
 
-namespace Admin\FormWidgets;
+namespace Igniter\Admin\FormWidgets;
 
-use Admin\Classes\BaseFormWidget;
-use Admin\Classes\FormField;
-use Admin\Traits\FormModelWidget;
-use Admin\Widgets\Table;
 use Exception;
+use Igniter\Admin\Classes\BaseFormWidget;
+use Igniter\Admin\Classes\FormField;
+use Igniter\Admin\Traits\FormModelWidget;
+use Igniter\Admin\Widgets\Table;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -46,7 +46,7 @@ class DataTable extends BaseFormWidget
     protected $defaultAlias = 'datatable';
 
     /**
-     * @var \Admin\Widgets\Table Table widget
+     * @var \Igniter\Admin\Widgets\Table Table widget
      */
     protected $table;
 
@@ -119,7 +119,7 @@ class DataTable extends BaseFormWidget
     }
 
     /**
-     * @return \Admin\Widgets\Table   The table to be displayed.
+     * @return \Igniter\Admin\Widgets\Table   The table to be displayed.
      */
     public function getTable()
     {
@@ -173,7 +173,7 @@ class DataTable extends BaseFormWidget
         $methodName = 'get'.studly_case($this->fieldName).'DataTableOptions';
 
         if (!$this->model->methodExists($methodName) && !$this->model->methodExists('getDataTableOptions')) {
-            throw new Exception(sprintf(lang('admin::lang.alert_missing_method'), 'getDataTableOptions', get_class($this->model)));
+            throw new Exception(sprintf(lang('igniter::admin.alert_missing_method'), 'getDataTableOptions', get_class($this->model)));
         }
 
         if ($this->model->methodExists($methodName)) {

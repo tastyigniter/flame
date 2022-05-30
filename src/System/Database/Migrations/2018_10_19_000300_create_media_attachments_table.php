@@ -1,17 +1,18 @@
 <?php
 
-namespace System\Database\Migrations;
+namespace Igniter\System\Database\Migrations;
 
-use Admin\Models\Category;
-use Admin\Models\Location;
-use Admin\Models\Menu;
+use Igniter\Admin\Models\Category;
+use Igniter\Admin\Models\Location;
+use Igniter\Admin\Models\Menu;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
-use Main\Classes\MediaLibrary;
+use Igniter\Main\Classes\MediaLibrary;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */

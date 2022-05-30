@@ -1,7 +1,7 @@
 <div class="d-flex">
     <div class="mr-3 flex-fill text-center">
         <label class="form-label">
-            @lang('admin::lang.label_status')
+            @lang('igniter::admin.label_status')
         </label>
         <a
             class="d-flex align-items-center justify-content-center"
@@ -15,7 +15,7 @@
     </div>
     <div class="mr-3 flex-fill text-center">
         <label class="form-label">
-            {{ lang('admin::lang.orders.label_assign_staff') }}
+            {{ lang('igniter::admin.orders.label_assign_staff') }}
         </label>
         <a
             class="d-flex align-items-center justify-content-center"

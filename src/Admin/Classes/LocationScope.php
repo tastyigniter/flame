@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Classes;
+namespace Igniter\Admin\Classes;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Database\Migrations;
+namespace Igniter\Admin\Database\Migrations;
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Create reservation_tables table
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up()
     {
         Schema::create('reservation_tables', function (Blueprint $table) {

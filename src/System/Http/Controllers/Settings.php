@@ -1,39 +1,39 @@
 <?php
 
-namespace System\Controllers;
+namespace Igniter\System\Http\Controllers;
 
-use Admin\Facades\AdminAuth;
-use Admin\Facades\AdminMenu;
-use Admin\Facades\Template;
-use Admin\Traits\FormExtendable;
-use Admin\Traits\WidgetMaker;
 use Exception;
+use Igniter\Admin\Facades\AdminAuth;
+use Igniter\Admin\Facades\AdminMenu;
+use Igniter\Admin\Facades\Template;
+use Igniter\Admin\Traits\FormExtendable;
+use Igniter\Admin\Traits\WidgetMaker;
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Flame\Support\Facades\File;
+use Igniter\System\Models\MailTemplate;
 use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
-use System\Models\MailTemplate;
 
-class Settings extends \Admin\Classes\AdminController
+class Settings extends \Igniter\Admin\Classes\AdminController
 {
     use WidgetMaker;
     use FormExtendable;
 
     protected $requiredPermissions = 'Site.Settings';
 
-    protected $modelClass = \System\Models\Settings::class;
+    protected $modelClass = \Igniter\System\Models\Settings::class;
 
     /**
-     * @var \Admin\Widgets\Form
+     * @var \Igniter\Admin\Widgets\Form
      */
     public $formWidget;
 
     /**
-     * @var \Admin\Widgets\Toolbar
+     * @var \Igniter\Admin\Widgets\Toolbar
      */
     public $toolbarWidget;
 
@@ -56,10 +56,10 @@ class Settings extends \Admin\Classes\AdminController
 
         // For security reasons, delete setup files if still exists.
         if (File::isFile(base_path('setup.php')) || File::isDirectory(base_path('setup'))) {
-            flash()->danger(lang('system::lang.settings.alert_delete_setup_files'))->important()->now();
+            flash()->danger(lang('igniter::system.settings.alert_delete_setup_files'))->important()->now();
         }
 
-        $pageTitle = lang('system::lang.settings.text_title');
+        $pageTitle = lang('igniter::system.settings.text_title');
         Template::setTitle($pageTitle);
         Template::setHeading($pageTitle);
         $this->vars['settings'] = $this->createModel()->listSettingItems();
@@ -72,13 +72,13 @@ class Settings extends \Admin\Classes\AdminController
             $this->settingCode = $settingCode;
             [$model, $definition] = $this->findSettingDefinitions($settingCode);
             if (!$definition) {
-                throw new Exception(sprintf(lang('system::lang.settings.alert_settings_not_found'), $settingCode));
+                throw new Exception(sprintf(lang('igniter::system.settings.alert_settings_not_found'), $settingCode));
             }
 
             if ($definition->permission && !AdminAuth::user()->hasPermission($definition->permission))
                 return Response::make(View::make('admin::access_denied'), 403);
 
-            $pageTitle = sprintf(lang('system::lang.settings.text_edit_title'), lang($definition->label));
+            $pageTitle = sprintf(lang('igniter::system.settings.text_edit_title'), lang($definition->label));
             Template::setTitle($pageTitle);
             Template::setHeading($pageTitle);
 
@@ -97,7 +97,7 @@ class Settings extends \Admin\Classes\AdminController
     {
         [$model, $definition] = $this->findSettingDefinitions($settingCode);
         if (!$definition) {
-            throw new Exception(lang('system::lang.settings.alert_settings_not_found'));
+            throw new Exception(lang('igniter::system.settings.alert_settings_not_found'));
         }
 
         if ($definition->permission && !AdminAuth::user()->hasPermission($definition->permission))
@@ -117,7 +117,7 @@ class Settings extends \Admin\Classes\AdminController
 
         $this->formAfterSave($model);
 
-        flash()->success(sprintf(lang('admin::lang.alert_success'), lang($definition->label).' settings updated '));
+        flash()->success(sprintf(lang('igniter::admin.alert_success'), lang($definition->label).' settings updated '));
 
         if (post('close')) {
             return $this->redirect('settings');
@@ -130,7 +130,7 @@ class Settings extends \Admin\Classes\AdminController
     {
         [$model, $definition] = $this->findSettingDefinitions('mail');
         if (!$definition) {
-            throw new Exception(lang('system::lang.settings.alert_settings_not_found'));
+            throw new Exception(lang('igniter::system.settings.alert_settings_not_found'));
         }
 
         $this->initWidgets($model, $definition);
@@ -146,11 +146,11 @@ class Settings extends \Admin\Classes\AdminController
         $email = AdminAuth::getStaffEmail();
 
         try {
-            Mail::raw(lang('system::lang.settings.text_test_email_message'), function (Message $message) use ($name, $email) {
+            Mail::raw(lang('igniter::system.settings.text_test_email_message'), function (Message $message) use ($name, $email) {
                 $message->to($email, $name)->subject('This a test email');
             });
 
-            flash()->success(sprintf(lang('system::lang.settings.alert_email_sent'), $email));
+            flash()->success(sprintf(lang('igniter::system.settings.alert_email_sent'), $email));
         }
         catch (Exception $ex) {
             flash()->error($ex->getMessage());
@@ -161,7 +161,7 @@ class Settings extends \Admin\Classes\AdminController
 
     public function initWidgets($model, $definition)
     {
-        $modelConfig = $model->getFieldConfig($definition->code);
+        $modelConfig = $this->getFieldConfig($definition->code, $model);
 
         $formConfig = array_except($modelConfig, 'toolbar');
         $formConfig['model'] = $model;
@@ -171,7 +171,7 @@ class Settings extends \Admin\Classes\AdminController
         $formConfig['context'] = 'edit';
 
         // Form Widget with extensibility
-        $this->formWidget = $this->makeWidget(\Admin\Widgets\Form::class, $formConfig);
+        $this->formWidget = $this->makeWidget(\Igniter\Admin\Widgets\Form::class, $formConfig);
         $this->formWidget->bindToController();
 
         // Prep the optional toolbar widget
@@ -184,7 +184,7 @@ class Settings extends \Admin\Classes\AdminController
     protected function findSettingDefinitions($code)
     {
         if (!strlen($code))
-            throw new Exception(lang('admin::lang.form.missing_id'));
+            throw new Exception(lang('igniter::admin.form.missing_id'));
 
         // Prep the list widget config
         $model = $this->createModel();
@@ -197,7 +197,7 @@ class Settings extends \Admin\Classes\AdminController
     protected function createModel()
     {
         if (!isset($this->modelClass) || !strlen($this->modelClass)) {
-            throw new Exception(lang('system::lang.settings.alert_settings_missing_model'));
+            throw new Exception(lang('igniter::system.settings.alert_settings_missing_model'));
         }
 
         return new $this->modelClass();
@@ -206,6 +206,15 @@ class Settings extends \Admin\Classes\AdminController
     protected function formAfterSave($model)
     {
         $this->validateSettingItems(true);
+    }
+
+    protected function getFieldConfig($code, $model)
+    {
+        $settingItem = $model->getSettingItem('core.'.$code);
+        if (!is_array($settingItem->form))
+            $settingItem->form = array_get($this->makeConfig($settingItem->form, ['form']), 'form', []);
+
+        return $settingItem->form ?? [];
     }
 
     protected function validateSettingItems($skipSession = false)
@@ -218,7 +227,7 @@ class Settings extends \Admin\Classes\AdminController
             $settingValues = array_undot($model->getFieldValues());
 
             foreach ($settingItems as $settingItem) {
-                $settingItemForm = $this->createModel()->getFieldConfig($settingItem->code);
+                $settingItemForm = $this->getFieldConfig($settingItem->code, $this->createModel());
 
                 if (!isset($settingItemForm['rules']))
                     continue;
@@ -241,7 +250,7 @@ class Settings extends \Admin\Classes\AdminController
             return;
 
         if (!class_exists($requestClass))
-            throw new ApplicationException(sprintf(lang('admin::lang.form.request_class_not_found'), $requestClass));
+            throw new ApplicationException(sprintf(lang('igniter::admin.form.request_class_not_found'), $requestClass));
 
         app()->resolving($requestClass, function ($request, $app) {
             if (method_exists($request, 'setController'))

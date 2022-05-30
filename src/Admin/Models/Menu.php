@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
-use Admin\Traits\Locationable;
-use Admin\Traits\Stockable;
+use Igniter\Admin\Traits\Locationable;
+use Igniter\Admin\Traits\Stockable;
 use Carbon\Carbon;
 use Igniter\Flame\Database\Attach\HasMedia;
 use Igniter\Flame\Database\Factories\HasFactory;
@@ -48,19 +48,19 @@ class Menu extends Model
 
     public $relation = [
         'hasMany' => [
-            'menu_option_values' => [\Admin\Models\MenuItemOptionValue::class, 'delete' => TRUE],
+            'menu_option_values' => [\Igniter\Admin\Models\MenuItemOptionValue::class, 'delete' => TRUE],
         ],
         'hasOne' => [
-            'special' => [\Admin\Models\MenuSpecial::class, 'delete' => TRUE],
+            'special' => [\Igniter\Admin\Models\MenuSpecial::class, 'delete' => TRUE],
         ],
         'belongsToMany' => [
-            'categories' => [\Admin\Models\Category::class, 'table' => 'menu_categories'],
-            'mealtimes' => [\Admin\Models\Mealtime::class, 'table' => 'menu_mealtimes'],
+            'categories' => [\Igniter\Admin\Models\Category::class, 'table' => 'menu_categories'],
+            'mealtimes' => [\Igniter\Admin\Models\Mealtime::class, 'table' => 'menu_mealtimes'],
         ],
         'morphToMany' => [
-            'allergens' => [\Admin\Models\Ingredient::class, 'name' => 'ingredientable', 'conditions' => 'is_allergen = 1'],
-            'ingredients' => [\Admin\Models\Ingredient::class, 'name' => 'ingredientable'],
-            'locations' => [\Admin\Models\Location::class, 'name' => 'locationable'],
+            'allergens' => [\Igniter\Admin\Models\Ingredient::class, 'name' => 'ingredientable', 'conditions' => 'is_allergen = 1'],
+            'ingredients' => [\Igniter\Admin\Models\Ingredient::class, 'name' => 'ingredientable'],
+            'locations' => [\Igniter\Admin\Models\Location::class, 'name' => 'locationable'],
         ],
     ];
 

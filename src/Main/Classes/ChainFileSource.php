@@ -1,6 +1,6 @@
 <?php
 
-namespace Main\Classes;
+namespace Igniter\Main\Classes;
 
 use Exception;
 use Igniter\Flame\Pagic\Processors\Processor;
@@ -118,12 +118,21 @@ class ChainFileSource extends AbstractSource implements SourceInterface
         return $dirName.'/'.$fileName.'.'.$extension;
     }
 
+    public function getManifest()
+    {
+        $sourceResults = array_map(function (SourceInterface $source) {
+            return $source->getManifest();
+        }, array_reverse($this->sources));
+
+        return array_merge([], ...$sourceResults);
+    }
+
     /**
      * Returns a single source.
      *
-     * @param  string $dirName
-     * @param  string $fileName
-     * @param  string $extension
+     * @param string $dirName
+     * @param string $fileName
+     * @param string $extension
      *
      * @return mixed
      */

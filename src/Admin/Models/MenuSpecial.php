@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
 use Carbon\Carbon;
 use Igniter\Flame\Database\Model;
@@ -46,7 +46,7 @@ class MenuSpecial extends Model
         if ($this->isRecurring() || !$this->end_date)
             return null;
 
-        return $this->end_date->format(lang('system::lang.php.date_time_format'));
+        return $this->end_date->format(lang('igniter::system.php.date_time_format'));
     }
 
     public function getTypeAttribute($value)

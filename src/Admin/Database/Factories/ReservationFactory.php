@@ -1,12 +1,12 @@
 <?php
 
-namespace Admin\Database\Factories;
+namespace Igniter\Admin\Database\Factories;
 
 use Igniter\Flame\Database\Factories\Factory;
 
 class ReservationFactory extends Factory
 {
-    protected $model = \Admin\Models\Reservation::class;
+    protected $model = \Igniter\Admin\Models\Reservation::class;
 
     public function definition(): array
     {

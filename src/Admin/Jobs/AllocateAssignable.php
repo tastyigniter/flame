@@ -1,12 +1,12 @@
 <?php
 
-namespace Admin\Jobs;
+namespace Igniter\Admin\Jobs;
 
-use Admin\Classes\Allocator;
-use Admin\Models\AssignableLog;
-use Admin\Models\UserGroup;
-use Admin\Traits\Assignable;
 use Exception;
+use Igniter\Admin\Classes\Allocator;
+use Igniter\Admin\Models\AssignableLog;
+use Igniter\Admin\Models\UserGroup;
+use Igniter\Admin\Traits\Assignable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -18,7 +18,7 @@ class AllocateAssignable implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * @var \Admin\Models\AssignableLog
+     * @var \Igniter\Admin\Models\AssignableLog
      */
     public $assignableLog;
 
@@ -49,7 +49,7 @@ class AllocateAssignable implements ShouldQueue
             Allocator::addSlot($this->assignableLog->getKey());
 
             if (!$assignee = $this->assignableLog->assignee_group->findAvailableAssignee())
-                throw new Exception(lang('admin::lang.user_groups.alert_no_available_assignee'));
+                throw new Exception(lang('igniter::admin.user_groups.alert_no_available_assignee'));
 
             $this->assignableLog->assignable->assignTo($assignee);
 

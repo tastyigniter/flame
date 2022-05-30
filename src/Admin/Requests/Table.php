@@ -1,30 +1,30 @@
 <?php
 
-namespace Admin\Requests;
+namespace Igniter\Admin\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class Table extends FormRequest
 {
     public function attributes()
     {
         return [
-            'table_name' => lang('admin::lang.label_name'),
-            'min_capacity' => lang('admin::lang.tables.label_min_capacity'),
-            'max_capacity' => lang('admin::lang.tables.label_capacity'),
-            'extra_capacity' => lang('admin::lang.tables.label_extra_capacity'),
-            'priority' => lang('admin::lang.tables.label_priority'),
-            'is_joinable' => lang('admin::lang.tables.label_joinable'),
-            'table_status' => lang('admin::lang.label_status'),
-            'locations' => lang('admin::lang.label_location'),
-            'locations.*' => lang('admin::lang.label_location'),
+            'table_name' => lang('igniter::admin.label_name'),
+            'min_capacity' => lang('igniter::admin.tables.label_min_capacity'),
+            'max_capacity' => lang('igniter::admin.tables.label_capacity'),
+            'extra_capacity' => lang('igniter::admin.tables.label_extra_capacity'),
+            'priority' => lang('igniter::admin.tables.label_priority'),
+            'is_joinable' => lang('igniter::admin.tables.label_joinable'),
+            'table_status' => lang('igniter::admin.label_status'),
+            'locations' => lang('igniter::admin.label_location'),
+            'locations.*' => lang('igniter::admin.label_location'),
         ];
     }
 
     public function rules()
     {
         return [
-            'table_name' => ['required', 'string', 'min:2', 'max:255', 'unique:tables'],
+            'table_name' => ['required', 'string', 'between:2,255', 'unique:tables'],
             'min_capacity' => ['required', 'integer', 'min:1', 'lte:max_capacity'],
             'max_capacity' => ['required', 'integer', 'min:1', 'gte:min_capacity'],
             'extra_capacity' => ['required', 'integer'],

@@ -4,10 +4,10 @@
     $isScrollable = count($fieldOptions) > 10;
     $inlineMode = (bool)$field->getConfig('inlineMode');
 @endphp
-@if ($this->previewMode && $field->value)
+@if($this->previewMode && $field->value)
 
     <div class="field-radiolist">
-        @foreach ($fieldOptions as $value => $option)
+        @foreach($fieldOptions as $value => $option)
             @continue(!in_array($value, $checkedValues))
             @php
                 $radioId = 'radio_'.$field->getId().'_'.$loop->iteration;
@@ -36,7 +36,7 @@
 @elseif (!$this->previewMode && count($fieldOptions))
 
     <div class="field-radiolist {{ $isScrollable ? 'is-scrollable' : '' }}">
-        @if ($isScrollable)
+        @if($isScrollable)
             <div class="field-radiolist-scrollable">
                 <div class="scrollbar">
                     @endif
@@ -47,7 +47,7 @@
                         value="0"
                     />
 
-                    @foreach ($fieldOptions as $value => $option)
+                    @foreach($fieldOptions as $value => $option)
                         @php
                             $radioId = 'radio_'.$field->getId().'_'.$loop->iteration;
                             if (is_string($option)) $option = [$option];
@@ -71,7 +71,7 @@
                         </div>
                     @endforeach
 
-                    @if ($isScrollable)
+                    @if($isScrollable)
                 </div>
             </div>
         @endif
@@ -80,7 +80,7 @@
 
 @else
 
-    @if ($field->placeholder)
+    @if($field->placeholder)
         <p>@lang($field->placeholder)</p>
     @endif
 

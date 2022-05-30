@@ -2,12 +2,12 @@
     $fieldOptions = $field->options();
 @endphp
 <div class="field-radio">
-    @if ($fieldCount = count($fieldOptions))
+    @if($fieldCount = count($fieldOptions))
         <div
             id="{{ $field->getId() }}"
             class="btn-group btn-group-toggle bg-light"
         >
-            @foreach ($fieldOptions as $key => $value)
+            @foreach($fieldOptions as $key => $value)
                 <input
                     type="radio"
                     id="{{ $field->getId($loop->iteration) }}"

@@ -4,6 +4,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | TastyIgniter Carté Key
+    |--------------------------------------------------------------------------
+    |
+    | The license key for the corresponding domain from your TastyIgniter account.
+    | A Carte key is required to add and update item from the TastyIgniter Marketplace.
+    |
+    | https://tastyigniter.com/support/articles/carte-key
+    |
+    */
+
+    'carte_key' => env('IGNITER_CARTE_KEY'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Site Location Mode.
     |--------------------------------------------------------------------------
     |
@@ -28,17 +42,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Back-end URI
-    |--------------------------------------------------------------------------
-    |
-    | Specifies the URI prefix used for accessing admin (back-end) pages.
-    |
-    */
-
-    'adminUri' => '/admin',
-
-    /*
-    |--------------------------------------------------------------------------
     | Themes location
     |--------------------------------------------------------------------------
     |
@@ -47,28 +50,6 @@ return [
     */
 
     'themesDir' => '/themes',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Themes location
-    |--------------------------------------------------------------------------
-    |
-    | Specifies the relative theme path used for generating themes assets.
-    |
-    */
-
-    'assetsDir' => '/assets',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Determines which modules to load
-    |--------------------------------------------------------------------------
-    |
-    | Specify which modules should be registered when using the application.
-    |
-    */
-
-    'modules' => ['System', 'Admin', 'Main'],
 
     /*
     |--------------------------------------------------------------------------
@@ -94,44 +75,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Public assets path
-    |--------------------------------------------------------------------------
-    |
-    | Specifies the public assets absolute path.
-    |
-    */
-
-    //'assetsPath' => base_path('assets'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Determines if the routing caching is enabled.
-    |--------------------------------------------------------------------------
-    |
-    | If the caching is enabled, the page URL map is saved in the cache. If a page
-    | URL was changed on the disk, the old URL value could be still saved in the cache.
-    | To update the cache the admin Clear Cache feature should be used. It is recommended
-    | to disable the caching during the development, and enable it in the production mode.
-    |
-    */
-
-    'enableRoutesCache' => false,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Time to live for the URL map.
-    |--------------------------------------------------------------------------
-    |
-    | The URL map used in the Main page routing process. By default
-    | the map is updated every time when a page is saved in the admin or when the
-    | interval, in minutes, specified with the urlMapCacheTTL parameter expires.
-    |
-    */
-
-    'urlMapCacheTtl' => 10,
-
-    /*
-    |--------------------------------------------------------------------------
     | Time to live for parsed Template Pages.
     |--------------------------------------------------------------------------
     |
@@ -141,9 +84,9 @@ return [
     |
     */
 
-    'parsedTemplateCacheTTL' => 10,
+    'parsedTemplateCacheTTL' => null,
 
-    'parsedTemplateCachePath' => storage_path('system/cache'),
+    'parsedTemplateCachePath' => storage_path('igniter/cache'),
 
     /*
     |--------------------------------------------------------------------------
@@ -194,17 +137,6 @@ return [
     */
 
     'urlPolicy' => 'force',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Assets combiner URI
-    |--------------------------------------------------------------------------
-    |
-    | Specifies the URI prefix used for accessing combined assets.
-    |
-    */
-
-    'assetsCombinerUri' => '/_assets',
 
     /*
     |--------------------------------------------------------------------------

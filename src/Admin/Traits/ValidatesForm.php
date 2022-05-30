@@ -1,16 +1,16 @@
 <?php
 
-namespace Admin\Traits;
+namespace Igniter\Admin\Traits;
 
 use Closure;
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Flame\Exception\ValidationException;
+use Igniter\Flame\Igniter;
+use Igniter\System\Helpers\ValidationHelper;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
-use System\Helpers\ValidationHelper;
 
 trait ValidatesForm
 {
@@ -83,7 +83,7 @@ trait ValidatesForm
             return $rules;
 
         $result = [];
-        foreach ($rules as $key => $value) {
+        foreach ($rules as $value) {
             $result[$value[0]] = $value[2] ?? [];
         }
 
@@ -96,7 +96,7 @@ trait ValidatesForm
             return [];
 
         $result = [];
-        foreach ($rules as $key => [$name, $attribute]) {
+        foreach ($rules as [$name, $attribute]) {
             $result[$name] = is_lang_key($attribute) ? lang($attribute) : $attribute;
         }
 
@@ -138,7 +138,7 @@ trait ValidatesForm
     {
         $sessionKey = 'errors';
 
-        if (App::runningInAdmin())
+        if (Igniter::runningInAdmin())
             $sessionKey = 'admin_errors';
 
         return Session::flash($sessionKey, $errors);
@@ -157,7 +157,7 @@ trait ValidatesForm
         // if we dont have in config then fallback to a FormRequest class
         if ($requestClass = array_get($this->config, 'request')) {
             if (!class_exists($requestClass))
-                throw new ApplicationException(sprintf(lang('admin::lang.form.request_class_not_found'), $requestClass));
+                throw new ApplicationException(sprintf(lang('igniter::admin.form.request_class_not_found'), $requestClass));
 
             app()->resolving($requestClass, function ($request, $app) use ($form) {
                 if (method_exists($request, 'setController'))

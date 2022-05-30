@@ -1,39 +1,39 @@
 <?php
 
-namespace Admin\Controllers;
+namespace Igniter\Admin\Http\Controllers;
 
-use Admin\Facades\AdminMenu;
+use Igniter\Admin\Facades\AdminMenu;
 
-class MenuOptions extends \Admin\Classes\AdminController
+class MenuOptions extends \Igniter\Admin\Classes\AdminController
 {
     public $implement = [
-        \Admin\Actions\ListController::class,
-        \Admin\Actions\FormController::class,
-        \Admin\Actions\LocationAwareController::class,
+        \Igniter\Admin\Http\Actions\ListController::class,
+        \Igniter\Admin\Http\Actions\FormController::class,
+        \Igniter\Admin\Http\Actions\LocationAwareController::class,
     ];
 
     public $listConfig = [
         'list' => [
-            'model' => \Admin\Models\MenuOption::class,
-            'title' => 'lang:admin::lang.menu_options.text_title',
-            'emptyMessage' => 'lang:admin::lang.menu_options.text_empty',
+            'model' => \Igniter\Admin\Models\MenuOption::class,
+            'title' => 'lang:igniter::admin.menu_options.text_title',
+            'emptyMessage' => 'lang:igniter::admin.menu_options.text_empty',
             'defaultSort' => ['option_id', 'DESC'],
             'configFile' => 'menuoption',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.menu_options.text_form_name',
-        'model' => \Admin\Models\MenuOption::class,
-        'request' => \Admin\Requests\MenuOption::class,
+        'name' => 'lang:igniter::admin.menu_options.text_form_name',
+        'model' => \Igniter\Admin\Models\MenuOption::class,
+        'request' => \Igniter\Admin\Requests\MenuOption::class,
         'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
+            'title' => 'lang:igniter::admin.form.create_title',
             'redirect' => 'menu_options/edit/{option_id}',
             'redirectClose' => 'menu_options',
             'redirectNew' => 'menu_options/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
+            'title' => 'lang:igniter::admin.form.edit_title',
             'redirect' => 'menu_options/edit/{option_id}',
             'redirectClose' => 'menu_options',
             'redirectNew' => 'menu_options/create',

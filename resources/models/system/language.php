@@ -1,12 +1,12 @@
 <?php
 $config['list']['filter'] = [
     'search' => [
-        'prompt' => 'lang:system::lang.languages.text_filter_search',
+        'prompt' => 'lang:igniter::system.languages.text_filter_search',
         'mode' => 'all', // or any, exact
     ],
     'scopes' => [
         'status' => [
-            'label' => 'lang:admin::lang.text_filter_status',
+            'label' => 'lang:igniter::admin.text_filter_status',
             'type' => 'switch',
             'conditions' => 'status = :filtered',
         ],
@@ -16,12 +16,12 @@ $config['list']['filter'] = [
 $config['list']['toolbar'] = [
     'buttons' => [
         'create' => [
-            'label' => 'lang:admin::lang.button_new',
+            'label' => 'lang:igniter::admin.button_new',
             'class' => 'btn btn-primary',
             'href' => 'languages/create',
         ],
         'browse' => [
-            'label' => 'lang:system::lang.languages.button_browse',
+            'label' => 'lang:igniter::system.languages.button_browse',
             'class' => 'btn btn-default',
             'href' => 'https://tastyigniter.com/translate',
             'target' => '_blank',
@@ -31,27 +31,27 @@ $config['list']['toolbar'] = [
 
 $config['list']['bulkActions'] = [
     'status' => [
-        'label' => 'lang:admin::lang.list.actions.label_status',
+        'label' => 'lang:igniter::admin.list.actions.label_status',
         'type' => 'dropdown',
         'class' => 'btn btn-light',
         'statusColumn' => 'status',
         'menuItems' => [
             'enable' => [
-                'label' => 'lang:admin::lang.list.actions.label_enable',
+                'label' => 'lang:igniter::admin.list.actions.label_enable',
                 'type' => 'button',
                 'class' => 'dropdown-item',
             ],
             'disable' => [
-                'label' => 'lang:admin::lang.list.actions.label_disable',
+                'label' => 'lang:igniter::admin.list.actions.label_disable',
                 'type' => 'button',
                 'class' => 'dropdown-item text-danger',
             ],
         ],
     ],
     'delete' => [
-        'label' => 'lang:admin::lang.button_delete',
+        'label' => 'lang:igniter::admin.button_delete',
         'class' => 'btn btn-light text-danger',
-        'data-request-confirm' => 'lang:admin::lang.alert_warning_confirm',
+        'data-request-confirm' => 'lang:igniter::admin.alert_warning_confirm',
     ],
 ];
 
@@ -65,31 +65,31 @@ $config['list']['columns'] = [
         ],
     ],
     'name' => [
-        'label' => 'lang:admin::lang.label_name',
+        'label' => 'lang:igniter::admin.label_name',
         'type' => 'text',
         'searchable' => true,
     ],
     'code' => [
-        'label' => 'lang:system::lang.languages.column_code',
+        'label' => 'lang:igniter::system.languages.column_code',
         'type' => 'text',
         'searchable' => true,
     ],
     'status' => [
-        'label' => 'lang:system::lang.languages.column_status',
+        'label' => 'lang:igniter::system.languages.column_status',
         'type' => 'switch',
         'searchable' => true,
     ],
     'language_id' => [
-        'label' => 'lang:admin::lang.column_id',
+        'label' => 'lang:igniter::admin.column_id',
         'invisible' => true,
     ],
     'created_at' => [
-        'label' => 'lang:admin::lang.column_date_added',
+        'label' => 'lang:igniter::admin.column_date_added',
         'invisible' => true,
         'type' => 'timesense',
     ],
     'updated_at' => [
-        'label' => 'lang:admin::lang.column_date_updated',
+        'label' => 'lang:igniter::admin.column_date_updated',
         'invisible' => true,
         'type' => 'timesense',
     ],
@@ -98,25 +98,25 @@ $config['list']['columns'] = [
 $config['form']['toolbar'] = [
     'buttons' => [
         'back' => [
-            'label' => 'lang:admin::lang.button_icon_back',
+            'label' => 'lang:igniter::admin.button_icon_back',
             'class' => 'btn btn-outline-secondary',
             'href' => 'languages',
         ],
         'save' => [
-            'label' => 'lang:admin::lang.button_save',
+            'label' => 'lang:igniter::admin.button_save',
             'context' => ['create', 'edit'],
             'partial' => 'form/toolbar_save_button',
             'class' => 'btn btn-primary',
             'data-request' => 'onSave',
-            'data-progress-indicator' => 'admin::lang.text_saving',
+            'data-progress-indicator' => 'igniter::admin.text_saving',
         ],
         'delete' => [
-            'label' => 'lang:admin::lang.button_icon_delete',
+            'label' => 'lang:igniter::admin.button_icon_delete',
             'class' => 'btn btn-danger',
             'data-request' => 'onDelete',
             'data-request-data' => "_method:'DELETE'",
-            'data-request-confirm' => 'lang:admin::lang.alert_warning_confirm',
-            'data-progress-indicator' => 'admin::lang.text_deleting',
+            'data-request-confirm' => 'lang:igniter::admin.alert_warning_confirm',
+            'data-progress-indicator' => 'igniter::admin.text_deleting',
             'context' => ['edit'],
         ],
     ],
@@ -124,19 +124,19 @@ $config['form']['toolbar'] = [
 
 $config['form']['fields'] = [
     'code' => [
-        'label' => 'lang:system::lang.languages.label_code',
+        'label' => 'lang:igniter::system.languages.label_code',
         'type' => 'text',
         'span' => 'none',
         'cssClass' => 'pull-left flex-fill mr-3',
     ],
     'name' => [
-        'label' => 'lang:admin::lang.label_name',
+        'label' => 'lang:igniter::admin.label_name',
         'type' => 'text',
         'span' => 'none',
         'cssClass' => 'pull-left flex-fill mr-3',
     ],
     'status' => [
-        'label' => 'lang:admin::lang.label_status',
+        'label' => 'lang:igniter::admin.label_status',
         'type' => 'switch',
         'span' => 'none',
         'cssClass' => 'pull-left flex-fill',
@@ -144,38 +144,38 @@ $config['form']['fields'] = [
     ],
     'section' => [
         'type' => 'section',
-        'comment' => 'lang:system::lang.languages.help_language',
+        'comment' => 'lang:igniter::system.languages.help_language',
     ],
 ];
 $config['form']['tabs'] = [
-    'defaultTab' => 'lang:system::lang.languages.text_tab_general',
+    'defaultTab' => 'lang:igniter::system.languages.text_tab_general',
     'fields' => [
         '_file' => [
-            'tab' => 'lang:system::lang.languages.text_tab_files',
+            'tab' => 'lang:igniter::system.languages.text_tab_files',
             'type' => 'select',
             'context' => 'edit',
             'options' => [],
             'span' => 'none',
-            'placeholder' => 'system::lang.languages.text_filter_file',
+            'placeholder' => 'igniter::system.languages.text_filter_file',
             'cssClass' => 'pull-left flex-fill mr-3',
             'attributes' => [
                 'data-request' => 'onSubmitFilter',
             ],
         ],
         '_search' => [
-            'tab' => 'lang:system::lang.languages.text_tab_files',
+            'tab' => 'lang:igniter::system.languages.text_tab_files',
             'type' => 'text',
             'context' => 'edit',
             'span' => 'none',
             'cssClass' => 'pull-left flex-fill mr-3',
-            'placeholder' => lang('system::lang.languages.text_filter_translations'),
+            'placeholder' => lang('igniter::system.languages.text_filter_translations'),
             'attributes' => [
                 'data-control' => 'search-translations',
                 'data-request' => 'onSubmitFilter',
             ],
         ],
         '_string_filter' => [
-            'tab' => 'lang:system::lang.languages.text_tab_files',
+            'tab' => 'lang:igniter::system.languages.text_tab_files',
             'type' => 'radiotoggle',
             'context' => 'edit',
             'span' => 'none',
@@ -192,7 +192,7 @@ $config['form']['tabs'] = [
             ],
         ],
         'translations' => [
-            'tab' => 'lang:system::lang.languages.text_tab_files',
+            'tab' => 'lang:igniter::system.languages.text_tab_files',
             'type' => 'partial',
             'path' => 'translationseditor',
             'context' => 'edit',

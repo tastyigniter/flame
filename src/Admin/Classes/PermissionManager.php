@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\Classes;
+namespace Igniter\Admin\Classes;
 
 use Igniter\Flame\Traits\Singleton;
-use System\Classes\ExtensionManager;
+use Igniter\System\Classes\ExtensionManager;
 
 class PermissionManager
 {
@@ -42,7 +42,7 @@ class PermissionManager
             $callback($this);
         }
 
-        $permissionBundles = ExtensionManager::instance()->getRegistrationMethodValues('registerPermissions');
+        $permissionBundles = resolve(ExtensionManager::class)->getRegistrationMethodValues('registerPermissions');
         foreach ($permissionBundles as $owner => $permissionBundle) {
             if (!is_array($permissionBundle))
                 continue;

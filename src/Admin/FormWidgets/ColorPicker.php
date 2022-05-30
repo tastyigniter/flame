@@ -1,8 +1,8 @@
 <?php
 
-namespace Admin\FormWidgets;
+namespace Igniter\Admin\FormWidgets;
 
-use Admin\Classes\BaseFormWidget;
+use Igniter\Admin\Classes\BaseFormWidget;
 
 /**
  * Color picker
@@ -81,10 +81,8 @@ class ColorPicker extends BaseFormWidget
 
     public function loadAssets()
     {
-        $this->addCss('vendor/colorpicker/css/bootstrap-colorpicker.min.css', 'bootstrap-colorpicker-css');
-        $this->addJs('vendor/colorpicker/js/bootstrap-colorpicker.min.js', 'bootstrap-colorpicker-js');
-        $this->addCss('css/colorpicker.css', 'colorpicker-css');
-        $this->addJs('js/colorpicker.js', 'colorpicker-js');
+        $this->addCss('colorpicker.css', 'colorpicker-css');
+        $this->addJs('colorpicker.js', 'colorpicker-js');
     }
 
     public function getSaveValue($value)

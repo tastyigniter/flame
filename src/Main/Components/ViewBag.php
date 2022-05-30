@@ -1,8 +1,8 @@
 <?php
 
-namespace Main\Components;
+namespace Igniter\Main\Components;
 
-use System\Classes\BaseComponent;
+use Igniter\System\Classes\BaseComponent;
 
 /**
  * The view bag stores custom template properties.

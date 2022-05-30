@@ -1,15 +1,15 @@
 <?php
 
-namespace Admin\Widgets;
+namespace Igniter\Admin\Widgets;
 
-use Admin\Classes\BaseWidget;
-use Admin\Classes\FormField;
-use Admin\Classes\FormTabs;
-use Admin\Classes\Widgets;
-use Admin\Facades\AdminAuth;
-use Admin\Traits\FormModelWidget;
-use Admin\Traits\LocationAwareWidget;
 use Exception;
+use Igniter\Admin\Classes\BaseWidget;
+use Igniter\Admin\Classes\FormField;
+use Igniter\Admin\Classes\FormTabs;
+use Igniter\Admin\Classes\Widgets;
+use Igniter\Admin\Facades\AdminAuth;
+use Igniter\Admin\Traits\FormModelWidget;
+use Igniter\Admin\Traits\LocationAwareWidget;
 use Igniter\Flame\Database\Model;
 
 class Form extends BaseWidget
@@ -76,13 +76,13 @@ class Form extends BaseWidget
 
     /**
      * @var array Collection of all fields used in this form.
-     * @see \Admin\Classes\FormField
+     * @see \Igniter\Admin\Classes\FormField
      */
     protected $allFields = [];
 
     /**
      * @var object Collection of tab sections used in this form.
-     * @see \Admin\Classes\FormTabs
+     * @see \Igniter\Admin\Classes\FormTabs
      */
     protected $allTabs = [
         'outside' => null,
@@ -106,7 +106,7 @@ class Form extends BaseWidget
     public $previewMode = false;
 
     /**
-     * @var \Admin\Classes\Widgets
+     * @var \Igniter\Admin\Classes\Widgets
      */
     protected $widgetManager;
 
@@ -150,15 +150,10 @@ class Form extends BaseWidget
 
     public function loadAssets()
     {
-        $this->addJs('vendor/bootstrap-multiselect/bootstrap-multiselect.js', 'bootstrap-multiselect-js');
-        $this->addCss('vendor/bootstrap-multiselect/bootstrap-multiselect.css', 'bootstrap-multiselect-css');
+        $this->addJs('selectlist.js', 'selectlist-js');
+        $this->addCss('selectlist.css', 'selectlist-css');
 
-        $this->addJs('vendor/inputmask/jquery.inputmask.min.js', 'inputmask-js');
-
-        $this->addJs('js/selectlist.js', 'selectlist-js');
-        $this->addCss('css/selectlist.css', 'selectlist-css');
-
-        $this->addJs('js/form.js', 'form-js');
+        $this->addJs('form.js', 'form-js');
     }
 
     /**
@@ -234,7 +229,7 @@ class Form extends BaseWidget
         if (is_string($field)) {
             if (!isset($this->allFields[$field])) {
                 throw new Exception(sprintf(
-                    lang('admin::lang.form.missing_definition'),
+                    lang('igniter::admin.form.missing_definition'),
                     $field
                 ));
             }
@@ -255,7 +250,7 @@ class Form extends BaseWidget
     /**
      * Renders the HTML element for a field
      *
-     * @param \Admin\Classes\BaseFormWidget $field
+     * @param \Igniter\Admin\Classes\BaseFormWidget $field
      *
      * @return string|bool The rendered partial contents, or false if suppressing an exception
      */
@@ -450,7 +445,7 @@ class Form extends BaseWidget
      * @param string $name
      * @param array $config
      *
-     * @return \Admin\Classes\FormField
+     * @return \Igniter\Admin\Classes\FormField
      * @throws \Exception
      */
     public function makeFormField($name, $config)
@@ -478,7 +473,7 @@ class Form extends BaseWidget
             $fieldType = $config['type'] ?? null;
             if (!is_string($fieldType) && !is_null($fieldType)) {
                 throw new Exception(sprintf(
-                    lang('admin::lang.form.field_invalid_type'), gettype($fieldType)
+                    lang('igniter::admin.form.field_invalid_type'), gettype($fieldType)
                 ));
             }
 
@@ -518,7 +513,7 @@ class Form extends BaseWidget
      *
      * @param FormField $field
      *
-     * @return \Admin\Classes\BaseFormWidget|null
+     * @return \Igniter\Admin\Classes\BaseFormWidget|null
      * @throws \Exception
      */
     public function makeFormFieldWidget($field)
@@ -542,7 +537,7 @@ class Form extends BaseWidget
         $widgetClass = $this->widgetManager->resolveFormWidget($widgetName);
 
         if (!class_exists($widgetClass)) {
-            throw new Exception(sprintf(lang('admin::lang.alert_widget_class_name'), $widgetClass));
+            throw new Exception(sprintf(lang('igniter::admin.alert_widget_class_name'), $widgetClass));
         }
 
         $widget = $this->makeFormWidget($widgetClass, $field, $widgetConfig);
@@ -666,7 +661,7 @@ class Form extends BaseWidget
         if (is_string($field)) {
             if (!isset($this->allFields[$field])) {
                 throw new Exception(lang(
-                    'admin::lang.form.missing_definition',
+                    'igniter::admin.form.missing_definition',
                     compact('field')
                 ));
             }
@@ -686,7 +681,7 @@ class Form extends BaseWidget
      * Returns a HTML encoded value containing the other fields this
      * field depends on
      *
-     * @param \Admin\Classes\FormField $field
+     * @param \Igniter\Admin\Classes\FormField $field
      *
      * @return string
      */
@@ -706,7 +701,7 @@ class Form extends BaseWidget
      * Helper method to determine if field should be rendered
      * with label and comments.
      *
-     * @param \Admin\Classes\FormField $field
+     * @param \Igniter\Admin\Classes\FormField $field
      *
      * @return bool
      */
@@ -783,7 +778,7 @@ class Form extends BaseWidget
 
     public function getActiveTab()
     {
-        $activeTabs = @json_decode(array_get($_COOKIE, 'ti_activeFormTabs'), true);
+        $activeTabs = @json_decode(array_get($_COOKIE, 'ti_activeFormTabs', ''), true);
 
         $cookieKey = $this->getCookieKey();
 
@@ -840,7 +835,7 @@ class Form extends BaseWidget
     {
         if (!$this->model) {
             throw new Exception(sprintf(
-                lang('admin::lang.form.missing_model'), get_class($this->controller)
+                lang('igniter::admin.form.missing_model'), get_class($this->controller)
             ));
         }
 
@@ -972,7 +967,7 @@ class Form extends BaseWidget
             return false;
         }
 
-        if (is_subclass_of($widgetClass, \Admin\Classes\BaseFormWidget::class)) {
+        if (is_subclass_of($widgetClass, \Igniter\Admin\Classes\BaseFormWidget::class)) {
             return true;
         }
 
@@ -1014,7 +1009,7 @@ class Form extends BaseWidget
                 !$this->objectMethodExists($model, $methodName) &&
                 !$this->objectMethodExists($model, 'getDropdownOptions')
             ) {
-                throw new Exception(sprintf(lang('admin::lang.form.options_method_not_exists'),
+                throw new Exception(sprintf(lang('igniter::admin.form.options_method_not_exists'),
                     get_class($model), $methodName, $field->fieldName
                 ));
             }
@@ -1025,7 +1020,7 @@ class Form extends BaseWidget
         } // Field options are an explicit method reference
         elseif (is_string($fieldOptions)) {
             if (!$this->objectMethodExists($this->model, $fieldOptions)) {
-                throw new Exception(sprintf(lang('admin::lang.form.options_method_not_exists'),
+                throw new Exception(sprintf(lang('igniter::admin.form.options_method_not_exists'),
                     get_class($this->model), $fieldOptions, $field->fieldName
                 ));
             }

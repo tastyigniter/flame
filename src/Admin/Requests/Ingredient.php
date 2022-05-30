@@ -1,18 +1,18 @@
 <?php
 
-namespace Admin\Requests;
+namespace Igniter\Admin\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class Ingredient extends FormRequest
 {
     public function attributes()
     {
         return [
-            'name' => lang('admin::lang.label_name'),
-            'description' => lang('admin::lang.label_description'),
-            'status' => lang('admin::lang.label_status'),
-            'is_allergen' => lang('admin::lang.ingredients.label_allergen'),
+            'name' => lang('igniter::admin.label_name'),
+            'description' => lang('igniter::admin.label_description'),
+            'status' => lang('igniter::admin.label_status'),
+            'is_allergen' => lang('igniter::admin.ingredients.label_allergen'),
         ];
     }
 

@@ -1,16 +1,16 @@
 <?php
 
-namespace System\Controllers;
+namespace Igniter\System\Http\Controllers;
 
-use Admin\Facades\AdminMenu;
-use Admin\Facades\Template;
 use Exception;
-use System\Classes\UpdateManager;
-use System\Models\Extension;
-use System\Models\Theme;
-use System\Traits\ManagesUpdates;
+use Igniter\Admin\Facades\AdminMenu;
+use Igniter\Admin\Facades\Template;
+use Igniter\Main\Models\Theme;
+use Igniter\System\Classes\UpdateManager;
+use Igniter\System\Models\Extension;
+use Igniter\System\Traits\ManagesUpdates;
 
-class Updates extends \Admin\Classes\AdminController
+class Updates extends \Igniter\Admin\Classes\AdminController
 {
     use ManagesUpdates;
 
@@ -32,14 +32,14 @@ class Updates extends \Admin\Classes\AdminController
         Extension::syncAll();
         Theme::syncAll();
 
-        $pageTitle = lang('system::lang.updates.text_title');
+        $pageTitle = lang('igniter::system.updates.text_title');
         Template::setTitle($pageTitle);
         Template::setHeading($pageTitle);
 
-        Template::setButton(lang('system::lang.updates.button_check'), ['class' => 'btn btn-success', 'data-request' => 'onCheckUpdates']);
-        Template::setButton(lang('system::lang.updates.button_carte'), ['class' => 'btn btn-default pull-right', 'role' => 'button', 'data-bs-target' => '#carte-modal', 'data-bs-toggle' => 'modal']);
+        Template::setButton(lang('igniter::system.updates.button_check'), ['class' => 'btn btn-success', 'data-request' => 'onCheckUpdates']);
+        Template::setButton(lang('igniter::system.updates.button_carte'), ['class' => 'btn btn-default pull-right', 'role' => 'button', 'data-bs-target' => '#carte-modal', 'data-bs-toggle' => 'modal']);
 
-        Template::setButton(sprintf(lang('system::lang.version'), params('ti_version')), [
+        Template::setButton(sprintf(lang('igniter::system.version'), params('ti_version')), [
             'class' => 'btn disabled text-muted pull-right', 'role' => 'button',
         ]);
 
@@ -52,14 +52,14 @@ class Updates extends \Admin\Classes\AdminController
 
             $lastChecked = isset($updates['last_check'])
                 ? time_elapsed($updates['last_check'])
-                : lang('admin::lang.text_never');
+                : lang('igniter::admin.text_never');
 
-            Template::setButton(sprintf(lang('system::lang.updates.text_last_checked'), $lastChecked), [
+            Template::setButton(sprintf(lang('igniter::system.updates.text_last_checked'), $lastChecked), [
                 'class' => 'btn disabled text-muted pull-right', 'role' => 'button',
             ]);
 
             if (!empty($updates['items']) || !empty($updates['ignoredItems'])) {
-                Template::setButton(lang('system::lang.updates.button_update'), [
+                Template::setButton(lang('igniter::system.updates.button_update'), [
                     'class' => 'btn btn-primary pull-left mr-2 ml-0',
                     'id' => 'apply-updates', 'role' => 'button',
                 ]);

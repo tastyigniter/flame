@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Classes;
+namespace Igniter\Admin\Classes;
 
 /**
  * Form Widget base class
@@ -44,7 +44,7 @@ class BaseFormWidget extends BaseWidget
     //
 
     /**
-     * @var \Admin\Classes\FormField Object containing general form field information.
+     * @var \Igniter\Admin\Classes\FormField Object containing general form field information.
      */
     protected $formField;
 
@@ -62,7 +62,7 @@ class BaseFormWidget extends BaseWidget
      * Constructor
      *
      * @param $controller \Illuminate\Routing\Controller Active controller object.
-     * @param $formField \Admin\Classes\FormField Object containing general form field information.
+     * @param $formField \Igniter\Admin\Classes\FormField Object containing general form field information.
      * @param $configuration array Configuration the relates to this widget.
      */
     public function __construct($controller, $formField, $configuration = [])

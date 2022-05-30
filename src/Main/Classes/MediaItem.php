@@ -1,10 +1,10 @@
 <?php
 
-namespace Main\Classes;
+namespace Igniter\Main\Classes;
 
 use Carbon\Carbon;
 use Igniter\Flame\Support\Facades\File;
-use System\Models\Settings;
+use Igniter\System\Models\Settings;
 
 class MediaItem
 {
@@ -133,7 +133,7 @@ class MediaItem
     {
         return $this->type == self::TYPE_FILE
             ? File::sizeToString($this->size)
-            : $this->size.' '.trans('main::lang.media_manager.text_items');
+            : $this->size.' '.trans('igniter::main.media_manager.text_items');
     }
 
     /**

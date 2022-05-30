@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Model;
@@ -28,10 +28,10 @@ class UserGroup extends Model
 
     public $relation = [
         'hasMany' => [
-            'assignable_logs' => [\Admin\Models\AssignableLog::class, 'foreignKey' => 'assignee_group_id'],
+            'assignable_logs' => [\Igniter\Admin\Models\AssignableLog::class, 'foreignKey' => 'assignee_group_id'],
         ],
         'belongsToMany' => [
-            'users' => [\Admin\Models\User::class, 'table' => 'users_groups'],
+            'users' => [\Igniter\Admin\Models\User::class, 'table' => 'users_groups'],
         ],
     ];
 
@@ -99,7 +99,7 @@ class UserGroup extends Model
     }
 
     /**
-     * @return \Admin\Models\User|object
+     * @return \Igniter\Admin\Models\User|object
      */
     public function findAvailableAssignee()
     {

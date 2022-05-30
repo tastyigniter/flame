@@ -1,7 +1,7 @@
 <div class="permission-editor" {!! $field->getAttributes() !!}>
     <div class="table-responsive">
         <table class="table table-border mb-0">
-            @foreach ($groupedPermissions as $group => $permissions)
+            @foreach($groupedPermissions as $group => $permissions)
                 <thead>
                 <tr>
                     <th class="{{ $loop->first ? '' : 'pt-4' }}">
@@ -12,12 +12,12 @@
                             role="button"
                             data-toggle="permission-group"
                             data-permission-group="{{ str_slug($group) }}"
-                        >{{ lang('admin::lang.text_allow') }}</a>
+                        >{{ lang('igniter::admin.text_allow') }}</a>
                     </th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach ($permissions as $permission)
+                @foreach($permissions as $permission)
                     {!! $this->makePartial('permissioneditor/permission', [
                         'permission' => $permission,
                         'checkedValue' => (int)(array_key_exists($permission->code, $checkedPermissions) ? $checkedPermissions[$permission->code] : 0),

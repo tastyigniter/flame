@@ -99,7 +99,7 @@
         }).done($.proxy(this.onRecordLoaded, this)).fail(function () {
             self.$modalElement.modal('hide')
         }).always(function () {
-            self.$modalElement.modal('handleUpdate')
+            // self.$modalElement.modal('handleUpdate')
         })
     }
 

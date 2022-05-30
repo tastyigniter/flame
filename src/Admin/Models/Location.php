@@ -1,10 +1,10 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
-use Admin\Traits\HasDeliveryAreas;
-use Admin\Traits\HasLocationOptions;
-use Admin\Traits\HasWorkingHours;
+use Igniter\Admin\Traits\HasDeliveryAreas;
+use Igniter\Admin\Traits\HasLocationOptions;
+use Igniter\Admin\Traits\HasWorkingHours;
 use Igniter\Flame\Database\Attach\HasMedia;
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Traits\HasPermalink;
@@ -40,15 +40,15 @@ class Location extends AbstractLocation
 
     public $relation = [
         'hasMany' => [
-            'working_hours' => [\Admin\Models\WorkingHour::class, 'delete' => TRUE],
-            'delivery_areas' => [\Admin\Models\LocationArea::class, 'delete' => TRUE],
+            'working_hours' => [\Igniter\Admin\Models\WorkingHour::class, 'delete' => TRUE],
+            'delivery_areas' => [\Igniter\Admin\Models\LocationArea::class, 'delete' => TRUE],
         ],
         'belongsTo' => [
-            'country' => [\System\Models\Country::class, 'otherKey' => 'country_id', 'foreignKey' => 'location_country_id'],
+            'country' => [\Igniter\System\Models\Country::class, 'otherKey' => 'country_id', 'foreignKey' => 'location_country_id'],
         ],
         'morphedByMany' => [
-            'users' => [\Admin\Models\User::class, 'name' => 'locationable'],
-            'tables' => [\Admin\Models\Table::class, 'name' => 'locationable'],
+            'users' => [\Igniter\Admin\Models\User::class, 'name' => 'locationable'],
+            'tables' => [\Igniter\Admin\Models\Table::class, 'name' => 'locationable'],
         ],
     ];
 
@@ -295,7 +295,7 @@ class Location extends AbstractLocation
     {
         if (!$this->location_status) {
             throw new ValidationException(['location_status' => sprintf(
-                lang('admin::lang.alert_error_set_default'), $this->location_name
+                lang('igniter::admin.alert_error_set_default'), $this->location_name
             )]);
         }
 

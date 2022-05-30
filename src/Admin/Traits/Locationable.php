@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\Traits;
+namespace Igniter\Admin\Traits;
 
-use Admin\Facades\AdminAuth;
-use Admin\Facades\AdminLocation;
+use Igniter\Admin\Facades\AdminAuth;
+use Igniter\Admin\Facades\AdminLocation;
 use Igniter\Flame\Exception\ApplicationException;
 
 trait Locationable
@@ -100,8 +100,8 @@ trait Locationable
 
         $locationable = $this->getLocationableRelationObject();
 
-        if (app()->runningInAdmin() && !AdminAuth::isSuperUser() && $locationable->count() > 1) {
-            throw new ApplicationException(lang('admin::lang.alert_warning_locationable_delete'));
+        if (Igniter::runningInAdmin() && !AdminAuth::isSuperUser() && $locationable->count() > 1) {
+            throw new ApplicationException(lang('igniter::admin.alert_warning_locationable_delete'));
         }
 
         $locationable->detach();

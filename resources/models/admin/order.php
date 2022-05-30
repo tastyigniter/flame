@@ -1,52 +1,52 @@
 <?php
 $config['list']['filter'] = [
     'search' => [
-        'prompt' => 'lang:admin::lang.orders.text_filter_search',
+        'prompt' => 'lang:igniter::admin.orders.text_filter_search',
         'mode' => 'all',
     ],
     'scopes' => [
         'assignee' => [
-            'label' => 'lang:admin::lang.orders.text_filter_assignee',
+            'label' => 'lang:igniter::admin.orders.text_filter_assignee',
             'type' => 'select',
             'scope' => 'filterAssignedTo',
             'options' => [
-                1 => 'lang:admin::lang.statuses.text_unassigned',
-                2 => 'lang:admin::lang.statuses.text_assigned_to_self',
-                3 => 'lang:admin::lang.statuses.text_assigned_to_others',
+                1 => 'lang:igniter::admin.statuses.text_unassigned',
+                2 => 'lang:igniter::admin.statuses.text_assigned_to_self',
+                3 => 'lang:igniter::admin.statuses.text_assigned_to_others',
             ],
         ],
         'location' => [
-            'label' => 'lang:admin::lang.text_filter_location',
+            'label' => 'lang:igniter::admin.text_filter_location',
             'type' => 'selectlist',
-            'conditions' => 'location_id = :filtered',
-            'modelClass' => \Admin\Models\Location::class,
+            'scope' => 'whereHasLocation',
+            'modelClass' => \Igniter\Admin\Models\Location::class,
             'nameFrom' => 'location_name',
             'locationAware' => true,
         ],
         'status' => [
-            'label' => 'lang:admin::lang.text_filter_status',
+            'label' => 'lang:igniter::admin.text_filter_status',
             'type' => 'selectlist',
             'mode' => 'radio',
             'conditions' => 'status_id IN(:filtered)',
-            'modelClass' => \Admin\Models\Status::class,
+            'modelClass' => \Igniter\Admin\Models\Status::class,
             'options' => 'getDropdownOptionsForOrder',
         ],
         'type' => [
-            'label' => 'lang:admin::lang.orders.text_filter_order_type',
+            'label' => 'lang:igniter::admin.orders.text_filter_order_type',
             'type' => 'select',
             'conditions' => 'order_type = :filtered',
-            'modelClass' => \Admin\Models\Location::class,
+            'modelClass' => \Igniter\Admin\Models\Location::class,
             'options' => 'getOrderTypeOptions',
         ],
         'payment' => [
-            'label' => 'lang:admin::lang.orders.text_filter_payment',
+            'label' => 'lang:igniter::admin.orders.text_filter_payment',
             'type' => 'selectlist',
-            'conditions' => 'payment = :filtered',
-            'modelClass' => \Admin\Models\Payment::class,
+            'conditions' => 'payment IN(:filtered)',
+            'modelClass' => \Igniter\Admin\Models\Payment::class,
             'options' => 'getDropdownOptions',
         ],
         'date' => [
-            'label' => 'lang:admin::lang.text_filter_date',
+            'label' => 'lang:igniter::admin.text_filter_date',
             'type' => 'daterange',
             'conditions' => 'order_date >= CAST(:filtered_start AS DATE) AND order_date <= CAST(:filtered_end AS DATE)',
         ],
@@ -60,9 +60,9 @@ $config['list']['toolbar'] = [
 
 $config['list']['bulkActions'] = [
     'delete' => [
-        'label' => 'lang:admin::lang.button_delete',
+        'label' => 'lang:igniter::admin.button_delete',
         'class' => 'btn btn-light text-danger',
-        'data-request-confirm' => 'lang:admin::lang.alert_warning_confirm',
+        'data-request-confirm' => 'lang:igniter::admin.alert_warning_confirm',
     ],
 ];
 
@@ -76,83 +76,83 @@ $config['list']['columns'] = [
         ],
     ],
     'order_id' => [
-        'label' => 'lang:admin::lang.column_id',
+        'label' => 'lang:igniter::admin.column_id',
         'searchable' => true,
     ],
     'location_name' => [
-        'label' => 'lang:admin::lang.orders.column_location',
+        'label' => 'lang:igniter::admin.orders.column_location',
         'relation' => 'location',
         'select' => 'location_name',
         'searchable' => true,
         'locationAware' => true,
     ],
     'full_name' => [
-        'label' => 'lang:admin::lang.orders.column_customer_name',
+        'label' => 'lang:igniter::admin.orders.column_customer_name',
         'select' => "concat(first_name, ' ', last_name)",
         'searchable' => true,
     ],
     'order_type_name' => [
-        'label' => 'lang:admin::lang.label_type',
+        'label' => 'lang:igniter::admin.label_type',
         'type' => 'text',
         'sortable' => false,
     ],
     'order_time_is_asap' => [
-        'label' => 'lang:admin::lang.orders.label_time_is_asap',
+        'label' => 'lang:igniter::admin.orders.label_time_is_asap',
         'type' => 'switch',
         'cssClass' => 'text-center',
-        'onText' => 'lang:admin::lang.text_yes',
-        'offText' => 'lang:admin::lang.text_no',
+        'onText' => 'lang:igniter::admin.text_yes',
+        'offText' => 'lang:igniter::admin.text_no',
     ],
     'order_time' => [
-        'label' => 'lang:admin::lang.orders.column_time',
+        'label' => 'lang:igniter::admin.orders.column_time',
         'type' => 'time',
     ],
     'order_date' => [
-        'label' => 'lang:admin::lang.orders.column_date',
+        'label' => 'lang:igniter::admin.orders.column_date',
         'type' => 'date',
         'searchable' => true,
     ],
     'status_name' => [
-        'label' => 'lang:admin::lang.label_status',
+        'label' => 'lang:igniter::admin.label_status',
         'relation' => 'status',
         'select' => 'status_name',
         'type' => 'partial',
-        'path' => 'statuses/form/status_column',
+        'path' => 'statuses/status_column',
     ],
     'payment' => [
-        'label' => 'lang:admin::lang.orders.column_payment',
+        'label' => 'lang:igniter::admin.orders.column_payment',
         'type' => 'text',
         'sortable' => false,
         'relation' => 'payment_method',
         'select' => 'name',
     ],
     'assignee_name' => [
-        'label' => 'lang:admin::lang.orders.column_assignee',
+        'label' => 'lang:igniter::admin.orders.column_assignee',
         'type' => 'text',
         'relation' => 'assignee',
-        'select' => 'staff_name',
+        'select' => 'name',
         'searchable' => true,
         'invisible' => true,
     ],
     'assignee_group_name' => [
-        'label' => 'lang:admin::lang.orders.column_assignee_group',
+        'label' => 'lang:igniter::admin.orders.column_assignee_group',
         'type' => 'text',
         'relation' => 'assignee_group',
         'select' => 'user_group_name',
-        'searchable' => TRUE,
-        'invisible' => TRUE,
+        'searchable' => true,
+        'invisible' => true,
     ],
     'order_total' => [
-        'label' => 'lang:admin::lang.orders.column_total',
+        'label' => 'lang:igniter::admin.orders.column_total',
         'type' => 'currency',
     ],
     'updated_at' => [
-        'label' => 'lang:admin::lang.column_date_updated',
+        'label' => 'lang:igniter::admin.column_date_updated',
         'type' => 'datesince',
         'invisible' => true,
     ],
     'created_at' => [
-        'label' => 'lang:admin::lang.column_date_added',
+        'label' => 'lang:igniter::admin.column_date_added',
         'type' => 'timesince',
         'invisible' => true,
     ],
@@ -161,26 +161,26 @@ $config['list']['columns'] = [
 $config['form']['toolbar'] = [
     'buttons' => [
         'back' => [
-            'label' => 'lang:admin::lang.button_icon_back',
+            'label' => 'lang:igniter::admin.button_icon_back',
             'class' => 'btn btn-outline-secondary',
             'href' => 'orders',
         ],
         'save' => [
-            'label' => 'lang:admin::lang.button_save',
+            'label' => 'lang:igniter::admin.button_save',
             'context' => ['create'],
             'partial' => 'form/toolbar_save_button',
             'saveActions' => ['continue', 'close'],
             'class' => 'btn btn-primary',
             'data-request' => 'onSave',
-            'data-progress-indicator' => 'admin::lang.text_saving',
+            'data-progress-indicator' => 'igniter::admin.text_saving',
         ],
         'delete' => [
-            'label' => 'lang:admin::lang.button_icon_delete',
+            'label' => 'lang:igniter::admin.button_icon_delete',
             'class' => 'btn btn-danger',
             'data-request' => 'onDelete',
             'data-request-data' => "_method:'DELETE'",
-            'data-request-confirm' => 'lang:admin::lang.alert_warning_confirm',
-            'data-progress-indicator' => 'admin::lang.text_deleting',
+            'data-request-confirm' => 'lang:igniter::admin.alert_warning_confirm',
+            'data-progress-indicator' => 'igniter::admin.text_deleting',
             'context' => ['edit'],
         ],
     ],
@@ -190,7 +190,7 @@ $config['form']['fields'] = [
     '_info' => [
         'type' => 'partial',
         'disabled' => true,
-        'path' => 'orders/form/info',
+        'path' => 'orders/info',
         'span' => 'left',
         'cssClass' => 'left',
         'context' => ['edit', 'preview'],
@@ -199,69 +199,69 @@ $config['form']['fields'] = [
         'type' => 'statuseditor',
         'span' => 'right',
         'form' => 'orderstatus',
-        'request' => \Admin\Requests\OrderStatus::class,
+        'request' => \Igniter\Admin\Requests\OrderStatus::class,
     ],
 ];
 
 $config['form']['tabs'] = [
-    'defaultTab' => 'lang:admin::lang.orders.text_tab_general',
+    'defaultTab' => 'lang:igniter::admin.orders.text_tab_general',
     'fields' => [
         'order_menus' => [
             'type' => 'partial',
-            'path' => 'orders/form/order_menus',
+            'path' => 'orders/order_menus',
         ],
         'customer' => [
-            'label' => 'lang:admin::lang.orders.text_customer',
+            'label' => 'lang:igniter::admin.orders.text_customer',
             'type' => 'partial',
-            'path' => 'orders/form/field_customer',
+            'path' => 'orders/field_customer',
         ],
         'location' => [
-            'label' => 'lang:admin::lang.orders.text_restaurant',
+            'label' => 'lang:igniter::admin.orders.text_restaurant',
             'type' => 'partial',
-            'path' => 'orders/form/field_location',
+            'path' => 'orders/field_location',
         ],
         'order_details' => [
             'type' => 'partial',
-            'path' => 'orders/form/order_details',
+            'path' => 'orders/order_details',
         ],
 
         'status_history' => [
-            'tab' => 'lang:admin::lang.orders.text_status_history',
+            'tab' => 'lang:igniter::admin.orders.text_status_history',
             'type' => 'datatable',
             'useAjax' => true,
             'defaultSort' => ['status_history_id', 'desc'],
             'columns' => [
                 'date_added_since' => [
-                    'title' => 'lang:admin::lang.orders.column_time_date',
+                    'title' => 'lang:igniter::admin.orders.column_time_date',
                 ],
                 'status_name' => [
-                    'title' => 'lang:admin::lang.label_status',
+                    'title' => 'lang:igniter::admin.label_status',
                 ],
                 'comment' => [
-                    'title' => 'lang:admin::lang.orders.column_comment',
+                    'title' => 'lang:igniter::admin.orders.column_comment',
                 ],
                 'notified' => [
-                    'title' => 'lang:admin::lang.orders.column_notify',
+                    'title' => 'lang:igniter::admin.orders.column_notify',
                 ],
                 'staff_name' => [
-                    'title' => 'lang:admin::lang.orders.column_staff',
+                    'title' => 'lang:igniter::admin.orders.column_staff',
                 ],
             ],
         ],
         'payment_logs' => [
-            'tab' => 'lang:admin::lang.orders.text_payment_logs',
+            'tab' => 'lang:igniter::admin.orders.text_payment_logs',
             'type' => 'datatable',
             'useAjax' => true,
             'defaultSort' => ['payment_log_id', 'desc'],
             'columns' => [
                 'date_added_since' => [
-                    'title' => 'lang:admin::lang.orders.column_time_date',
+                    'title' => 'lang:igniter::admin.orders.column_time_date',
                 ],
                 'payment_name' => [
-                    'title' => 'lang:admin::lang.orders.label_payment_method',
+                    'title' => 'lang:igniter::admin.orders.label_payment_method',
                 ],
                 'message' => [
-                    'title' => 'lang:admin::lang.orders.column_comment',
+                    'title' => 'lang:igniter::admin.orders.column_comment',
                 ],
             ],
         ],

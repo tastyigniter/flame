@@ -1,6 +1,6 @@
 <?php
 
-namespace Main\Template;
+namespace Igniter\Main\Template;
 
 /**
  * Layout Template Class
@@ -30,6 +30,6 @@ class Layout extends Model
      */
     public function getCodeClassParent()
     {
-        return \Main\Template\Code\LayoutCode::class;
+        return \Igniter\Main\Template\Code\LayoutCode::class;
     }
 }

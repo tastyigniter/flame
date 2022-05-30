@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Traits;
+namespace Igniter\System\Traits;
 
 use Carbon\Carbon;
 use Igniter\Flame\Assetic\Asset\AssetCache;
@@ -9,12 +9,13 @@ use Igniter\Flame\Assetic\Asset\FileAsset;
 use Igniter\Flame\Assetic\Asset\HttpAsset;
 use Igniter\Flame\Assetic\Cache\FilesystemCache;
 use Igniter\Flame\Exception\ApplicationException;
+use Igniter\Flame\Igniter;
 use Igniter\Flame\Support\Facades\File;
+use Igniter\System\Events\Assets\BeforePrepareCombiner;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Response;
-use System\Events\Assets\BeforePrepareCombiner;
 
 trait CombinesAssets
 {
@@ -43,38 +44,24 @@ trait CombinesAssets
      */
     public $useCache = false;
 
-    /**
-     * @var bool Compress (minify) asset files.
-     */
-    public $useMinify = false;
-
     protected $assetsCombinerUri;
 
     protected function initCombiner()
     {
         $this->cacheKeyPrefix = 'ti.combiner.';
-        $this->useCache = config('system.enableAssetCache', true);
-        $this->useMinify = config('system.enableAssetMinify', null);
-        $this->storagePath = storage_path('system/combiner/data');
-        $this->assetsCombinerUri = config('system.assetsCombinerUri', '/_assets');
+        $this->useCache = config('igniter.system.enableAssetCache', true);
+        $this->storagePath = storage_path('igniter/combiner/data');
+        $this->assetsCombinerUri = config('igniter.routes.assetsCombinerUri', '/_assets');
 
-        if (app()->runningInAdmin())
-            $this->assetsCombinerUri = config('system.adminUri', '/admin').$this->assetsCombinerUri;
-
-        if ($this->useMinify === null)
-            $this->useMinify = !config('app.debug', false);
+        if (Igniter::runningInAdmin())
+            $this->assetsCombinerUri = Igniter::uri().$this->assetsCombinerUri;
 
         $this->registerFilter('css', new \Igniter\Flame\Assetic\Filter\CssImportFilter);
         $this->registerFilter(['css', 'scss'], new \Igniter\Flame\Assetic\Filter\CssRewriteFilter);
 
         $scssPhpFilter = new \Igniter\Flame\Assetic\Filter\ScssphpFilter;
-        $scssPhpFilter->addImportPath(base_path());
+        $scssPhpFilter->addImportPath(public_path());
         $this->registerFilter('scss', $scssPhpFilter);
-
-        if ($this->useMinify) {
-            $this->registerFilter('js', new \Igniter\Flame\Assetic\Filter\JSMinFilter);
-            $this->registerFilter(['css', 'scss'], new \Igniter\Flame\Assetic\Filter\StylesheetMinify);
-        }
     }
 
     /**
@@ -154,7 +141,7 @@ trait CombinesAssets
     {
         $cacheData = $this->getCache($cacheKey);
         if (!$cacheData) {
-            throw new ApplicationException(sprintf(lang('system::lang.not_found.combiner'), $cacheKey));
+            throw new ApplicationException(sprintf(lang('igniter::system.not_found.combiner'), $cacheKey));
         }
 
         $lastModTime = gmdate("D, d M Y H:i:s \G\M\T", array_get($cacheData, 'lastMod'));
@@ -209,9 +196,15 @@ trait CombinesAssets
             if (!file_exists($path))
                 continue;
 
-            $asset = starts_with($path, ['//', 'http://', 'https://'])
-                ? new HttpAsset($path, $filters)
-                : new FileAsset($path, $filters, base_path());
+            if (starts_with($path, ['//', 'http://', 'https://'])) {
+                $asset = new HttpAsset($path, $filters);
+            }
+            else {
+                $asset = new FileAsset($path, $filters,
+                    starts_with($path, public_path())
+                        ? public_path() : null
+                );
+            }
 
             $files[] = $asset;
         }

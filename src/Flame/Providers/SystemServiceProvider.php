@@ -1,42 +1,30 @@
 <?php
 
-namespace System;
+namespace Igniter\Flame\Providers;
 
-use Admin\Classes\Location;
-use Admin\Classes\Navigation;
-use Admin\Classes\PermissionManager;
-use Admin\Classes\Template;
-use Admin\Classes\User;
-use Admin\Helpers\Admin as AdminHelper;
-use Igniter\Flame\ActivityLog\ActivityLogServiceProvider;
-use Igniter\Flame\Currency\CurrencyServiceProvider;
-use Igniter\Flame\Foundation\Providers\AppServiceProvider;
-use Igniter\Flame\Geolite\GeoliteServiceProvider;
-use Igniter\Flame\Pagic\Cache\FileSystem as FileCache;
-use Igniter\Flame\Pagic\Environment;
-use Igniter\Flame\Pagic\Loader;
-use Igniter\Flame\Pagic\PagicServiceProvider;
-use Igniter\Flame\Pagic\Parsers\FileParser;
+use Igniter\Admin\Classes\PermissionManager;
+use Igniter\Flame\Flash\FlashBag;
+use Igniter\Flame\Igniter;
 use Igniter\Flame\Setting\Facades\Setting;
-use Igniter\Flame\Support\ClassLoader;
-use Igniter\Flame\Support\Facades\File;
-use Igniter\Flame\Support\HelperServiceProvider;
 use Igniter\Flame\Translation\Drivers\Database;
+use Igniter\System\Classes;
+use Igniter\System\Classes\ExtensionManager;
+use Igniter\System\Classes\MailManager;
+use Igniter\System\Console;
+use Igniter\System\Exception\ErrorHandler;
+use Igniter\System\Libraries;
+use Igniter\System\Models\Settings;
+use Igniter\System\Template\Extension\BladeExtension;
 use Illuminate\Console\Events\CommandStarting;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
-use Main\Classes\Customer;
-use System\Classes\ErrorHandler;
-use System\Classes\ExtensionManager;
-use System\Classes\MailManager;
-use System\Models\Settings;
-use System\Template\Extension\BladeExtension;
 
 class SystemServiceProvider extends AppServiceProvider
 {
@@ -46,37 +34,20 @@ class SystemServiceProvider extends AppServiceProvider
      */
     public function register()
     {
-        $this->includeHelpers();
-
-        parent::register('system');
-
-        $this->registerProviders();
         $this->registerSingletons();
-
-        // Provide backward compatibility for old model class names
-        $this->registerModelClassAliases();
+        $this->registerFacadeAliases();
 
         // Register all extensions
-        ExtensionManager::instance()->registerExtensions();
+        resolve(ExtensionManager::class)->registerExtensions();
 
         $this->registerSchedule();
         $this->registerConsole();
         $this->registerErrorHandler();
-        $this->registerPagicParser();
         $this->registerMailer();
         $this->registerPaginator();
-
-        // Register admin and main module providers
-        collect(Config::get('system.modules', []))->each(function ($module) {
-            if (strtolower(trim($module)) != 'system') {
-                $this->app->register('\\'.$module.'\ServiceProvider');
-            }
-        });
-
-        if (App::runningInAdmin()) {
-            $this->registerPermissions();
-            $this->registerSystemSettings();
-        }
+        $this->registerPermissions();
+        $this->registerSystemSettings();
+        $this->registerBladeDirectives();
     }
 
     /**
@@ -85,28 +56,20 @@ class SystemServiceProvider extends AppServiceProvider
      */
     public function boot()
     {
-        // Boot extensions
-        parent::boot('system');
+        $this->loadViewsFrom($this->root.'/resources/views/system', 'igniter.system');
+        $this->loadAnonymousComponentFrom('igniter.system::_components.', 'igniter.system');
+        $this->loadResourcesFrom($this->root.'/resources', 'igniter');
 
         $this->defineEloquentMorphMaps();
+        $this->resolveFlashSessionKey();
 
-        ExtensionManager::instance()->bootExtensions();
+        resolve(ExtensionManager::class)->bootExtensions();
 
         $this->updateTimezone();
         $this->setConfiguration();
         $this->extendValidator();
         $this->addTranslationDriver();
         $this->defineQueryMacro();
-    }
-
-    /*
-     * Include helpers
-     */
-    protected function includeHelpers()
-    {
-        foreach (glob(__DIR__.'/helpers/*_helper.php') as $file) {
-            include_once $file;
-        }
     }
 
     protected function updateTimezone()
@@ -119,39 +82,35 @@ class SystemServiceProvider extends AppServiceProvider
      */
     protected function registerSingletons()
     {
-        App::singleton('admin.helper', function () {
-            return new AdminHelper;
-        });
-
-        App::singleton('admin.auth', function () {
-            return new User;
-        });
-
-        App::singleton('auth', function () {
-            return new Customer;
-        });
-
-        App::singleton('assets', function () {
+        $this->app->singleton('assets', function () {
             return new Libraries\Assets();
         });
 
-        App::singleton('admin.menu', function ($app) {
-            return new Navigation('~/app/admin/views/_partials/');
-        });
-
-        App::singleton('admin.template', function ($app) {
-            return new Template;
-        });
-
-        App::singleton('admin.location', function ($app) {
-            return new Location;
-        });
-
-        App::singleton('country', function ($app) {
+        $this->app->singleton('country', function ($app) {
             return new Libraries\Country;
         });
 
-        App::instance('path.uploads', base_path(Config::get('system.assets.media.path', 'assets/media/uploads')));
+        $this->app->instance('path.uploads', base_path(Config::get('igniter.system.assets.media.path', 'assets/media/uploads')));
+
+        $this->app->singleton(ExtensionManager::class, function () {
+            return tap(new ExtensionManager, function ($manager) {
+                $manager->initialize();
+            });
+        });
+
+        $this->app->singleton(MailManager::class);
+    }
+
+    protected function registerFacadeAliases()
+    {
+        $loader = AliasLoader::getInstance();
+
+        foreach ([
+            'Assets' => \Igniter\System\Facades\Assets::class,
+            'Country' => \Igniter\System\Facades\Country::class,
+        ] as $alias => $class) {
+            $loader->alias($alias, $class);
+        }
     }
 
     /**
@@ -161,7 +120,7 @@ class SystemServiceProvider extends AppServiceProvider
     {
         // Allow extensions to use the scheduler
         Event::listen('console.schedule', function ($schedule) {
-            $extensions = ExtensionManager::instance()->getExtensions();
+            $extensions = resolve(ExtensionManager::class)->getExtensions();
             foreach ($extensions as $extension) {
                 if (method_exists($extension, 'registerSchedule')) {
                     $extension->registerSchedule($schedule);
@@ -171,7 +130,12 @@ class SystemServiceProvider extends AppServiceProvider
 
         // Allow system based cache clearing
         Event::listen('cache:cleared', function () {
-            \System\Helpers\CacheHelper::clearInternal();
+            \Igniter\System\Helpers\CacheHelper::clearInternal();
+        });
+
+        Event::listen(\Illuminate\Console\Events\CommandFinished::class, function ($event) {
+            if ($event->command === 'clear-compiled')
+                \Igniter\System\Helpers\CacheHelper::instance()->clearCompiled();
         });
 
         foreach (
@@ -179,6 +143,7 @@ class SystemServiceProvider extends AppServiceProvider
                 'igniter.util' => Console\Commands\IgniterUtil::class,
                 'igniter.up' => Console\Commands\IgniterUp::class,
                 'igniter.down' => Console\Commands\IgniterDown::class,
+                'igniter.package-discover' => Console\Commands\IgniterPackageDiscover::class,
                 'igniter.install' => Console\Commands\IgniterInstall::class,
                 'igniter.update' => Console\Commands\IgniterUpdate::class,
                 'igniter.passwd' => Console\Commands\IgniterPasswd::class,
@@ -187,6 +152,7 @@ class SystemServiceProvider extends AppServiceProvider
                 'extension.remove' => Console\Commands\ExtensionRemove::class,
                 'theme.install' => Console\Commands\ThemeInstall::class,
                 'theme.remove' => Console\Commands\ThemeRemove::class,
+                'theme.vendor-publish' => Console\Commands\ThemeVendorPublish::class,
             ] as $command => $class
         ) {
             $this->registerConsoleCommand($command, $class);
@@ -199,9 +165,8 @@ class SystemServiceProvider extends AppServiceProvider
     protected function registerErrorHandler()
     {
         Event::listen('exception.beforeRender', function ($exception, $httpCode, $request) {
-            $handler = new ErrorHandler;
-
-            return $handler->handleException($exception);
+            if ($result = (new ErrorHandler)->handleException($exception))
+                return $result;
         });
     }
 
@@ -227,36 +192,28 @@ class SystemServiceProvider extends AppServiceProvider
 
     protected function registerMailer()
     {
-        MailManager::instance()->registerCallback(function (MailManager $manager) {
+        resolve(MailManager::class)->registerCallback(function (MailManager $manager) {
             $manager->registerMailLayouts([
-                'default' => 'system::_mail.layouts.default',
+                'default' => 'igniter.system::_mail.layouts.default',
             ]);
 
             $manager->registerMailPartials([
-                'header' => 'system::_mail.partials.header',
-                'footer' => 'system::_mail.partials.footer',
-                'button' => 'system::_mail.partials.button',
-                'panel' => 'system::_mail.partials.panel',
-                'table' => 'system::_mail.partials.table',
-                'subcopy' => 'system::_mail.partials.subcopy',
-                'promotion' => 'system::_mail.partials.promotion',
+                'header' => 'igniter.system::_mail.partials.header',
+                'footer' => 'igniter.system::_mail.partials.footer',
+                'button' => 'igniter.system::_mail.partials.button',
+                'panel' => 'igniter.system::_mail.partials.panel',
+                'table' => 'igniter.system::_mail.partials.table',
+                'subcopy' => 'igniter.system::_mail.partials.subcopy',
+                'promotion' => 'igniter.system::_mail.partials.promotion',
             ]);
 
             $manager->registerMailVariables(
-                File::getRequire(__DIR__.'/models/config/mailvariables.php')
+                File::getRequire(File::symbolizePath('igniter::models/system/mailvariables.php'))
             );
         });
 
         Event::listen('mailer.beforeRegister', function () {
-            MailManager::instance()->applyMailerConfigValues();
-        });
-
-        Event::listen('mailer.beforeAddContent', function ($mailer, $message, $view, $data, $raw, $plain) {
-            // When "plain-text only" email is sent, $view is null, this sets the flag appropriately
-            $plainOnly = is_null($view);
-            $method = is_null($raw) ? 'addContentToMailer' : 'addRawContentToMailer';
-
-            return !MailManager::instance()->$method($message, $raw ?: $view ?: $plain, $data, $plainOnly);
+            resolve(MailManager::class)->applyMailerConfigValues();
         });
     }
 
@@ -264,8 +221,8 @@ class SystemServiceProvider extends AppServiceProvider
     {
         Paginator::useBootstrap();
 
-        Paginator::defaultView('system::_partials/pagination/default');
-        Paginator::defaultSimpleView('system::_partials/pagination/simple_default');
+        Paginator::defaultView('igniter.system::_partials/pagination/default');
+        Paginator::defaultSimpleView('igniter.system::_partials/pagination/simple_default');
 
         Paginator::currentPathResolver(function () {
             return url()->current();
@@ -283,7 +240,7 @@ class SystemServiceProvider extends AppServiceProvider
 
     protected function addTranslationDriver()
     {
-        if ($this->app->hasDatabase()) {
+        if (Igniter::hasDatabase()) {
             $this->app['translation.loader']->addDriver(Database::class);
         }
     }
@@ -296,7 +253,7 @@ class SystemServiceProvider extends AppServiceProvider
             app('config')->set('currency.converters.openexchangerates.apiKey', setting('currency_converter.oer.apiKey'));
             app('config')->set('currency.converters.fixerio.apiKey', setting('currency_converter.fixerio.apiKey'));
             app('config')->set('currency.ratesCacheDuration', setting('currency_converter.refreshInterval'));
-            app('config')->set('currency.model', \System\Models\Currencies_model::class);
+            app('config')->set('currency.model', \Igniter\System\Models\Currency::class);
         });
 
         $this->app->resolving('translator.localization', function ($localization, $app) {
@@ -324,26 +281,17 @@ class SystemServiceProvider extends AppServiceProvider
     protected function defineEloquentMorphMaps()
     {
         Relation::morphMap([
-            'activities' => \System\Models\Activity::class,
-            'countries' => \System\Models\Country::class,
-            'currencies' => \System\Models\Currency::class,
-            'extensions' => \System\Models\Extension::class,
-            'languages' => \System\Models\Language::class,
-            'mail_layouts' => \System\Models\MailLayout::class,
-            'mail_templates' => \System\Models\MailTemplate::class,
-            'pages' => \System\Models\Page::class,
-            'settings' => \System\Models\Settings::class,
-            'themes' => \System\Models\Theme::class,
+            'activities' => \Igniter\System\Models\Activity::class,
+            'countries' => \Igniter\System\Models\Country::class,
+            'currencies' => \Igniter\System\Models\Currency::class,
+            'extensions' => \Igniter\System\Models\Extension::class,
+            'languages' => \Igniter\System\Models\Language::class,
+            'mail_layouts' => \Igniter\System\Models\MailLayout::class,
+            'mail_templates' => \Igniter\System\Models\MailTemplate::class,
+            'pages' => \Igniter\System\Models\Page::class,
+            'settings' => \Igniter\System\Models\Settings::class,
+            'themes' => \Igniter\Main\Models\Theme::class,
         ]);
-    }
-
-    protected function registerProviders()
-    {
-        $this->app->register(HelperServiceProvider::class);
-        $this->app->register(PagicServiceProvider::class);
-        $this->app->register(ActivityLogServiceProvider::class);
-        $this->app->register(CurrencyServiceProvider::class);
-        $this->app->register(GeoliteServiceProvider::class);
     }
 
     protected function defineQueryMacro()
@@ -377,31 +325,31 @@ class SystemServiceProvider extends AppServiceProvider
         PermissionManager::instance()->registerCallback(function ($manager) {
             $manager->registerPermissions('System', [
                 'Admin.Activities' => [
-                    'label' => 'system::lang.permissions.activities', 'group' => 'system::lang.permissions.name',
+                    'label' => 'igniter::system.permissions.activities', 'group' => 'igniter::system.permissions.name',
                 ],
                 'Admin.Extensions' => [
-                    'label' => 'system::lang.permissions.extensions', 'group' => 'system::lang.permissions.name',
+                    'label' => 'igniter::system.permissions.extensions', 'group' => 'igniter::system.permissions.name',
                 ],
                 'Admin.MailTemplates' => [
-                    'label' => 'system::lang.permissions.mail_templates', 'group' => 'system::lang.permissions.name',
+                    'label' => 'igniter::system.permissions.mail_templates', 'group' => 'igniter::system.permissions.name',
                 ],
                 'Site.Countries' => [
-                    'label' => 'system::lang.permissions.countries', 'group' => 'system::lang.permissions.name',
+                    'label' => 'igniter::system.permissions.countries', 'group' => 'igniter::system.permissions.name',
                 ],
                 'Site.Currencies' => [
-                    'label' => 'system::lang.permissions.currencies', 'group' => 'system::lang.permissions.name',
+                    'label' => 'igniter::system.permissions.currencies', 'group' => 'igniter::system.permissions.name',
                 ],
                 'Site.Languages' => [
-                    'label' => 'system::lang.permissions.languages', 'group' => 'system::lang.permissions.name',
+                    'label' => 'igniter::system.permissions.languages', 'group' => 'igniter::system.permissions.name',
                 ],
                 'Site.Settings' => [
-                    'label' => 'system::lang.permissions.settings', 'group' => 'system::lang.permissions.name',
+                    'label' => 'igniter::system.permissions.settings', 'group' => 'igniter::system.permissions.name',
                 ],
                 'Site.Updates' => [
-                    'label' => 'system::lang.permissions.updates', 'group' => 'system::lang.permissions.name',
+                    'label' => 'igniter::system.permissions.updates', 'group' => 'igniter::system.permissions.name',
                 ],
                 'Admin.SystemLogs' => [
-                    'label' => 'system::lang.permissions.system_logs', 'group' => 'system::lang.permissions.name',
+                    'label' => 'igniter::system.permissions.system_logs', 'group' => 'igniter::system.permissions.name',
                 ],
             ]);
         });
@@ -412,81 +360,60 @@ class SystemServiceProvider extends AppServiceProvider
         Settings::registerCallback(function (Settings $manager) {
             $manager->registerSettingItems('core', [
                 'general' => [
-                    'label' => 'system::lang.settings.text_tab_general',
-                    'description' => 'system::lang.settings.text_tab_desc_general',
+                    'label' => 'igniter::system.settings.text_tab_general',
+                    'description' => 'igniter::system.settings.text_tab_desc_general',
                     'icon' => 'fa fa-sliders',
                     'priority' => 0,
                     'permission' => ['Site.Settings'],
                     'url' => admin_url('settings/edit/general'),
-                    'form' => '~/app/system/models/config/generalsettings',
-                    'request' => \System\Requests\GeneralSettings::class,
+                    'form' => 'generalsettings',
+                    'request' => \Igniter\System\Requests\GeneralSettings::class,
                 ],
                 'site' => [
-                    'label' => 'system::lang.settings.text_tab_site',
-                    'description' => 'system::lang.settings.text_tab_desc_site',
+                    'label' => 'igniter::system.settings.text_tab_site',
+                    'description' => 'igniter::system.settings.text_tab_desc_site',
                     'icon' => 'fa fa-globe',
                     'priority' => 2,
                     'permission' => ['Site.Settings'],
                     'url' => admin_url('settings/edit/site'),
-                    'form' => '~/app/system/models/config/site_settings',
-                    'request' => 'System\Requests\SiteSettings',
+                    'form' => 'sitesettings',
+                    'request' => 'Igniter\System\Requests\SiteSettings',
                 ],
                 'mail' => [
-                    'label' => 'lang:system::lang.settings.text_tab_mail',
-                    'description' => 'lang:system::lang.settings.text_tab_desc_mail',
+                    'label' => 'lang:igniter::system.settings.text_tab_mail',
+                    'description' => 'lang:igniter::system.settings.text_tab_desc_mail',
                     'icon' => 'fa fa-envelope',
                     'priority' => 4,
                     'permission' => ['Site.Settings'],
                     'url' => admin_url('settings/edit/mail'),
-                    'form' => '~/app/system/models/config/mailsettings',
-                    'request' => \System\Requests\MailSettings::class,
+                    'form' => 'mailsettings',
+                    'request' => \Igniter\System\Requests\MailSettings::class,
                 ],
                 'advanced' => [
-                    'label' => 'lang:system::lang.settings.text_tab_server',
-                    'description' => 'lang:system::lang.settings.text_tab_desc_server',
+                    'label' => 'lang:igniter::system.settings.text_tab_server',
+                    'description' => 'lang:igniter::system.settings.text_tab_desc_server',
                     'icon' => 'fa fa-cog',
                     'priority' => 7,
                     'permission' => ['Site.Settings'],
                     'url' => admin_url('settings/edit/advanced'),
-                    'form' => '~/app/system/models/config/advancedsettings',
-                    'request' => \System\Requests\AdvancedSettings::class,
+                    'form' => 'advancedsettings',
+                    'request' => \Igniter\System\Requests\AdvancedSettings::class,
                 ],
             ]);
         });
     }
 
-    protected function registerPagicParser()
+    protected function registerBladeDirectives()
     {
-        FileParser::setCache(new FileCache(config('system.parsedTemplateCachePath')));
-
-        App::singleton('pagic.environment', function () {
-            $pagic = new Environment(new Loader, [
-                'cache' => new FileCache(config('view.compiled')),
-            ]);
-
-            $pagic->addExtension(new BladeExtension());
-
-            return $pagic;
+        $this->callAfterResolving('blade.compiler', function ($compiler, $app) {
+            (new BladeExtension)->register();
         });
     }
 
-    protected function registerModelClassAliases()
+    protected function resolveFlashSessionKey()
     {
-        resolve(ClassLoader::class)->addAliases([
-            \System\Models\Activity::class => 'System\Models\Activities_model',
-            \System\Models\Country::class => 'System\Models\Countries_model',
-            \System\Models\Currency::class => 'System\Models\Currencies_model',
-            \System\Models\Extension::class => 'System\Models\Extensions_model',
-            \System\Models\Language::class => 'System\Models\Languages_model',
-            \System\Models\MailLayout::class => 'System\Models\Mail_layouts_model',
-            \System\Models\MailPartial::class => 'System\Models\Mail_partials_model',
-            \System\Models\MailTemplate::class => 'System\Models\Mail_templates_model',
-            \System\Models\MailTheme::class => 'System\Models\Mail_themes_model',
-            \System\Models\Page::class => 'System\Models\Pages_model',
-            \System\Models\RequestLog::class => 'System\Models\Request_logs_model',
-            \System\Models\Settings::class => 'System\Models\Settings_model',
-            \System\Models\Theme::class => 'System\Models\Themes_model',
-            \System\Models\Translation::class => 'System\Models\Translations_model',
-        ]);
+        $this->app->resolving('flash', function (FlashBag $flash) {
+            $flash->setSessionKey(Igniter::runningInAdmin() ? 'flash_data_admin' : 'flash_data_main');
+        });
     }
 }

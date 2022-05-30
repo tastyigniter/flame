@@ -1,12 +1,12 @@
 <?php
 
-namespace Admin\Classes;
+namespace Igniter\Admin\Classes;
 
-use Admin\Facades\AdminAuth;
+use Igniter\Admin\Facades\AdminAuth;
 use Igniter\Flame\Traits\EventEmitter;
-use System\Classes\BaseExtension;
-use System\Classes\ExtensionManager;
-use System\Traits\ViewMaker;
+use Igniter\System\Classes\BaseExtension;
+use Igniter\System\Classes\ExtensionManager;
+use Igniter\System\Traits\ViewMaker;
 
 class Navigation
 {
@@ -158,16 +158,13 @@ class Navigation
         if ($this->navItemsLoaded)
             return;
 
-        if (!AdminAuth::check())
-            return;
-
         // Load app items
         foreach ($this->callbacks as $callback) {
             $callback($this);
         }
 
         // Load extension items
-        $extensions = ExtensionManager::instance()->getExtensions();
+        $extensions = resolve(ExtensionManager::class)->getExtensions();
         foreach ($extensions as $code => $extension) {
             if (!$extension instanceof BaseExtension)
                 continue;

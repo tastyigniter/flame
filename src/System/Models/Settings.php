@@ -1,27 +1,24 @@
 <?php
 
-namespace System\Models;
+namespace Igniter\System\Models;
 
 use Carbon\Carbon;
 use DateTime;
 use DateTimeZone;
 use Exception;
 use Igniter\Flame\Database\Model;
+use Igniter\Main\Classes\ThemeManager;
+use Igniter\Main\Template\Page;
+use Igniter\System\Classes\ExtensionManager;
+use Igniter\System\Classes\UpdateManager;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
-use Main\Classes\ThemeManager;
-use Main\Template\Page;
-use System\Classes\ExtensionManager;
-use System\Classes\UpdateManager;
-use System\Traits\ConfigMaker;
 
 /**
  * Settings Model Class
  */
 class Settings extends Model
 {
-    use ConfigMaker;
-
     /**
      * @var string The database table name
      */
@@ -33,8 +30,6 @@ class Settings extends Model
     protected $primaryKey = 'setting_id';
 
     protected $settingsFields = 'Settings';
-
-    protected $fieldConfig;
 
     protected $fieldValues;
 
@@ -101,16 +96,16 @@ class Settings extends Model
 
     public static function getMenusPageOptions()
     {
-        $theme = ThemeManager::instance()->getActiveTheme();
+        $theme = resolve(ThemeManager::class)->getActiveTheme();
 
-        return Page::getDropdownOptions($theme, true);
+        return $theme ? Page::getDropdownOptions($theme, true) : [];
     }
 
     public static function getReservationPageOptions()
     {
-        $theme = ThemeManager::instance()->getActiveTheme();
+        $theme = resolve(ThemeManager::class)->getActiveTheme();
 
-        return Page::getDropdownOptions($theme, true);
+        return $theme ? Page::getDropdownOptions($theme, true) : [];
     }
 
     public static function onboardingIsComplete()
@@ -142,19 +137,6 @@ class Settings extends Model
     //
     // Registration
     //
-
-    public function getFieldConfig($code)
-    {
-        if ($this->fieldConfig !== null) {
-            return $this->fieldConfig;
-        }
-
-        $settingItem = $this->getSettingItem('core.'.$code);
-        if (!is_array($settingItem->form))
-            $settingItem->form = array_get($this->makeConfig($settingItem->form, ['form']), 'form', []);
-
-        return $this->fieldConfig = $settingItem->form ?? [];
-    }
 
     public function getFieldValues()
     {
@@ -198,7 +180,7 @@ class Settings extends Model
         }
 
         // Load extension items
-        $extensions = ExtensionManager::instance()->getExtensions();
+        $extensions = resolve(ExtensionManager::class)->getExtensions();
 
         foreach ($extensions as $code => $extension) {
             $items = $extension->registerSettings();
@@ -311,7 +293,7 @@ class Settings extends Model
      */
     public static function defaultExtensions()
     {
-        return Config::get('system.assets.media.defaultExtensions', [
+        return Config::get('igniter.system.assets.media.defaultExtensions', [
             'jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'svg', 'ico', 'webp',
             'doc', 'docx', 'ppt', 'pptx', 'pdf', 'txt', 'xls', 'xlsx',
             'mp4', 'avi', 'mov', 'mpg', 'mpeg', 'mkv', 'webm', 'ogg',
@@ -326,7 +308,7 @@ class Settings extends Model
      */
     public static function imageExtensions()
     {
-        return Config::get('system.assets.media.imageExtensions', [
+        return Config::get('igniter.system.assets.media.imageExtensions', [
             'jpg', 'jpeg', 'bmp', 'png', 'webp', 'gif', 'svg',
         ]);
     }
@@ -338,7 +320,7 @@ class Settings extends Model
      */
     public static function videoExtensions()
     {
-        return Config::get('system.assets.media.videoExtensions', [
+        return Config::get('igniter.system.assets.media.videoExtensions', [
             'mp4', 'avi', 'mov', 'mpg', 'mpeg', 'mkv', 'webm', 'ogv',
         ]);
     }
@@ -350,7 +332,7 @@ class Settings extends Model
      */
     public static function audioExtensions()
     {
-        return Config::get('system.assets.media.audioExtensions', [
+        return Config::get('igniter.system.assets.media.audioExtensions', [
             'mp3', 'wav', 'wma', 'm4a', 'ogg', 'oga',
         ]);
     }

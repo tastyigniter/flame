@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Database\Migrations;
+namespace Igniter\Admin\Database\Migrations;
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Remove redundant/unused columns from menu_options_values.....
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up()
     {
         Schema::table('menu_option_values', function (Blueprint $table) {

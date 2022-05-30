@@ -1,8 +1,8 @@
 <?php
 
-namespace System\Libraries;
+namespace Igniter\System\Libraries;
 
-use System\Models\Country as CountryModel;
+use Igniter\System\Models\Country as CountryModel;
 
 /**
  * Country Class

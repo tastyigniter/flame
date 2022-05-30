@@ -1,19 +1,28 @@
 <?php
 
-namespace Main;
+namespace Igniter\Flame\Providers;
 
-use Admin\Classes\PermissionManager;
-use Admin\Classes\Widgets;
-use Igniter\Flame\Foundation\Providers\AppServiceProvider;
+use Igniter\Admin\Classes\PermissionManager;
+use Igniter\Admin\Classes\Widgets;
+use Igniter\Flame\Igniter;
+use Igniter\Flame\Pagic\Cache\FileSystem as FileCache;
+use Igniter\Flame\Pagic\Environment;
+use Igniter\Flame\Pagic\Loader;
+use Igniter\Flame\Pagic\Parsers\FileParser;
 use Igniter\Flame\Setting\Facades\Setting;
-use Igniter\Flame\Support\ClassLoader;
+use Igniter\Main\Classes\Router;
+use Igniter\Main\Classes\RouteRegistrar;
+use Igniter\Main\Classes\Theme;
+use Igniter\Main\Classes\ThemeManager;
+use Igniter\Main\Template\Page;
+use Igniter\System\Classes\ComponentManager;
+use Igniter\System\Libraries\Assets;
+use Igniter\System\Models\Settings;
+use Illuminate\Foundation\AliasLoader;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
-use Main\Classes\ThemeManager;
-use Main\Template\Page;
-use System\Classes\ComponentManager;
-use System\Libraries\Assets;
-use System\Models\Settings;
 
 class MainServiceProvider extends AppServiceProvider
 {
@@ -24,18 +33,15 @@ class MainServiceProvider extends AppServiceProvider
      */
     public function boot()
     {
-        parent::boot('main');
+        $this->loadViewsFrom($this->root.'/resources/views/main', 'igniter.main');
 
         View::share('site_name', Setting::get('site_name'));
         View::share('site_logo', Setting::get('site_logo'));
 
-        ThemeManager::instance()->bootThemes();
+        resolve(ThemeManager::class)->bootThemes();
 
         $this->bootMenuItemEvents();
-
-        if (!$this->app->runningInAdmin()) {
-            $this->resolveFlashSessionKey();
-        }
+        $this->defineRoutes();
     }
 
     /**
@@ -45,16 +51,13 @@ class MainServiceProvider extends AppServiceProvider
      */
     public function register()
     {
-        parent::register('main');
-
+        $this->registerSingletons();
+        $this->registerFacadeAliases();
         $this->registerComponents();
 
-        // Provide backward compatibility for old model class names
-        $this->registerModelClassAliases();
-
-        if (!$this->app->runningInAdmin()) {
-            $this->registerSingletons();
+        if (!Igniter::runningInAdmin()) {
             $this->registerAssets();
+            $this->registerPagicParser();
             $this->registerCombinerEvent();
         }
         else {
@@ -70,40 +73,61 @@ class MainServiceProvider extends AppServiceProvider
     protected function registerComponents()
     {
         ComponentManager::instance()->registerComponents(function ($manager) {
-            $manager->registerComponent(\Main\Components\ViewBag::class, 'viewBag');
+            $manager->registerComponent(\Igniter\Main\Components\ViewBag::class, 'viewBag');
         });
     }
 
     protected function registerSingletons()
     {
+        App::singleton('main.auth', function () {
+            return resolve('auth')->guard(config('igniter.auth.guards.web', 'web'));
+        });
+
+        App::singleton(ThemeManager::class, function () {
+            return tap(new ThemeManager, function ($manager) {
+                $manager->initialize();
+            });
+        });
+
+        $this->app->when(Router::class)
+            ->needs(Theme::class)
+            ->give(function () {
+                return $this->app[ThemeManager::class]->getActiveTheme();
+            });
+    }
+
+    protected function registerFacadeAliases()
+    {
+        $loader = AliasLoader::getInstance();
+
+        foreach ([
+            'Auth' => \Igniter\Main\Facades\Auth::class,
+        ] as $alias => $class) {
+            $loader->alias($alias, $class);
+        }
     }
 
     protected function registerAssets()
     {
         Assets::registerCallback(function (Assets $manager) {
-            $manager->registerSourcePath($this->app->themesPath());
+            if (Igniter::runningInAdmin())
+                return;
 
-            ThemeManager::addAssetsFromActiveThemeManifest($manager);
+            $manager->registerSourcePath(Igniter::themesPath());
+
+            resolve(ThemeManager::class)->addAssetsFromActiveThemeManifest($manager);
         });
     }
 
     protected function registerCombinerEvent()
     {
-        if ($this->app->runningInConsole()) {
+        if ($this->app->runningInConsole() || Igniter::runningInAdmin())
             return;
-        }
 
         Event::listen('assets.combiner.beforePrepare', function (Assets $combiner, $assets) {
-            ThemeManager::applyAssetVariablesOnCombinerFilters(
+            resolve(ThemeManager::class)->applyAssetVariablesOnCombinerFilters(
                 array_flatten($combiner->getFilters())
             );
-        });
-    }
-
-    protected function resolveFlashSessionKey()
-    {
-        $this->app->resolving('flash', function (\Igniter\Flame\Flash\FlashBag $flash) {
-            $flash->setSessionKey('flash_data_main');
         });
     }
 
@@ -114,7 +138,7 @@ class MainServiceProvider extends AppServiceProvider
     {
         Event::listen('pages.menuitem.listTypes', function () {
             return [
-                'theme-page' => 'main::lang.pages.text_theme_page',
+                'theme-page' => 'igniter::main.pages.text_theme_page',
             ];
         });
 
@@ -131,12 +155,27 @@ class MainServiceProvider extends AppServiceProvider
     protected function registerFormWidgets()
     {
         Widgets::instance()->registerFormWidgets(function (Widgets $manager) {
-            $manager->registerFormWidget(\Main\FormWidgets\Components::class, [
+            $manager->registerFormWidget(\Igniter\Main\FormWidgets\Components::class, [
                 'label' => 'Components',
                 'code' => 'components',
             ]);
 
-            $manager->registerFormWidget(\Main\FormWidgets\TemplateEditor::class, [
+            $manager->registerFormWidget(\Igniter\Main\FormWidgets\MapArea::class, [
+                'label' => 'Map Area',
+                'code' => 'maparea',
+            ]);
+
+            $manager->registerFormWidget(\Igniter\Main\FormWidgets\MapView::class, [
+                'label' => 'Map View',
+                'code' => 'mapview',
+            ]);
+
+            $manager->registerFormWidget(\Igniter\Main\FormWidgets\MediaFinder::class, [
+                'label' => 'Media finder',
+                'code' => 'mediafinder',
+            ]);
+
+            $manager->registerFormWidget(\Igniter\Main\FormWidgets\TemplateEditor::class, [
                 'label' => 'Template editor',
                 'code' => 'templateeditor',
             ]);
@@ -148,10 +187,10 @@ class MainServiceProvider extends AppServiceProvider
         PermissionManager::instance()->registerCallback(function ($manager) {
             $manager->registerPermissions('System', [
                 'Admin.MediaManager' => [
-                    'label' => 'main::lang.permissions.media_manager', 'group' => 'main::lang.permissions.name',
+                    'label' => 'igniter::main.permissions.media_manager', 'group' => 'igniter::main.permissions.name',
                 ],
                 'Site.Themes' => [
-                    'label' => 'main::lang.permissions.themes', 'group' => 'main::lang.permissions.name',
+                    'label' => 'igniter::main.permissions.themes', 'group' => 'igniter::main.permissions.name',
                 ],
             ]);
         });
@@ -162,23 +201,37 @@ class MainServiceProvider extends AppServiceProvider
         Settings::registerCallback(function (Settings $manager) {
             $manager->registerSettingItems('core', [
                 'media' => [
-                    'label' => 'main::lang.settings.text_tab_media_manager',
-                    'description' => 'main::lang.settings.text_tab_desc_media_manager',
+                    'label' => 'igniter::main.settings.text_tab_media_manager',
+                    'description' => 'igniter::main.settings.text_tab_desc_media_manager',
                     'icon' => 'fa fa-image',
                     'priority' => 5,
                     'permission' => ['Site.Settings'],
                     'url' => admin_url('settings/edit/media'),
-                    'form' => '~/app/main/models/config/media_settings',
-                    'request' => \Main\Requests\MediaSettings::class,
+                    'form' => 'igniter::models/main/mediasettings',
+                    'request' => \Igniter\Main\Requests\MediaSettings::class,
                 ],
             ]);
         });
     }
 
-    protected function registerModelClassAliases()
+    protected function registerPagicParser()
     {
-        resolve(ClassLoader::class)->addAliases([
-            \Main\Helpers\ImageHelper::class => 'Main\Models\Image_tool_model',
-        ]);
+        FileParser::setCache(new FileCache(config('igniter.system.parsedTemplateCachePath')));
+
+        App::singleton('pagic.environment', function () {
+            return new Environment(new Loader, [
+                'cache' => new FileCache(config('view.compiled')),
+            ]);
+        });
+    }
+
+    protected function defineRoutes()
+    {
+        if (app()->routesAreCached())
+            return;
+
+        Route::group([], function ($router) {
+            (new RouteRegistrar($router))->all();
+        });
     }
 }

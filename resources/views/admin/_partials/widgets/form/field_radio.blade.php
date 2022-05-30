@@ -2,7 +2,7 @@
     $fieldOptions = $field->options();
 @endphp
 <div class="field-radio">
-    @foreach ($fieldOptions as $key => $value)
+    @foreach($fieldOptions as $key => $value)
         @php
             $radioLabel = is_lang_key($value) ? lang($value) : $value;
         @endphp

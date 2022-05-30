@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Models;
+namespace Igniter\System\Models;
 
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Model;
@@ -36,7 +36,7 @@ class Country extends Model
 
     public $relation = [
         'hasOne' => [
-            'currency' => \System\Models\Currency::class,
+            'currency' => \Igniter\System\Models\Currency::class,
         ],
     ];
 
@@ -56,7 +56,7 @@ class Country extends Model
     {
         if (!$this->status) {
             throw new ValidationException(['status' => sprintf(
-                lang('admin::lang.alert_error_set_default'), $this->country_name
+                lang('igniter::admin.alert_error_set_default'), $this->country_name
             )]);
         }
 

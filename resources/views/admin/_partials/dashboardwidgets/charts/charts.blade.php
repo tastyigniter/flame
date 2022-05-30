@@ -18,7 +18,7 @@
                 data-control="daterange"
             >
                 <i class="fa fa-calendar"></i>&nbsp;&nbsp;
-                <span>@lang('admin::lang.dashboard.text_select_range')</span>&nbsp;&nbsp;
+                <span>@lang('igniter::admin.dashboard.text_select_range')</span>&nbsp;&nbsp;
                 <i class="fa fa-caret-down"></i>
             </button>
         </div>

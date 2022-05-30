@@ -1,11 +1,11 @@
 <?php
 
-namespace Admin\FormWidgets;
+namespace Igniter\Admin\FormWidgets;
 
-use Admin\Classes\BaseFormWidget;
-use Admin\Classes\FormField;
-use Admin\Traits\LocationAwareWidget;
 use Exception;
+use Igniter\Admin\Classes\BaseFormWidget;
+use Igniter\Admin\Classes\FormField;
+use Igniter\Admin\Traits\LocationAwareWidget;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\Relation as RelationBase;
 use Illuminate\Support\Facades\DB;
@@ -204,7 +204,7 @@ class Relation extends BaseFormWidget
     /**
      * Returns the value as a relation object from the model,
      * supports nesting via HTML array.
-     * @return \Admin\FormWidgets\Relation
+     * @return \Igniter\Admin\FormWidgets\Relation
      * @throws \Exception
      */
     protected function getRelationObject()
@@ -212,7 +212,7 @@ class Relation extends BaseFormWidget
         [$model, $attribute] = $this->resolveModelAttribute($this->valueFrom);
 
         if (!$model || !$model->hasRelation($attribute)) {
-            throw new Exception(sprintf(lang('admin::lang.alert_missing_model_definition'),
+            throw new Exception(sprintf(lang('igniter::admin.alert_missing_model_definition'),
                 get_class($this->model),
                 $this->valueFrom
             ));

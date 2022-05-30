@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Models;
+namespace Igniter\System\Models;
 
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Traits\Purgeable;
@@ -24,7 +24,7 @@ class Language extends \Igniter\Flame\Translation\Models\Language
 
     public $relation = [
         'hasMany' => [
-            'translations' => [\System\Models\Translation::class, 'foreignKey' => 'locale', 'otherKey' => 'code', 'delete' => TRUE],
+            'translations' => [\Igniter\System\Models\Translation::class, 'foreignKey' => 'locale', 'otherKey' => 'code', 'delete' => TRUE],
         ],
     ];
 
@@ -115,7 +115,7 @@ class Language extends \Igniter\Flame\Translation\Models\Language
     {
         if (!$this->status) {
             throw new ValidationException(['status' => sprintf(
-                lang('admin::lang.alert_error_set_default'), $this->name
+                lang('igniter::admin.alert_error_set_default'), $this->name
             )]);
         }
 

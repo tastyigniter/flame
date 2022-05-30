@@ -1,18 +1,18 @@
 <?php
 
-namespace Admin\Requests;
+namespace Igniter\Admin\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class UserRole extends FormRequest
 {
     public function attributes()
     {
         return [
-            'code' => lang('admin::lang.label_code'),
-            'name' => lang('admin::lang.label_name'),
-            'permissions' => lang('admin::lang.user_roles.label_permissions'),
-            'permissions.*' => lang('admin::lang.user_roles.label_permissions'),
+            'code' => lang('igniter::admin.label_code'),
+            'name' => lang('igniter::admin.label_name'),
+            'permissions' => lang('igniter::admin.user_roles.label_permissions'),
+            'permissions.*' => lang('igniter::admin.user_roles.label_permissions'),
         ];
     }
 
@@ -20,7 +20,7 @@ class UserRole extends FormRequest
     {
         return [
             'code' => ['string', 'between:2,32', 'alpha_dash'],
-            'name' => ['required', 'string', 'between:2,128', 'unique:staff_roles'],
+            'name' => ['required', 'string', 'between:2,128', 'unique:user_roles'],
             'permissions' => ['required', 'array'],
             'permissions.*' => ['required', 'integer'],
         ];

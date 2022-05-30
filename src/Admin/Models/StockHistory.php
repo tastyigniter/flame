@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
 use Igniter\Flame\Database\Model;
 
@@ -29,9 +29,9 @@ class StockHistory extends Model
 
     public $relation = [
         'belongsTo' => [
-            'stock' => \Admin\Models\Stock::class,
-            'user' => \Admin\Models\User::class,
-            'order' => \Admin\Models\Order::class,
+            'stock' => \Igniter\Admin\Models\Stock::class,
+            'user' => \Igniter\Admin\Models\User::class,
+            'order' => \Igniter\Admin\Models\Order::class,
         ],
     ];
 
@@ -57,7 +57,7 @@ class StockHistory extends Model
 
     public function getStateTextAttribute()
     {
-        return lang('admin::lang.stocks.text_action_'.$this->state);
+        return lang('igniter::admin.stocks.text_action_'.$this->state);
     }
 
     public function getCreatedAtSinceAttribute()

@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\Classes;
+namespace Igniter\Admin\Classes;
 
 use Igniter\Flame\Traits\Singleton;
-use System\Classes\ExtensionManager;
+use Igniter\System\Classes\ExtensionManager;
 
 /**
  * Widget manager
@@ -59,7 +59,7 @@ class Widgets
      */
     protected function initialize()
     {
-        $this->extensionManager = ExtensionManager::instance();
+        $this->extensionManager = resolve(ExtensionManager::class);
     }
 
     //
@@ -193,7 +193,7 @@ class Widgets
      * Usage:
      * <pre>
      *   WidgetManager::registerFormWidgets(function($manager){
-     *       $manager->registerFormWidget(\Admin\FormWidgets\CodeEditor::class, [
+     *       $manager->registerFormWidget(\Igniter\Admin\FormWidgets\CodeEditor::class, [
      *           'name' => 'Code editor',
      *           'code'  => 'codeeditor'
      *       ]);

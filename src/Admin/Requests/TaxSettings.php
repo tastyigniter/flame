@@ -1,19 +1,19 @@
 <?php
 
-namespace Admin\Requests;
+namespace Igniter\Admin\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class TaxSettings extends FormRequest
 {
     public function attributes()
     {
         return [
-            'tax_mode' => lang('system::lang.settings.label_tax_mode'),
-            'tax_title' => lang('system::lang.settings.label_tax_title'),
-            'tax_percentage' => lang('system::lang.settings.label_tax_percentage'),
-            'tax_menu_price' => lang('system::lang.settings.label_tax_menu_price'),
-            'tax_delivery_charge' => lang('system::lang.settings.label_tax_delivery_charge'),
+            'tax_mode' => lang('igniter::system.settings.label_tax_mode'),
+            'tax_title' => lang('igniter::system.settings.label_tax_title'),
+            'tax_percentage' => lang('igniter::system.settings.label_tax_percentage'),
+            'tax_menu_price' => lang('igniter::system.settings.label_tax_menu_price'),
+            'tax_delivery_charge' => lang('igniter::system.settings.label_tax_delivery_charge'),
         ];
     }
 

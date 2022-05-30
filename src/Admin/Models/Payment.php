@@ -1,8 +1,8 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
-use Admin\Classes\PaymentGateways;
+use Igniter\Admin\Classes\PaymentGateways;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Database\Traits\Purgeable;
 use Igniter\Flame\Database\Traits\Sortable;
@@ -186,7 +186,7 @@ class Payment extends Model
     {
         if (!$this->status) {
             throw new ValidationException(['status' => sprintf(
-                lang('admin::lang.alert_error_set_default'), $this->name
+                lang('igniter::admin.alert_error_set_default'), $this->name
             )]);
         }
 
@@ -255,8 +255,8 @@ class Payment extends Model
 
     /**
      * Finds and returns a customer payment profile for this payment method.
-     * @param \Admin\Models\Customer $customer Specifies customer to find a profile for.
-     * @return \Admin\Models\PaymentProfile|object Returns the payment profile object or NULL if the payment profile doesn't exist.
+     * @param \Igniter\Main\Models\Customer $customer Specifies customer to find a profile for.
+     * @return \Igniter\Admin\Models\PaymentProfile|object Returns the payment profile object or NULL if the payment profile doesn't exist.
      */
     public function findPaymentProfile($customer)
     {
@@ -273,8 +273,8 @@ class Payment extends Model
     /**
      * Initializes a new empty customer payment profile.
      * This method should be used by payment methods internally.
-     * @param \Admin\Models\Customer $customer Specifies customer to initialize a profile for.
-     * @return \Admin\Models\PaymentProfile Returns the payment profile object or NULL if the payment profile doesn't exist.
+     * @param \Igniter\Main\Models\Customer $customer Specifies customer to initialize a profile for.
+     * @return \Igniter\Admin\Models\PaymentProfile Returns the payment profile object or NULL if the payment profile doesn't exist.
      */
     public function initPaymentProfile($customer)
     {
@@ -297,7 +297,7 @@ class Payment extends Model
         $profile = $this->findPaymentProfile($customer);
 
         if (!$profile) {
-            throw new ApplicationException(lang('admin::lang.customers.alert_customer_payment_profile_not_found'));
+            throw new ApplicationException(lang('igniter::main.customers.alert_customer_payment_profile_not_found'));
         }
 
         $gatewayObj->deletePaymentProfile($customer, $profile);

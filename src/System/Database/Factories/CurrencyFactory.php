@@ -1,12 +1,12 @@
 <?php
 
-namespace System\Database\Factories;
+namespace Igniter\System\Database\Factories;
 
 use Igniter\Flame\Database\Factories\Factory;
 
 class CurrencyFactory extends Factory
 {
-    protected $model = \System\Models\Currency::class;
+    protected $model = \Igniter\System\Models\Currency::class;
 
     public function definition(): array
     {

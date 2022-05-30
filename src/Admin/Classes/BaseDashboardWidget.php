@@ -1,8 +1,8 @@
 <?php
 
-namespace Admin\Classes;
+namespace Igniter\Admin\Classes;
 
-use System\Traits\PropertyContainer;
+use Igniter\System\Traits\PropertyContainer;
 
 /**
  * Dashboard Widget base class

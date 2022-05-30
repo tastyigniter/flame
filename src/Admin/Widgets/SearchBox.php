@@ -1,8 +1,8 @@
 <?php
 
-namespace Admin\Widgets;
+namespace Igniter\Admin\Widgets;
 
-use Admin\Classes\BaseWidget;
+use Igniter\Admin\Classes\BaseWidget;
 use Illuminate\Http\RedirectResponse;
 
 class SearchBox extends BaseWidget

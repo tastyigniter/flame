@@ -1,10 +1,10 @@
 <?php
 
-namespace Admin\FormWidgets;
+namespace Igniter\Admin\FormWidgets;
 
-use Admin\Classes\BaseFormWidget;
-use Admin\Classes\FormField;
 use Carbon\Carbon;
+use Igniter\Admin\Classes\BaseFormWidget;
+use Igniter\Admin\Classes\FormField;
 
 /**
  * Date picker
@@ -70,30 +70,24 @@ class DatePicker extends BaseFormWidget
 
     public function loadAssets()
     {
+        $this->addJs('js/vendor.datetime.js', 'vendor-datetime-js');
+
         $mode = $this->getConfig('mode', 'date');
         if ($mode == 'time') {
-            $this->addCss('vendor/clockpicker/bootstrap-clockpicker.min.css', 'bootstrap-clockpicker-css');
-            $this->addJs('vendor/clockpicker/bootstrap-clockpicker.min.js', 'bootstrap-clockpicker-js');
-            $this->addCss('css/clockpicker.css', 'clockpicker-css');
-            $this->addJs('js/clockpicker.js', 'clockpicker-js');
+            $this->addCss('clockpicker.css', 'clockpicker-css');
+            $this->addJs('clockpicker.js', 'clockpicker-js');
         }
 
         if ($mode == 'date') {
-            $this->addJs('~/app/admin/assets/src/js/vendor/moment.min.js', 'moment-js');
-            $this->addCss('vendor/datepicker/bootstrap-datepicker.min.css', 'bootstrap-datepicker-css');
-            $this->addJs('vendor/datepicker/bootstrap-datepicker.min.js', 'bootstrap-datepicker-js');
             if (setting('default_language') != 'en')
-                $this->addJs('vendor/datepicker/locales/bootstrap-datepicker.'.strtolower(str_replace('_', '-', setting('default_language'))).'.min.js', 'bootstrap-datepicker-js');
-            $this->addCss('css/datepicker.css', 'datepicker-css');
-            $this->addJs('js/datepicker.js', 'datepicker-js');
+                $this->addJs('js/locales/datepicker/bootstrap-datepicker.'.strtolower(str_replace('_', '-', setting('default_language'))).'.min.js', 'bootstrap-datepicker-js');
+            $this->addCss('datepicker.css', 'datepicker-css');
+            $this->addJs('datepicker.js', 'datepicker-js');
         }
 
         if ($mode == 'datetime') {
-            $this->addJs('~/app/admin/assets/src/js/vendor/moment.min.js', 'moment-js');
-            $this->addCss('vendor/datetimepicker/tempusdominus-bootstrap-4.min.css', 'tempusdominus-bootstrap-4-css');
-            $this->addJs('vendor/datetimepicker/tempusdominus-bootstrap-4.min.js', 'tempusdominus-bootstrap-4-js');
-            $this->addCss('css/datepicker.css', 'datepicker-css');
-            $this->addJs('js/datepicker.js', 'datepicker-js');
+            $this->addCss('datepicker.css', 'datepicker-css');
+            $this->addJs('datepicker.js', 'datepicker-js');
         }
     }
 
@@ -117,13 +111,13 @@ class DatePicker extends BaseFormWidget
 
         // Display alias, used by preview mode
         if ($this->mode == 'time') {
-            $formatAlias = lang('system::lang.php.time_format');
+            $formatAlias = lang('igniter::system.php.time_format');
         }
         elseif ($this->mode == 'date') {
-            $formatAlias = lang('system::lang.php.date_format');
+            $formatAlias = lang('igniter::system.php.date_format');
         }
         else {
-            $formatAlias = lang('system::lang.php.date_time_format');
+            $formatAlias = lang('igniter::system.php.date_time_format');
         }
 
         $find = ['d' => 'dd', 'D' => 'DD', 'm' => 'mm', 'M' => 'MM', 'y' => 'yy', 'Y' => 'yyyy', 'H' => 'HH', 'i' => 'i'];

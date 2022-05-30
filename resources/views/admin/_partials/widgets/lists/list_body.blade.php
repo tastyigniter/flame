@@ -1,4 +1,4 @@
-@foreach ($records as $record)
+@foreach($records as $record)
     <tr>
         @if ($showDragHandle)
             <td class="list-action">
@@ -22,15 +22,15 @@
             </td>
         @endif
 
-        @foreach ($columns as $key => $column)
-            @continue ($column->type != 'button')
+            @foreach($columns as $key => $column)
+                @continue ($column->type != 'button')
             <td class="list-action {{ $column->cssClass }}">
                 {!! $this->makePartial('lists/list_button', ['record' => $record, 'column' => $column]) !!}
             </td>
         @endforeach
 
-        @foreach ($columns as $key => $column)
-            @continue($column->type == 'button')
+            @foreach($columns as $key => $column)
+                @continue($column->type == 'button')
             <td
                 class="list-col-index-{{ $loop->index }} list-col-name-{{ $column->getName() }} list-col-type-{{ $column->type }} {{ $column->cssClass }}"
             >

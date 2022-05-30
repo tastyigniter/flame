@@ -1,47 +1,47 @@
 <?php
 
-namespace Admin\Controllers;
+namespace Igniter\Admin\Http\Controllers;
 
-use Admin\Facades\AdminAuth;
-use Admin\Facades\AdminMenu;
+use Igniter\Admin\Facades\AdminAuth;
+use Igniter\Admin\Facades\AdminMenu;
 use Igniter\Flame\Exception\ApplicationException;
 
-class Users extends \Admin\Classes\AdminController
+class Users extends \Igniter\Admin\Classes\AdminController
 {
     public $implement = [
-        \Admin\Actions\ListController::class,
-        \Admin\Actions\FormController::class,
-        \Admin\Actions\LocationAwareController::class,
+        \Igniter\Admin\Http\Actions\ListController::class,
+        \Igniter\Admin\Http\Actions\FormController::class,
+        \Igniter\Admin\Http\Actions\LocationAwareController::class,
     ];
 
     public $listConfig = [
         'list' => [
-            'model' => \Admin\Models\User::class,
-            'title' => 'lang:admin::lang.staff.text_title',
-            'emptyMessage' => 'lang:admin::lang.staff.text_empty',
+            'model' => \Igniter\Admin\Models\User::class,
+            'title' => 'lang:igniter::admin.staff.text_title',
+            'emptyMessage' => 'lang:igniter::admin.staff.text_empty',
             'defaultSort' => ['user_id', 'DESC'],
             'configFile' => 'user',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.staff.text_form_name',
-        'model' => \Admin\Models\User::class,
-        'request' => \Admin\Requests\User::class,
+        'name' => 'lang:igniter::admin.staff.text_form_name',
+        'model' => \Igniter\Admin\Models\User::class,
+        'request' => \Igniter\Admin\Requests\User::class,
         'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
+            'title' => 'lang:igniter::admin.form.create_title',
             'redirect' => 'users/edit/{user_id}',
             'redirectClose' => 'users',
             'redirectNew' => 'users/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
+            'title' => 'lang:igniter::admin.form.edit_title',
             'redirect' => 'users/edit/{user_id}',
             'redirectClose' => 'users',
             'redirectNew' => 'users/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title' => 'lang:igniter::admin.form.preview_title',
             'redirect' => 'users',
         ],
         'delete' => [
@@ -67,7 +67,9 @@ class Users extends \Admin\Classes\AdminController
     {
         $this->asExtension('LocationAwareController')->setConfig(['applyScopeOnFormQuery' => false]);
 
-        return $this->asExtension('FormController')->edit('account', $this->getUser()->getKey());
+        $this->asExtension('FormController')->edit('account', $this->getUser()->getKey());
+
+        return $this->makeView('edit');
     }
 
     public function account_onSave()
@@ -90,14 +92,14 @@ class Users extends \Admin\Classes\AdminController
     public function onImpersonate($context, $recordId = null)
     {
         if (!AdminAuth::user()->hasPermission('Admin.Impersonate')) {
-            throw new ApplicationException(lang('admin::lang.staff.alert_login_restricted'));
+            throw new ApplicationException(lang('igniter::admin.staff.alert_login_restricted'));
         }
 
         $id = post('recordId', $recordId);
         if ($user = $this->formFindModelObject((int)$id)) {
             AdminAuth::stopImpersonate();
             AdminAuth::impersonate($user);
-            flash()->success(sprintf(lang('admin::lang.customers.alert_impersonate_success'), $user->name));
+            flash()->success(sprintf(lang('igniter::main.customers.alert_impersonate_success'), $user->name));
         }
     }
 

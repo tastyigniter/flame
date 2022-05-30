@@ -1,15 +1,15 @@
 <?php
 
-namespace System\Classes;
+namespace Igniter\System\Classes;
 
 use Igniter\Flame\Exception\ValidationException;
 use Igniter\Flame\Traits\EventEmitter;
+use Igniter\System\Helpers\ValidationHelper;
+use Igniter\System\Traits\RuleInjector;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest as BaseFormRequest;
 use Illuminate\Support\Arr;
-use System\Helpers\ValidationHelper;
-use System\Traits\RuleInjector;
 
 class FormRequest extends BaseFormRequest
 {
@@ -23,7 +23,7 @@ class FormRequest extends BaseFormRequest
     protected $model;
 
     /**
-     * @var \Admin\Classes\AdminController
+     * @var \Igniter\Admin\Classes\AdminController
      */
     protected $controller;
 
@@ -68,7 +68,7 @@ class FormRequest extends BaseFormRequest
 
     /**
      * @param bool|string $inputKey
-     * @return \System\Classes\FormRequest
+     * @return \Igniter\System\Classes\FormRequest
      */
     public function setInputKey($inputKey)
     {
@@ -99,7 +99,7 @@ class FormRequest extends BaseFormRequest
     }
 
     /**
-     * @return \Admin\Widgets\Form
+     * @return \Igniter\Admin\Widgets\Form
      * @throws \Igniter\Flame\Exception\SystemException
      */
     protected function getForm()

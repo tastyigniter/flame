@@ -1,18 +1,18 @@
 <?php
 
-namespace System\Classes;
+namespace Igniter\System\Classes;
 
 use Closure;
 use Exception;
-use Igniter\Flame\Support\Facades\File;
+use Igniter\Flame\Igniter;
 use Igniter\Flame\Support\RouterHelper;
 use Igniter\Flame\Traits\ExtendableTrait;
+use Igniter\System\Exception\ErrorHandler;
+use Igniter\System\Facades\Assets;
 use Illuminate\Routing\Controller as IlluminateController;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
-use System\Facades\Assets;
 
 /**
  * This is the base controller for all pages.
@@ -24,16 +24,11 @@ use System\Facades\Assets;
  * /admin/(any)             `admin`, `location` or `system` app directory
  * /admin/acme/cod/(any)    `Acme.Cod` extension
  * /(any)                   `main` app directory
- * @see \Admin\Classes\AdminController|\Main\Classes\MainController  controller class
+ * @see \Igniter\Admin\Classes\AdminController|\Igniter\Main\Classes\MainController  controller class
  */
 class Controller extends IlluminateController
 {
     use ExtendableTrait;
-
-    /**
-     * @var array Actions implemented by this controller.
-     */
-    public $implement;
 
     public static $class;
 
@@ -90,11 +85,11 @@ class Controller extends IlluminateController
      */
     public function run($url = '/')
     {
-        if (!App::hasDatabase()) {
-            return Response::make(View::make('system::no_database'));
+        if (!Igniter::hasDatabase()) {
+            return Response::make(View::make('igniter.system::no_database'));
         }
 
-        return App::make(\Main\Classes\MainController::class)->remap($url);
+        return App::make(\Igniter\Main\Classes\MainController::class)->remap($url);
     }
 
     /**
@@ -107,15 +102,15 @@ class Controller extends IlluminateController
      */
     public function runAdmin($url = '/')
     {
-        if (!App::hasDatabase()) {
-            return Response::make(View::make('system::no_database'));
+        if (!Igniter::hasDatabase()) {
+            return Response::make(View::make('igniter.system::no_database'));
         }
 
         if ($result = $this->locateController($url)) {
             return $result['controller']->initialize()->remap($result['action'], $result['segments']);
         }
 
-        return App::make('Admin\Classes\AdminController')->initialize()->remap('404', []);
+        return App::make('Igniter\Admin\Classes\AdminController')->initialize()->remap('404', []);
     }
 
     /**
@@ -164,24 +159,19 @@ class Controller extends IlluminateController
      * @param string|array $modules Specifies a list of modules to look in.
      * @param string|array $inPath Base path to search the class file.
      *
-     * @return bool|\Admin\Classes\AdminController|\Main\Classes\MainController
+     * @return bool|\Igniter\Admin\Classes\AdminController|\Igniter\Main\Classes\MainController
      * Returns the backend controller object
      */
-    protected function locateControllerInPath($controller, $modules, $inPath)
+    protected function locateControllerInPath($controller, $modules)
     {
         is_array($modules) || $modules = [$modules];
-        is_array($inPath) || $inPath = [$inPath];
 
         $controllerClass = null;
-        foreach ($modules as $module => $namespace) {
-            $controller = strtolower(str_replace(['\\', '_'], ['/', ''], $controller));
-            foreach ($inPath as $path) {
-                $matchPath = $path.'/%s/controllers/%s.php';
-                $controllerFile = File::existsInsensitive(sprintf($matchPath, $module, $controller));
-                if ($controllerFile && !class_exists($controllerClass = '\\'.$namespace.'\Controllers\\'.$controller)) {
-                    include_once $controllerFile;
-                    break 2;
-                }
+        foreach ($modules as $namespace) {
+            $controller = studly_case(str_replace(['\\', '_'], ['/', ''], $controller));
+            if (class_exists($class = $namespace.'Controllers\\'.$controller)) {
+                $controllerClass = $class;
+                break;
             }
         }
 
@@ -189,10 +179,8 @@ class Controller extends IlluminateController
             return null;
 
         $controllerObj = App::make($controllerClass);
-
-        if ($controllerObj->checkAction(self::$action)) {
+        if ($controllerObj->checkAction(self::$action))
             return $controllerObj;
-        }
 
         return false;
     }
@@ -215,15 +203,17 @@ class Controller extends IlluminateController
 
     protected function locateControllerInApp(array $segments)
     {
-        $modules = [];
-        foreach (Config::get('system.modules') as $module) {
-            $modules[strtolower($module)] = $module;
-        }
+        $modules = [
+            '\\Igniter\\Admin\\Http\\',
+            '\\Igniter\\Main\\Http\\',
+            '\\Igniter\\System\\Http\\',
+        ];
 
         $controller = $segments[0] ?? 'dashboard';
         self::$action = $action = isset($segments[1]) ? $this->processAction($segments[1]) : 'index';
         self::$segments = $segments = array_slice($segments, 2);
-        if ($controllerObj = $this->locateControllerInPath($controller, $modules, app_path())) {
+
+        if ($controllerObj = $this->locateControllerInPath($controller, $modules)) {
             return [
                 'controller' => $controllerObj,
                 'action' => $action,
@@ -240,13 +230,14 @@ class Controller extends IlluminateController
             self::$segments = $segments = array_slice($segments, 4);
 
             $extensionCode = sprintf('%s.%s', $author, $extension);
-            if (ExtensionManager::instance()->isDisabled($extensionCode))
+            $extension = resolve(ExtensionManager::class)->findExtension($extensionCode);
+            if (!$extension || $extension->disabled)
                 return;
 
+            $namespace = array_get($extension->extensionMeta(), 'namespace');
             if ($controllerObj = $this->locateControllerInPath(
                 $controller,
-                ["{$author}/{$extension}" => "{$author}\\{$extension}"],
-                ExtensionManager::instance()->folders()
+                ["\\{$namespace}", "\\{$namespace}Http\\"],
             )) {
                 return [
                     'controller' => $controllerObj,
@@ -259,11 +250,11 @@ class Controller extends IlluminateController
 
     protected function pushRequestedControllerMiddleware()
     {
-        if (!App::runningInAdmin())
+        if (!Igniter::runningInAdmin())
             return;
 
         $pathParts = explode('/', request()->path());
-        if (Config::get('system.adminUri', 'admin'))
+        if (Igniter::uri())
             array_shift($pathParts);
 
         $path = implode('/', $pathParts);

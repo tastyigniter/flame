@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\FormWidgets;
+namespace Igniter\Admin\FormWidgets;
 
-use Admin\Classes\BaseFormWidget;
-use Admin\Traits\FormModelWidget;
+use Igniter\Admin\Classes\BaseFormWidget;
+use Igniter\Admin\Traits\FormModelWidget;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
@@ -43,7 +43,7 @@ class Repeater extends BaseFormWidget
 
     public $showRemoveButton = true;
 
-    public $emptyMessage = 'lang:admin::lang.text_empty';
+    public $emptyMessage = 'lang:igniter::admin.text_empty';
 
     //
     // Object properties
@@ -121,9 +121,7 @@ class Repeater extends BaseFormWidget
 
     public function loadAssets()
     {
-        $this->addJs('vendor/sortablejs/Sortable.min.js', 'sortable-js');
-        $this->addJs('vendor/sortablejs/jquery-sortable.js', 'jquery-sortable-js');
-        $this->addJs('js/repeater.js', 'repeater-js');
+        $this->addJs('repeater.js', 'repeater-js');
     }
 
     public function prepareVars()
@@ -229,7 +227,7 @@ class Repeater extends BaseFormWidget
         $config['alias'] = $this->alias.'Form'.$index;
         $config['arrayName'] = $this->formField->getName().'['.$index.']';
 
-        $widget = $this->makeWidget(\Admin\Widgets\Form::class, $config);
+        $widget = $this->makeWidget(\Igniter\Admin\Widgets\Form::class, $config);
         $widget->bindToController();
 
         return $widget;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Model;
@@ -28,7 +28,7 @@ class Status extends Model
 
     public $relation = [
         'hasMany' => [
-            'status_history' => \Admin\Models\StatusHistory::class,
+            'status_history' => \Igniter\Admin\Models\StatusHistory::class,
         ],
     ];
 
@@ -44,14 +44,14 @@ class Status extends Model
      */
     public function getStatusForNameAttribute($value)
     {
-        return ($this->status_for == 'reserve') ? lang('admin::lang.statuses.text_reservation') : lang('admin::lang.statuses.text_order');
+        return ($this->status_for == 'reserve') ? lang('igniter::admin.statuses.text_reservation') : lang('igniter::admin.statuses.text_order');
     }
 
     public function getStatusForDropdownOptions()
     {
         return [
-            'order' => lang('admin::lang.statuses.text_order'),
-            'reserve' => lang('admin::lang.statuses.text_reservation'),
+            'order' => lang('igniter::admin.statuses.text_order'),
+            'reserve' => lang('igniter::admin.statuses.text_reservation'),
         ];
     }
 

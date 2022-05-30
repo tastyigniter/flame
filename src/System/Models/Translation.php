@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Models;
+namespace Igniter\System\Models;
 
 class Translation extends \Igniter\Flame\Translation\Models\Translation
 {

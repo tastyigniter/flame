@@ -1,12 +1,12 @@
 <?php
 
-namespace Admin\Database\Factories;
+namespace Igniter\Admin\Database\Factories;
 
 use Igniter\Flame\Database\Factories\Factory;
 
 class MenuFactory extends Factory
 {
-    protected $model = \Admin\Models\Menu::class;
+    protected $model = \Igniter\Admin\Models\Menu::class;
 
     public function definition(): array
     {

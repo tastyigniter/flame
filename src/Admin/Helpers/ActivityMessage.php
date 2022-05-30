@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\Helpers;
+namespace Igniter\Admin\Helpers;
 
-use Admin\Facades\AdminAuth;
-use Admin\Models\User;
+use Igniter\Admin\Facades\AdminAuth;
+use Igniter\Admin\Models\User;
 use Igniter\Flame\ActivityLog\Models\Activity;
 
 class ActivityMessage
@@ -11,10 +11,10 @@ class ActivityMessage
     public static function attachCauserPlaceholders($line, Activity $activity)
     {
         $prefix = '<b>:causer.staff_name</b> ';
-        $self = lang('system::lang.activities.activity_self');
+        $self = lang('igniter::system.activities.activity_self');
 
         if (!$activity->causer instanceof User)
-            $prefix = '<b>'.lang('system::lang.activities.activity_system').'</b> ';
+            $prefix = '<b>'.lang('igniter::system.activities.activity_system').'</b> ';
 
         if ($activity->causer && $activity->causer->user_id == AdminAuth::getId())
             $prefix = '<b>'.ucfirst($self).'</b> ';
@@ -24,11 +24,11 @@ class ActivityMessage
 
     public static function attachAssignedPlaceholders($line, Activity $activity)
     {
-        $self = lang('system::lang.activities.activity_self');
+        $self = lang('igniter::system.activities.activity_self');
 
         $prefix = '<b>:causer.staff_name</b> ';
         if (!$activity->causer instanceof User)
-            $prefix = '<b>'.lang('system::lang.activities.activity_system').'</b> ';
+            $prefix = '<b>'.lang('igniter::system.activities.activity_system').'</b> ';
 
         if ($activity->causer && $activity->causer->user_id == AdminAuth::getId())
             $prefix = '<b>'.ucfirst($self).'</b> ';

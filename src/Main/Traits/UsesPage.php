@@ -1,9 +1,9 @@
 <?php
 
-namespace Main\Traits;
+namespace Igniter\Main\Traits;
 
-use Main\Template\Page;
-use System\Models\Page as PageModel;
+use Igniter\Main\Template\Page;
+use Igniter\System\Models\Page as PageModel;
 
 trait UsesPage
 {

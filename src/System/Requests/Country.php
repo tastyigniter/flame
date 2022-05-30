@@ -1,20 +1,20 @@
 <?php
 
-namespace System\Requests;
+namespace Igniter\System\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class Country extends FormRequest
 {
     public function attributes()
     {
         return [
-            'country_name' => lang('admin::lang.label_name'),
-            'priority' => lang('system::lang.countries.label_priority'),
-            'iso_code_2' => lang('system::lang.countries.label_iso_code2'),
-            'iso_code_3' => lang('system::lang.countries.label_iso_code3'),
-            'format' => lang('system::lang.countries.label_format'),
-            'status' => lang('admin::lang.label_status'),
+            'country_name' => lang('igniter::admin.label_name'),
+            'priority' => lang('igniter::system.countries.label_priority'),
+            'iso_code_2' => lang('igniter::system.countries.label_iso_code2'),
+            'iso_code_3' => lang('igniter::system.countries.label_iso_code3'),
+            'format' => lang('igniter::system.countries.label_format'),
+            'status' => lang('igniter::admin.label_status'),
         ];
     }
 

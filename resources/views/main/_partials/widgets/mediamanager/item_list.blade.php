@@ -3,5 +3,5 @@
 @if ($items)
     {!! $this->makePartial('mediamanager/list_grid') !!}
 @else
-    <p>@lang('admin::lang.text_empty')</p>
+    <p>@lang('igniter::admin.text_empty')</p>
 @endif

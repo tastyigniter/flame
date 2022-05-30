@@ -1,20 +1,20 @@
 <?php
 
-namespace Admin\Requests;
+namespace Igniter\Admin\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class UserGroup extends FormRequest
 {
     public function attributes()
     {
         return [
-            'user_group_name' => lang('admin::lang.label_name'),
-            'description' => lang('admin::lang.label_description'),
-            'auto_assign' => lang('admin::lang.user_groups.label_auto_assign'),
-            'auto_assign_mode' => lang('admin::lang.user_groups.label_assignment_mode'),
-            'auto_assign_limit' => lang('admin::lang.user_groups.label_load_balanced_limit'),
-            'auto_assign_availability' => lang('admin::lang.user_groups.label_assignment_availability'),
+            'user_group_name' => lang('igniter::admin.label_name'),
+            'description' => lang('igniter::admin.label_description'),
+            'auto_assign' => lang('igniter::admin.user_groups.label_auto_assign'),
+            'auto_assign_mode' => lang('igniter::admin.user_groups.label_assignment_mode'),
+            'auto_assign_limit' => lang('igniter::admin.user_groups.label_load_balanced_limit'),
+            'auto_assign_availability' => lang('igniter::admin.user_groups.label_assignment_availability'),
         ];
     }
 

@@ -1,14 +1,14 @@
 <?php
 
-namespace System\Models;
+namespace Igniter\System\Models;
 
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Flame\Mail\Markdown;
 use Igniter\Flame\Support\Facades\File;
-use Main\Classes\ThemeManager;
-use System\Classes\ComposerManager;
-use System\Classes\ExtensionManager;
+use Igniter\Main\Classes\ThemeManager;
+use Igniter\System\Classes\ExtensionManager;
+use Igniter\System\Classes\PackageManifest;
 
 /**
  * Extension Model Class
@@ -37,19 +37,19 @@ class Extension extends Model
     protected $extensions = [];
 
     /**
-     * @var \System\Classes\BaseExtension
+     * @var \Igniter\System\Classes\BaseExtension
      */
     protected $class;
 
     public static function onboardingIsComplete()
     {
-        $activeTheme = ThemeManager::instance()->getActiveTheme();
+        $activeTheme = resolve(ThemeManager::class)->getActiveTheme();
         if (!$activeTheme)
             return false;
 
         $requiredExtensions = (array)$activeTheme->requires;
         foreach ($requiredExtensions as $name => $constraint) {
-            $extension = ExtensionManager::instance()->findExtension($name);
+            $extension = resolve(ExtensionManager::class)->findExtension($name);
             if (!$extension || $extension->disabled)
                 return false;
         }
@@ -92,9 +92,8 @@ class Extension extends Model
         if (is_string($icon))
             $icon = ['class' => 'fa '.$icon];
 
-        if (strlen($image = array_get($icon, 'image'))) {
-            $file = extension_path(str_replace('.', '/', $this->name).'/'.$image);
-            if (file_exists($file)) {
+        if (strlen($image = array_get($icon, 'image', ''))) {
+            if (file_exists($file = resolve(ExtensionManager::class)->path($this->name, $image))) {
                 $extension = pathinfo($file, PATHINFO_EXTENSION);
                 if (!array_key_exists($extension, self::ICON_MIMETYPES))
                     throw new ApplicationException('Invalid extension icon file type in: '.$this->name.'. Only SVG images are supported');
@@ -116,7 +115,7 @@ class Extension extends Model
 
     public function getReadmeAttribute($value)
     {
-        $readmePath = ExtensionManager::instance()->path($this->name).'readme.md';
+        $readmePath = resolve(ExtensionManager::class)->path($this->name, 'readme.md');
         if (!$readmePath = File::existsInsensitive($readmePath))
             return $value;
 
@@ -147,7 +146,7 @@ class Extension extends Model
         if (!$code)
             return false;
 
-        if (!$extensionClass = ExtensionManager::instance()->findExtension($code)) {
+        if (!$extensionClass = resolve(ExtensionManager::class)->findExtension($code)) {
             return false;
         }
 
@@ -156,12 +155,19 @@ class Extension extends Model
         return true;
     }
 
+    public function getExtensionObject()
+    {
+        return $this->class;
+    }
+
     /**
      * Sync all extensions available in the filesystem into database
      */
     public static function syncAll()
     {
-        $extensionManager = ExtensionManager::instance();
+        $manifest = resolve(PackageManifest::class);
+        $extensionManager = resolve(ExtensionManager::class);
+
         foreach ($extensionManager->namespaces() as $namespace => $path) {
             $code = $extensionManager->getIdentifier($namespace);
 
@@ -171,7 +177,7 @@ class Extension extends Model
 
             $enableExtension = ($model->exists && !$extension->disabled);
 
-            $model->version = ComposerManager::instance()->getPackageVersion($model->name) ?? $model->version;
+            $model->version = $manifest->getVersion($model->name) ?? $model->version;
             $model->save();
 
             $extensionManager->updateInstalledExtensions($code, $enableExtension);

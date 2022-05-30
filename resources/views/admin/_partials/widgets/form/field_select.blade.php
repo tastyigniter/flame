@@ -5,7 +5,7 @@
     $fieldValue = is_null($field->value) ? [] : $field->value;
     $fieldValue = !is_array($fieldValue) ? [$fieldValue] : $fieldValue;
 @endphp
-@if ($this->previewMode)
+@if($this->previewMode)
     <div
         class="form-control-static"
     >@isset($fieldOptions[$field->value])@lang($fieldOptions[$field->value])@endisset</div>
@@ -17,10 +17,10 @@
         {!! $multiOption ? 'multiple="multiple"' : '' !!}
         {!! $field->getAttributes() !!}>
 
-        @if ($field->placeholder)
+        @if($field->placeholder)
             <option value="">@lang($field->placeholder)</option>
         @endif
-        @foreach ($fieldOptions as $value => $option)
+        @foreach($fieldOptions as $value => $option)
             @php
                 if (!is_array($option)) $option = [$option];
             @endphp

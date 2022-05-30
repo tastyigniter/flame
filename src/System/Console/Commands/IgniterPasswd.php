@@ -1,8 +1,8 @@
 <?php
 
-namespace System\Console\Commands;
+namespace Igniter\System\Console\Commands;
 
-use Admin\Models\User;
+use Igniter\Admin\Models\User;
 use Igniter\Flame\Exception\ApplicationException;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;

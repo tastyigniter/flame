@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
 use Igniter\Flame\Database\Casts\Serialize;
 use Igniter\Flame\Database\Factories\HasFactory;
@@ -28,7 +28,7 @@ class UserRole extends Model
 
     public $relation = [
         'hasMany' => [
-            'users' => [\Admin\Models\User::class, 'foreignKey' => 'user_role_id', 'otherKey' => 'user_role_id'],
+            'users' => [\Igniter\Admin\Models\User::class, 'foreignKey' => 'user_role_id', 'otherKey' => 'user_role_id'],
         ],
     ];
 

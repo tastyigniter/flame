@@ -2,12 +2,12 @@
 $config['list']['filter'] = [
     'scopes' => [
         'type' => [
-            'label' => 'lang:admin::lang.statuses.text_filter_status',
+            'label' => 'lang:igniter::admin.statuses.text_filter_status',
             'type' => 'select', // checkbox, switch, date, daterange
             'conditions' => 'status_for = :filtered',
             'options' => [
-                'order' => 'lang:admin::lang.statuses.text_order',
-                'reserve' => 'lang:admin::lang.statuses.text_reservation',
+                'order' => 'lang:igniter::admin.statuses.text_order',
+                'reserve' => 'lang:igniter::admin.statuses.text_reservation',
             ],
         ],
     ],
@@ -16,7 +16,7 @@ $config['list']['filter'] = [
 $config['list']['toolbar'] = [
     'buttons' => [
         'create' => [
-            'label' => 'lang:admin::lang.button_new',
+            'label' => 'lang:igniter::admin.button_new',
             'class' => 'btn btn-primary',
             'href' => 'statuses/create',
         ],
@@ -25,9 +25,9 @@ $config['list']['toolbar'] = [
 
 $config['list']['bulkActions'] = [
     'delete' => [
-        'label' => 'lang:admin::lang.button_delete',
+        'label' => 'lang:igniter::admin.button_delete',
         'class' => 'btn btn-light text-danger',
-        'data-request-confirm' => 'lang:admin::lang.alert_warning_confirm',
+        'data-request-confirm' => 'lang:igniter::admin.alert_warning_confirm',
     ],
 ];
 
@@ -41,37 +41,37 @@ $config['list']['columns'] = [
         ],
     ],
     'status_name' => [
-        'label' => 'lang:admin::lang.label_name',
+        'label' => 'lang:igniter::admin.label_name',
         'type' => 'text', // number, switch, date_time, time, date, timesince, select, relation, partial
         'searchable' => true,
     ],
     'status_comment' => [
-        'label' => 'lang:admin::lang.statuses.column_comment',
+        'label' => 'lang:igniter::admin.statuses.column_comment',
         'type' => 'text',
         'searchable' => true,
     ],
     'status_for_name' => [
-        'label' => 'lang:admin::lang.label_type',
+        'label' => 'lang:igniter::admin.label_type',
         'type' => 'text',
         'sortable' => false,
     ],
     'notify_customer' => [
-        'label' => 'lang:admin::lang.statuses.column_notify',
+        'label' => 'lang:igniter::admin.statuses.column_notify',
         'type' => 'switch',
-        'offText' => 'lang:admin::lang.text_no',
-        'onText' => 'lang:admin::lang.text_yes',
+        'offText' => 'lang:igniter::admin.text_no',
+        'onText' => 'lang:igniter::admin.text_yes',
     ],
     'status_id' => [
-        'label' => 'lang:admin::lang.column_id',
+        'label' => 'lang:igniter::admin.column_id',
         'invisible' => true,
     ],
     'created_at' => [
-        'label' => 'lang:admin::lang.column_date_added',
+        'label' => 'lang:igniter::admin.column_date_added',
         'invisible' => true,
         'type' => 'timesense',
     ],
     'updated_at' => [
-        'label' => 'lang:admin::lang.column_date_updated',
+        'label' => 'lang:igniter::admin.column_date_updated',
         'invisible' => true,
         'type' => 'timesense',
     ],
@@ -80,25 +80,25 @@ $config['list']['columns'] = [
 $config['form']['toolbar'] = [
     'buttons' => [
         'back' => [
-            'label' => 'lang:admin::lang.button_icon_back',
+            'label' => 'lang:igniter::admin.button_icon_back',
             'class' => 'btn btn-outline-secondary',
             'href' => 'statuses',
         ],
         'save' => [
-            'label' => 'lang:admin::lang.button_save',
+            'label' => 'lang:igniter::admin.button_save',
             'context' => ['create', 'edit'],
             'partial' => 'form/toolbar_save_button',
             'class' => 'btn btn-primary',
             'data-request' => 'onSave',
-            'data-progress-indicator' => 'admin::lang.text_saving',
+            'data-progress-indicator' => 'igniter::admin.text_saving',
         ],
         'delete' => [
-            'label' => 'lang:admin::lang.button_icon_delete',
+            'label' => 'lang:igniter::admin.button_icon_delete',
             'class' => 'btn btn-danger',
             'data-request' => 'onDelete',
             'data-request-data' => "_method:'DELETE'",
-            'data-request-confirm' => 'lang:admin::lang.alert_warning_confirm',
-            'data-progress-indicator' => 'admin::lang.text_deleting',
+            'data-request-confirm' => 'lang:igniter::admin.alert_warning_confirm',
+            'data-progress-indicator' => 'igniter::admin.text_deleting',
             'context' => ['edit'],
         ],
     ],
@@ -106,35 +106,35 @@ $config['form']['toolbar'] = [
 
 $config['form']['fields'] = [
     'status_name' => [
-        'label' => 'lang:admin::lang.label_name',
+        'label' => 'lang:igniter::admin.label_name',
         'type' => 'text',
         'span' => 'left',
     ],
     'status_for' => [
-        'label' => 'lang:admin::lang.statuses.label_for',
+        'label' => 'lang:igniter::admin.statuses.label_for',
         'type' => 'radiotoggle',
         'span' => 'right',
         'cssClass' => 'flex-width',
-        'placeholder' => 'lang:admin::lang.text_please_select',
+        'placeholder' => 'lang:igniter::admin.text_please_select',
         'options' => 'getStatusForDropdownOptions',
     ],
     'status_color' => [
-        'label' => 'lang:admin::lang.statuses.label_color',
+        'label' => 'lang:igniter::admin.statuses.label_color',
         'type' => 'colorpicker',
         'span' => 'right',
         'cssClass' => 'flex-width',
     ],
     'status_comment' => [
-        'label' => 'lang:admin::lang.statuses.label_comment',
+        'label' => 'lang:igniter::admin.statuses.label_comment',
         'type' => 'textarea',
     ],
     'notify_customer' => [
-        'label' => 'lang:admin::lang.statuses.label_notify',
+        'label' => 'lang:igniter::admin.statuses.label_notify',
         'type' => 'switch',
         'default' => true,
-        'onText' => 'lang:admin::lang.text_no',
-        'offText' => 'lang:admin::lang.text_yes',
-        'comment' => 'lang:admin::lang.statuses.help_notify',
+        'onText' => 'lang:igniter::admin.text_no',
+        'offText' => 'lang:igniter::admin.text_yes',
+        'comment' => 'lang:igniter::admin.statuses.help_notify',
     ],
 ];
 

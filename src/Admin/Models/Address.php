@@ -1,9 +1,10 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Model;
+use Igniter\Main\Models\Customer;
 
 /**
  * Address Model Class
@@ -26,8 +27,8 @@ class Address extends Model
 
     public $relation = [
         'belongsTo' => [
-            'customer' => \Admin\Models\Customer::class,
-            'country' => \System\Models\Country::class,
+            'customer' => \Igniter\Main\Models\Customer::class,
+            'country' => \Igniter\System\Models\Country::class,
         ],
     ];
 

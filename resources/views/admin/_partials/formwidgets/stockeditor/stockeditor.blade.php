@@ -19,10 +19,10 @@
         class="btn btn-outline-default {{ $previewMode ? 'disabled' : '' }}"
         data-toggle="record-editor"
         data-handler="{{ $this->getEventHandler('onLoadRecord') }}"
-    >@lang('admin::lang.stocks.button_manage_stock')</a>
+    >@lang('igniter::admin.stocks.button_manage_stock')</a>
     <a
         class="btn btn-outline-default {{ $previewMode ? 'disabled' : '' }}"
         data-toggle="record-editor"
         data-handler="{{ $this->getEventHandler('onLoadHistory') }}"
-    >@lang('admin::lang.stocks.button_stock_history')</a>
+    >@lang('igniter::admin.stocks.button_stock_history')</a>
 </div>

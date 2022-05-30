@@ -1,13 +1,14 @@
 <?php
 
-namespace System\Database\Seeds;
+namespace Igniter\System\Database\Seeds;
 
+use Igniter\Flame\Igniter;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class InitialSchemaSeeder extends Seeder
 {
-    protected $recordsPath = __DIR__.'/../records';
+    protected $recordsPath = '/database/records';
 
     /**
      * Run the initial schema seeds.
@@ -41,7 +42,7 @@ class InitialSchemaSeeder extends Seeder
         if (DB::table('countries')->count())
             return;
 
-        DB::table('countries')->insert($this->getSeedRecords('countries', true));
+        DB::table('countries')->insert(Igniter::getSeedRecords('countries'));
 
         DB::table('countries')->update(['updated_at' => now(), 'created_at' => now()]);
 
@@ -56,7 +57,7 @@ class InitialSchemaSeeder extends Seeder
         if (DB::table('currencies')->count())
             return;
 
-        $currencies = $this->getSeedRecords('currencies');
+        $currencies = Igniter::getSeedRecords('currencies');
 
         foreach ($currencies as $currency) {
             $query = DB::table('countries')->where('iso_code_3', $currency['iso_alpha3']);
@@ -104,7 +105,7 @@ class InitialSchemaSeeder extends Seeder
         if (DB::table('locations')->count())
             return true;
 
-        $location = $this->getSeedRecords('location');
+        $location = Igniter::getSeedRecords('location');
         $location['location_email'] = DatabaseSeeder::$siteEmail;
         $locationId = DB::table('locations')->insertGetId($location);
         DB::table('locations')->update(['updated_at' => now(), 'created_at' => now()]);
@@ -169,7 +170,7 @@ class InitialSchemaSeeder extends Seeder
         if (DB::table('settings')->count())
             return;
 
-        DB::table('settings')->insert($this->getSeedRecords('settings'));
+        DB::table('settings')->insert(Igniter::getSeedRecords('settings'));
     }
 
     protected function seedUserGroups()
@@ -240,13 +241,8 @@ class InitialSchemaSeeder extends Seeder
         if (DB::table('statuses')->count())
             return;
 
-        DB::table('statuses')->insert($this->getSeedRecords('statuses'));
+        DB::table('statuses')->insert(Igniter::getSeedRecords('statuses'));
 
         DB::table('statuses')->update(['updated_at' => now(), 'created_at' => now()]);
-    }
-
-    protected function getSeedRecords($name)
-    {
-        return json_decode(file_get_contents($this->recordsPath.'/'.$name.'.json'), true);
     }
 }

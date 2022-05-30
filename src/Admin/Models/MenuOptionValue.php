@@ -1,8 +1,8 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
-use Admin\Traits\Stockable;
+use Igniter\Admin\Traits\Stockable;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Database\Traits\Sortable;
 
@@ -37,10 +37,10 @@ class MenuOptionValue extends Model
 
     public $relation = [
         'belongsTo' => [
-            'option' => [\Admin\Models\MenuOption::class],
+            'option' => [\Igniter\Admin\Models\MenuOption::class],
         ],
         'morphToMany' => [
-            'ingredients' => [\Admin\Models\Ingredient::class, 'name' => 'ingredientable'],
+            'ingredients' => [\Igniter\Admin\Models\Ingredient::class, 'name' => 'ingredientable'],
         ],
     ];
 

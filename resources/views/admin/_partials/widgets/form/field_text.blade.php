@@ -1,4 +1,4 @@
-@if ($this->previewMode)
+@if($this->previewMode)
     <p class="form-control-static">{{  $field->value ? e($field->value) : '&nbsp;'  }}</p>
 @else
     <input

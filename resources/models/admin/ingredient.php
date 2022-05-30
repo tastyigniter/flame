@@ -1,12 +1,12 @@
 <?php
 $config['list']['filter'] = [
     'search' => [
-        'prompt' => 'lang:admin::lang.ingredients.text_filter_search',
+        'prompt' => 'lang:igniter::admin.ingredients.text_filter_search',
         'mode' => 'all',
     ],
     'scopes' => [
         'status' => [
-            'label' => 'lang:admin::lang.text_filter_status',
+            'label' => 'lang:igniter::admin.text_filter_status',
             'type' => 'switch', // checkbox, switch, date, daterange
             'conditions' => 'status = :filtered',
         ],
@@ -16,12 +16,12 @@ $config['list']['filter'] = [
 $config['list']['toolbar'] = [
     'buttons' => [
         'back' => [
-            'label' => 'lang:admin::lang.button_icon_back',
+            'label' => 'lang:igniter::admin.button_icon_back',
             'class' => 'btn btn-default',
             'href' => 'menus',
         ],
         'create' => [
-            'label' => 'lang:admin::lang.button_new',
+            'label' => 'lang:igniter::admin.button_new',
             'class' => 'btn btn-primary',
             'href' => 'ingredients/create',
         ],
@@ -30,27 +30,27 @@ $config['list']['toolbar'] = [
 
 $config['list']['bulkActions'] = [
     'status' => [
-        'label' => 'lang:admin::lang.list.actions.label_status',
+        'label' => 'lang:igniter::admin.list.actions.label_status',
         'type' => 'dropdown',
         'class' => 'btn btn-light',
         'statusColumn' => 'status',
         'menuItems' => [
             'enable' => [
-                'label' => 'lang:admin::lang.list.actions.label_enable',
+                'label' => 'lang:igniter::admin.list.actions.label_enable',
                 'type' => 'button',
                 'class' => 'dropdown-item',
             ],
             'disable' => [
-                'label' => 'lang:admin::lang.list.actions.label_disable',
+                'label' => 'lang:igniter::admin.list.actions.label_disable',
                 'type' => 'button',
                 'class' => 'dropdown-item text-danger',
             ],
         ],
     ],
     'delete' => [
-        'label' => 'lang:admin::lang.button_delete',
+        'label' => 'lang:igniter::admin.button_delete',
         'class' => 'btn btn-light text-danger',
-        'data-request-confirm' => 'lang:admin::lang.alert_warning_confirm',
+        'data-request-confirm' => 'lang:igniter::admin.alert_warning_confirm',
     ],
 ];
 
@@ -64,28 +64,28 @@ $config['list']['columns'] = [
         ],
     ],
     'name' => [
-        'label' => 'lang:admin::lang.label_name',
+        'label' => 'lang:igniter::admin.label_name',
         'type' => 'text',
     ],
     'is_allergen' => [
-        'label' => 'lang:admin::lang.ingredients.column_is_allergen',
+        'label' => 'lang:igniter::admin.ingredients.column_is_allergen',
         'type' => 'switch',
     ],
     'status' => [
-        'label' => 'lang:admin::lang.label_status',
+        'label' => 'lang:igniter::admin.label_status',
         'type' => 'switch',
     ],
     'ingredient_id' => [
-        'label' => 'lang:admin::lang.column_id',
+        'label' => 'lang:igniter::admin.column_id',
         'invisible' => true,
     ],
     'created_at' => [
-        'label' => 'lang:admin::lang.column_date_added',
+        'label' => 'lang:igniter::admin.column_date_added',
         'invisible' => true,
         'type' => 'timesense',
     ],
     'updated_at' => [
-        'label' => 'lang:admin::lang.column_date_updated',
+        'label' => 'lang:igniter::admin.column_date_updated',
         'invisible' => true,
         'type' => 'timesense',
     ],
@@ -94,43 +94,43 @@ $config['list']['columns'] = [
 $config['form']['toolbar'] = [
     'buttons' => [
         'back' => [
-            'label' => 'lang:admin::lang.button_icon_back',
+            'label' => 'lang:igniter::admin.button_icon_back',
             'class' => 'btn btn-outline-secondary',
             'href' => 'ingredients',
         ],
         'save' => [
-            'label' => 'lang:admin::lang.button_save',
+            'label' => 'lang:igniter::admin.button_save',
             'context' => ['create', 'edit'],
             'partial' => 'form/toolbar_save_button',
             'class' => 'btn btn-primary',
             'data-request' => 'onSave',
-            'data-progress-indicator' => 'admin::lang.text_saving',
+            'data-progress-indicator' => 'igniter::admin.text_saving',
         ],
         'delete' => [
-            'label' => 'lang:admin::lang.button_icon_delete',
+            'label' => 'lang:igniter::admin.button_icon_delete',
             'context' => ['edit'],
             'class' => 'btn btn-danger',
             'data-request' => 'onDelete',
-            'data-request-confirm' => 'lang:admin::lang.alert_warning_confirm',
-            'data-progress-indicator' => 'admin::lang.text_deleting',
+            'data-request-confirm' => 'lang:igniter::admin.alert_warning_confirm',
+            'data-progress-indicator' => 'igniter::admin.text_deleting',
         ],
     ],
 ];
 
 $config['form']['fields'] = [
     'name' => [
-        'label' => 'lang:admin::lang.label_name',
+        'label' => 'lang:igniter::admin.label_name',
         'type' => 'text',
         'span' => 'left',
     ],
     'status' => [
-        'label' => 'lang:admin::lang.label_status',
+        'label' => 'lang:igniter::admin.label_status',
         'type' => 'switch',
         'span' => 'right',
         'default' => 1,
     ],
     'description' => [
-        'label' => 'lang:admin::lang.label_description',
+        'label' => 'lang:igniter::admin.label_description',
         'type' => 'textarea',
         'span' => 'left',
         'attributes' => [
@@ -138,14 +138,14 @@ $config['form']['fields'] = [
         ],
     ],
     'thumb' => [
-        'label' => 'lang:admin::lang.ingredients.label_image',
+        'label' => 'lang:igniter::admin.ingredients.label_image',
         'type' => 'mediafinder',
         'useAttachment' => true,
         'span' => 'right',
-        'comment' => 'lang:admin::lang.ingredients.help_photo',
+        'comment' => 'lang:igniter::admin.ingredients.help_photo',
     ],
     'is_allergen' => [
-        'label' => 'lang:admin::lang.ingredients.label_is_allergen',
+        'label' => 'lang:igniter::admin.ingredients.label_is_allergen',
         'type' => 'switch',
         'span' => 'left',
         'default' => 0,

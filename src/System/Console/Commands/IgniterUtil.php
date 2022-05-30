@@ -1,16 +1,16 @@
 <?php
 
-namespace System\Console\Commands;
+namespace Igniter\System\Console\Commands;
 
 use Igniter\Flame\Support\Facades\File;
+use Igniter\Main\Models\Theme;
+use Igniter\System\Classes\UpdateManager;
+use Igniter\System\Facades\Assets;
+use Igniter\System\Helpers\SystemHelper;
+use Igniter\System\Models\Extension;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\App;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use System\Classes\UpdateManager;
-use System\Facades\Assets;
-use System\Models\Extension;
-use System\Models\Theme;
 
 class IgniterUtil extends Command
 {
@@ -72,7 +72,7 @@ class IgniterUtil extends Command
     {
         $this->comment('Setting TastyIgniter version number...');
 
-        if (!App::hasDatabase()) {
+        if (!Igniter::hasDatabase()) {
             $this->comment('Skipping - No database detected.');
 
             return;
@@ -153,12 +153,14 @@ class IgniterUtil extends Command
 
     protected function utilSetCarte()
     {
-        $carteKey = $this->option('carteKey');
+        $carteKey = $this->option('key');
         if (!strlen($carteKey)) {
-            $this->error('No carteKey defined, use --carteKey=<key> to set a Carte');
+            $this->error('No carteKey defined, use --key=<key> to set a Carte');
 
             return;
         }
+
+        SystemHelper::replaceInEnv('IGNITER_CARTE_KEY=', 'IGNITER_CARTE_KEY='.$carteKey);
 
         UpdateManager::instance()->applySiteDetail($carteKey);
     }

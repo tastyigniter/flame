@@ -1,32 +1,32 @@
 <?php
 
-namespace System\Controllers;
+namespace Igniter\System\Http\Controllers;
 
-use Admin\Facades\AdminMenu;
-use System\Models\RequestLog;
+use Igniter\Admin\Facades\AdminMenu;
+use Igniter\System\Models\RequestLog;
 
-class RequestLogs extends \Admin\Classes\AdminController
+class RequestLogs extends \Igniter\Admin\Classes\AdminController
 {
     public $implement = [
-        \Admin\Actions\ListController::class,
-        \Admin\Actions\FormController::class,
+        \Igniter\Admin\Http\Actions\ListController::class,
+        \Igniter\Admin\Http\Actions\FormController::class,
     ];
 
     public $listConfig = [
         'list' => [
-            'model' => \System\Models\RequestLog::class,
-            'title' => 'lang:system::lang.request_logs.text_title',
-            'emptyMessage' => 'lang:system::lang.request_logs.text_empty',
+            'model' => \Igniter\System\Models\RequestLog::class,
+            'title' => 'lang:igniter::system.request_logs.text_title',
+            'emptyMessage' => 'lang:igniter::system.request_logs.text_empty',
             'defaultSort' => ['count', 'DESC'],
             'configFile' => 'requestlog',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:system::lang.request_logs.text_form_name',
-        'model' => \System\Models\RequestLog::class,
+        'name' => 'lang:igniter::system.request_logs.text_form_name',
+        'model' => \Igniter\System\Models\RequestLog::class,
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title' => 'lang:igniter::admin.form.preview_title',
             'redirect' => 'request_logs',
         ],
         'delete' => [
@@ -48,7 +48,7 @@ class RequestLogs extends \Admin\Classes\AdminController
     {
         RequestLog::truncate();
 
-        flash()->success(sprintf(lang('admin::lang.alert_success'), 'Logs Emptied '));
+        flash()->success(sprintf(lang('igniter::admin.alert_success'), 'Logs Emptied '));
 
         return $this->refreshList('list');
     }

@@ -16,7 +16,7 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label>@lang('system::lang.themes.label_file')</label>
+                    <label>@lang('igniter::system.themes.label_file')</label>
                     <input data-modal-input="source-name" type="text" class="form-control" name="name"/>
                     <input data-modal-input="source-action" type="hidden" name="action"/>
                 </div>
@@ -26,12 +26,12 @@
                     type="button"
                     class="btn btn-secondary"
                     data-bs-dismiss="modal"
-                >@lang('admin::lang.button_close')</button>
+                >@lang('igniter::admin.button_close')</button>
                 <button
                     type="button"
                     class="btn btn-primary"
                     data-request="{{ $this->getEventHandler('onManageSource') }}"
-                >@lang('admin::lang.button_save')</button>
+                >@lang('igniter::admin.button_save')</button>
             </div>
         </div>
     </div>

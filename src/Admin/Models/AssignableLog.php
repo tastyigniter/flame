@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
 use Carbon\Carbon;
 use Igniter\Flame\Database\Model;
@@ -28,9 +28,9 @@ class AssignableLog extends Model
 
     public $relation = [
         'belongsTo' => [
-            'assignee' => \Admin\Models\User::class,
-            'assignee_group' => \Admin\Models\UserGroup::class,
-            'status' => \Admin\Models\Status::class,
+            'assignee' => \Igniter\Admin\Models\User::class,
+            'assignee_group' => \Igniter\Admin\Models\UserGroup::class,
+            'status' => \Igniter\Admin\Models\Status::class,
         ],
         'morphTo' => [
             'assignable' => [],

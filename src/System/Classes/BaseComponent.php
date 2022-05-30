@@ -1,15 +1,15 @@
 <?php
 
-namespace System\Classes;
+namespace Igniter\System\Classes;
 
 use BadMethodCallException;
 use Igniter\Flame\Pagic\TemplateCode;
 use Igniter\Flame\Support\Extendable;
 use Igniter\Flame\Traits\EventEmitter;
+use Igniter\Main\Classes\MainController;
+use Igniter\System\Traits\AssetMaker;
+use Igniter\System\Traits\PropertyContainer;
 use Illuminate\Support\Facades\Lang;
-use Main\Classes\MainController;
-use System\Traits\AssetMaker;
-use System\Traits\PropertyContainer;
 
 /**
  * Base Component Class
@@ -53,13 +53,15 @@ abstract class BaseComponent extends Extendable
      */
     protected $properties;
 
+    protected $viewPath;
+
     /**
      * @var MainController Controller object.
      */
     protected $controller;
 
     /**
-     * @var \Main\Template\Page Page template object.
+     * @var \Igniter\Main\Template\Page Page template object.
      */
     protected $page;
 
@@ -79,17 +81,25 @@ abstract class BaseComponent extends Extendable
         $this->properties = $this->validateProperties($properties);
 
         $this->dirName = strtolower(str_replace('\\', '/', get_called_class()));
-        $this->assetPath = extension_path(dirname(dirname($this->dirName))).'/assets';
+        $namespace = implode('.', array_slice(explode('/', $this->dirName), 0, 2));
+        $this->assetPath[] = $namespace.'::assets/'.basename($this->dirName);
+        $this->assetPath[] = $namespace.'::assets';
+        $this->assetPath[] = $namespace.'::';
 
         parent::__construct();
     }
 
     /**
-     * Returns the absolute component path.
+     * Returns the absolute component view path.
      */
     public function getPath()
     {
-        return extension_path($this->dirName);
+        if ($this->viewPath)
+            return $this->viewPath;
+
+        $namespace = implode('.', array_slice(explode('/', $this->dirName), 0, 2));
+
+        return $namespace.'::views/_components/'.basename($this->dirName);
     }
 
     /**
@@ -116,7 +126,7 @@ abstract class BaseComponent extends Extendable
     /**
      * Renders a requested partial in context of this component,
      * @return mixed
-     * @see \Main\Classes\MainController::renderPartial for usage.
+     * @see \Igniter\Main\Classes\MainController::renderPartial for usage.
      */
     public function renderPartial()
     {
@@ -164,26 +174,26 @@ abstract class BaseComponent extends Extendable
     /**
      * Dynamically handle calls into the controller instance.
      *
-     * @param string $method
-     * @param array $parameters
+     * @param string $name
+     * @param array $params
      *
      * @return mixed
      */
-    public function __call($method, $parameters)
+    public function __call($name, $params)
     {
         try {
-            return parent::__call($method, $parameters);
+            return parent::__call($name, $params);
         }
         catch (BadMethodCallException $ex) {
         }
 
-        if (method_exists($this->controller, $method)) {
-            return call_user_func_array([$this->controller, $method], $parameters);
+        if (method_exists($this->controller, $name)) {
+            return call_user_func_array([$this->controller, $name], $params);
         }
 
-        throw new BadMethodCallException(Lang::get('main::lang.not_found.method', [
+        throw new BadMethodCallException(Lang::get('igniter::main.not_found.method', [
             'name' => get_class($this),
-            'method' => $method,
+            'method' => $name,
         ]));
     }
 

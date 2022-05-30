@@ -1,13 +1,13 @@
 <?php
 
-namespace Admin\Classes;
+namespace Igniter\Admin\Classes;
 
-use Admin\Models\Payment;
+use Igniter\Admin\Models\Payment;
 use Igniter\Flame\Support\Facades\File;
 use Igniter\Flame\Traits\Singleton;
+use Igniter\Main\Classes\ThemeManager;
+use Igniter\System\Classes\ExtensionManager;
 use Illuminate\Support\Facades\Response;
-use Main\Classes\ThemeManager;
-use System\Classes\ExtensionManager;
 
 /**
  * Manages payment gateways
@@ -45,7 +45,7 @@ class PaymentGateways
 
     /**
      * Returns a list of the payment gateway objects
-     * @return \Admin\Classes\BasePaymentGateway[]
+     * @return \Igniter\Admin\Classes\BasePaymentGateway[]
      */
     public function listGatewayObjects()
     {
@@ -95,7 +95,7 @@ class PaymentGateways
         }
 
         // Load extensions payment gateways
-        $extensions = ExtensionManager::instance()->getExtensions();
+        $extensions = resolve(ExtensionManager::class)->getExtensions();
         foreach ($extensions as $id => $extension) {
             if (!method_exists($extension, 'registerPaymentGateways'))
                 continue;
@@ -182,7 +182,7 @@ class PaymentGateways
      */
     public static function createPartials()
     {
-        $themeManager = ThemeManager::instance();
+        $themeManager = resolve(ThemeManager::class);
         if (!$theme = $themeManager->getActiveTheme())
             return;
 

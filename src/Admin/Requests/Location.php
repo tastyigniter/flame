@@ -1,31 +1,31 @@
 <?php
 
-namespace Admin\Requests;
+namespace Igniter\Admin\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class Location extends FormRequest
 {
     public function attributes()
     {
         return [
-            'location_name' => lang('admin::lang.label_name'),
-            'location_email' => lang('admin::lang.label_email'),
-            'location_telephone' => lang('admin::lang.locations.label_telephone'),
-            'location_address_1' => lang('admin::lang.locations.label_address_1'),
-            'location_address_2' => lang('admin::lang.locations.label_address_2'),
-            'location_city' => lang('admin::lang.locations.label_city'),
-            'location_state' => lang('admin::lang.locations.label_state'),
-            'location_postcode' => lang('admin::lang.locations.label_postcode'),
-            'location_country_id' => lang('admin::lang.locations.label_country'),
-            'options.auto_lat_lng' => lang('admin::lang.locations.label_auto_lat_lng'),
-            'location_lat' => lang('admin::lang.locations.label_latitude'),
-            'location_lng' => lang('admin::lang.locations.label_longitude'),
-            'description' => lang('admin::lang.label_description'),
-            'location_status' => lang('admin::lang.label_status'),
-            'permalink_slug' => lang('admin::lang.locations.label_permalink_slug'),
-            'gallery.title' => lang('admin::lang.locations.label_gallery_title'),
-            'gallery.description' => lang('admin::lang.label_description'),
+            'location_name' => lang('igniter::admin.label_name'),
+            'location_email' => lang('igniter::admin.label_email'),
+            'location_telephone' => lang('igniter::admin.locations.label_telephone'),
+            'location_address_1' => lang('igniter::admin.locations.label_address_1'),
+            'location_address_2' => lang('igniter::admin.locations.label_address_2'),
+            'location_city' => lang('igniter::admin.locations.label_city'),
+            'location_state' => lang('igniter::admin.locations.label_state'),
+            'location_postcode' => lang('igniter::admin.locations.label_postcode'),
+            'location_country_id' => lang('igniter::admin.locations.label_country'),
+            'options.auto_lat_lng' => lang('igniter::admin.locations.label_auto_lat_lng'),
+            'location_lat' => lang('igniter::admin.locations.label_latitude'),
+            'location_lng' => lang('igniter::admin.locations.label_longitude'),
+            'description' => lang('igniter::admin.label_description'),
+            'location_status' => lang('igniter::admin.label_status'),
+            'permalink_slug' => lang('igniter::admin.locations.label_permalink_slug'),
+            'gallery.title' => lang('igniter::admin.locations.label_gallery_title'),
+            'gallery.description' => lang('igniter::admin.label_description'),
         ];
     }
 

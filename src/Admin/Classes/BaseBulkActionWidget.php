@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Classes;
+namespace Igniter\Admin\Classes;
 
 /**
  * Bulk Action Widget base class
@@ -23,7 +23,7 @@ class BaseBulkActionWidget extends BaseWidget
     protected $defaultConfig = [];
 
     /**
-     * @var \Admin\Widgets\Lists
+     * @var \Igniter\Admin\Widgets\Lists
      */
     protected $actionButton;
 

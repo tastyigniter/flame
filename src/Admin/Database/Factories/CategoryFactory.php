@@ -1,12 +1,12 @@
 <?php
 
-namespace Admin\Database\Factories;
+namespace Igniter\Admin\Database\Factories;
 
 use Igniter\Flame\Database\Factories\Factory;
 
 class CategoryFactory extends Factory
 {
-    protected $model = \Admin\Models\Category::class;
+    protected $model = \Igniter\Admin\Models\Category::class;
 
     public function definition(): array
     {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\ActivityTypes;
+namespace Igniter\Admin\ActivityTypes;
 
-use Admin\Helpers\ActivityMessage;
-use Admin\Models\AssignableLog;
+use Igniter\Admin\Helpers\ActivityMessage;
+use Igniter\Admin\Models\AssignableLog;
 use Igniter\Flame\ActivityLog\Contracts\ActivityInterface;
 use Igniter\Flame\ActivityLog\Models\Activity;
 use Igniter\Flame\Auth\Models\User;
@@ -29,7 +29,7 @@ class AssigneeUpdated implements ActivityInterface
     }
 
     /**
-     * @param \Admin\Models\AssignableLog $assignableLog
+     * @param \Igniter\Admin\Models\AssignableLog $assignableLog
      * @param \Igniter\Flame\Auth\Models\User|null $user
      */
     public static function log(AssignableLog $assignableLog, User $user = null)
@@ -91,8 +91,8 @@ class AssigneeUpdated implements ActivityInterface
     public static function getTitle(Activity $activity)
     {
         return lang($activity->type == self::ORDER_ASSIGNED_TYPE
-            ? 'admin::lang.orders.activity_event_log_assigned_title'
-            : 'admin::lang.reservations.activity_event_log_assigned_title');
+            ? 'igniter::admin.orders.activity_event_log_assigned_title'
+            : 'igniter::admin.reservations.activity_event_log_assigned_title');
     }
 
     /**
@@ -113,8 +113,8 @@ class AssigneeUpdated implements ActivityInterface
     public static function getMessage(Activity $activity)
     {
         $lang = $activity->type == self::ORDER_ASSIGNED_TYPE
-            ? 'admin::lang.orders.activity_event_log_assigned'
-            : 'admin::lang.reservations.activity_event_log_assigned';
+            ? 'igniter::admin.orders.activity_event_log_assigned'
+            : 'igniter::admin.reservations.activity_event_log_assigned';
 
         return ActivityMessage::attachAssignedPlaceholders($lang, $activity);
     }

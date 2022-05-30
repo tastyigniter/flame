@@ -36,7 +36,7 @@
                     </svg>
                 </i>
                 <br>
-                <span class="spinner-border"></span>&nbsp;&nbsp;@lang('admin::lang.text_loading')
+                <span class="spinner-border"></span>&nbsp;&nbsp;@lang('igniter::admin.text_loading')
             </div>
         </div>
     </div>

@@ -3,7 +3,7 @@
 @endphp
 <div class="tab-heading">
     <ul class="form-nav nav nav-tabs">
-        @foreach ($tabs as $name => $fields)
+        @foreach($tabs as $name => $fields)
             <li class="nav-item">
                 <a
                     class="nav-link{{ (('#'.$tabs->section.'tab-'.$loop->iteration) == $activeTab) ? ' active' : '' }}"
@@ -16,7 +16,7 @@
 </div>
 
 <div class="tab-content">
-    @foreach ($tabs as $name => $fields)
+    @foreach($tabs as $name => $fields)
         <div
             class="tab-pane {{ (('#'.$tabs->section.'tab-'.$loop->iteration) == $activeTab) ? 'active' : '' }}"
             id="{{ $tabs->section.'tab-'.$loop->iteration }}">

@@ -1,15 +1,15 @@
 <?php
 
-namespace Main\FormWidgets;
+namespace Igniter\Main\FormWidgets;
 
-use Admin\Classes\BaseFormWidget;
-use Admin\Traits\ValidatesForm;
 use Carbon\Carbon;
 use Exception;
+use Igniter\Admin\Classes\BaseFormWidget;
+use Igniter\Admin\Traits\ValidatesForm;
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Flame\Support\Facades\File;
-use Main\Classes\ThemeManager;
-use System\Classes\ComponentManager as ComponentsManager;
+use Igniter\Main\Classes\ThemeManager;
+use Igniter\System\Classes\ComponentManager as ComponentsManager;
 
 /**
  * Components
@@ -36,11 +36,11 @@ class Components extends BaseFormWidget
 
     public $prompt;
 
-    public $addTitle = 'main::lang.components.button_new';
+    public $addTitle = 'igniter::main.components.button_new';
 
-    public $editTitle = 'main::lang.components.button_edit';
+    public $editTitle = 'igniter::main.components.button_edit';
 
-    public $copyPartialTitle = 'main::lang.components.button_copy_partial';
+    public $copyPartialTitle = 'igniter::main.components.button_copy_partial';
 
     protected $components = [];
 
@@ -64,13 +64,10 @@ class Components extends BaseFormWidget
 
     public function loadAssets()
     {
-        $this->addJs('~/app/admin/formwidgets/recordeditor/assets/js/recordeditor.modal.js', 'recordeditor-modal-js');
+        $this->addJs('formwidgets/recordeditor.modal.js', 'recordeditor-modal-js');
 
-        $this->addJs('~/app/admin/formwidgets/repeater/assets/vendor/sortablejs/Sortable.min.js', 'sortable-js');
-        $this->addJs('~/app/admin/formwidgets/repeater/assets/vendor/sortablejs/jquery-sortable.js', 'jquery-sortable-js');
-
-        $this->addCss('css/components.css', 'components-css');
-        $this->addJs('js/components.js', 'components-js');
+        $this->addCss('components.css', 'components-css');
+        $this->addJs('components.js', 'components-js');
     }
 
     /**
@@ -108,7 +105,7 @@ class Components extends BaseFormWidget
         if ($context === 'partial')
             $formTitle = $this->copyPartialTitle;
 
-        return $this->makePartial('~/app/admin/formwidgets/recordeditor/form', [
+        return $this->makePartial('igniter.admin::formwidgets/recordeditor/form', [
             'formRecordId' => $codeAlias,
             'formTitle' => lang($formTitle),
             'formWidget' => $this->makeComponentFormWidget($context, $componentObj),
@@ -117,8 +114,8 @@ class Components extends BaseFormWidget
 
     public function onSaveRecord()
     {
-        if (ThemeManager::instance()->isLocked($this->model->code)) {
-            flash()->danger(lang('system::lang.themes.alert_theme_locked'))->important();
+        if (resolve(ThemeManager::class)->isLocked($this->model->code)) {
+            flash()->danger(lang('igniter::system.themes.alert_theme_locked'))->important();
 
             return;
         }
@@ -141,14 +138,14 @@ class Components extends BaseFormWidget
         if (strlen($partialToOverride)) {
             $this->overrideComponentPartial($codeAlias, $partialToOverride);
 
-            flash()->success(sprintf(lang('admin::lang.alert_success'),
+            flash()->success(sprintf(lang('igniter::admin.alert_success'),
                 'Component partial copied'
             ))->now();
         }
         else {
             $this->updateComponent($codeAlias, $isCreateContext, $template);
 
-            flash()->success(sprintf(lang('admin::lang.alert_success'),
+            flash()->success(sprintf(lang('igniter::admin.alert_success'),
                 'Component '.($isCreateContext ? 'added' : 'updated')
             ))->now();
 
@@ -180,7 +177,7 @@ class Components extends BaseFormWidget
         $template->mTime = Carbon::now()->timestamp;
         $template->save();
 
-        flash()->success(sprintf(lang('admin::lang.alert_success'), 'Component removed'))->now();
+        flash()->success(sprintf(lang('igniter::admin.alert_success'), 'Component removed'))->now();
 
         $this->controller->setTemplateValue('mTime', $template->mTime);
 
@@ -246,7 +243,7 @@ class Components extends BaseFormWidget
         $formConfig['previewMode'] = $this->previewMode;
         $formConfig['context'] = $context;
 
-        $widget = $this->makeWidget(\Admin\Widgets\Form::class, $formConfig);
+        $widget = $this->makeWidget(\Igniter\Admin\Widgets\Form::class, $formConfig);
 
         $widget->bindEvent('form.extendFields', function ($allFields) use ($widget, $componentObj) {
             if (!$formField = $widget->getField('partial'))
@@ -301,7 +298,7 @@ class Components extends BaseFormWidget
             $this->controller->getTemplateValue('file')
         );
 
-        return ThemeManager::instance()->readFile($fileName, $this->model->code);
+        return resolve(ThemeManager::class)->readFile($fileName, $this->model->code);
     }
 
     protected function updateComponent($codeAlias, $isCreateContext, $template)
@@ -344,7 +341,7 @@ class Components extends BaseFormWidget
         $activeTheme = $this->model->getTheme();
         $themePartialPath = sprintf('%s/%s/%s/', $activeTheme->publicPath, '_partials', $componentObj->alias);
 
-        $formField->comment(sprintf(lang('system::lang.themes.help_override_partial'), $themePartialPath));
+        $formField->comment(sprintf(lang('igniter::system.themes.help_override_partial'), $themePartialPath));
 
         $formField->options(function () use ($componentObj) {
             return collect(File::glob($componentObj->getPath().'/*.blade.php'))

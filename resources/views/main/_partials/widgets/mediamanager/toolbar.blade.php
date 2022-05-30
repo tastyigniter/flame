@@ -30,7 +30,7 @@
                         type="button" class="btn btn-primary"
                         data-media-control="upload">
                         <i class="fa fa-upload"></i>&nbsp;&nbsp;
-                        @lang('main::lang.media_manager.button_upload')
+                        @lang('igniter::main.media_manager.button_upload')
                     </button>
                 @endif
             </div>
@@ -39,24 +39,24 @@
                 @if ($this->getSetting('new_folder'))
                     <button
                         class="btn btn-default"
-                        title="@lang('main::lang.media_manager.text_new_folder')"
+                        title="@lang('igniter::main.media_manager.text_new_folder')"
                         data-media-control="new-folder"
-                        data-swal-title="@lang('main::lang.media_manager.text_folder_name')"
+                        data-swal-title="@lang('igniter::main.media_manager.text_folder_name')"
                     ><i class="fa fa-folder"></i></button>
                 @endif
                 @if ($this->getSetting('rename'))
                     <button
-                        class="btn btn-default" title="@lang('main::lang.media_manager.text_rename_folder')"
+                        class="btn btn-default" title="@lang('igniter::main.media_manager.text_rename_folder')"
                         data-media-control="rename-folder"
-                        data-swal-title="@lang('main::lang.media_manager.text_folder_name')"
+                        data-swal-title="@lang('igniter::main.media_manager.text_folder_name')"
                     ><i class="fa fa-pencil"></i></button>
                 @endif
                 @if ($this->getSetting('delete'))
                     <button
                         class="btn btn-danger"
-                        title="@lang('main::lang.media_manager.text_delete_folder')"
+                        title="@lang('igniter::main.media_manager.text_delete_folder')"
                         data-media-control="delete-folder"
-                        data-swal-confirm="@lang('admin::lang.alert_warning_confirm')"
+                        data-swal-confirm="@lang('igniter::admin.alert_warning_confirm')"
                     ><i class="fa fa-trash"></i></button>
                 @endif
             </div>
@@ -82,7 +82,7 @@
                     {!! $this->makePartial('mediamanager/sorting', ['sortBy', $sortBy]) !!}
                 </div>
 
-                @unless ($isPopup)
+                @unless($isPopup)
                     <a
                         class="btn btn-default btn-options mr-2"
                         href="{{ admin_url('settings/edit/media') }}">

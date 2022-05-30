@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Database\Migrations;
+namespace Igniter\System\Database\Migrations;
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Schema;
 /**
  * customer_id can be NULL on addresses table
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up()
     {
         Schema::table('activities', function (Blueprint $table) {
@@ -25,7 +26,7 @@ return new class extends Migration {
             $table->softDeletes();
         });
 
-        \System\Models\Activity::truncate();
+        \Igniter\System\Models\Activity::truncate();
     }
 
     public function down()

@@ -1,44 +1,44 @@
 <?php
 
-namespace Admin\Controllers;
+namespace Igniter\Admin\Http\Controllers;
 
-use Admin\Facades\AdminMenu;
+use Igniter\Admin\Facades\AdminMenu;
 
-class Statuses extends \Admin\Classes\AdminController
+class Statuses extends \Igniter\Admin\Classes\AdminController
 {
     public $implement = [
-        \Admin\Actions\ListController::class,
-        \Admin\Actions\FormController::class,
+        \Igniter\Admin\Http\Actions\ListController::class,
+        \Igniter\Admin\Http\Actions\FormController::class,
     ];
 
     public $listConfig = [
         'list' => [
-            'model' => \Admin\Models\Status::class,
-            'title' => 'lang:admin::lang.statuses.text_title',
-            'emptyMessage' => 'lang:admin::lang.statuses.text_empty',
+            'model' => \Igniter\Admin\Models\Status::class,
+            'title' => 'lang:igniter::admin.statuses.text_title',
+            'emptyMessage' => 'lang:igniter::admin.statuses.text_empty',
             'defaultSort' => ['status_id', 'DESC'],
             'configFile' => 'status',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.statuses.text_form_name',
-        'model' => \Admin\Models\Status::class,
-        'request' => \Admin\Requests\Status::class,
+        'name' => 'lang:igniter::admin.statuses.text_form_name',
+        'model' => \Igniter\Admin\Models\Status::class,
+        'request' => \Igniter\Admin\Requests\Status::class,
         'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
+            'title' => 'lang:igniter::admin.form.create_title',
             'redirect' => 'statuses/edit/{status_id}',
             'redirectClose' => 'statuses',
             'redirectNew' => 'statuses/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
+            'title' => 'lang:igniter::admin.form.edit_title',
             'redirect' => 'statuses/edit/{status_id}',
             'redirectClose' => 'statuses',
             'redirectNew' => 'statuses/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title' => 'lang:igniter::admin.form.preview_title',
             'redirect' => 'statuses',
         ],
         'delete' => [

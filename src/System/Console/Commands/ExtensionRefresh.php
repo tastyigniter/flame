@@ -1,12 +1,12 @@
 <?php
 
-namespace System\Console\Commands;
+namespace Igniter\System\Console\Commands;
 
+use Igniter\System\Classes\ExtensionManager;
+use Igniter\System\Classes\UpdateManager;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use System\Classes\ExtensionManager;
-use System\Classes\UpdateManager;
 
 class ExtensionRefresh extends Command
 {
@@ -35,7 +35,7 @@ class ExtensionRefresh extends Command
         }
 
         $extensionName = $this->argument('name');
-        $extensionManager = ExtensionManager::instance();
+        $extensionManager = resolve(ExtensionManager::class);
 
         $extensionName = $extensionManager->getIdentifier(strtolower($extensionName));
         if (!$extensionManager->hasExtension($extensionName)) {
@@ -56,7 +56,6 @@ class ExtensionRefresh extends Command
             $this->output->writeln(sprintf('<info>Purging extension %s...</info>', $extensionName));
             $manager->purgeExtension($extensionName);
 
-            $this->output->writeln(sprintf('<info>Migrating extension %s...</info>', $extensionName));
             $manager->migrateExtension($extensionName);
         }
     }

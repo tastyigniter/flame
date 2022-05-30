@@ -1,19 +1,19 @@
 <?php
 
-namespace System\Requests;
+namespace Igniter\System\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class Language extends FormRequest
 {
     public function attributes()
     {
         return [
-            'name' => lang('admin::lang.label_name'),
-            'code' => lang('system::lang.languages.label_code'),
-            'status' => lang('admin::lang.label_status'),
-            'translations.*.source' => lang('system::lang.column_source'),
-            'translations.*.translation' => lang('system::lang.column_translation'),
+            'name' => lang('igniter::admin.label_name'),
+            'code' => lang('igniter::system.languages.label_code'),
+            'status' => lang('igniter::admin.label_status'),
+            'translations.*.source' => lang('igniter::system.column_source'),
+            'translations.*.translation' => lang('igniter::system.column_translation'),
         ];
     }
 
@@ -21,7 +21,7 @@ class Language extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'between:2,32'],
-            'code' => ['required', 'regex:/^[a-zA-Z_]+$/'],
+            'code' => ['required', 'regex:/^[a-zA-Z_]+$/', 'unique:languages'],
             'status' => ['required', 'boolean'],
             'translations.*.source' => ['string', 'max:2500'],
             'translations.*.translation' => ['string', 'max:2500'],

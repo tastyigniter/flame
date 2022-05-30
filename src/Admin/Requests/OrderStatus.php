@@ -1,20 +1,20 @@
 <?php
 
-namespace Admin\Requests;
+namespace Igniter\Admin\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class OrderStatus extends FormRequest
 {
     public function attributes()
     {
         return [
-            'status_id' => lang('admin::lang.label_status'),
-            'comment' => lang('admin::lang.statuses.label_comment'),
-            'notify' => lang('admin::lang.statuses.label_notify'),
+            'status_id' => lang('igniter::admin.label_status'),
+            'comment' => lang('igniter::admin.statuses.label_comment'),
+            'notify' => lang('igniter::admin.statuses.label_notify'),
 
-            'assignee_group_id' => lang('admin::lang.statuses.label_assignee_group'),
-            'assignee_id' => lang('admin::lang.statuses.label_assignee'),
+            'assignee_group_id' => lang('igniter::admin.statuses.label_assignee_group'),
+            'assignee_id' => lang('igniter::admin.statuses.label_assignee'),
         ];
     }
 

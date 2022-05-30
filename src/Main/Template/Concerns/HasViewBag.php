@@ -1,8 +1,8 @@
 <?php
 
-namespace Main\Template\Concerns;
+namespace Igniter\Main\Template\Concerns;
 
-use Main\Components\ViewBag;
+use Igniter\Main\Components\ViewBag;
 
 trait HasViewBag
 {
@@ -38,7 +38,7 @@ trait HasViewBag
      * Returns the configured view bag component.
      * This method is used only in the back-end and for internal system needs when
      * the standard way to access components is not an option.
-     * @return \Main\Components\ViewBag
+     * @return \Igniter\Main\Components\ViewBag
      */
     public function getViewBag()
     {

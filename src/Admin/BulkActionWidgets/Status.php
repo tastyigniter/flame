@@ -1,8 +1,8 @@
 <?php
 
-namespace Admin\BulkActionWidgets;
+namespace Igniter\Admin\BulkActionWidgets;
 
-use Admin\Classes\BaseBulkActionWidget;
+use Igniter\Admin\Classes\BaseBulkActionWidget;
 use Illuminate\Support\Facades\DB;
 
 class Status extends BaseBulkActionWidget
@@ -31,12 +31,12 @@ class Status extends BaseBulkActionWidget
             });
 
             $prefix = ($count > 1) ? ' records' : 'record';
-            flash()->success(sprintf(lang('admin::lang.alert_success'),
-                '['.$count.']'.$prefix.' '.strtolower(lang('admin::lang.text_'.$statusCode.'d'))
+            flash()->success(sprintf(lang('igniter::admin.alert_success'),
+                '['.$count.']'.$prefix.' '.strtolower(lang('igniter::admin.text_'.$statusCode.'d'))
             ));
         }
         else {
-            flash()->warning(sprintf(lang('admin::lang.alert_error_nothing'), strtolower(lang('admin::lang.text_'.$statusCode.'d'))));
+            flash()->warning(sprintf(lang('igniter::admin.alert_error_nothing'), strtolower(lang('igniter::admin.text_'.$statusCode.'d'))));
         }
     }
 }

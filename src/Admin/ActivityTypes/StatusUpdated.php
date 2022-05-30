@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\ActivityTypes;
+namespace Igniter\Admin\ActivityTypes;
 
-use Admin\Helpers\ActivityMessage;
-use Admin\Models\StatusHistory;
+use Igniter\Admin\Helpers\ActivityMessage;
+use Igniter\Admin\Models\StatusHistory;
 use Igniter\Flame\ActivityLog\Contracts\ActivityInterface;
 use Igniter\Flame\ActivityLog\Models\Activity;
 use Igniter\Flame\Auth\Models\User;
@@ -29,7 +29,7 @@ class StatusUpdated implements ActivityInterface
     }
 
     /**
-     * @param \Admin\Models\StatusHistory $history
+     * @param \Igniter\Admin\Models\StatusHistory $history
      * @param \Igniter\Flame\Auth\Models\User|null $user
      */
     public static function log(StatusHistory $history, User $user = null)
@@ -88,8 +88,8 @@ class StatusUpdated implements ActivityInterface
     public static function getTitle(Activity $activity)
     {
         return lang($activity->type == self::ORDER_UPDATED_TYPE
-            ? 'admin::lang.orders.activity_event_log_title'
-            : 'admin::lang.reservations.activity_event_log_title');
+            ? 'igniter::admin.orders.activity_event_log_title'
+            : 'igniter::admin.reservations.activity_event_log_title');
     }
 
     public static function getUrl(Activity $activity)
@@ -104,8 +104,8 @@ class StatusUpdated implements ActivityInterface
     public static function getMessage(Activity $activity)
     {
         $lang = $activity->type == self::ORDER_UPDATED_TYPE
-            ? 'admin::lang.orders.activity_event_log'
-            : 'admin::lang.reservations.activity_event_log';
+            ? 'igniter::admin.orders.activity_event_log'
+            : 'igniter::admin.reservations.activity_event_log';
 
         return ActivityMessage::attachCauserPlaceholders($lang, $activity);
     }

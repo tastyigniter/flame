@@ -1,9 +1,9 @@
 <?php
 
-namespace System\Models;
+namespace Igniter\System\Models;
 
 use Igniter\Flame\Database\Model;
-use System\Classes\ExtensionManager;
+use Igniter\System\Classes\ExtensionManager;
 
 /**
  * Activities Model Class
@@ -96,7 +96,7 @@ class Activity extends \Igniter\Flame\ActivityLog\Models\Activity
     {
         parent::loadActivityTypes();
 
-        $activityTypes = ExtensionManager::instance()->getRegistrationMethodValues('registerActivityTypes');
+        $activityTypes = resolve(ExtensionManager::class)->getRegistrationMethodValues('registerActivityTypes');
         foreach ($activityTypes as $bundles) {
             $this->registerActivityTypes($bundles);
         }

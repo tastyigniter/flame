@@ -1,12 +1,12 @@
 <?php
 
-namespace Admin\Widgets;
+namespace Igniter\Admin\Widgets;
 
-use Admin\Classes\BaseWidget;
-use Admin\Classes\FilterScope;
-use Admin\Facades\AdminAuth;
-use Admin\Traits\LocationAwareWidget;
 use Exception;
+use Igniter\Admin\Classes\BaseWidget;
+use Igniter\Admin\Classes\FilterScope;
+use Igniter\Admin\Facades\AdminAuth;
+use Igniter\Admin\Traits\LocationAwareWidget;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -63,20 +63,9 @@ class Filter extends BaseWidget
 
     public function loadAssets()
     {
-        $this->addJs('~/app/admin/assets/src/js/vendor/moment.min.js', 'moment-js');
-
-        // daterange picker
-        $this->addJs('~/app/admin/dashboardwidgets/charts/assets/vendor/daterange/daterangepicker.js', 'daterangepicker-js');
-        $this->addCss('~/app/admin/dashboardwidgets/charts/assets/vendor/daterange/daterangepicker.css', 'daterangepicker-css');
-
-        // date picker
-        $this->addJs('js/datepicker.js', 'datepicker-js');
-
-        // selectlist
-        $this->addJs('~/app/admin/widgets/form/assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js', 'bootstrap-multiselect-js');
-        $this->addCss('~/app/admin/widgets/form/assets/vendor/bootstrap-multiselect/bootstrap-multiselect.css', 'bootstrap-multiselect-css');
-        $this->addJs('~/app/admin/widgets/form/assets/js/selectlist.js', 'selectlist-js');
-        $this->addCss('~/app/admin/widgets/form/assets/css/selectlist.css', 'selectlist-css');
+        $this->addJs('js/vendor.datetime.js', 'vendor-datetime-js');
+        $this->addJs('widgets/selectlist.js', 'selectlist-js');
+        $this->addCss('widgets/selectlist.css', 'selectlist-css');
     }
 
     public function initialize()
@@ -90,7 +79,7 @@ class Filter extends BaseWidget
         if (isset($this->search)) {
             $searchConfig = $this->search;
             $searchConfig['alias'] = $this->alias.'Search';
-            $this->searchWidget = $this->makeWidget(\Admin\Widgets\SearchBox::class, $searchConfig);
+            $this->searchWidget = $this->makeWidget(\Igniter\Admin\Widgets\SearchBox::class, $searchConfig);
             $this->searchWidget->bindToController();
         }
     }
@@ -116,7 +105,7 @@ class Filter extends BaseWidget
     }
 
     /**
-     * @return \Admin\Widgets\SearchBox
+     * @return \Igniter\Admin\Widgets\SearchBox
      */
     public function getSearchWidget()
     {
@@ -289,7 +278,7 @@ class Filter extends BaseWidget
             $methodName = $options;
 
             if (!$model->methodExists($methodName)) {
-                throw new Exception(sprintf(lang('admin::lang.list.filter_missing_definitions'),
+                throw new Exception(sprintf(lang('igniter::admin.list.filter_missing_definitions'),
                     get_class($model), $methodName, $scope->scopeName
                 ));
             }
@@ -377,7 +366,7 @@ class Filter extends BaseWidget
      * @param $name
      * @param $config
      *
-     * @return \Admin\Classes\FilterScope
+     * @return \Igniter\Admin\Classes\FilterScope
      */
     protected function makeFilterScope($name, $config)
     {
@@ -575,7 +564,7 @@ class Filter extends BaseWidget
     public function getScope($scope)
     {
         if (!isset($this->allScopes[$scope])) {
-            throw new Exception(sprintf(lang('admin::lang.list.filter_missing_scope_definitions'),
+            throw new Exception(sprintf(lang('igniter::admin.list.filter_missing_scope_definitions'),
                 $scope
             ));
         }
@@ -612,7 +601,7 @@ class Filter extends BaseWidget
     {
         $cookieKey = $this->getCookieKey();
 
-        return (bool)@json_decode(array_get($_COOKIE, $cookieKey));
+        return (bool)@json_decode(array_get($_COOKIE, $cookieKey, ''));
     }
 
     public function getCookieKey()

@@ -1,12 +1,12 @@
 <?php
 
-namespace System\Console\Commands;
+namespace Igniter\System\Console\Commands;
 
+use Igniter\System\Classes\ExtensionManager;
+use Igniter\System\Classes\UpdateManager;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use System\Classes\ExtensionManager;
-use System\Classes\UpdateManager;
 
 class ExtensionRemove extends Command
 {
@@ -32,7 +32,7 @@ class ExtensionRemove extends Command
     {
         $forceDelete = $this->option('force');
         $extensionName = $this->argument('name');
-        $extensionManager = ExtensionManager::instance();
+        $extensionManager = resolve(ExtensionManager::class);
 
         $extensionName = $extensionManager->getIdentifier(strtolower($extensionName));
         if (!$extensionManager->hasExtension($extensionName)) {

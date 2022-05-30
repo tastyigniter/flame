@@ -1,17 +1,17 @@
 <?php
 
-namespace System\Requests;
+namespace Igniter\System\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class MailPartial extends FormRequest
 {
     public function attributes()
     {
         return [
-            'name' => lang('admin::lang.label_name'),
-            'code' => lang('system::lang.mail_templates.label_code'),
-            'html' => lang('system::lang.mail_templates.label_html'),
+            'name' => lang('igniter::admin.label_name'),
+            'code' => lang('igniter::system.mail_templates.label_code'),
+            'html' => lang('igniter::system.mail_templates.label_html'),
         ];
     }
 

@@ -1,13 +1,14 @@
 <?php
 
-namespace Admin\Database\Migrations;
+namespace Igniter\Admin\Database\Migrations;
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up()
     {
         Schema::rename('allergens', 'ingredients');
@@ -27,12 +28,12 @@ return new class extends Migration {
             $table->unique(['ingredient_id', 'ingredientable_id', 'ingredientable_type'], 'ingredientable_unique');
         });
 
-        DB::table('ingredients')->update(['is_allergen' => true]);
+        DB::table('ingredients')->update(['is_allergen' => TRUE]);
     }
 
     public function down()
     {
-        Schema::dropIfExists('ingredients');
         Schema::dropIfExists('ingredientables');
+        Schema::dropIfExists('ingredients');
     }
 };

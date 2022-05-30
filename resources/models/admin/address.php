@@ -4,29 +4,29 @@ $config['form']['fields'] = [
         'type' => 'hidden',
     ],
     'address_1' => [
-        'label' => 'admin::lang.customers.label_address_1',
+        'label' => 'igniter::main.customers.label_address_1',
         'type' => 'text',
     ],
     'address_2' => [
-        'label' => 'admin::lang.customers.label_address_2',
+        'label' => 'igniter::main.customers.label_address_2',
         'type' => 'text',
     ],
     'city' => [
-        'label' => 'admin::lang.customers.label_city',
+        'label' => 'igniter::main.customers.label_city',
         'type' => 'text',
     ],
     'state' => [
-        'label' => 'admin::lang.customers.label_state',
+        'label' => 'igniter::main.customers.label_state',
         'type' => 'text',
     ],
     'postcode' => [
-        'label' => 'admin::lang.customers.label_postcode',
+        'label' => 'igniter::main.customers.label_postcode',
         'type' => 'text',
     ],
     'country_id' => [
-        'label' => 'admin::lang.customers.label_country',
+        'label' => 'igniter::main.customers.label_country',
         'type' => 'select',
-        'options' => [\System\Models\Country::class, 'getDropdownOptions'],
+        'options' => [\Igniter\System\Models\Country::class, 'getDropdownOptions'],
     ],
 ];
 

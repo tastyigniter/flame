@@ -21,7 +21,7 @@
                     role="button"
                     class="py-1 pl-0 btn-select-all btn btn-link hide"
                     data-control="check-total-records"
-                >{{ sprintf(lang('admin::lang.list.actions.text_select_all'), $records->total()) }}</a>
+                >{{ sprintf(lang('igniter::admin.list.actions.text_select_all'), $records->total()) }}</a>
                 <input type="hidden" data-action-select-all name="select_all" value="1" disabled="disabled">
                 &nbsp;
                 @foreach($bulkActions as $actionCode => $bulkAction)

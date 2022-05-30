@@ -1,8 +1,8 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
-use Admin\Traits\Locationable;
+use Igniter\Admin\Traits\Locationable;
 use Igniter\Flame\Database\Model;
 use Illuminate\Support\Facades\Mail;
 
@@ -40,10 +40,10 @@ class Stock extends Model
 
     public $relation = [
         'belongsTo' => [
-            'location' => \Admin\Models\Location::class,
+            'location' => \Igniter\Admin\Models\Location::class,
         ],
         'hasMany' => [
-            'history' => \Admin\Models\StockHistory::class,
+            'history' => \Igniter\Admin\Models\StockHistory::class,
         ],
         'morphTo' => [
             'stockable' => [],
@@ -55,12 +55,12 @@ class Stock extends Model
     public function getStockActionOptions()
     {
         return [
-            self::STATE_NONE => 'lang:admin::lang.stocks.text_action_none',
-            self::STATE_IN_STOCK => 'lang:admin::lang.stocks.text_action_in_stock',
-            self::STATE_RETURNED => 'lang:admin::lang.stocks.text_action_returned',
-            self::STATE_WASTE => 'lang:admin::lang.stocks.text_action_waste',
-            self::STATE_RESTOCK => 'lang:admin::lang.stocks.text_action_restock',
-            self::STATE_RECOUNT => 'lang:admin::lang.stocks.text_action_recount',
+            self::STATE_NONE => 'lang:igniter::admin.stocks.text_action_none',
+            self::STATE_IN_STOCK => 'lang:igniter::admin.stocks.text_action_in_stock',
+            self::STATE_RETURNED => 'lang:igniter::admin.stocks.text_action_returned',
+            self::STATE_WASTE => 'lang:igniter::admin.stocks.text_action_waste',
+            self::STATE_RESTOCK => 'lang:igniter::admin.stocks.text_action_restock',
+            self::STATE_RECOUNT => 'lang:igniter::admin.stocks.text_action_recount',
         ];
     }
 
@@ -92,7 +92,7 @@ class Stock extends Model
             $this->saveQuietly();
 
             if ($this->hasLowStock() && $this->shouldAlertOnLowStock($state)) {
-                Mail::queue('admin::_mail.low_stock_alert', ['stock' => $this], function ($message) {
+                Mail::queue('igniter.admin::_mail.low_stock_alert', ['stock' => $this], function ($message) {
                     $message->to($this->location->location_email, $this->location->location_name);
                 });
 

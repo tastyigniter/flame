@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Traits;
+namespace Igniter\Admin\Traits;
 
 use Igniter\Flame\Geolite\Facades\Geocoder;
 use Igniter\Flame\Location\Contracts\AreaInterface;

@@ -1,16 +1,16 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
-use Admin\Classes\UserState;
-use Admin\Traits\Locationable;
+use Igniter\Admin\Classes\UserState;
+use Igniter\Admin\Traits\Locationable;
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Database\Traits\Purgeable;
 
 /**
  * Staff Model Class
- * @deprecated use Admin\Models\User instead. Remove before v5
+ * @deprecated use Igniter\Admin\Models\User instead. Remove before v5
  */
 class Staff extends Model
 {
@@ -47,20 +47,20 @@ class Staff extends Model
 
     public $relation = [
         'hasOne' => [
-            'user' => [\Admin\Models\User::class, 'foreignKey' => 'staff_id', 'otherKey' => 'staff_id', 'delete' => TRUE],
+            'user' => [\Igniter\Admin\Models\User::class, 'foreignKey' => 'staff_id', 'otherKey' => 'staff_id', 'delete' => TRUE],
         ],
         'hasMany' => [
-            'assignable_logs' => [\Admin\Models\AssignableLog::class, 'foreignKey' => 'assignee_id'],
+            'assignable_logs' => [\Igniter\Admin\Models\AssignableLog::class, 'foreignKey' => 'assignee_id'],
         ],
         'belongsTo' => [
-            'role' => [\Admin\Models\UserRole::class, 'foreignKey' => 'user_role_id'],
-            'language' => [\System\Models\Language::class],
+            'role' => [\Igniter\Admin\Models\UserRole::class, 'foreignKey' => 'user_role_id'],
+            'language' => [\Igniter\System\Models\Language::class],
         ],
         'belongsToMany' => [
-            'groups' => [\Admin\Models\UserGroup::class, 'table' => 'users_groups'],
+            'groups' => [\Igniter\Admin\Models\UserGroup::class, 'table' => 'users_groups'],
         ],
         'morphToMany' => [
-            'locations' => [\Admin\Models\Location::class, 'name' => 'locationable'],
+            'locations' => [\Igniter\Admin\Models\Location::class, 'name' => 'locationable'],
         ],
     ];
 

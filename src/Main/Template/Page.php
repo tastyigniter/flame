@@ -1,10 +1,10 @@
 <?php
 
-namespace Main\Template;
+namespace Igniter\Main\Template;
 
-use Main\Classes\MainController;
-use Main\Classes\Theme;
-use Main\Classes\ThemeManager;
+use Igniter\Main\Classes\MainController;
+use Igniter\Main\Classes\Theme;
+use Igniter\Main\Classes\ThemeManager;
 
 /**
  * Page Template Class
@@ -39,7 +39,9 @@ class Page extends Model
         if ($type !== 'theme-page')
             return;
 
-        $theme = ThemeManager::instance()->getActiveTheme();
+        if (!$theme = resolve(ThemeManager::class)->getActiveTheme())
+            return;
+
         $references = self::getDropdownOptions($theme, true);
 
         return [
@@ -51,7 +53,7 @@ class Page extends Model
      * Handler for the pages.menuitem.resolveItem event.
      * @param $item
      * @param string $url
-     * @param \Main\Classes\Theme $theme
+     * @param \Igniter\Main\Classes\Theme $theme
      * @return array|void
      */
     public static function resolveMenuItem($item, string $url, Theme $theme)
@@ -76,6 +78,6 @@ class Page extends Model
      */
     public function getCodeClassParent()
     {
-        return \Main\Template\Code\PageCode::class;
+        return \Igniter\Main\Template\Code\PageCode::class;
     }
 }

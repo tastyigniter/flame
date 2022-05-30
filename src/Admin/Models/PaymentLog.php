@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
-use Admin\Events\Order\BeforeRefundProcessed;
-use Admin\Events\Order\RefundProcessed;
+use Igniter\Admin\Events\Order\BeforeRefundProcessed;
+use Igniter\Admin\Events\Order\RefundProcessed;
 use Carbon\Carbon;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Database\Traits\Validation;
@@ -33,8 +33,8 @@ class PaymentLog extends Model
 
     public $relation = [
         'belongsTo' => [
-            'order' => [\Admin\Models\Order::class],
-            'payment_method' => [\Admin\Models\Payment::class, 'foreignKey' => 'payment_code', 'otherKey' => 'code'],
+            'order' => [\Igniter\Admin\Models\Order::class],
+            'payment_method' => [\Igniter\Admin\Models\Payment::class, 'foreignKey' => 'payment_code', 'otherKey' => 'code'],
         ],
     ];
 

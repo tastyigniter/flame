@@ -1,6 +1,6 @@
 <?php
 
-namespace Main\Template;
+namespace Igniter\Main\Template;
 
 class Partial extends Model
 {
@@ -19,6 +19,6 @@ class Partial extends Model
      */
     public function getCodeClassParent()
     {
-        return \Main\Template\Code\PartialCode::class;
+        return \Igniter\Main\Template\Code\PartialCode::class;
     }
 }

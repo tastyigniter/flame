@@ -1,9 +1,9 @@
 <?php
 
-namespace System\DashboardWidgets;
+namespace Igniter\System\DashboardWidgets;
 
-use Admin\Classes\BaseDashboardWidget;
 use DOMDocument;
+use Igniter\Admin\Classes\BaseDashboardWidget;
 
 /**
  * TastyIgniter news dashboard widget.
@@ -28,11 +28,11 @@ class News extends BaseDashboardWidget
     {
         return [
             'title' => [
-                'label' => 'admin::lang.dashboard.label_widget_title',
-                'default' => 'admin::lang.dashboard.text_news',
+                'label' => 'igniter::admin.dashboard.label_widget_title',
+                'default' => 'igniter::admin.dashboard.text_news',
             ],
             'newsCount' => [
-                'label' => 'admin::lang.dashboard.text_news_count',
+                'label' => 'igniter::admin.dashboard.text_news_count',
                 'default' => 5,
                 'type' => 'select',
                 'options' => [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9, 10 => 10],

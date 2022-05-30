@@ -1,14 +1,12 @@
 <?php
 
-namespace Main\Classes;
+namespace Igniter\Main\Classes;
 
-use Igniter\Flame\Router\Router as FlameRouter;
 use Igniter\Flame\Support\Facades\File;
 use Igniter\Flame\Support\RouterHelper;
+use Igniter\Main\Template\Page as PageTemplate;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
-use Main\Template\Page as PageTemplate;
 
 /**
  * Router Class
@@ -38,7 +36,12 @@ use Main\Template\Page as PageTemplate;
 class Router
 {
     /**
-     * @var \Main\Classes\Theme The Main theme object.
+     * @var string Value to use when a required parameter is not specified
+     */
+    public static $defaultValue = 'default';
+
+    /**
+     * @var \Igniter\Main\Classes\Theme The Main theme object.
      */
     protected $theme;
 
@@ -57,87 +60,42 @@ class Router
      */
     protected $urlMap = [];
 
-    /**
-     * Router object with routes preloaded.
-     */
-    protected $routerObj;
-
-    public function __construct(Theme $theme)
+    public function __construct(Theme $theme = null)
     {
         $this->theme = $theme;
     }
 
     /**
-     * Finds a page by its URL. Returns the page object and sets the $parameters property.
+     * Finds a page by its route name. Returns the page object and sets the $parameters property.
      *
-     * @param string $url The requested URL string.
+     * @param string $url The current request path.
+     * @param array $parameters The current route parameters.
      *
-     * @return \Main\Template\Page|mixed Returns page object
+     * @return \Igniter\Main\Template\Page|mixed Returns page object
      * or null if the page cannot be found.
      */
-    public function findByUrl($url)
+    public function findPage($url, $parameters)
     {
-        $this->url = $url;
-        $url = RouterHelper::normalizeUrl($url);
-
-        $apiResult = event('router.beforeRoute', [$url, $this], TRUE);
+        $apiResult = event('router.beforeRoute', [$url, $this, $parameters], true);
         if ($apiResult !== null)
             return $apiResult;
 
+        $fileName = array_get($parameters, '_file_');
+
+        if (!strlen(File::extension($fileName)))
+            $fileName .= '.blade.php';
+
         for ($pass = 1; $pass <= 2; $pass++) {
-            $fileName = null;
-            $urlList = [];
-
-            $cacheable = Config::get('system.enableRoutesCache');
-            if ($cacheable) {
-                $fileName = $this->getCachedUrlFileName($url, $urlList);
-                if (is_array($fileName)) {
-                    [$fileName, $this->parameters] = $fileName;
-                }
-            }
-
-            // Find the page by URL and cache the route
-            if (!$fileName) {
-                $router = $this->getRouterObject();
-                if ($router->match($url)) {
-                    $this->parameters = $router->getParameters();
-
-                    $fileName = $router->matchedRoute();
-
-                    if ($cacheable) {
-                        if (!$urlList || !is_array($urlList))
-                            $urlList = [];
-
-                        $urlList[$url] = !empty($this->parameters)
-                            ? [$fileName, $this->parameters]
-                            : $fileName;
-
-                        Cache::put(
-                            $this->getUrlListCacheKey(),
-                            base64_encode(serialize($urlList)),
-                            Config::get('system.urlMapCacheTtl', now()->addDay())
-                        );
-                    }
-                }
-            }
-
-            // Return the page
-            if ($fileName) {
-                // If the page was not found on the disk, clear the URL cache
-                // and repeat the routing process.
-                if (($page = PageTemplate::loadCached($this->theme, $fileName)) === null) {
-                    if ($pass == 1) {
-                        $this->clearCache();
-                        continue;
-                    }
-
-                    return null;
+            if (($page = PageTemplate::loadCached($this->theme, $fileName)) === null) {
+                if ($pass == 1) {
+                    $this->clearCache();
+                    continue;
                 }
 
-                return $page;
+                return null;
             }
 
-            return null;
+            return $page;
         }
     }
 
@@ -156,36 +114,21 @@ class Router
             $fileName .= '.blade.php';
         }
 
-        return $this->getRouterObject()->url($fileName, $parameters);
+        return $this->url($fileName, $parameters);
     }
 
-    /**
-     * Autoloads the URL map only allowing a single execution.
-     * @return \Igniter\Flame\Router\Router
-     */
-    protected function getRouterObject()
+    public function getRouteMap()
     {
-        if ($this->routerObj !== null) {
-            return $this->routerObj;
-        }
-
-        // Load up each route rule
-        $router = new FlameRouter();
-        foreach ($this->getUrlMap() as $pageInfo) {
-            $router->route($pageInfo['file'], $pageInfo['pattern']);
-        }
-
-        // Sort all the rules
-        $router->sortRules();
-
-        return $this->routerObj = $router;
+        return collect($this->getUrlMap())->map(function ($page) {
+            return RouterHelper::convertToRouteProperties($page);
+        });
     }
 
     /**
      * Autoloads the URL map only allowing a single execution.
      * @return array Returns the URL map.
      */
-    protected function getUrlMap()
+    public function getUrlMap()
     {
         if (!count($this->urlMap)) {
             $this->loadUrlMap();
@@ -199,39 +142,30 @@ class Router
      * The URL map can is cached. The clearUrlMap() method resets the cache. By default
      * the map is updated every time when a page is saved in the back-end, or
      * when the interval defined with the system.urlMapCacheTtl expires.
-     * @return bool Returns true if the URL map was loaded from the cache. Otherwise returns false.
      */
     protected function loadUrlMap()
     {
-        $cacheable = Config::get('system.enableRoutesCache');
-        $cached = $cacheable ? Cache::get($this->getUrlMapCacheKey(), false) : false;
+        if (!$this->theme)
+            return;
 
-        if (!$cached || ($unSerialized = @unserialize(@base64_decode($cached))) === false) {
-            // The item doesn't exist in the cache, create the map
-            $pages = $this->theme->listPages();
+        $cacheable = app()->routesAreCached() ? -1 : 0;
+
+        $this->urlMap = Cache::remember($this->getUrlMapCacheKey(), $cacheable, function () {
             $map = [];
+            $pages = $this->theme->listPages();
             foreach ($pages as $page) {
                 if (!optional($page)->permalink)
                     continue;
 
-                $map[] = ['file' => $page->getFileName(), 'pattern' => $page->permalink];
+                $map[] = [
+                    'file' => $page->getFileName(),
+                    'route' => str_replace('/', '-', $page->getBaseFileName()),
+                    'pattern' => $page->permalink,
+                ];
             }
 
-            $this->urlMap = $map;
-            if ($cacheable) {
-                Cache::put(
-                    $this->getUrlMapCacheKey(),
-                    base64_encode(serialize($map)),
-                    Config::get('system.urlMapCacheTtl', now()->addDay())
-                );
-            }
-
-            return false;
-        }
-
-        $this->urlMap = $unSerialized;
-
-        return true;
+            return $map;
+        });
     }
 
     /**
@@ -244,33 +178,12 @@ class Router
     }
 
     /**
-     * Sets the current routing parameters.
-     *
-     * @param array $parameters
-     *
-     * @return void
-     */
-    public function setParameters(array $parameters)
-    {
-        $this->parameters = $parameters;
-    }
-
-    /**
      * Returns the current routing parameters.
      * @return array
      */
     public function getParameters()
     {
-        return $this->parameters;
-    }
-
-    /**
-     * Returns the last URL to be looked up.
-     * @return string
-     */
-    public function getUrl()
-    {
-        return $this->url;
+        return request()->route()->parameters();
     }
 
     /**
@@ -279,15 +192,11 @@ class Router
      * @param $name
      * @param $default
      *
-     * @return array
+     * @return object|string|null
      */
     public function getParameter($name, $default = null)
     {
-        if (isset($this->parameters[$name]) && !empty($this->parameters[$name])) {
-            return $this->parameters[$name];
-        }
-
-        return $default;
+        return request()->route()->parameter($name, $default);
     }
 
     /**
@@ -300,15 +209,6 @@ class Router
     protected function getCacheKey($keyName)
     {
         return md5($this->theme->getPath()).$keyName.Lang::getLocale();
-    }
-
-    /**
-     * Returns the cache key name for the URL list.
-     * @return string
-     */
-    protected function getUrlListCacheKey()
-    {
-        return $this->getCacheKey('page-url-list');
     }
 
     /**
@@ -344,5 +244,113 @@ class Router
         }
 
         return null;
+    }
+
+    /**
+     * Builds a URL together by matching route name and supplied parameters
+     *
+     * @param string $name Name of the route previously defined.
+     * @param array $parameters Parameter name => value items to fill in for given route.
+     * @return string Full matched URL as string with given values put in place of named parameters
+     */
+    public function url($name, $parameters = [])
+    {
+        if (!$routeRule = collect($this->getUrlMap())->firstWhere('file', $name))
+            return null;
+
+        return $this->urlFromPattern($routeRule['pattern'], $parameters);
+    }
+
+    /**
+     * Builds a URL together by matching route pattern and supplied parameters
+     *
+     * @param string $pattern Route pattern string, eg: /path/to/something/:parameter
+     * @param array $parameters Parameter name => value items to fill in for given route.
+     * @return string Full matched URL as string with given values put in place of named parameters
+     */
+    public function urlFromPattern($pattern, $parameters = [])
+    {
+        $patternSegments = RouterHelper::segmentizeUrl($pattern);
+
+        /*
+         * Normalize the parameters, colons (:) in key names are removed.
+         */
+        foreach ($parameters as $param => $value) {
+            if (!starts_with($param, ':')) {
+                continue;
+            }
+            $normalizedParam = substr($param, 1);
+            $parameters[$normalizedParam] = $value;
+            unset($parameters[$param]);
+        }
+
+        /*
+         * Build the URL segments, remember the last populated index
+         */
+        $url = [];
+        $lastPopulatedIndex = 0;
+
+        foreach ($patternSegments as $index => $patternSegment) {
+            /*
+             * Static segment
+             */
+            if (!starts_with($patternSegment, ':')) {
+                $url[] = $patternSegment;
+            }
+            /*
+             * Dynamic segment
+             */
+            else {
+                $paramName = RouterHelper::getParameterName($patternSegment);
+
+                /*
+                 * Determine whether it is optional
+                 */
+                $optional = RouterHelper::segmentIsOptional($patternSegment);
+
+                /*
+                 * Default value
+                 */
+                $defaultValue = RouterHelper::getSegmentDefaultValue($patternSegment);
+
+                /*
+                 * Check if parameter has been supplied and is not a default value
+                 */
+                $parameterExists = array_key_exists($paramName, $parameters) &&
+                    strlen($parameters[$paramName]) &&
+                    $parameters[$paramName] !== $defaultValue;
+
+                /*
+                 * Use supplied parameter value
+                 */
+                if ($parameterExists) {
+                    $url[] = $parameters[$paramName];
+                }
+                /*
+                 * Look for a specified default value
+                 */
+                elseif ($optional) {
+                    $url[] = $defaultValue ?: static::$defaultValue;
+
+                    // Do not set $lastPopulatedIndex
+                    continue;
+                }
+                /*
+                 * Non optional field, use the default value
+                 */
+                else {
+                    $url[] = static::$defaultValue;
+                }
+            }
+
+            $lastPopulatedIndex = $index;
+        }
+
+        /*
+         * Trim the URL to only include populated segments
+         */
+        $url = array_slice($url, 0, $lastPopulatedIndex + 1);
+
+        return RouterHelper::rebuildUrl($url);
     }
 }

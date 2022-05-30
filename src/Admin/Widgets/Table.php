@@ -1,10 +1,10 @@
 <?php
 
-namespace Admin\Widgets;
+namespace Igniter\Admin\Widgets;
 
-use Admin\Classes\BaseWidget;
-use Admin\Widgets\Table\Source\DataSource;
 use Exception;
+use Igniter\Admin\Classes\BaseWidget;
+use Igniter\Admin\Classes\TableDataSource;
 use Igniter\Flame\Html\HtmlFacade;
 use Illuminate\Support\Facades\Request;
 
@@ -23,7 +23,7 @@ class Table extends BaseWidget
     protected $showHeader = true;
 
     /**
-     * @var \Admin\Widgets\Table\Source\DataSource
+     * @var \Igniter\Admin\Classes\TableDataSource
      */
     protected $dataSource = null;
 
@@ -37,7 +37,7 @@ class Table extends BaseWidget
      */
     protected $recordsKeyFrom;
 
-    protected $dataSourceAliases = \Admin\Widgets\Table\Source\DataSource::class;
+    protected $dataSourceAliases = \Igniter\Admin\Classes\TableDataSource::class;
 
     public $showPagination = true;
 
@@ -56,13 +56,13 @@ class Table extends BaseWidget
 
         $dataSourceClass = $this->getConfig('dataSource');
         if (!strlen($dataSourceClass)) {
-            throw new Exception(lang('admin::lang.tables.error_table_widget_data_not_specified'));
+            throw new Exception(lang('igniter::admin.tables.error_table_widget_data_not_specified'));
         }
 
         $dataSourceClass = $this->dataSourceAliases;
 
         if (!class_exists($dataSourceClass)) {
-            throw new Exception(sprintf(lang('admin::lang.tables.error_table_widget_data_class_not_found'), $dataSourceClass));
+            throw new Exception(sprintf(lang('igniter::admin.tables.error_table_widget_data_class_not_found'), $dataSourceClass));
         }
 
         $this->dataSource = new $dataSourceClass($this->recordsKeyFrom);
@@ -85,7 +85,7 @@ class Table extends BaseWidget
 
     /**
      * Returns the data source object.
-     * @return \Admin\Widgets\Table\Source\DataSource
+     * @return \Igniter\Admin\Classes\TableDataSource
      */
     public function getDataSource()
     {
@@ -128,11 +128,8 @@ class Table extends BaseWidget
 
     public function loadAssets()
     {
-        $this->addCss('vendor/bootstrap-table/bootstrap-table.min.css', 'bootstrap-table-css');
-        $this->addCss('css/table.css', 'table-css');
-
-        $this->addJs('vendor/bootstrap-table/bootstrap-table.min.js', 'bootstrap-table-js');
-        $this->addJs('js/table.js', 'table-js');
+        $this->addCss('table.css', 'table-css');
+        $this->addJs('table.js', 'table-js');
     }
 
     public function prepareColumnsArray()
@@ -162,7 +159,7 @@ class Table extends BaseWidget
 
     protected function isClientDataSource()
     {
-        return $this->dataSource instanceof DataSource;
+        return $this->dataSource instanceof TableDataSource;
     }
 
     public function onGetRecords()

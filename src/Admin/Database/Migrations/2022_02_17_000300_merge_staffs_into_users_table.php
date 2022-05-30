@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Database\Migrations;
+namespace Igniter\Admin\Database\Migrations;
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -87,6 +87,14 @@ return new class extends Migration {
 
     public function down()
     {
+        Schema::disableForeignKeyConstraints();
+
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('user_groups');
+        Schema::dropIfExists('user_roles');
+        Schema::dropIfExists('users_groups');
+
+        Schema::enableForeignKeyConstraints();
     }
 
     protected function replaceLocationableTypeStaffsWithUsers(): void

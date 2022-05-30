@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Traits;
+namespace Igniter\Admin\Traits;
 
 use Exception;
 use Illuminate\Support\Facades\Event;
@@ -76,7 +76,7 @@ trait FormExtendable
     {
         $recordId = strip_tags($recordId); //remove html tags from url(reflective xss)
         if (!strlen($recordId)) {
-            throw new Exception(lang('admin::lang.form.missing_id'));
+            throw new Exception(lang('igniter::admin.form.missing_id'));
         }
 
         $model = $this->controller->formCreateModelObject();
@@ -92,7 +92,7 @@ trait FormExtendable
         $result = $query->find($recordId);
 
         if (!$result) {
-            throw new Exception(sprintf(lang('admin::lang.form.not_found'), $recordId));
+            throw new Exception(sprintf(lang('igniter::admin.form.not_found'), $recordId));
         }
 
         $result = $this->controller->formExtendModel($result) ?: $result;
@@ -113,7 +113,7 @@ trait FormExtendable
     /**
      * Called before the form fields are defined.
      *
-     * @param \Admin\Widgets\Form $host The hosting form widget
+     * @param \Igniter\Admin\Widgets\Form $host The hosting form widget
      *
      * @return void
      */
@@ -124,7 +124,7 @@ trait FormExtendable
     /**
      * Called after the form fields are defined.
      *
-     * @param \Admin\Widgets\Form $host The hosting form widget
+     * @param \Igniter\Admin\Widgets\Form $host The hosting form widget
      *
      * @return void
      */
@@ -135,7 +135,7 @@ trait FormExtendable
     /**
      * Called before the form is refreshed, should return an array of additional save data.
      *
-     * @param \Admin\Widgets\Form $host The hosting form widget
+     * @param \Igniter\Admin\Widgets\Form $host The hosting form widget
      * @param array $saveData Current save data
      *
      * @return array
@@ -147,7 +147,7 @@ trait FormExtendable
     /**
      * Called when the form is refreshed, giving the opportunity to modify the form fields.
      *
-     * @param \Admin\Widgets\Form $host The hosting form widget
+     * @param \Igniter\Admin\Widgets\Form $host The hosting form widget
      * @param array $fields Current form fields
      *
      * @return array
@@ -159,7 +159,7 @@ trait FormExtendable
     /**
      * Called after the form is refreshed, should return an array of additional result parameters.
      *
-     * @param \Admin\Widgets\Form $host The hosting form widget
+     * @param \Igniter\Admin\Widgets\Form $host The hosting form widget
      * @param array $result Current result parameters.
      *
      * @return array

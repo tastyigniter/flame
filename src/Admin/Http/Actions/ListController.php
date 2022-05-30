@@ -1,10 +1,10 @@
 <?php
 
-namespace Admin\Actions;
+namespace Igniter\Admin\Http\Actions;
 
-use Admin\Facades\Template;
-use Admin\Traits\ListExtendable;
-use System\Classes\ControllerAction;
+use Igniter\Admin\Facades\Template;
+use Igniter\Admin\Traits\ListExtendable;
+use Igniter\System\Classes\ControllerAction;
 
 /**
  * List Controller Class
@@ -23,7 +23,7 @@ class ListController extends ControllerAction
      *  $listConfig = [
      *      'list'  => [
      *          'title'         => 'lang:text_title',
-     *          'emptyMessage' => 'lang:admin::lang.text_empty',
+     *          'emptyMessage' => 'lang:igniter::admin.text_empty',
      *          'configFile'   => null,
      *          'showSetup'         => TRUE,
      *          'showSorting'       => TRUE,
@@ -38,17 +38,17 @@ class ListController extends ControllerAction
     public $listConfig;
 
     /**
-     * @var \Admin\Widgets\Lists[] Reference to the list widget objects
+     * @var \Igniter\Admin\Widgets\Lists[] Reference to the list widget objects
      */
     protected $listWidgets;
 
     /**
-     * @var \Admin\Widgets\Toolbar[] Reference to the toolbar widget objects.
+     * @var \Igniter\Admin\Widgets\Toolbar[] Reference to the toolbar widget objects.
      */
     protected $toolbarWidget;
 
     /**
-     * @var \Admin\Widgets\Filter[] Reference to the filter widget objects.
+     * @var \Igniter\Admin\Widgets\Filter[] Reference to the filter widget objects.
      */
     protected $filterWidgets = [];
 
@@ -104,7 +104,7 @@ class ListController extends ControllerAction
     {
         $checkedIds = post('checked');
         if (!$checkedIds || !is_array($checkedIds) || !count($checkedIds)) {
-            flash()->success(lang('admin::lang.list.delete_empty'));
+            flash()->success(lang('igniter::admin.list.delete_empty'));
 
             return $this->controller->refreshList();
         }
@@ -131,10 +131,10 @@ class ListController extends ControllerAction
             }
 
             $prefix = ($count > 1) ? ' records' : 'record';
-            flash()->success(sprintf(lang('admin::lang.alert_success'), '['.$count.']'.$prefix.' '.lang('admin::lang.text_deleted')));
+            flash()->success(sprintf(lang('igniter::admin.alert_success'), '['.$count.']'.$prefix.' '.lang('igniter::admin.text_deleted')));
         }
         else {
-            flash()->warning(sprintf(lang('admin::lang.alert_error_nothing'), lang('admin::lang.text_deleted')));
+            flash()->warning(sprintf(lang('igniter::admin.alert_error_nothing'), lang('igniter::admin.text_deleted')));
         }
 
         return $this->controller->refreshList($alias);
@@ -143,7 +143,7 @@ class ListController extends ControllerAction
     /**
      * Creates all the widgets based on the model config.
      *
-     * @return array List of Admin\Classes\BaseWidget objects
+     * @return array List of Igniter\Admin\Classes\BaseWidget objects
      */
     public function makeLists()
     {
@@ -161,7 +161,7 @@ class ListController extends ControllerAction
      *
      * @param $alias
      *
-     * @return \Admin\Classes\BaseWidget
+     * @return \Igniter\Admin\Classes\BaseWidget
      */
     public function makeList($alias)
     {
@@ -185,7 +185,7 @@ class ListController extends ControllerAction
         $columnConfig['model'] = $model;
         $columnConfig['alias'] = $alias;
 
-        $widget = $this->makeWidget(\Admin\Widgets\Lists::class, array_merge($columnConfig, $listConfig));
+        $widget = $this->makeWidget(\Igniter\Admin\Widgets\Lists::class, array_merge($columnConfig, $listConfig));
 
         $widget->bindEvent('list.extendColumns', function () use ($widget) {
             $this->controller->listExtendColumns($widget);
@@ -212,7 +212,7 @@ class ListController extends ControllerAction
         // Prep the optional toolbar widget
         if (isset($this->controller->widgets['toolbar']) && (isset($listConfig['toolbar']) || isset($modelConfig['toolbar']))) {
             $this->toolbarWidget = $this->controller->widgets['toolbar'];
-            if ($this->toolbarWidget instanceof \Admin\Widgets\Toolbar)
+            if ($this->toolbarWidget instanceof \Igniter\Admin\Widgets\Toolbar)
                 $this->toolbarWidget->reInitialize($listConfig['toolbar'] ?? $modelConfig['toolbar']);
         }
 
@@ -220,7 +220,7 @@ class ListController extends ControllerAction
         if (array_get($modelConfig, 'filter')) {
             $filterConfig = $modelConfig['filter'];
             $filterConfig['alias'] = "{$widget->alias}_filter";
-            $filterWidget = $this->makeWidget(\Admin\Widgets\Filter::class, $filterConfig);
+            $filterWidget = $this->makeWidget(\Igniter\Admin\Widgets\Filter::class, $filterConfig);
             $filterWidget->bindToController();
 
             if ($searchWidget = $filterWidget->getSearchWidget()) {
@@ -302,7 +302,7 @@ class ListController extends ControllerAction
      *
      * @param string $alias
      *
-     * @return \Admin\Classes\BaseWidget
+     * @return \Igniter\Admin\Classes\BaseWidget
      */
     public function getListWidget($alias = null)
     {
@@ -318,7 +318,7 @@ class ListController extends ControllerAction
      *
      * @param null $alias
      *
-     * @return \Admin\Classes\BaseWidget
+     * @return \Igniter\Admin\Classes\BaseWidget
      */
     public function getListConfig($alias = null)
     {

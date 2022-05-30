@@ -1,5 +1,5 @@
 @php
-$currencyModel = \System\Models\Currency::getDefault();
+$currencyModel = \Igniter\System\Models\Currency::getDefault();
 $symbolAfter = $currencyModel->getSymbolPosition();
 $symbol = $currencyModel->getSymbol();
 @endphp
@@ -7,7 +7,7 @@ $symbol = $currencyModel->getSymbol();
     <p class="form-control-static">{{ $field->value ? currency_format($field->value) : '0' }}</p>
 @else
     <div class="input-group">
-        @unless ($symbolAfter)
+        @unless($symbolAfter)
             <span class="input-group-text"><b>{{$symbol}}</b></span>
         @endunless
         <input

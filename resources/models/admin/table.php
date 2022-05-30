@@ -1,20 +1,20 @@
 <?php
 $config['list']['filter'] = [
     'search' => [
-        'prompt' => 'lang:admin::lang.tables.text_filter_search',
+        'prompt' => 'lang:igniter::admin.tables.text_filter_search',
         'mode' => 'all', // or any, exact
     ],
     'scopes' => [
         'location' => [
-            'label' => 'lang:admin::lang.text_filter_location',
+            'label' => 'lang:igniter::admin.text_filter_location',
             'type' => 'selectlist',
             'scope' => 'whereHasLocation',
-            'modelClass' => \Admin\Models\Location::class,
+            'modelClass' => \Igniter\Admin\Models\Location::class,
             'nameFrom' => 'location_name',
             'locationAware' => true,
         ],
         'status' => [
-            'label' => 'lang:admin::lang.text_filter_status',
+            'label' => 'lang:igniter::admin.text_filter_status',
             'type' => 'switch',
             'conditions' => 'table_status = :filtered',
         ],
@@ -24,7 +24,7 @@ $config['list']['filter'] = [
 $config['list']['toolbar'] = [
     'buttons' => [
         'create' => [
-            'label' => 'lang:admin::lang.button_new',
+            'label' => 'lang:igniter::admin.button_new',
             'class' => 'btn btn-primary',
             'href' => 'tables/create',
         ],
@@ -33,27 +33,27 @@ $config['list']['toolbar'] = [
 
 $config['list']['bulkActions'] = [
     'status' => [
-        'label' => 'lang:admin::lang.list.actions.label_status',
+        'label' => 'lang:igniter::admin.list.actions.label_status',
         'type' => 'dropdown',
         'class' => 'btn btn-light',
         'statusColumn' => 'table_status',
         'menuItems' => [
             'enable' => [
-                'label' => 'lang:admin::lang.list.actions.label_enable',
+                'label' => 'lang:igniter::admin.list.actions.label_enable',
                 'type' => 'button',
                 'class' => 'dropdown-item',
             ],
             'disable' => [
-                'label' => 'lang:admin::lang.list.actions.label_disable',
+                'label' => 'lang:igniter::admin.list.actions.label_disable',
                 'type' => 'button',
                 'class' => 'dropdown-item text-danger',
             ],
         ],
     ],
     'delete' => [
-        'label' => 'lang:admin::lang.button_delete',
+        'label' => 'lang:igniter::admin.button_delete',
         'class' => 'btn btn-light text-danger',
-        'data-request-confirm' => 'lang:admin::lang.alert_warning_confirm',
+        'data-request-confirm' => 'lang:igniter::admin.alert_warning_confirm',
     ],
 ];
 
@@ -67,57 +67,57 @@ $config['list']['columns'] = [
         ],
     ],
     'table_name' => [
-        'label' => 'lang:admin::lang.label_name',
+        'label' => 'lang:igniter::admin.label_name',
         'type' => 'text',
         'searchable' => true,
     ],
     'min_capacity' => [
-        'label' => 'lang:admin::lang.tables.column_min_capacity',
+        'label' => 'lang:igniter::admin.tables.column_min_capacity',
         'type' => 'text',
         'searchable' => true,
     ],
     'max_capacity' => [
-        'label' => 'lang:admin::lang.tables.column_capacity',
+        'label' => 'lang:igniter::admin.tables.column_capacity',
         'type' => 'number',
     ],
     'extra_capacity' => [
-        'label' => 'lang:admin::lang.tables.column_extra_capacity',
+        'label' => 'lang:igniter::admin.tables.column_extra_capacity',
         'type' => 'number',
         'invisible' => true,
     ],
     'priority' => [
-        'label' => 'lang:admin::lang.tables.column_priority',
+        'label' => 'lang:igniter::admin.tables.column_priority',
         'type' => 'number',
         'invisible' => true,
     ],
     'locations' => [
-        'label' => 'lang:admin::lang.column_location',
+        'label' => 'lang:igniter::admin.column_location',
         'type' => 'text',
         'relation' => 'locations',
         'select' => 'location_name',
         'locationAware' => true,
     ],
     'is_joinable' => [
-        'label' => 'lang:admin::lang.tables.label_joinable',
+        'label' => 'lang:igniter::admin.tables.label_joinable',
         'type' => 'switch',
-        'onText' => 'lang:admin::lang.text_yes',
-        'offText' => 'lang:admin::lang.text_no',
+        'onText' => 'lang:igniter::admin.text_yes',
+        'offText' => 'lang:igniter::admin.text_no',
     ],
     'table_status' => [
-        'label' => 'lang:admin::lang.label_status',
+        'label' => 'lang:igniter::admin.label_status',
         'type' => 'switch',
     ],
     'table_id' => [
-        'label' => 'lang:admin::lang.column_id',
+        'label' => 'lang:igniter::admin.column_id',
         'invisible' => true,
     ],
     'created_at' => [
-        'label' => 'lang:admin::lang.column_date_added',
+        'label' => 'lang:igniter::admin.column_date_added',
         'invisible' => true,
         'type' => 'timesense',
     ],
     'updated_at' => [
-        'label' => 'lang:admin::lang.column_date_updated',
+        'label' => 'lang:igniter::admin.column_date_updated',
         'invisible' => true,
         'type' => 'timesense',
     ],
@@ -126,25 +126,25 @@ $config['list']['columns'] = [
 $config['form']['toolbar'] = [
     'buttons' => [
         'back' => [
-            'label' => 'lang:admin::lang.button_icon_back',
+            'label' => 'lang:igniter::admin.button_icon_back',
             'class' => 'btn btn-outline-secondary',
             'href' => 'tables',
         ],
         'save' => [
-            'label' => 'lang:admin::lang.button_save',
+            'label' => 'lang:igniter::admin.button_save',
             'context' => ['create', 'edit'],
             'partial' => 'form/toolbar_save_button',
             'class' => 'btn btn-primary',
             'data-request' => 'onSave',
-            'data-progress-indicator' => 'admin::lang.text_saving',
+            'data-progress-indicator' => 'igniter::admin.text_saving',
         ],
         'delete' => [
-            'label' => 'lang:admin::lang.button_icon_delete',
+            'label' => 'lang:igniter::admin.button_icon_delete',
             'class' => 'btn btn-danger',
             'data-request' => 'onDelete',
             'data-request-data' => "_method:'DELETE'",
-            'data-request-confirm' => 'lang:admin::lang.alert_warning_confirm',
-            'data-progress-indicator' => 'admin::lang.text_deleting',
+            'data-request-confirm' => 'lang:igniter::admin.alert_warning_confirm',
+            'data-progress-indicator' => 'igniter::admin.text_deleting',
             'context' => ['edit'],
         ],
     ],
@@ -152,49 +152,49 @@ $config['form']['toolbar'] = [
 
 $config['form']['fields'] = [
     'table_name' => [
-        'label' => 'lang:admin::lang.label_name',
+        'label' => 'lang:igniter::admin.label_name',
         'type' => 'text',
         'span' => 'left',
     ],
     'priority' => [
-        'label' => 'lang:admin::lang.tables.label_priority',
+        'label' => 'lang:igniter::admin.tables.label_priority',
         'type' => 'number',
         'span' => 'right',
     ],
     'min_capacity' => [
-        'label' => 'lang:admin::lang.tables.label_min_capacity',
+        'label' => 'lang:igniter::admin.tables.label_min_capacity',
         'type' => 'number',
         'span' => 'left',
     ],
     'max_capacity' => [
-        'label' => 'lang:admin::lang.tables.label_capacity',
+        'label' => 'lang:igniter::admin.tables.label_capacity',
         'type' => 'number',
         'span' => 'right',
     ],
     'table_status' => [
-        'label' => 'lang:admin::lang.label_status',
+        'label' => 'lang:igniter::admin.label_status',
         'type' => 'switch',
         'span' => 'left',
         'default' => 1,
     ],
     'is_joinable' => [
-        'label' => 'lang:admin::lang.tables.label_joinable',
+        'label' => 'lang:igniter::admin.tables.label_joinable',
         'type' => 'switch',
         'span' => 'right',
         'default' => 1,
-        'on' => 'lang:admin::lang.text_yes',
-        'off' => 'lang:admin::lang.text_no',
+        'on' => 'lang:igniter::admin.text_yes',
+        'off' => 'lang:igniter::admin.text_no',
     ],
     'locations' => [
-        'label' => 'lang:admin::lang.label_location',
+        'label' => 'lang:igniter::admin.label_location',
         'type' => 'relation',
         'valueFrom' => 'locations',
         'nameFrom' => 'location_name',
     ],
     'extra_capacity' => [
-        'label' => 'lang:admin::lang.tables.label_extra_capacity',
+        'label' => 'lang:igniter::admin.tables.label_extra_capacity',
         'type' => 'number',
-        'comment' => 'lang:admin::lang.tables.help_extra_capacity',
+        'comment' => 'lang:igniter::admin.tables.help_extra_capacity',
     ],
 ];
 

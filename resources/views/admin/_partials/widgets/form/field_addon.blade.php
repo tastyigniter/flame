@@ -10,7 +10,7 @@
     $addonRight = isset($field->config['addonRight']) ? (object)array_merge($addonDefault, $field->config['addonRight']) : null;
 @endphp
 <div class="input-group">
-    @if ($addonLeft)
+    @if($addonLeft)
         {!! '<'.$addonLeft->tag.Html::attributes($addonLeft->attributes).'>'
         .lang($addonLeft->label).'</'.$addonLeft->tag.'>' !!}
     @endif
@@ -29,7 +29,7 @@
         {!! $field->getAttributes() !!}
     />
 
-    @if ($addonRight)
+    @if($addonRight)
         {!! '<'.$addonRight->tag.Html::attributes($addonRight->attributes).'>'
         .lang($addonRight->label).'</'.$addonRight->tag.'>' !!}
     @endif

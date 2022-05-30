@@ -1,8 +1,8 @@
 <?php
 
-namespace Admin\FormWidgets;
+namespace Igniter\Admin\FormWidgets;
 
-use Admin\Classes\BaseFormWidget;
+use Igniter\Admin\Classes\BaseFormWidget;
 
 /**
  * Rich Editor
@@ -52,10 +52,9 @@ class RichEditor extends BaseFormWidget
 
     public function loadAssets()
     {
-        $this->addCss('vendor/summernote/summernote-bs5.min.css', 'summernote-css');
-        $this->addJs('vendor/summernote/summernote-bs5.min.js', 'summernote-js');
-        $this->addCss('css/richeditor.css', 'richeditor-css');
-        $this->addJs('js/richeditor.js', 'richeditor-js');
+        $this->addJs('js/vendor.editor.js', 'vendor-editor-js');
+        $this->addCss('richeditor.css', 'richeditor-css');
+        $this->addJs('richeditor.js', 'richeditor-js');
     }
 
     /**

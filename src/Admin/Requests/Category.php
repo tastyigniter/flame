@@ -1,21 +1,21 @@
 <?php
 
-namespace Admin\Requests;
+namespace Igniter\Admin\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class Category extends FormRequest
 {
     public function attributes()
     {
         return [
-            'name' => lang('admin::lang.label_name'),
-            'description' => lang('admin::lang.label_description'),
-            'permalink_slug' => lang('admin::lang.categories.label_permalink_slug'),
-            'parent_id' => lang('admin::lang.categories.label_parent'),
-            'priority' => lang('admin::lang.categories.label_priority'),
-            'status' => lang('admin::lang.label_status'),
-            'locations.*' => lang('admin::lang.column_location'),
+            'name' => lang('igniter::admin.label_name'),
+            'description' => lang('igniter::admin.label_description'),
+            'permalink_slug' => lang('igniter::admin.categories.label_permalink_slug'),
+            'parent_id' => lang('igniter::admin.categories.label_parent'),
+            'priority' => lang('igniter::admin.categories.label_priority'),
+            'status' => lang('igniter::admin.label_status'),
+            'locations.*' => lang('igniter::admin.column_location'),
         ];
     }
 

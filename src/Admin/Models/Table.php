@@ -1,8 +1,8 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
-use Admin\Traits\Locationable;
+use Igniter\Admin\Traits\Locationable;
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Database\Traits\Sortable;
@@ -41,7 +41,7 @@ class Table extends Model
 
     public $relation = [
         'morphToMany' => [
-            'locations' => [\Admin\Models\Location::class, 'name' => 'locationable'],
+            'locations' => [\Igniter\Admin\Models\Location::class, 'name' => 'locationable'],
         ],
     ];
 

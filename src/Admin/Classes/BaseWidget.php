@@ -1,15 +1,15 @@
 <?php
 
-namespace Admin\Classes;
+namespace Igniter\Admin\Classes;
 
-use Admin\Traits\LocationAwareWidget;
-use Admin\Traits\WidgetMaker;
+use Igniter\Admin\Traits\LocationAwareWidget;
+use Igniter\Admin\Traits\WidgetMaker;
 use Igniter\Flame\Support\Extendable;
 use Igniter\Flame\Traits\EventEmitter;
-use System\Traits\AssetMaker;
-use System\Traits\ConfigMaker;
-use System\Traits\SessionMaker;
-use System\Traits\ViewMaker;
+use Igniter\System\Traits\AssetMaker;
+use Igniter\System\Traits\ConfigMaker;
+use Igniter\System\Traits\SessionMaker;
+use Igniter\System\Traits\ViewMaker;
 
 /**
  * Base Widget Class
@@ -26,7 +26,7 @@ class BaseWidget extends Extendable
     use LocationAwareWidget;
 
     /**
-     * @var \Admin\Classes\AdminController Admin controller object.
+     * @var \Igniter\Admin\Classes\AdminController Admin controller object.
      */
     protected $controller;
 
@@ -55,18 +55,21 @@ class BaseWidget extends Extendable
     {
         $this->controller = $controller;
 
+        $parts = explode('\\', strtolower(get_called_class()));
+        $namespace = implode('.', array_slice($parts, 0, 2));
+        $path = implode('/', array_slice($parts, 2));
+
         // Add paths from the controller context
         $this->partialPath = $controller->partialPath;
 
         // Add paths from the extension / module context
-        $classPath = strtolower(str_replace('\\', '/', get_called_class()));
-        $this->partialPath[] = '~/app/'.dirname($classPath); // match view folder/file
-        $this->partialPath[] = '~/app/'.$classPath;
-        $this->partialPath[] = '$/'.dirname($classPath);
-        $this->partialPath[] = '$/'.$classPath;
+        $this->partialPath[] = $namespace.'::_partials.'.$path;
+        $this->partialPath[] = $namespace.'::_partials.'.dirname($path);
+        $this->partialPath[] = $namespace.'::_partials';
 
-        $this->assetPath[] = '~/app/'.$classPath.'/assets';
-        $this->assetPath[] = '$/'.$classPath.'/assets';
+        $this->assetPath[] = 'igniter::css/'.dirname($path);
+        $this->assetPath[] = 'igniter::js/'.dirname($path);
+        $this->assetPath = array_merge($this->assetPath, $controller->assetPath);
 
         $this->configPath = $controller->configPath;
 

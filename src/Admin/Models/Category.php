@@ -1,8 +1,8 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
-use Admin\Traits\Locationable;
+use Igniter\Admin\Traits\Locationable;
 use Igniter\Flame\Database\Attach\HasMedia;
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Model;
@@ -49,13 +49,13 @@ class Category extends Model
 
     public $relation = [
         'belongsTo' => [
-            'parent_cat' => [\Admin\Models\Category::class, 'foreignKey' => 'parent_id', 'otherKey' => 'category_id'],
+            'parent_cat' => [\Igniter\Admin\Models\Category::class, 'foreignKey' => 'parent_id', 'otherKey' => 'category_id'],
         ],
         'belongsToMany' => [
-            'menus' => [\Admin\Models\Menu::class, 'table' => 'menu_categories'],
+            'menus' => [\Igniter\Admin\Models\Menu::class, 'table' => 'menu_categories'],
         ],
         'morphToMany' => [
-            'locations' => [\Admin\Models\Location::class, 'name' => 'locationable'],
+            'locations' => [\Igniter\Admin\Models\Location::class, 'name' => 'locationable'],
         ],
     ];
 

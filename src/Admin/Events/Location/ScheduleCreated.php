@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Events\Location;
+namespace Igniter\Admin\Events\Location;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;

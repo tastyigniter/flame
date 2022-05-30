@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\Classes;
+namespace Igniter\Admin\Classes;
 
 use Igniter\Flame\Traits\Singleton;
-use System\Classes\ExtensionManager;
+use Igniter\System\Classes\ExtensionManager;
 
 /**
  * Onboarding step definition
@@ -103,7 +103,7 @@ class OnboardingSteps
         }
 
         // Load extensions payment gateways
-        $extensions = ExtensionManager::instance()->getExtensions();
+        $extensions = resolve(ExtensionManager::class)->getExtensions();
         foreach ($extensions as $id => $extension) {
             if (!method_exists($extension, 'registerOnboardingSteps'))
                 continue;

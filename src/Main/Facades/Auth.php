@@ -1,6 +1,6 @@
 <?php
 
-namespace Main\Facades;
+namespace Igniter\Main\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
@@ -13,6 +13,6 @@ class Auth extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'auth';
+        return 'main.auth';
     }
 }

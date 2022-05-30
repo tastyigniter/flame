@@ -14,7 +14,7 @@
     >
         @csrf
         <div class="d-sm-flex flex-sm-wrap w-100 no-gutters">
-            @if ($search)
+            @if($search)
                 <div class="col col-sm-6 pb-sm-3 pr-sm-3">
                     <div class="d-flex no-gutters">
                         <div class="pr-3">
@@ -32,10 +32,10 @@
                 </div>
             @endif
 
-            @if (count($scopes))
+            @if(count($scopes))
                 <input type="hidden" name="_handler" value="{{ $onSubmitHandler }}">
 
-                {!! $this->makePartial('filter/filter_scopes') !!}
+                    {!! $this->makePartial('filter/filter_scopes') !!}
             @endif
         </div>
     </form>

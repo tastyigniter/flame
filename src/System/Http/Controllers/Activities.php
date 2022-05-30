@@ -1,20 +1,20 @@
 <?php
 
-namespace System\Controllers;
+namespace Igniter\System\Http\Controllers;
 
-use Admin\Facades\AdminMenu;
+use Igniter\Admin\Facades\AdminMenu;
 
-class Activities extends \Admin\Classes\AdminController
+class Activities extends \Igniter\Admin\Classes\AdminController
 {
     public $implement = [
-        \Admin\Actions\ListController::class,
+        \Igniter\Admin\Http\Actions\ListController::class,
     ];
 
     public $listConfig = [
         'list' => [
-            'model' => \System\Models\Activity::class,
-            'title' => 'lang:system::lang.activities.text_title',
-            'emptyMessage' => 'lang:system::lang.activities.text_empty',
+            'model' => \Igniter\System\Models\Activity::class,
+            'title' => 'lang:igniter::system.activities.text_title',
+            'emptyMessage' => 'lang:igniter::system.activities.text_empty',
             'defaultSort' => ['updated_at', 'DESC'],
             'configFile' => 'activity',
         ],

@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Database\Traits\Validation;
@@ -39,16 +39,16 @@ class MenuItemOptionValue extends Model
 
     public $relation = [
         'belongsTo' => [
-            'menu' => [\Admin\Models\Menu::class],
-            'option' => [\Admin\Models\MenuOption::class],
-            'option_value' => [\Admin\Models\MenuOptionValue::class],
+            'menu' => [\Igniter\Admin\Models\Menu::class],
+            'option' => [\Igniter\Admin\Models\MenuOption::class],
+            'option_value' => [\Igniter\Admin\Models\MenuOptionValue::class],
         ],
     ];
 
     public $rules = [
-        ['option_id', 'admin::lang.menu_options.label_option_value_id', 'required|integer'],
-        ['option_value_id', 'admin::lang.menu_options.label_option_value', 'required|integer'],
-        ['new_price', 'admin::lang.menu_options.label_option_price', 'numeric|min:0'],
+        ['option_id', 'igniter::admin.menu_options.label_option_value_id', 'required|integer'],
+        ['option_value_id', 'igniter::admin.menu_options.label_option_value', 'required|integer'],
+        ['new_price', 'igniter::admin.menu_options.label_option_price', 'numeric|min:0'],
     ];
 
     public $timestamps = true;

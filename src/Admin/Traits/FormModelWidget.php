@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\Traits;
+namespace Igniter\Admin\Traits;
 
-use Admin\Classes\FormField;
 use Exception;
+use Igniter\Admin\Classes\FormField;
 use Igniter\Flame\Exception\ApplicationException;
 
 /**
@@ -18,7 +18,7 @@ trait FormModelWidget
     public function createFormModel()
     {
         if (!$this->modelClass) {
-            throw new ApplicationException(sprintf(lang('admin::lang.alert_missing_field_property'), get_class($this)));
+            throw new ApplicationException(sprintf(lang('igniter::admin.alert_missing_field_property'), get_class($this)));
         }
 
         $class = $this->modelClass;
@@ -35,7 +35,7 @@ trait FormModelWidget
     {
         $recordId = strip_tags($recordId);
         if (!strlen($recordId)) {
-            throw new ApplicationException(lang('admin::lang.form.missing_id'));
+            throw new ApplicationException(lang('igniter::admin.form.missing_id'));
         }
 
         $model = $this->createFormModel();
@@ -45,7 +45,7 @@ trait FormModelWidget
         $result = $query->find($recordId);
 
         if (!$result)
-            throw new Exception(sprintf(lang('admin::lang.form.record_not_found_in_model'), $recordId, get_class($model)));
+            throw new Exception(sprintf(lang('igniter::admin.form.record_not_found_in_model'), $recordId, get_class($model)));
 
         return $result;
     }
@@ -65,7 +65,7 @@ trait FormModelWidget
             return $this->formField->resolveModelAttribute($this->model, $attribute);
         }
         catch (Exception $ex) {
-            throw new ApplicationException(sprintf(lang('admin::lang.alert_missing_model_definition'),
+            throw new ApplicationException(sprintf(lang('igniter::admin.alert_missing_model_definition'),
                 get_class($this->model),
                 $attribute
             ));
@@ -74,7 +74,7 @@ trait FormModelWidget
 
     /**
      * Returns the model of a relation type.
-     * @return \Admin\FormWidgets\Relation
+     * @return \Igniter\Admin\FormWidgets\Relation
      * @throws \Exception
      */
     protected function getRelationModel()
@@ -82,7 +82,7 @@ trait FormModelWidget
         [$model, $attribute] = $this->resolveModelAttribute($this->valueFrom);
 
         if (!$model || !$model->hasRelation($attribute)) {
-            throw new ApplicationException(sprintf(lang('admin::lang.alert_missing_model_definition'),
+            throw new ApplicationException(sprintf(lang('igniter::admin.alert_missing_model_definition'),
                 get_class($this->model),
                 $this->valueFrom
             ));
@@ -96,7 +96,7 @@ trait FormModelWidget
         [$model, $attribute] = $this->resolveModelAttribute($this->valueFrom);
 
         if (!$model || !$model->hasRelation($attribute)) {
-            throw new ApplicationException(sprintf(lang('admin::lang.alert_missing_model_definition'),
+            throw new ApplicationException(sprintf(lang('igniter::admin.alert_missing_model_definition'),
                 get_class($this->model),
                 $this->valueFrom
             ));

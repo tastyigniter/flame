@@ -1,11 +1,11 @@
 <?php
 
-namespace Admin\Traits;
+namespace Igniter\Admin\Traits;
 
-use Admin\Classes\ScheduleItem;
-use Admin\Events\Location\ScheduleCreated;
 use Carbon\Carbon;
 use Exception;
+use Igniter\Admin\Classes\ScheduleItem;
+use Igniter\Admin\Events\Location\ScheduleCreated;
 use Igniter\Flame\Location\OrderTypes;
 use Igniter\Flame\Location\WorkingSchedule;
 use Illuminate\Support\Collection;
@@ -74,7 +74,7 @@ trait HasWorkingHours
     public function getWorkingHours()
     {
         if (!$this->hasRelation('working_hours'))
-            throw new Exception(sprintf(lang('admin::lang.alert_missing_model_definition'),
+            throw new Exception(sprintf(lang('igniter::admin.alert_missing_model_definition'),
                 get_class($this),
                 'working_hours',
             ));
@@ -95,7 +95,7 @@ trait HasWorkingHours
     {
         $types = $this->availableWorkingTypes();
         if (is_null($type) || !in_array($type, $types))
-            throw new InvalidArgumentException(sprintf(lang('admin::lang.locations.alert_invalid_schedule_type'), $type));
+            throw new InvalidArgumentException(sprintf(lang('igniter::admin.locations.alert_invalid_schedule_type'), $type));
 
         if (is_null($days)) {
             $days = $this->hasFutureOrder($type)
@@ -123,7 +123,7 @@ trait HasWorkingHours
     public function createScheduleItem($type)
     {
         if (is_null($type) || !in_array($type, $this->availableWorkingTypes()))
-            throw new InvalidArgumentException(sprintf(lang('admin::lang.locations.alert_invalid_schedule_type'), $type));
+            throw new InvalidArgumentException(sprintf(lang('igniter::admin.locations.alert_invalid_schedule_type'), $type));
 
         $scheduleData = array_get($this->getOption('hours', []), $type, []);
 

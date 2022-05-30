@@ -1,29 +1,29 @@
 <?php
 
-namespace Admin\Controllers;
+namespace Igniter\Admin\Http\Controllers;
 
-use Admin\ActivityTypes\StatusUpdated;
-use Admin\Facades\AdminMenu;
-use Admin\Models\Reservation;
-use Admin\Models\Status;
 use Exception;
+use Igniter\Admin\ActivityTypes\StatusUpdated;
+use Igniter\Admin\Facades\AdminMenu;
+use Igniter\Admin\Models\Reservation;
+use Igniter\Admin\Models\Status;
 use Igniter\Flame\Exception\ApplicationException;
 
-class Reservations extends \Admin\Classes\AdminController
+class Reservations extends \Igniter\Admin\Classes\AdminController
 {
     public $implement = [
-        \Admin\Actions\ListController::class,
-        \Admin\Actions\CalendarController::class,
-        \Admin\Actions\FormController::class,
-        \Admin\Actions\AssigneeController::class,
-        \Admin\Actions\LocationAwareController::class,
+        \Igniter\Admin\Http\Actions\ListController::class,
+        \Igniter\Admin\Http\Actions\CalendarController::class,
+        \Igniter\Admin\Http\Actions\FormController::class,
+        \Igniter\Admin\Http\Actions\AssigneeController::class,
+        \Igniter\Admin\Http\Actions\LocationAwareController::class,
     ];
 
     public $listConfig = [
         'list' => [
-            'model' => \Admin\Models\Reservation::class,
-            'title' => 'lang:admin::lang.reservations.text_title',
-            'emptyMessage' => 'lang:admin::lang.reservations.text_empty',
+            'model' => \Igniter\Admin\Models\Reservation::class,
+            'title' => 'lang:igniter::admin.reservations.text_title',
+            'emptyMessage' => 'lang:igniter::admin.reservations.text_empty',
             'defaultSort' => ['reservation_id', 'DESC'],
             'configFile' => 'reservation',
         ],
@@ -31,31 +31,31 @@ class Reservations extends \Admin\Classes\AdminController
 
     public $calendarConfig = [
         'calender' => [
-            'title' => 'lang:admin::lang.reservations.text_title',
-            'emptyMessage' => 'lang:admin::lang.reservations.text_no_booking',
+            'title' => 'lang:igniter::admin.reservations.text_title',
+            'emptyMessage' => 'lang:igniter::admin.reservations.text_no_booking',
             'popoverPartial' => 'reservations/calendar_popover',
             'configFile' => 'reservation',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.reservations.text_form_name',
-        'model' => \Admin\Models\Reservation::class,
-        'request' => \Admin\Requests\Reservation::class,
+        'name' => 'lang:igniter::admin.reservations.text_form_name',
+        'model' => \Igniter\Admin\Models\Reservation::class,
+        'request' => \Igniter\Admin\Requests\Reservation::class,
         'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
+            'title' => 'lang:igniter::admin.form.create_title',
             'redirect' => 'reservations/edit/{reservation_id}',
             'redirectClose' => 'reservations',
             'redirectNew' => 'reservations/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
+            'title' => 'lang:igniter::admin.form.edit_title',
             'redirect' => 'reservations/edit/{reservation_id}',
             'redirectClose' => 'reservations',
             'redirectNew' => 'reservations/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title' => 'lang:igniter::admin.form.preview_title',
             'redirect' => 'reservations',
         ],
         'delete' => [
@@ -81,15 +81,15 @@ class Reservations extends \Admin\Classes\AdminController
     {
         $this->asExtension('ListController')->index();
 
-        $this->vars['statusesOptions'] = \Admin\Models\Status::getDropdownOptionsForReservation();
+        $this->vars['statusesOptions'] = \Igniter\Admin\Models\Status::getDropdownOptionsForReservation();
     }
 
     public function index_onDelete()
     {
         if (!$this->getUser()->hasPermission('Admin.DeleteReservations'))
-            throw new ApplicationException(lang('admin::lang.alert_user_restricted'));
+            throw new ApplicationException(lang('igniter::admin.alert_user_restricted'));
 
-        return $this->asExtension(\Admin\Actions\ListController::class)->index_onDelete();
+        return $this->asExtension(\Igniter\Admin\Http\Actions\ListController::class)->index_onDelete();
     }
 
     public function index_onUpdateStatus()
@@ -102,7 +102,7 @@ class Reservations extends \Admin\Classes\AdminController
         if ($record = $model->addStatusHistory($status))
             StatusUpdated::log($record, $this->getUser());
 
-        flash()->success(sprintf(lang('admin::lang.alert_success'), lang('admin::lang.statuses.text_form_name').' updated'))->now();
+        flash()->success(sprintf(lang('igniter::admin.alert_success'), lang('igniter::admin.statuses.text_form_name').' updated'))->now();
 
         return $this->redirectBack();
     }
@@ -110,9 +110,9 @@ class Reservations extends \Admin\Classes\AdminController
     public function edit_onDelete()
     {
         if (!$this->getUser()->hasPermission('Admin.DeleteReservations'))
-            throw new ApplicationException(lang('admin::lang.alert_user_restricted'));
+            throw new ApplicationException(lang('igniter::admin.alert_user_restricted'));
 
-        return $this->asExtension(\Admin\Actions\FormController::class)->edit_onDelete();
+        return $this->asExtension(\Igniter\Admin\Http\Actions\FormController::class)->edit_onDelete();
     }
 
     public function calendarGenerateEvents($startAt, $endAt)
@@ -125,7 +125,7 @@ class Reservations extends \Admin\Classes\AdminController
     public function calendarUpdateEvent($eventId, $startAt, $endAt)
     {
         if (!$reservation = Reservation::find($eventId))
-            throw new Exception(lang('admin::lang.reservations.alert_no_reservation_found'));
+            throw new Exception(lang('igniter::admin.reservations.alert_no_reservation_found'));
 
         $startAt = make_carbon($startAt);
         $endAt = make_carbon($endAt);

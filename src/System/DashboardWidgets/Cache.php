@@ -1,12 +1,12 @@
 <?php
 
-namespace System\DashboardWidgets;
+namespace Igniter\System\DashboardWidgets;
 
-use Admin\Classes\BaseDashboardWidget;
 use Exception;
+use Igniter\Admin\Classes\BaseDashboardWidget;
+use Igniter\System\Helpers\CacheHelper;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use System\Helpers\CacheHelper;
 
 class Cache extends BaseDashboardWidget
 {
@@ -45,8 +45,8 @@ class Cache extends BaseDashboardWidget
     {
         return [
             'title' => [
-                'label' => 'admin::lang.dashboard.label_widget_title',
-                'default' => 'admin::lang.dashboard.text_cache_usage',
+                'label' => 'igniter::admin.dashboard.label_widget_title',
+                'default' => 'igniter::admin.dashboard.text_cache_usage',
                 'type' => 'text',
             ],
         ];

@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Models;
+namespace Igniter\System\Models;
 
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Exception\ValidationException;
@@ -36,7 +36,7 @@ class Currency extends \Igniter\Flame\Currency\Models\Currency
 
     public $relation = [
         'belongsTo' => [
-            'country' => \System\Models\Country::class,
+            'country' => \Igniter\System\Models\Country::class,
         ],
     ];
 
@@ -97,7 +97,7 @@ class Currency extends \Igniter\Flame\Currency\Models\Currency
     {
         if (!$this->currency_status) {
             throw new ValidationException(['currency_status' => sprintf(
-                lang('admin::lang.alert_error_set_default'), $this->currency_name
+                lang('igniter::admin.alert_error_set_default'), $this->currency_name
             )]);
         }
 
@@ -141,8 +141,8 @@ class Currency extends \Igniter\Flame\Currency\Models\Currency
     public static function getConverterDropdownOptions()
     {
         return [
-            'openexchangerates' => 'lang:system::lang.settings.text_openexchangerates',
-            'fixerio' => 'lang:system::lang.settings.text_fixerio',
+            'openexchangerates' => 'lang:igniter::system.settings.text_openexchangerates',
+            'fixerio' => 'lang:igniter::system.settings.text_fixerio',
         ];
     }
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace System\DashboardWidgets;
+namespace Igniter\System\DashboardWidgets;
 
-use Admin\Classes\BaseDashboardWidget;
-use Admin\Facades\AdminAuth;
-use System\Models\Activity;
+use Igniter\Admin\Classes\BaseDashboardWidget;
+use Igniter\Admin\Facades\AdminAuth;
+use Igniter\System\Models\Activity;
 
 /**
  * System activities dashboard widget.
@@ -27,12 +27,12 @@ class Activities extends BaseDashboardWidget
     {
         return [
             'title' => [
-                'label' => 'admin::lang.dashboard.label_widget_title',
-                'default' => 'admin::lang.dashboard.text_recent_activity',
+                'label' => 'igniter::admin.dashboard.label_widget_title',
+                'default' => 'igniter::admin.dashboard.text_recent_activity',
                 'type' => 'text',
             ],
             'count' => [
-                'label' => 'admin::lang.dashboard.text_activities_count',
+                'label' => 'igniter::admin.dashboard.text_activities_count',
                 'default' => 5,
                 'type' => 'select',
                 'options' => [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9, 10 => 10],

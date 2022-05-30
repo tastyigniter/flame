@@ -1,55 +1,55 @@
 <?php
 
-namespace System\Controllers;
+namespace Igniter\System\Http\Controllers;
 
-use Admin\Facades\AdminMenu;
-use Admin\Facades\Template;
-use Admin\Widgets\Form;
+use Igniter\Admin\Facades\AdminMenu;
+use Igniter\Admin\Facades\Template;
+use Igniter\Admin\Widgets\Form;
 use Igniter\Flame\Exception\ApplicationException;
-use System\Classes\ExtensionManager;
-use System\Classes\LanguageManager;
-use System\Models\Language;
-use System\Traits\ManagesUpdates;
-use System\Traits\SessionMaker;
+use Igniter\System\Classes\ExtensionManager;
+use Igniter\System\Classes\LanguageManager;
+use Igniter\System\Models\Language;
+use Igniter\System\Traits\ManagesUpdates;
+use Igniter\System\Traits\SessionMaker;
 
-class Languages extends \Admin\Classes\AdminController
+class Languages extends \Igniter\Admin\Classes\AdminController
 {
     use SessionMaker;
     use ManagesUpdates;
 
     public $implement = [
-        \Admin\Actions\ListController::class,
-        \Admin\Actions\FormController::class,
+        \Igniter\Admin\Http\Actions\ListController::class,
+        \Igniter\Admin\Http\Actions\FormController::class,
     ];
 
     public $listConfig = [
         'list' => [
-            'model' => \System\Models\Language::class,
-            'title' => 'lang:system::lang.languages.text_title',
-            'emptyMessage' => 'lang:system::lang.languages.text_empty',
+            'model' => \Igniter\System\Models\Language::class,
+            'title' => 'lang:igniter::system.languages.text_title',
+            'emptyMessage' => 'lang:igniter::system.languages.text_empty',
             'defaultSort' => ['language_id', 'DESC'],
             'configFile' => 'language',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:system::lang.languages.text_form_name',
-        'model' => \System\Models\Language::class,
-        'request' => \System\Requests\Language::class,
+        'name' => 'lang:igniter::system.languages.text_form_name',
+        'model' => \Igniter\System\Models\Language::class,
+        'request' => \Igniter\System\Requests\Language::class,
         'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
+            'title' => 'lang:igniter::admin.form.create_title',
             'redirect' => 'languages/edit/{language_id}',
             'redirectClose' => 'languages',
             'redirectNew' => 'languages/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
+            'title' => 'lang:igniter::admin.form.edit_title',
             'redirect' => 'languages/edit/{language_id}',
             'redirectClose' => 'languages',
             'redirectNew' => 'languages/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title' => 'lang:igniter::admin.form.preview_title',
             'redirect' => 'languages',
         ],
         'delete' => [
@@ -93,12 +93,12 @@ class Languages extends \Admin\Classes\AdminController
 
     public function edit($context = null, $recordId = null)
     {
-        $this->addJs('~/app/admin/formwidgets/recordeditor/assets/js/recordeditor.modal.js', 'recordeditor-modal-js');
-        $this->addJs('~/app/admin/assets/js/translationseditor.js', 'translationseditor-js');
+        $this->addJs('formwidgets/recordeditor.modal.js', 'recordeditor-modal-js');
+        $this->addJs('formwidgets/translationseditor.js', 'translationseditor-js');
 
         $this->prepareAssets();
 
-        Template::setButton(lang('system::lang.languages.button_check'), ['class' => 'btn btn-success pull-right', 'data-toggle' => 'record-editor', 'data-handler' => 'onCheckUpdates']);
+        Template::setButton(lang('igniter::system.languages.button_check'), ['class' => 'btn btn-success pull-right', 'data-toggle' => 'record-editor', 'data-handler' => 'onCheckUpdates']);
 
         $this->asExtension('FormController')->edit($context, $recordId);
     }
@@ -128,12 +128,12 @@ class Languages extends \Admin\Classes\AdminController
         $response = LanguageManager::instance()->applyLanguagePack($model->code, $model->version);
 
         $title = $response
-            ? lang('system::lang.languages.text_title_update_available')
-            : lang('system::lang.languages.text_title_no_update_available');
+            ? lang('igniter::system.languages.text_title_update_available')
+            : lang('igniter::system.languages.text_title_no_update_available');
 
         $message = $response
-            ? lang('system::lang.languages.text_update_available')
-            : lang('system::lang.languages.text_no_update_available');
+            ? lang('igniter::system.languages.text_update_available')
+            : lang('igniter::system.languages.text_no_update_available');
 
         return $this->makePartial('updates', [
             'language' => (object)$response,
@@ -146,7 +146,7 @@ class Languages extends \Admin\Classes\AdminController
     {
         $items = post('items') ?? [];
         if (!count($items))
-            throw new ApplicationException(lang('system::lang.updates.alert_no_items'));
+            throw new ApplicationException(lang('igniter::system.updates.alert_no_items'));
 
         $this->validateItems();
 
@@ -222,7 +222,7 @@ class Languages extends \Admin\Classes\AdminController
         $field->options = post($field->getName()) ?: $this->prepareTranslations($form->model);
 
         if ($form->model->version) {
-            Template::setButton(sprintf(lang('system::lang.languages.text_current_build'), $form->model->version), [
+            Template::setButton(sprintf(lang('igniter::system.languages.text_current_build'), $form->model->version), [
                 'class' => 'btn disabled text-muted pull-right', 'role' => 'button',
             ]);
         }
@@ -246,7 +246,7 @@ class Languages extends \Admin\Classes\AdminController
     {
         $result = [];
 
-        $extensionManager = ExtensionManager::instance();
+        $extensionManager = resolve(ExtensionManager::class);
 
         foreach ($this->localeFiles as $file) {
             $name = sprintf('%s::%s', $file['namespace'], $file['group']);

@@ -1,8 +1,8 @@
 <?php
 
-namespace Admin\BulkActionWidgets;
+namespace Igniter\Admin\BulkActionWidgets;
 
-use Admin\Classes\BaseBulkActionWidget;
+use Igniter\Admin\Classes\BaseBulkActionWidget;
 use Illuminate\Support\Facades\DB;
 
 class Delete extends BaseBulkActionWidget
@@ -18,10 +18,10 @@ class Delete extends BaseBulkActionWidget
             });
 
             $prefix = ($count > 1) ? ' records' : 'record';
-            flash()->success(sprintf(lang('admin::lang.alert_success'), '['.$count.']'.$prefix.' '.lang('admin::lang.text_deleted')));
+            flash()->success(sprintf(lang('igniter::admin.alert_success'), '['.$count.']'.$prefix.' '.lang('igniter::admin.text_deleted')));
         }
         else {
-            flash()->warning(sprintf(lang('admin::lang.alert_error_nothing'), lang('admin::lang.text_deleted')));
+            flash()->warning(sprintf(lang('igniter::admin.alert_error_nothing'), lang('igniter::admin.text_deleted')));
         }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Traits;
+namespace Igniter\Admin\Traits;
 
 use Igniter\Flame\Database\Model;
 use Illuminate\Support\Facades\Event;
@@ -10,7 +10,7 @@ trait ListExtendable
     /**
      * Called after the list columns are defined.
      *
-     * @param \Admin\Widgets\Lists $host The hosting list widget
+     * @param \Igniter\Admin\Widgets\Lists $host The hosting list widget
      *
      * @return void
      */
@@ -65,7 +65,7 @@ trait ListExtendable
     /**
      * Called before the filter scopes are defined.
      *
-     * @param \Admin\Widgets\Filter $host The hosting filter widget
+     * @param \Igniter\Admin\Widgets\Filter $host The hosting filter widget
      *
      * @return void
      */
@@ -76,7 +76,7 @@ trait ListExtendable
     /**
      * Called after the filter scopes are defined.
      *
-     * @param \Admin\Widgets\Filter $host The hosting filter widget
+     * @param \Igniter\Admin\Widgets\Filter $host The hosting filter widget
      *
      * @param $scopes
      * @return void

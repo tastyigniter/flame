@@ -4,10 +4,10 @@
     $isScrollable = count($fieldOptions) > 10;
     $inlineMode = (bool)$field->getConfig('inlineMode');
 @endphp
-@if ($this->previewMode && $field->value)
+@if($this->previewMode && $field->value)
 
     <div class="field-checkboxlist">
-        @foreach ($fieldOptions as $value => $option)
+        @foreach($fieldOptions as $value => $option)
             @continue(!in_array($value, $checkedValues))
             @php
                 $checkboxId = 'checkbox_'.$field->getId().'_'.$loop->iteration;
@@ -36,11 +36,11 @@
 @elseif (!$this->previewMode && count($fieldOptions))
 
     <div class="field-checkboxlist {{ $isScrollable ? 'is-scrollable' : '' }}">
-        @if ($isScrollable)
+        @if($isScrollable)
             <small>
-                @lang('admin::lang.text_select'):
-                <a href="javascript:;" data-field-checkboxlist-all>@lang('admin::lang.text_select_all')</a>,
-                <a href="javascript:;" data-field-checkboxlist-none>@lang('admin::lang.text_select_none')</a>
+                @lang('igniter::admin.text_select'):
+                <a href="javascript:;" data-field-checkboxlist-all>@lang('igniter::admin.text_select_all')</a>,
+                <a href="javascript:;" data-field-checkboxlist-none>@lang('igniter::admin.text_select_none')</a>
             </small>
 
             <div class="field-checkboxlist-scrollable">
@@ -52,7 +52,7 @@
                         name="{{ $field->getName() }}"
                         value="0"/>
 
-                    @foreach ($fieldOptions as $value => $option)
+                    @foreach($fieldOptions as $value => $option)
                         @php
                             $checkboxId = 'checkbox_'.$field->getId().'_'.$loop->iteration;
                             if (is_string($option)) $option = [$option];
@@ -75,7 +75,7 @@
                         </div>
                     @endforeach
 
-                    @if ($isScrollable)
+                    @if($isScrollable)
                 </div>
             </div>
         @endif
@@ -84,7 +84,7 @@
 
 @else
 
-    @if ($field->placeholder)
+    @if($field->placeholder)
         <p>@lang($field->placeholder)</p>
     @endif
 @endif

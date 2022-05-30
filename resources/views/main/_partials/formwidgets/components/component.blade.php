@@ -11,7 +11,7 @@
         >
             <span class="d-block mb-1">@lang($component->name)</span>
             <p class="text-muted text-sm mb-0">{{ $component->description ? lang($component->description) : '' }}</p>
-            @if ($component->fatalError)
+            @if($component->fatalError)
                 <p class="text-danger text-sm mb-0">{{ $component->fatalError }}</p>
             @endif
         </div>
@@ -21,7 +21,7 @@
                 class="partial btn btn-light btn-sm mr-1"
                 data-component-control="load"
                 data-component-context="partial"
-                title="@lang('main::lang.components.button_copy_partial')"
+                title="@lang('igniter::main.components.button_copy_partial')"
             ><i class="fa fa-file-alt"></i></a>
             <a
                 data-component-control="drag"
@@ -32,8 +32,8 @@
                 data-component-control="remove"
                 class="remove btn btn-light btn-sm"
                 role="button"
-                data-prompt="@lang('admin::lang.alert_confirm')"
-                title="@lang('main::lang.components.button_delete')"
+                data-prompt="@lang('igniter::admin.alert_confirm')"
+                title="@lang('igniter::main.components.button_delete')"
             ><i class="fa fa-trash text-danger"></i></a>
         </div>
     </div>

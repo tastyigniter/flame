@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Facades;
+namespace Igniter\Admin\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
@@ -9,8 +9,8 @@ class AdminMenu extends Facade
     /**
      * Get the registered name of the component.
      *
-     * @see \Admin\Classes\User
      * @return string
+     * @see \Igniter\Flame\Auth\UserGuard
      */
     protected static function getFacadeAccessor()
     {

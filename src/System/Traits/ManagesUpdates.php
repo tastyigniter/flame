@@ -1,12 +1,12 @@
 <?php
 
-namespace System\Traits;
+namespace Igniter\System\Traits;
 
 use Exception;
 use Igniter\Flame\Exception\ApplicationException;
-use Main\Classes\ThemeManager;
-use System\Classes\ExtensionManager;
-use System\Classes\UpdateManager;
+use Igniter\Main\Classes\ThemeManager;
+use Igniter\System\Classes\ExtensionManager;
+use Igniter\System\Classes\UpdateManager;
 
 trait ManagesUpdates
 {
@@ -34,7 +34,7 @@ trait ManagesUpdates
         $itemsCodes = post('install_items') ?? [];
         $items = collect(post('items') ?? [])->whereIn('name', $itemsCodes);
         if ($items->isEmpty())
-            throw new ApplicationException(lang('system::lang.updates.alert_no_items'));
+            throw new ApplicationException(lang('igniter::system.updates.alert_no_items'));
 
         $this->validateItems();
 
@@ -50,7 +50,7 @@ trait ManagesUpdates
     {
         $items = post('items') ?? [];
         if (!count($items))
-            throw new ApplicationException(lang('system::lang.updates.alert_no_items'));
+            throw new ApplicationException(lang('igniter::system.updates.alert_no_items'));
 
         $this->validateItems();
 
@@ -68,7 +68,7 @@ trait ManagesUpdates
     {
         $items = post('items') ?? [];
         if (!count($items))
-            throw new ApplicationException(lang('system::lang.updates.alert_no_items'));
+            throw new ApplicationException(lang('igniter::system.updates.alert_no_items'));
 
         $this->validateItems();
 
@@ -105,7 +105,7 @@ trait ManagesUpdates
     {
         $items = post('items');
         if (!$items || count($items) < 1)
-            throw new ApplicationException(lang('system::lang.updates.alert_item_to_ignore'));
+            throw new ApplicationException(lang('igniter::system.updates.alert_item_to_ignore'));
 
         $updateManager = UpdateManager::instance();
 
@@ -122,7 +122,7 @@ trait ManagesUpdates
     {
         $carteKey = post('carte_key');
         if (!strlen($carteKey))
-            throw new ApplicationException(lang('system::lang.updates.alert_no_carte_key'));
+            throw new ApplicationException(lang('igniter::system.updates.alert_no_carte_key'));
 
         $response = UpdateManager::instance()->applySiteDetail($carteKey);
 
@@ -153,10 +153,10 @@ trait ManagesUpdates
 
     protected function prepareAssets()
     {
-        $this->addJs('src/js/vendor/mustache.js', 'mustache-js');
-        $this->addJs('src/js/vendor/typeahead.js', 'typeahead-js');
-        $this->addJs('js/updates.js', 'updates-js');
-        $this->addJs('~/app/admin/formwidgets/recordeditor/assets/js/recordeditor.modal.js', 'recordeditor-modal-js');
+        $this->addJs('vendor/mustache.min.js', 'mustache-js');
+        $this->addJs('vendor/typeahead.js', 'typeahead-js');
+        $this->addJs('updates.js', 'updates-js');
+        $this->addJs('formwidgets/recordeditor.modal.js', 'recordeditor-modal-js');
     }
 
     protected function buildProcessSteps($response, $params = [])
@@ -175,8 +175,8 @@ trait ManagesUpdates
                 $processSteps[$step][] = [
                     'items' => $response,
                     'process' => $step,
-                    'label' => lang("system::lang.updates.progress_{$step}"),
-                    'success' => sprintf(lang('system::lang.updates.progress_success'), rtrim($step, 'e').'ing', ''),
+                    'label' => lang("igniter::system.updates.progress_{$step}"),
+                    'success' => sprintf(lang('igniter::system.updates.progress_success'), rtrim($step, 'e').'ing', ''),
                 ];
 
                 continue;
@@ -187,8 +187,8 @@ trait ManagesUpdates
                     $applySteps['core'][] = array_merge([
                         'action' => 'update',
                         'process' => "{$step}Core",
-                        'label' => sprintf(lang("system::lang.updates.progress_{$step}"), $item['name'].' update'),
-                        'success' => sprintf(lang('system::lang.updates.progress_success'), $step.'ing', $item['name']),
+                        'label' => sprintf(lang("igniter::system.updates.progress_{$step}"), $item['name'].' update'),
+                        'success' => sprintf(lang('igniter::system.updates.progress_success'), $step.'ing', $item['name']),
                     ], $item);
                 }
                 else {
@@ -199,8 +199,8 @@ trait ManagesUpdates
                     $applySteps[$pluralType][] = array_merge([
                         'action' => $action ?? 'install',
                         'process' => $step.ucfirst($singularType),
-                        'label' => sprintf(lang("system::lang.updates.progress_{$step}"), "{$item['name']} {$singularType}"),
-                        'success' => sprintf(lang('system::lang.updates.progress_success'), $step.'ing', $item['name']),
+                        'label' => sprintf(lang("igniter::system.updates.progress_{$step}"), "{$item['name']} {$singularType}"),
+                        'success' => sprintf(lang('igniter::system.updates.progress_success'), $step.'ing', $item['name']),
                     ], $item);
                 }
             }
@@ -276,10 +276,10 @@ trait ManagesUpdates
                     $updateManager->setCoreVersion($item['version'], $item['hash']);
                     break;
                 case 'extension':
-                    ExtensionManager::instance()->installExtension($item['code'], $item['version']);
+                    resolve(ExtensionManager::class)->installExtension($item['code'], $item['version']);
                     break;
                 case 'theme':
-                    ThemeManager::instance()->installTheme($item['code'], $item['version']);
+                    resolve(ThemeManager::class)->installTheme($item['code'], $item['version']);
                     break;
             }
         }
@@ -305,10 +305,10 @@ trait ManagesUpdates
             'items.*.ver' => ['required'],
             'items.*.action' => ['required', 'in:install,update'],
         ], [], [
-            'items.*.name' => lang('system::lang.updates.label_meta_code'),
-            'items.*.type' => lang('system::lang.updates.label_meta_type'),
-            'items.*.ver' => lang('system::lang.updates.label_meta_version'),
-            'items.*.action' => lang('system::lang.updates.label_meta_action'),
+            'items.*.name' => lang('igniter::system.updates.label_meta_code'),
+            'items.*.type' => lang('igniter::system.updates.label_meta_type'),
+            'items.*.ver' => lang('igniter::system.updates.label_meta_version'),
+            'items.*.action' => lang('igniter::system.updates.label_meta_action'),
         ]);
     }
 
@@ -325,21 +325,21 @@ trait ManagesUpdates
             ];
 
             $attributes = [
-                'meta.code' => lang('system::lang.updates.label_meta_code'),
-                'meta.type' => lang('system::lang.updates.label_meta_type'),
-                'meta.version' => lang('system::lang.updates.label_meta_version'),
-                'meta.hash' => lang('system::lang.updates.label_meta_hash'),
-                'meta.description' => lang('system::lang.updates.label_meta_description'),
-                'meta.action' => lang('system::lang.updates.label_meta_action'),
+                'meta.code' => lang('igniter::system.updates.label_meta_code'),
+                'meta.type' => lang('igniter::system.updates.label_meta_type'),
+                'meta.version' => lang('igniter::system.updates.label_meta_version'),
+                'meta.hash' => lang('igniter::system.updates.label_meta_hash'),
+                'meta.description' => lang('igniter::system.updates.label_meta_description'),
+                'meta.action' => lang('igniter::system.updates.label_meta_action'),
             ];
         }
         else {
             $rules = ['meta.items' => ['required', 'array']];
-            $attributes = ['meta.items' => lang('system::lang.updates.label_meta_items')];
+            $attributes = ['meta.items' => lang('igniter::system.updates.label_meta_items')];
         }
 
         $rules['step'] = ['required', 'in:download,extract,complete'];
-        $attributes['step'] = lang('system::lang.updates.label_meta_step');
+        $attributes['step'] = lang('igniter::system.updates.label_meta_step');
 
         return $this->validate(post(), $rules, [], $attributes);
     }

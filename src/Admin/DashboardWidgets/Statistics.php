@@ -1,13 +1,13 @@
 <?php
 
-namespace Admin\DashboardWidgets;
+namespace Igniter\Admin\DashboardWidgets;
 
-use Admin\Classes\BaseDashboardWidget;
-use Admin\Models\Customer;
-use Admin\Models\Order;
-use Admin\Models\Reservation;
-use Admin\Traits\LocationAwareWidget;
 use Carbon\Carbon;
+use Igniter\Admin\Classes\BaseDashboardWidget;
+use Igniter\Admin\Models\Order;
+use Igniter\Admin\Models\Reservation;
+use Igniter\Admin\Traits\LocationAwareWidget;
+use Igniter\Main\Models\Customer;
 
 /**
  * Statistic dashboard widget.
@@ -35,20 +35,20 @@ class Statistics extends BaseDashboardWidget
     {
         return [
             'context' => [
-                'label' => 'admin::lang.dashboard.text_context',
+                'label' => 'igniter::admin.dashboard.text_context',
                 'default' => 'sale',
                 'type' => 'select',
                 'options' => $this->getContextOptions(),
             ],
             'range' => [
-                'label' => 'admin::lang.dashboard.text_range',
+                'label' => 'igniter::admin.dashboard.text_range',
                 'default' => 'week',
                 'type' => 'select',
                 'options' => [
-                    'day' => 'lang:admin::lang.dashboard.text_today',
-                    'week' => 'lang:admin::lang.dashboard.text_week',
-                    'month' => 'lang:admin::lang.dashboard.text_month',
-                    'year' => 'lang:admin::lang.dashboard.text_year',
+                    'day' => 'lang:igniter::admin.dashboard.text_today',
+                    'week' => 'lang:igniter::admin.dashboard.text_week',
+                    'month' => 'lang:igniter::admin.dashboard.text_month',
+                    'year' => 'lang:igniter::admin.dashboard.text_year',
                 ],
             ],
         ];
@@ -58,51 +58,51 @@ class Statistics extends BaseDashboardWidget
     {
         return [
             'sale' => [
-                'label' => 'lang:admin::lang.dashboard.text_total_sale',
+                'label' => 'lang:igniter::admin.dashboard.text_total_sale',
                 'icon' => ' bg-success text-white fa fa-line-chart',
             ],
             'lost_sale' => [
-                'label' => 'lang:admin::lang.dashboard.text_total_lost_sale',
+                'label' => 'lang:igniter::admin.dashboard.text_total_lost_sale',
                 'icon' => ' bg-danger text-white fa fa-line-chart fa-rotate-180',
             ],
             'cash_payment' => [
-                'label' => 'lang:admin::lang.dashboard.text_total_cash_payment',
+                'label' => 'lang:igniter::admin.dashboard.text_total_cash_payment',
                 'icon' => ' bg-warning text-white fa fa-money-bill',
             ],
             'customer' => [
-                'label' => 'lang:admin::lang.dashboard.text_total_customer',
+                'label' => 'lang:igniter::admin.dashboard.text_total_customer',
                 'icon' => ' bg-info text-white fa fa-users',
             ],
             'order' => [
-                'label' => 'lang:admin::lang.dashboard.text_total_order',
+                'label' => 'lang:igniter::admin.dashboard.text_total_order',
                 'icon' => ' bg-success text-white fa fa-shopping-cart',
             ],
             'delivery_order' => [
-                'label' => 'lang:admin::lang.dashboard.text_total_delivery_order',
+                'label' => 'lang:igniter::admin.dashboard.text_total_delivery_order',
                 'icon' => ' bg-primary text-white fa fa-truck',
             ],
             'collection_order' => [
-                'label' => 'lang:admin::lang.dashboard.text_total_collection_order',
+                'label' => 'lang:igniter::admin.dashboard.text_total_collection_order',
                 'icon' => ' bg-info text-white fa fa-shopping-bag',
             ],
             'completed_order' => [
-                'label' => 'lang:admin::lang.dashboard.text_total_completed_order',
+                'label' => 'lang:igniter::admin.dashboard.text_total_completed_order',
                 'icon' => ' bg-success text-white fa fa-receipt',
             ],
             'reserved_table' => [
-                'label' => 'lang:admin::lang.dashboard.text_total_reserved_table',
+                'label' => 'lang:igniter::admin.dashboard.text_total_reserved_table',
                 'icon' => ' bg-primary text-white fa fa-table',
             ],
             'reserved_guest' => [
-                'label' => 'lang:admin::lang.dashboard.text_total_reserved_guest',
+                'label' => 'lang:igniter::admin.dashboard.text_total_reserved_guest',
                 'icon' => ' bg-primary text-white fa fa-table',
             ],
             'reservation' => [
-                'label' => 'lang:admin::lang.dashboard.text_total_reservation',
+                'label' => 'lang:igniter::admin.dashboard.text_total_reservation',
                 'icon' => ' bg-success text-white fa fa-table',
             ],
             'completed_reservation' => [
-                'label' => 'lang:admin::lang.dashboard.text_total_completed_reservation',
+                'label' => 'lang:igniter::admin.dashboard.text_total_completed_reservation',
                 'icon' => ' bg-success text-white fa fa-table',
             ],
         ];
@@ -132,7 +132,7 @@ class Statistics extends BaseDashboardWidget
 
     public function loadAssets()
     {
-        $this->addCss('css/statistics.css', 'statistics-css');
+        $this->addCss('statistics.css', 'statistics-css');
     }
 
     protected function prepareVars()

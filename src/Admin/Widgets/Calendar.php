@@ -1,10 +1,10 @@
 <?php
 
-namespace Admin\Widgets;
+namespace Igniter\Admin\Widgets;
 
-use Admin\Classes\BaseWidget;
 use Carbon\Carbon;
 use Exception;
+use Igniter\Admin\Classes\BaseWidget;
 use Illuminate\Support\Facades\Request;
 
 class Calendar extends BaseWidget
@@ -47,21 +47,18 @@ class Calendar extends BaseWidget
 
     public function loadAssets()
     {
-        $this->addCss('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.css', 'bootstrap-datepicker-css');
-        $this->addJs('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.js', 'bootstrap-datepicker-js');
+        $this->addJs('js/vendor.datetime.js', 'vendor-datetime-js');
+        $this->addCss('formwidgets/datepicker.css', 'datepicker-css');
+        $this->addJs('formwidgets/datepicker.js', 'datepicker-js');
 
-        $this->addCss('~/app/admin/formwidgets/datepicker/assets/css/datepicker.css', 'datepicker-css');
-        $this->addJs('~/app/admin/formwidgets/datepicker/assets/js/datepicker.js', 'datepicker-js');
-
-        $this->addJs('~/app/admin/assets/src/js/vendor/mustache.js', 'mustache-js');
-        $this->addJs('~/app/admin/assets/src/js/vendor/moment.min.js', 'moment-js');
+        $this->addJs('vendor/mustache.min.js', 'mustache-js');
 
         $this->addJs('vendor/fullcalendar/main.min.js', 'fullcalendar-js');
-        $this->addJs('vendor/fullcalendar/locales-all.min.js', 'fullcalendar-js');
+        $this->addJs('js/locales/fullcalendar/locales-all.min.js', 'fullcalendar-locales-js');
         $this->addCss('vendor/fullcalendar/main.min.css', 'fullcalendar-css');
 
-        $this->addJs('js/calendar.js', 'calendar-js');
-        $this->addCss('css/calendar.css', 'calendar-css');
+        $this->addJs('calendar.js', 'calendar-js');
+        $this->addCss('calendar.css', 'calendar-css');
     }
 
     public function render()
@@ -108,7 +105,7 @@ class Calendar extends BaseWidget
     public function renderPopoverPartial()
     {
         if (!strlen($this->popoverPartial)) {
-            throw new Exception(sprintf(lang('admin::lang.calendar.missing_partial'), get_class($this->controller)));
+            throw new Exception(sprintf(lang('igniter::admin.calendar.missing_partial'), get_class($this->controller)));
         }
 
         return $this->makePartial($this->popoverPartial);

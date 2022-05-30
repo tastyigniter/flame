@@ -1,9 +1,8 @@
 <?php
 
-namespace System\Models;
+namespace Igniter\System\Models;
 
 use Igniter\Flame\Database\Model;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Request;
 
 /**
@@ -29,7 +28,7 @@ class RequestLog extends Model
 
     public static function createLog($statusCode = 404)
     {
-        if (!App::hasDatabase())
+        if (!Igniter::hasDatabase())
             return;
 
         if (!setting('enable_request_log', true))

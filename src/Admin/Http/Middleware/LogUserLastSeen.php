@@ -1,18 +1,18 @@
 <?php
 
-namespace Admin\Middleware;
+namespace Igniter\Admin\Http\Middleware;
 
-use Admin\Facades\AdminAuth;
 use Carbon\Carbon;
 use Closure;
-use Illuminate\Support\Facades\App;
+use Igniter\Admin\Facades\AdminAuth;
+use Igniter\Flame\Igniter;
 use Illuminate\Support\Facades\Cache;
 
 class LogUserLastSeen
 {
     public function handle($request, Closure $next)
     {
-        if (App::hasDatabase() && AdminAuth::check()) {
+        if (Igniter::hasDatabase() && AdminAuth::check()) {
             $cacheKey = 'is-online-user-'.AdminAuth::getId();
             $expireAt = Carbon::now()->addMinutes(2);
             Cache::remember($cacheKey, $expireAt, function () {

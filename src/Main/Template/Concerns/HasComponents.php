@@ -1,13 +1,13 @@
 <?php
 
-namespace Main\Template\Concerns;
+namespace Igniter\Main\Template\Concerns;
 
-use System\Classes\ComponentManager;
+use Igniter\System\Classes\ComponentManager;
 
 trait HasComponents
 {
     /**
-     * @var \System\Classes\BaseComponent[]
+     * @var \Igniter\System\Classes\BaseComponent[]
      */
     public $components = [];
 
@@ -47,7 +47,7 @@ trait HasComponents
      *
      * @param string $componentName Specifies the component name.
      *
-     * @return \System\Classes\BaseComponent
+     * @return \Igniter\System\Classes\BaseComponent
      */
     public function getComponent($componentName)
     {

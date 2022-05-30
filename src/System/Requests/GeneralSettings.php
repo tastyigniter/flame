@@ -1,19 +1,19 @@
 <?php
 
-namespace System\Requests;
+namespace Igniter\System\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class GeneralSettings extends FormRequest
 {
     public function attributes()
     {
         return [
-            'site_name' => lang('system::lang.settings.label_site_name'),
-            'site_email' => lang('system::lang.settings.label_site_email'),
-            'site_logo' => lang('system::lang.settings.label_site_logo'),
-            'maps_api_key' => lang('system::lang.settings.label_maps_api_key'),
-            'distance_unit' => lang('system::lang.settings.label_distance_unit'),
+            'site_name' => lang('igniter::system.settings.label_site_name'),
+            'site_email' => lang('igniter::system.settings.label_site_email'),
+            'site_logo' => lang('igniter::system.settings.label_site_logo'),
+            'maps_api_key' => lang('igniter::system.settings.label_maps_api_key'),
+            'distance_unit' => lang('igniter::system.settings.label_distance_unit'),
         ];
     }
 

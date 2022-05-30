@@ -1,14 +1,14 @@
 <?php
 
-namespace System\Models;
+namespace Igniter\System\Models;
 
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Flame\Mail\MailParser;
 use Igniter\Flame\Support\Facades\File;
+use Igniter\System\Classes\MailManager;
 use Illuminate\Support\Facades\View;
-use System\Classes\MailManager;
 
 /**
  * MailLayout Model Class
@@ -44,10 +44,10 @@ class MailLayout extends Model
 
     public $relation = [
         'hasMany' => [
-            'templates' => [\System\Models\MailTemplate::class, 'foreignKey' => 'layout_id'],
+            'templates' => [\Igniter\System\Models\MailTemplate::class, 'foreignKey' => 'layout_id'],
         ],
         'belongsTo' => [
-            'language' => \System\Models\Language::class,
+            'language' => \Igniter\System\Models\Language::class,
         ],
     ];
 
@@ -99,7 +99,7 @@ class MailLayout extends Model
         if (is_null($code))
             $code = $this->code;
 
-        $definitions = MailManager::instance()->listRegisteredLayouts();
+        $definitions = resolve(MailManager::class)->listRegisteredLayouts();
         if (!$definition = array_get($definitions, $code))
             throw new ApplicationException('Unable to find a registered layout with code: '.$code);
 
@@ -130,7 +130,7 @@ class MailLayout extends Model
     {
         $dbLayouts = self::lists('code', 'code')->all();
 
-        $definitions = MailManager::instance()->listRegisteredLayouts();
+        $definitions = resolve(MailManager::class)->listRegisteredLayouts();
         foreach ($definitions as $code => $path) {
             if (array_key_exists($code, $dbLayouts))
                 continue;

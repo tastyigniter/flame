@@ -6,9 +6,9 @@
             class="form-select"
             data-template-control="choose-type"
             data-request="{{ $this->getEventHandler('onChooseFile') }}"
-            data-progress-indicator="@lang('admin::lang.text_loading')"
+            data-progress-indicator="@lang('igniter::admin.text_loading')"
         >
-            @foreach ($templateTypes as $value => $label)
+            @foreach($templateTypes as $value => $label)
                 <option
                     value="{{ $value }}"
                     {!! $value == $selectedTemplateType ? 'selected="selected"' : '' !!}
@@ -25,14 +25,14 @@
                     name="{{ $field->getName() }}[file]"
                     data-template-control="choose-file"
                     data-request="{{ $this->getEventHandler('onChooseFile') }}"
-                    data-progress-indicator="@lang('admin::lang.text_loading')"
+                    data-progress-indicator="@lang('igniter::admin.text_loading')"
                 >
-                    @if ($this->placeholder)
+                    @if($this->placeholder)
                         <option
                             value=""
                         >{{ sprintf(lang($this->placeholder), strtolower($selectedTypeLabel)) }}</option>
                     @endif
-                    @foreach ($fieldOptions as $value => $option)
+                    @foreach($fieldOptions as $value => $option)
                         @php if (!is_array($option)) $option = [$option]; @endphp
                         <option
                             {!! $value == $selectedTemplateFile ? 'selected="selected"' : '' !!}
@@ -52,7 +52,7 @@
                 data-modal-source-name=""
             ><i class="fa fa-plus"></i>&nbsp;&nbsp;{{ sprintf(lang($this->addLabel), $selectedTypeLabel) }}
             </button>
-            @if (!empty($selectedTemplateFile))
+            @if(!empty($selectedTemplateFile))
                 <button
                     type="button"
                     class="btn btn-outline-default"
@@ -69,8 +69,8 @@
                     title="{{ sprintf(lang($this->deleteLabel), $selectedTypeLabel) }}"
                     data-request="{{ $this->getEventHandler('onManageSource') }}"
                     data-request-data="action: 'delete'"
-                    data-request-confirm="@lang('admin::lang.alert_warning_confirm')"
-                    data-progress-indicator="@lang('admin::lang.text_deleting')"
+                    data-request-confirm="@lang('igniter::admin.alert_warning_confirm')"
+                    data-progress-indicator="@lang('igniter::admin.text_deleting')"
                 ><i class="fa fa-trash"></i></button>
             @endif
         </div>

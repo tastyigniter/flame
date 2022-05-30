@@ -1,4 +1,4 @@
-@if ($tabs->suppressTabs)
+@if($tabs->suppressTabs)
 
     <div
         id="{{ $this->getId($tabs->section.'-tabs') }}"

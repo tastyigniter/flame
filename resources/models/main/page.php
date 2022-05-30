@@ -4,31 +4,31 @@ return [
     'form' => [
         'fields' => [
             'settings[components]' => [
-                'label' => 'lang:system::lang.themes.text_tab_components',
+                'label' => 'igniter::system.themes.text_tab_components',
                 'type' => 'components',
-                'prompt' => 'lang:system::lang.themes.button_choose',
-                'comment' => 'lang:system::lang.themes.help_components',
+                'prompt' => 'igniter::system.themes.button_choose',
+                'comment' => 'igniter::system.themes.help_components',
                 'form' => [
                     'fields' => [
                         'component' => [
-                            'label' => 'lang:system::lang.themes.label_component',
+                            'label' => 'igniter::system.themes.label_component',
                             'type' => 'select',
                             'context' => 'create',
                         ],
                         'alias' => [
-                            'label' => 'lang:system::lang.themes.label_component_alias',
+                            'label' => 'igniter::system.themes.label_component_alias',
                             'type' => 'text',
                             'context' => ['edit', 'partial'],
-                            'comment' => 'lang:system::lang.themes.help_component_alias',
+                            'comment' => 'igniter::system.themes.help_component_alias',
                             'attributes' => [
                                 'data-toggle' => 'disabled',
                             ],
                         ],
                         'partial' => [
-                            'label' => 'lang:system::lang.themes.label_override_partial',
+                            'label' => 'igniter::system.themes.label_override_partial',
                             'type' => 'select',
                             'context' => 'partial',
-                            'placeholder' => 'lang:admin::lang.text_please_select',
+                            'placeholder' => 'lang:igniter::admin.text_please_select',
                         ],
                     ],
                 ],
@@ -37,36 +37,36 @@ return [
         'tabs' => [
             'fields' => [
                 'markup' => [
-                    'tab' => 'lang:system::lang.themes.text_tab_markup',
+                    'tab' => 'igniter::system.themes.text_tab_markup',
                     'type' => 'codeeditor',
                     'mode' => 'application/x-httpd-php',
                 ],
                 'codeSection' => [
-                    'tab' => 'lang:system::lang.themes.text_tab_php_section',
+                    'tab' => 'igniter::system.themes.text_tab_php_section',
                     'type' => 'codeeditor',
                     'mode' => 'php',
                 ],
                 'settings[title]' => [
-                    'label' => 'lang:system::lang.themes.label_title',
-                    'tab' => 'lang:system::lang.themes.text_tab_meta',
+                    'label' => 'igniter::system.themes.label_title',
+                    'tab' => 'igniter::system.themes.text_tab_meta',
                     'type' => 'text',
                     'span' => 'left',
                 ],
                 'settings[permalink]' => [
-                    'tab' => 'lang:system::lang.themes.text_tab_meta',
-                    'label' => 'lang:system::lang.themes.label_permalink',
+                    'tab' => 'igniter::system.themes.text_tab_meta',
+                    'label' => 'igniter::system.themes.label_permalink',
                     'type' => 'text',
                     'span' => 'right',
                 ],
                 'settings[layout]' => [
-                    'tab' => 'lang:system::lang.themes.text_tab_meta',
-                    'label' => 'lang:system::lang.themes.label_layout',
+                    'tab' => 'igniter::system.themes.text_tab_meta',
+                    'label' => 'igniter::system.themes.label_layout',
                     'type' => 'select',
                     'options' => 'getLayoutOptions',
                 ],
                 'settings[description]' => [
-                    'tab' => 'lang:system::lang.themes.text_tab_meta',
-                    'label' => 'lang:admin::lang.label_description',
+                    'tab' => 'igniter::system.themes.text_tab_meta',
+                    'label' => 'lang:igniter::admin.label_description',
                     'type' => 'textarea',
                 ],
             ],
@@ -81,13 +81,13 @@ return [
             'settings.permalink' => ['required', 'string'],
         ],
         'validationAttributes' => [
-            'markup' => lang('system::lang.themes.text_tab_markup'),
-            'codeSection' => lang('system::lang.themes.text_tab_php_section'),
-            'settings.components.*' => lang('system::lang.themes.label_component_alias'),
-            'settings.title' => lang('system::lang.themes.label_title'),
-            'settings.description' => lang('admin::lang.label_description'),
-            'settings.layout' => lang('system::lang.themes.label_layout'),
-            'settings.permalink' => lang('system::lang.themes.label_permalink'),
+            'markup' => lang('igniter::system.themes.text_tab_markup'),
+            'codeSection' => lang('igniter::system.themes.text_tab_php_section'),
+            'settings.components.*' => lang('igniter::system.themes.label_component_alias'),
+            'settings.title' => lang('igniter::system.themes.label_title'),
+            'settings.description' => lang('igniter::admin.label_description'),
+            'settings.layout' => lang('igniter::system.themes.label_layout'),
+            'settings.permalink' => lang('igniter::system.themes.label_permalink'),
         ],
     ],
 ];

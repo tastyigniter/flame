@@ -1,11 +1,11 @@
 <?php
 
-namespace System\Console\Commands;
+namespace Igniter\System\Console\Commands;
 
+use Igniter\System\Classes\ExtensionManager;
+use Igniter\System\Classes\UpdateManager;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
-use System\Classes\ExtensionManager;
-use System\Classes\UpdateManager;
 
 class ExtensionInstall extends Command
 {
@@ -52,8 +52,8 @@ class ExtensionInstall extends Command
         $manager->extractFile($code, extension_path('/'));
 
         $this->output->writeln(sprintf('<info>Installing %s extension</info>', $code));
-        ExtensionManager::instance()->loadExtensions();
-        ExtensionManager::instance()->installExtension($code, $version);
+        resolve(ExtensionManager::class)->loadExtensions();
+        resolve(ExtensionManager::class)->installExtension($code, $version);
     }
 
     /**

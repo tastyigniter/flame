@@ -1,9 +1,9 @@
 <?php
 
-namespace System\Database\Seeds;
+namespace Igniter\System\Database\Seeds;
 
-use Admin\Models\Category;
-use Admin\Models\Location;
+use Igniter\Admin\Models\Category;
+use Igniter\Admin\Models\Location;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -28,12 +28,12 @@ class UpdateRecordsSeeder extends Seeder
 
     protected function updateMorphsOnStatusHistory()
     {
-        if (DB::table('status_history')->where('object_type', \Admin\Models\Order::class)->count())
+        if (DB::table('status_history')->where('object_type', \Igniter\Admin\Models\Order::class)->count())
             return;
 
         $morphs = [
-            'order' => \Admin\Models\Order::class,
-            'reserve' => \Admin\Models\Reservation::class,
+            'order' => \Igniter\Admin\Models\Order::class,
+            'reserve' => \Igniter\Admin\Models\Reservation::class,
         ];
 
         DB::table('status_history')->get()->each(function ($model) use ($morphs) {

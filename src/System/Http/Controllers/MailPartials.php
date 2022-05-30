@@ -1,44 +1,44 @@
 <?php
 
-namespace System\Controllers;
+namespace Igniter\System\Http\Controllers;
 
-use Admin\Facades\AdminMenu;
+use Igniter\Admin\Facades\AdminMenu;
 
-class MailPartials extends \Admin\Classes\AdminController
+class MailPartials extends \Igniter\Admin\Classes\AdminController
 {
     public $implement = [
-        \Admin\Actions\ListController::class,
-        \Admin\Actions\FormController::class,
+        \Igniter\Admin\Http\Actions\ListController::class,
+        \Igniter\Admin\Http\Actions\FormController::class,
     ];
 
     public $listConfig = [
         'list' => [
-            'model' => \System\Models\MailPartial::class,
-            'title' => 'lang:system::lang.mail_templates.text_partial_title',
-            'emptyMessage' => 'lang:system::lang.mail_templates.text_empty',
+            'model' => \Igniter\System\Models\MailPartial::class,
+            'title' => 'lang:igniter::system.mail_templates.text_partial_title',
+            'emptyMessage' => 'lang:igniter::system.mail_templates.text_empty',
             'defaultSort' => ['partial_id', 'DESC'],
             'configFile' => 'mailpartial',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:system::lang.mail_templates.text_partial_form_name',
-        'model' => \System\Models\MailPartial::class,
-        'request' => \System\Requests\MailPartial::class,
+        'name' => 'lang:igniter::system.mail_templates.text_partial_form_name',
+        'model' => \Igniter\System\Models\MailPartial::class,
+        'request' => \Igniter\System\Requests\MailPartial::class,
         'create' => [
-            'title' => 'lang:system::lang.mail_templates.text_new_partial_title',
+            'title' => 'lang:igniter::system.mail_templates.text_new_partial_title',
             'redirect' => 'mail_partials/edit/{partial_id}',
             'redirectClose' => 'mail_partials',
             'redirectNew' => 'mail_partials/create',
         ],
         'edit' => [
-            'title' => 'lang:system::lang.mail_templates.text_edit_partial_title',
+            'title' => 'lang:igniter::system.mail_templates.text_edit_partial_title',
             'redirect' => 'mail_partials/edit/{partial_id}',
             'redirectClose' => 'mail_partials',
             'redirectNew' => 'mail_partials/create',
         ],
         'preview' => [
-            'title' => 'lang:system::lang.mail_templates.text_preview_partial_title',
+            'title' => 'lang:igniter::system.mail_templates.text_preview_partial_title',
             'redirect' => 'mail_partials',
         ],
         'delete' => [

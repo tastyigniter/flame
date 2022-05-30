@@ -4,7 +4,7 @@
     data-control="mainmenu"
     data-alias="{{ $this->alias }}"
 >
-    @foreach ($items as $item)
+    @foreach($items as $item)
         {!! $this->renderItemElement($item) !!}
     @endforeach
 </ul>

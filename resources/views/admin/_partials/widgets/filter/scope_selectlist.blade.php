@@ -10,14 +10,15 @@
             data-control="selectlist"
             name="{{ $this->getScopeName($scope).($selectMultiple ? '[]' : '') }}"
             {!! $scope->disabled ? 'disabled="disabled"' : '' !!}
-            @if ($scope->label)data-non-selected-text="@lang($scope->label)" @endif
+            @if($scope->label)data-non-selected-text="@lang($scope->label)" @endif
             {!! $selectMultiple ? 'multiple="multiple"' : '' !!}
             data-enable-filtering="{{ $enableFilter }}"
             data-enable-case-insensitive-filtering="{{ $enableFilter }}"
             data-number-displayed="2"
         >
-            @if ($scope->label)<option value="">@lang($scope->label)</option>@endif
-            @foreach ($options['available'] as $key => $value)
+            @if($scope->label)
+                <option value="">@lang($scope->label)</option>@endif
+            @foreach($options['available'] as $key => $value)
                 @php
                     if (!is_array($options['active'])) $options['active'] = [$options['active']];
                 @endphp

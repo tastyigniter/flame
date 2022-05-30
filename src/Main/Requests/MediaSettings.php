@@ -1,21 +1,21 @@
 <?php
 
-namespace Main\Requests;
+namespace Igniter\Main\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class MediaSettings extends FormRequest
 {
     public function attributes()
     {
         return [
-            'image_manager.max_size' => lang('system::lang.settings.label_media_max_size'),
-            'image_manager.uploads' => lang('system::lang.settings.label_media_uploads'),
-            'image_manager.new_folder' => lang('system::lang.settings.label_media_new_folder'),
-            'image_manager.copy' => lang('system::lang.settings.label_media_copy'),
-            'image_manager.move' => lang('system::lang.settings.label_media_move'),
-            'image_manager.rename' => lang('system::lang.settings.label_media_rename'),
-            'image_manager.delete' => lang('system::lang.settings.label_media_delete'),
+            'image_manager.max_size' => lang('igniter::system.settings.label_media_max_size'),
+            'image_manager.uploads' => lang('igniter::system.settings.label_media_uploads'),
+            'image_manager.new_folder' => lang('igniter::system.settings.label_media_new_folder'),
+            'image_manager.copy' => lang('igniter::system.settings.label_media_copy'),
+            'image_manager.move' => lang('igniter::system.settings.label_media_move'),
+            'image_manager.rename' => lang('igniter::system.settings.label_media_rename'),
+            'image_manager.delete' => lang('igniter::system.settings.label_media_delete'),
         ];
     }
 

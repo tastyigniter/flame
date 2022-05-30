@@ -1,47 +1,47 @@
 <?php
 
-namespace System\Controllers;
+namespace Igniter\System\Http\Controllers;
 
-use Admin\Facades\AdminMenu;
+use Igniter\Admin\Facades\AdminMenu;
 
 /**
  * Controller Class Countries
  */
-class Countries extends \Admin\Classes\AdminController
+class Countries extends \Igniter\Admin\Classes\AdminController
 {
     public $implement = [
-        \Admin\Actions\ListController::class,
-        \Admin\Actions\FormController::class,
+        \Igniter\Admin\Http\Actions\ListController::class,
+        \Igniter\Admin\Http\Actions\FormController::class,
     ];
 
     public $listConfig = [
         'list' => [
-            'model' => \System\Models\Country::class,
-            'title' => 'lang:system::lang.countries.text_title',
-            'emptyMessage' => 'lang:system::lang.countries.text_empty',
+            'model' => \Igniter\System\Models\Country::class,
+            'title' => 'lang:igniter::system.countries.text_title',
+            'emptyMessage' => 'lang:igniter::system.countries.text_empty',
             'defaultSort' => ['country_name', 'ASC'],
             'configFile' => 'country',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:system::lang.countries.text_form_name',
-        'model' => \System\Models\Country::class,
-        'request' => \System\Requests\Country::class,
+        'name' => 'lang:igniter::system.countries.text_form_name',
+        'model' => \Igniter\System\Models\Country::class,
+        'request' => \Igniter\System\Requests\Country::class,
         'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
+            'title' => 'lang:igniter::admin.form.create_title',
             'redirect' => 'countries/edit/{country_id}',
             'redirectClose' => 'countries',
             'redirectNew' => 'countries/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
+            'title' => 'lang:igniter::admin.form.edit_title',
             'redirect' => 'countries/edit/{country_id}',
             'redirectClose' => 'countries',
             'redirectNew' => 'countries/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title' => 'lang:igniter::admin.form.preview_title',
             'redirect' => 'countries',
         ],
         'delete' => [

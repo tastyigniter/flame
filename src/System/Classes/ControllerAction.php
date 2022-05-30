@@ -1,12 +1,12 @@
 <?php
 
-namespace System\Classes;
+namespace Igniter\System\Classes;
 
-use Admin\Traits\WidgetMaker;
+use Igniter\Admin\Traits\WidgetMaker;
 use Exception;
 use Igniter\Flame\Traits\ExtensionTrait;
-use System\Traits\ConfigMaker;
-use System\Traits\ViewMaker;
+use Igniter\System\Traits\ConfigMaker;
+use Igniter\System\Traits\ViewMaker;
 
 /**
  * Controller Action base Class

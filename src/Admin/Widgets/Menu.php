@@ -1,13 +1,13 @@
 <?php
 
-namespace Admin\Widgets;
+namespace Igniter\Admin\Widgets;
 
-use Admin\Classes\BaseWidget;
-use Admin\Classes\MenuItem;
-use Admin\Classes\UserState;
-use Admin\Facades\AdminLocation;
-use Admin\Models\Location;
 use Carbon\Carbon;
+use Igniter\Admin\Classes\BaseWidget;
+use Igniter\Admin\Classes\MenuItem;
+use Igniter\Admin\Classes\UserState;
+use Igniter\Admin\Facades\AdminLocation;
+use Igniter\Admin\Models\Location;
 use Igniter\Flame\Exception\ApplicationException;
 
 class Menu extends BaseWidget
@@ -64,7 +64,7 @@ class Menu extends BaseWidget
 
     public function loadAssets()
     {
-        $this->addJs('js/mainmenu.js', 'mainmenu-js');
+        $this->addJs('mainmenu.js', 'mainmenu-js');
     }
 
     /**
@@ -106,7 +106,6 @@ class Menu extends BaseWidget
     public function addItems(array $items)
     {
         foreach ($items as $name => $config) {
-
             $itemObj = $this->makeMenuItem($name, $config);
 
             // Check that the menu item matches the active context
@@ -127,7 +126,7 @@ class Menu extends BaseWidget
      * @param $name
      * @param $config
      *
-     * @return \Admin\Classes\MenuItem
+     * @return \Igniter\Admin\Classes\MenuItem
      */
     protected function makeMenuItem($name, $config)
     {
@@ -147,7 +146,6 @@ class Menu extends BaseWidget
         // Get menu item options from model
         $optionModelTypes = ['dropdown', 'partial'];
         if (in_array($item->type, $optionModelTypes, false)) {
-
             // Defer the execution of option data collection
             $item->options(function () use ($item, $config) {
                 $itemOptions = $config['options'] ?? null;
@@ -180,7 +178,7 @@ class Menu extends BaseWidget
     public function getItem($item)
     {
         if (!isset($this->allItems[$item])) {
-            throw new ApplicationException(sprintf(lang('admin::lang.side_menu.alert_no_definition'), $item));
+            throw new ApplicationException(sprintf(lang('igniter::admin.side_menu.alert_no_definition'), $item));
         }
 
         return $this->allItems[$item];
@@ -206,12 +204,12 @@ class Menu extends BaseWidget
     public function onGetDropdownOptions()
     {
         if (!strlen($itemName = input('item')))
-            throw new ApplicationException(lang('admin::lang.side_menu.alert_invalid_menu'));
+            throw new ApplicationException(lang('igniter::admin.side_menu.alert_invalid_menu'));
 
         $this->defineMenuItems();
 
         if (!$item = $this->getItem($itemName))
-            throw new ApplicationException(sprintf(lang('admin::lang.side_menu.alert_menu_not_found'), $itemName));
+            throw new ApplicationException(sprintf(lang('igniter::admin.side_menu.alert_menu_not_found'), $itemName));
 
         $itemOptions = $item->options();
 
@@ -237,12 +235,12 @@ class Menu extends BaseWidget
     public function onMarkOptionsAsRead()
     {
         if (!strlen($itemName = post('item')))
-            throw new ApplicationException(lang('admin::lang.side_menu.alert_invalid_menu'));
+            throw new ApplicationException(lang('igniter::admin.side_menu.alert_invalid_menu'));
 
         $this->defineMenuItems();
 
         if (!$item = $this->getItem($itemName))
-            throw new ApplicationException(sprintf(lang('admin::lang.side_menu.alert_menu_not_found'), $itemName));
+            throw new ApplicationException(sprintf(lang('igniter::admin.side_menu.alert_menu_not_found'), $itemName));
 
         $this->resolveMarkAsReadFromModel($item);
     }
@@ -270,7 +268,7 @@ class Menu extends BaseWidget
         $clearAfterMinutes = (int)post('clear_after');
 
         if ($status < 1 && !strlen($message))
-            throw new ApplicationException(lang('admin::lang.side_menu.alert_invalid_status'));
+            throw new ApplicationException(lang('igniter::admin.side_menu.alert_invalid_status'));
 
         $stateData['status'] = $status;
         $stateData['isAway'] = $status !== 1;

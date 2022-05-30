@@ -1,16 +1,16 @@
 <?php
 
-namespace Admin\Requests;
+namespace Igniter\Admin\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class UserSettings extends FormRequest
 {
     public function attributes()
     {
         return [
-            'allow_registration' => lang('system::lang.settings.label_allow_registration'),
-            'registration_email.*' => lang('system::lang.settings.label_registration_email'),
+            'allow_registration' => lang('igniter::system.settings.label_allow_registration'),
+            'registration_email.*' => lang('igniter::system.settings.label_registration_email'),
         ];
     }
 

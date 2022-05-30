@@ -1,45 +1,45 @@
 <?php
 
-namespace Admin\Controllers;
+namespace Igniter\Admin\Http\Controllers;
 
-use Admin\Facades\AdminMenu;
-use Admin\Models\UserGroup;
+use Igniter\Admin\Facades\AdminMenu;
+use Igniter\Admin\Models\UserGroup;
 
-class UserGroups extends \Admin\Classes\AdminController
+class UserGroups extends \Igniter\Admin\Classes\AdminController
 {
     public $implement = [
-        \Admin\Actions\ListController::class,
-        \Admin\Actions\FormController::class,
+        \Igniter\Admin\Http\Actions\ListController::class,
+        \Igniter\Admin\Http\Actions\FormController::class,
     ];
 
     public $listConfig = [
         'list' => [
-            'model' => \Admin\Models\UserGroup::class,
-            'title' => 'lang:admin::lang.user_groups.text_title',
-            'emptyMessage' => 'lang:admin::lang.user_groups.text_empty',
+            'model' => \Igniter\Admin\Models\UserGroup::class,
+            'title' => 'lang:igniter::admin.user_groups.text_title',
+            'emptyMessage' => 'lang:igniter::admin.user_groups.text_empty',
             'defaultSort' => ['user_group_id', 'DESC'],
             'configFile' => 'usergroup',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.user_groups.text_form_name',
-        'model' => \Admin\Models\UserGroup::class,
-        'request' => \Admin\Requests\UserGroup::class,
+        'name' => 'lang:igniter::admin.user_groups.text_form_name',
+        'model' => \Igniter\Admin\Models\UserGroup::class,
+        'request' => \Igniter\Admin\Requests\UserGroup::class,
         'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
+            'title' => 'lang:igniter::admin.form.create_title',
             'redirect' => 'user_groups/edit/{user_group_id}',
             'redirectClose' => 'user_groups',
             'redirectNew' => 'user_groups/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
+            'title' => 'lang:igniter::admin.form.edit_title',
             'redirect' => 'user_groups/edit/{user_group_id}',
             'redirectClose' => 'user_groups',
             'redirectNew' => 'user_groups/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title' => 'lang:igniter::admin.form.preview_title',
             'redirect' => 'user_groups',
         ],
         'delete' => [

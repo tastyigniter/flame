@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Database\Migrations;
+namespace Igniter\System\Database\Migrations;
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -18,7 +18,8 @@ use Illuminate\Support\Facades\Schema;
  * New columns 'original_id, layout, plain_layout' on Mail Template table
  * New column 'plain_body' on Mail Template data table
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up()
     {
         Schema::table('activities', function (Blueprint $table) {

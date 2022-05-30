@@ -1,4 +1,4 @@
-@if ($this->previewMode)
+@if($this->previewMode)
     <p class="form-control-static">{{ $field->value ? currency_format($field->value) : '0' }}</p>
 @else
     <div class="field-money">

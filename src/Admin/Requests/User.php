@@ -1,26 +1,26 @@
 <?php
 
-namespace Admin\Requests;
+namespace Igniter\Admin\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class User extends FormRequest
 {
     public function attributes()
     {
         return [
-            'name' => lang('admin::lang.label_name'),
-            'email' => lang('admin::lang.label_email'),
-            'username' => lang('admin::lang.staff.label_username'),
-            'password' => lang('admin::lang.staff.label_password'),
-            'password_confirm' => lang('admin::lang.staff.label_confirm_password'),
-            'status' => lang('admin::lang.label_status'),
-            'language_id' => lang('admin::lang.staff.label_language_id'),
-            'user_role_id' => lang('admin::lang.staff.label_role'),
-            'groups' => lang('admin::lang.staff.label_group'),
-            'locations' => lang('admin::lang.staff.label_location'),
-            'groups.*' => lang('admin::lang.staff.label_group'),
-            'locations.*' => lang('admin::lang.staff.label_location'),
+            'name' => lang('igniter::admin.label_name'),
+            'email' => lang('igniter::admin.label_email'),
+            'username' => lang('igniter::admin.staff.label_username'),
+            'password' => lang('igniter::admin.staff.label_password'),
+            'password_confirm' => lang('igniter::admin.staff.label_confirm_password'),
+            'status' => lang('igniter::admin.label_status'),
+            'language_id' => lang('igniter::admin.staff.label_language_id'),
+            'user_role_id' => lang('igniter::admin.staff.label_role'),
+            'groups' => lang('igniter::admin.staff.label_group'),
+            'locations' => lang('igniter::admin.staff.label_location'),
+            'groups.*' => lang('igniter::admin.staff.label_group'),
+            'locations.*' => lang('igniter::admin.staff.label_location'),
         ];
     }
 

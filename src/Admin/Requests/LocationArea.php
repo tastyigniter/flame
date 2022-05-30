@@ -1,30 +1,30 @@
 <?php
 
-namespace Admin\Requests;
+namespace Igniter\Admin\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class LocationArea extends FormRequest
 {
     public function attributes()
     {
         return [
-            'type' => lang('admin::lang.locations.label_area_type'),
-            'name' => lang('admin::lang.locations.label_area_name'),
-            'area_id' => lang('admin::lang.locations.label_area_id'),
-            'boundaries.components' => lang('admin::lang.locations.label_address_component'),
-            'boundaries.components.*.type' => lang('admin::lang.locations.label_address_component_type'),
-            'boundaries.components.*.value' => lang('admin::lang.locations.label_address_component_value'),
-            'boundaries.polygon' => lang('admin::lang.locations.label_area_shape'),
-            'boundaries.circle' => lang('admin::lang.locations.label_area_circle'),
-            'boundaries.vertices' => lang('admin::lang.locations.label_area_vertices'),
-            'boundaries.distance.*.type' => lang('admin::lang.locations.label_area_distance'),
-            'boundaries.distance.*.distance' => lang('admin::lang.locations.label_area_distance'),
-            'boundaries.distance.*.charge' => lang('admin::lang.locations.label_area_charge'),
-            'conditions' => lang('admin::lang.locations.label_delivery_condition'),
-            'conditions.*.amount' => lang('admin::lang.locations.label_area_charge'),
-            'conditions.*.type' => lang('admin::lang.locations.label_charge_condition'),
-            'conditions.*.total' => lang('admin::lang.locations.label_area_min_amount'),
+            'type' => lang('igniter::admin.locations.label_area_type'),
+            'name' => lang('igniter::admin.locations.label_area_name'),
+            'area_id' => lang('igniter::admin.locations.label_area_id'),
+            'boundaries.components' => lang('igniter::admin.locations.label_address_component'),
+            'boundaries.components.*.type' => lang('igniter::admin.locations.label_address_component_type'),
+            'boundaries.components.*.value' => lang('igniter::admin.locations.label_address_component_value'),
+            'boundaries.polygon' => lang('igniter::admin.locations.label_area_shape'),
+            'boundaries.circle' => lang('igniter::admin.locations.label_area_circle'),
+            'boundaries.vertices' => lang('igniter::admin.locations.label_area_vertices'),
+            'boundaries.distance.*.type' => lang('igniter::admin.locations.label_area_distance'),
+            'boundaries.distance.*.distance' => lang('igniter::admin.locations.label_area_distance'),
+            'boundaries.distance.*.charge' => lang('igniter::admin.locations.label_area_charge'),
+            'conditions' => lang('igniter::admin.locations.label_delivery_condition'),
+            'conditions.*.amount' => lang('igniter::admin.locations.label_area_charge'),
+            'conditions.*.type' => lang('igniter::admin.locations.label_charge_condition'),
+            'conditions.*.total' => lang('igniter::admin.locations.label_area_min_amount'),
         ];
     }
 

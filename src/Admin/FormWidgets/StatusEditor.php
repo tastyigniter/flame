@@ -1,20 +1,20 @@
 <?php
 
-namespace Admin\FormWidgets;
+namespace Igniter\Admin\FormWidgets;
 
-use Admin\ActivityTypes\AssigneeUpdated;
-use Admin\ActivityTypes\StatusUpdated;
-use Admin\Classes\BaseFormWidget;
-use Admin\Classes\FormField;
-use Admin\Facades\AdminAuth;
-use Admin\Models\Order;
-use Admin\Models\Status;
-use Admin\Models\User;
-use Admin\Models\UserGroup;
-use Admin\Traits\FormModelWidget;
-use Admin\Traits\ValidatesForm;
-use Admin\Widgets\Form;
 use Exception;
+use Igniter\Admin\ActivityTypes\AssigneeUpdated;
+use Igniter\Admin\ActivityTypes\StatusUpdated;
+use Igniter\Admin\Classes\BaseFormWidget;
+use Igniter\Admin\Classes\FormField;
+use Igniter\Admin\Facades\AdminAuth;
+use Igniter\Admin\Models\Order;
+use Igniter\Admin\Models\Status;
+use Igniter\Admin\Models\User;
+use Igniter\Admin\Models\UserGroup;
+use Igniter\Admin\Traits\FormModelWidget;
+use Igniter\Admin\Traits\ValidatesForm;
+use Igniter\Admin\Widgets\Form;
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Flame\Exception\ValidationException;
 
@@ -27,13 +27,13 @@ class StatusEditor extends BaseFormWidget
     use ValidatesForm;
 
     /**
-     * @var Order|\Admin\Models\Reservation Form model object.
+     * @var Order|\Igniter\Admin\Models\Reservation Form model object.
      */
     public $model;
 
     public $form;
 
-    public $formTitle = 'admin::lang.statuses.text_editor_title';
+    public $formTitle = 'igniter::admin.statuses.text_editor_title';
 
     /**
      * @var string Text to display for the title of the popup list form
@@ -59,7 +59,7 @@ class StatusEditor extends BaseFormWidget
 
     public $statusRelationFrom = 'status';
 
-    public $statusModelClass = \Admin\Models\StatusHistory::class;
+    public $statusModelClass = \Igniter\Admin\Models\StatusHistory::class;
 
     /**
      * @var string Text to display for the title of the popup list form
@@ -81,7 +81,7 @@ class StatusEditor extends BaseFormWidget
 
     public $assigneeRelationFrom = 'assignee';
 
-    public $assigneeModelClass = \Admin\Models\AssignableLog::class;
+    public $assigneeModelClass = \Igniter\Admin\Models\AssignableLog::class;
 
     public $assigneeOrderPermission = 'Admin.AssignOrders';
 
@@ -129,7 +129,7 @@ class StatusEditor extends BaseFormWidget
     {
         $context = post('recordId');
         if (!in_array($context, ['load-status', 'load-assignee']))
-            throw new ApplicationException(lang('admin::lang.statuses.alert_invalid_action'));
+            throw new ApplicationException(lang('igniter::admin.statuses.alert_invalid_action'));
 
         $this->setMode(str_after($context, 'load-'));
 
@@ -159,7 +159,7 @@ class StatusEditor extends BaseFormWidget
 
         try {
             if ($this->isStatusMode && $recordId == $this->model->{$keyFrom})
-                throw new ApplicationException(sprintf(lang('admin::lang.statuses.alert_already_added'), $context, $context));
+                throw new ApplicationException(sprintf(lang('igniter::admin.statuses.alert_already_added'), $context, $context));
 
             $this->validateFormWidget($form, $saveData);
         }
@@ -168,10 +168,10 @@ class StatusEditor extends BaseFormWidget
         }
 
         if ($this->saveRecord($saveData, $keyFrom)) {
-            flash()->success(sprintf(lang('admin::lang.alert_success'), lang($this->getModeConfig('formName')).' '.'updated'))->now();
+            flash()->success(sprintf(lang('igniter::admin.alert_success'), lang($this->getModeConfig('formName')).' '.'updated'))->now();
         }
         else {
-            flash()->error(lang('admin::lang.alert_error_try_again'))->now();
+            flash()->error(lang('igniter::admin.alert_error_try_again'))->now();
         }
 
         $this->prepareVars();
@@ -185,10 +185,10 @@ class StatusEditor extends BaseFormWidget
     public function onLoadStatus()
     {
         if (!strlen($statusId = post('statusId')))
-            throw new ApplicationException(lang('admin::lang.form.missing_id'));
+            throw new ApplicationException(lang('igniter::admin.form.missing_id'));
 
         if (!$status = Status::find($statusId))
-            throw new Exception(sprintf(lang('admin::lang.statuses.alert_status_not_found'), $statusId));
+            throw new Exception(sprintf(lang('igniter::admin.statuses.alert_status_not_found'), $statusId));
 
         return $status->toArray();
     }
@@ -196,7 +196,7 @@ class StatusEditor extends BaseFormWidget
     public function onLoadAssigneeList()
     {
         if (!strlen($groupId = post('groupId')))
-            throw new ApplicationException(lang('admin::lang.form.missing_id'));
+            throw new ApplicationException(lang('igniter::admin.form.missing_id'));
 
         $this->setMode('assignee');
 
@@ -215,8 +215,8 @@ class StatusEditor extends BaseFormWidget
 
     public function loadAssets()
     {
-        $this->addJs('../../recordeditor/assets/js/recordeditor.modal.js', 'recordeditor-modal-js');
-        $this->addJs('js/statuseditor.js', 'statuseditor-js');
+        $this->addJs('formwidgets/recordeditor.modal.js', 'recordeditor-modal-js');
+        $this->addJs('statuseditor.js', 'statuseditor-js');
     }
 
     public function prepareVars()
@@ -325,7 +325,7 @@ class StatusEditor extends BaseFormWidget
         $permission = $this->getModeConfig($saleType);
 
         if (!$this->controller->getUser()->hasPermission($permission))
-            throw new ApplicationException(lang('admin::lang.alert_user_restricted'));
+            throw new ApplicationException(lang('igniter::admin.alert_user_restricted'));
     }
 
     protected function saveRecord(array $saveData, string $keyFrom)

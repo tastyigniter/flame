@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
 use Carbon\Carbon;
 use Igniter\Flame\Database\Model;
@@ -32,8 +32,8 @@ class StatusHistory extends Model
 
     public $relation = [
         'belongsTo' => [
-            'user' => \Admin\Models\User::class,
-            'status' => [\Admin\Models\Status::class, 'status_id'],
+            'user' => \Igniter\Admin\Models\User::class,
+            'status' => [\Igniter\Admin\Models\Status::class, 'status_id'],
         ],
         'morphTo' => [
             'object' => [],
@@ -64,7 +64,7 @@ class StatusHistory extends Model
 
     public function getNotifiedAttribute()
     {
-        return $this->notify == 1 ? lang('admin::lang.text_yes') : lang('admin::lang.text_no');
+        return $this->notify == 1 ? lang('igniter::admin.text_yes') : lang('igniter::admin.text_no');
     }
 
     /**

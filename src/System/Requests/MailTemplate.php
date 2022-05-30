@@ -1,18 +1,18 @@
 <?php
 
-namespace System\Requests;
+namespace Igniter\System\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class MailTemplate extends FormRequest
 {
     public function attributes()
     {
         return [
-            'layout_id' => lang('system::lang.mail_templates.label_layout'),
-            'label' => lang('admin::lang.label_description'),
-            'subject' => lang('system::lang.mail_templates.label_code'),
-            'code' => lang('system::lang.mail_templates.label_code'),
+            'layout_id' => lang('igniter::system.mail_templates.label_layout'),
+            'label' => lang('igniter::admin.label_description'),
+            'subject' => lang('igniter::system.mail_templates.label_code'),
+            'code' => lang('igniter::system.mail_templates.label_code'),
         ];
     }
 

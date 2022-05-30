@@ -1,0 +1,9 @@
+'components':
+  title: main::lang.contact.title
+  layout: default
+  permalink: /components
+
+'nested-page':
+  title: Nested page
+  layout: default
+  permalink: /nested/page/:slug

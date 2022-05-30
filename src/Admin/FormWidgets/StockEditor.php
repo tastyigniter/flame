@@ -1,12 +1,12 @@
 <?php
 
-namespace Admin\FormWidgets;
+namespace Igniter\Admin\FormWidgets;
 
-use Admin\Classes\BaseFormWidget;
-use Admin\Classes\FormField;
-use Admin\Facades\AdminLocation;
-use Admin\Models\StockHistory;
-use Admin\Widgets\Form;
+use Igniter\Admin\Classes\BaseFormWidget;
+use Igniter\Admin\Classes\FormField;
+use Igniter\Admin\Facades\AdminLocation;
+use Igniter\Admin\Models\StockHistory;
+use Igniter\Admin\Widgets\Form;
 
 /**
  * Stock Editor
@@ -34,11 +34,8 @@ class StockEditor extends BaseFormWidget
 
     public function loadAssets()
     {
-        $this->addCss('~/app/admin/widgets/table/assets/vendor/bootstrap-table/bootstrap-table.min.css', 'bootstrap-table-css');
-        $this->addCss('~/app/admin/widgets/table/assets/css/table.css', 'table-css');
-
-        $this->addJs('~/app/admin/widgets/table/assets/vendor/bootstrap-table/bootstrap-table.min.js', 'bootstrap-table-js');
-        $this->addJs('~/app/admin/widgets/table/assets/js/table.js', 'table-js');
+        $this->addCss('widgets/table.css', 'table-css');
+        $this->addJs('widgets/table.js', 'table-js');
     }
 
     public function prepareVars()
@@ -64,8 +61,8 @@ class StockEditor extends BaseFormWidget
         $stockableName = $this->model->getStockableName();
 
         return $this->makePartial('stockeditor/form', [
-            'formTitle' => sprintf(lang('admin::lang.stocks.text_title_manage_stock'), ''),
-            'formDescription' => sprintf(lang('admin::lang.stocks.text_stock_description'), $stockableName, count($availableLocations)),
+            'formTitle' => sprintf(lang('igniter::admin.stocks.text_title_manage_stock'), ''),
+            'formDescription' => sprintf(lang('igniter::admin.stocks.text_stock_description'), $stockableName, count($availableLocations)),
             'formWidgets' => $formWidgets,
         ]);
     }
@@ -88,7 +85,7 @@ class StockEditor extends BaseFormWidget
             ]);
         }
 
-        flash()->success(sprintf(lang('admin::lang.alert_success'), lang('admin::lang.stocks.text_form_name').' updated'))->now();
+        flash()->success(sprintf(lang('igniter::admin.alert_success'), lang('igniter::admin.stocks.text_form_name').' updated'))->now();
 
         $this->prepareVars();
 
@@ -100,7 +97,7 @@ class StockEditor extends BaseFormWidget
     public function onLoadHistory()
     {
         return $this->makePartial('stockeditor/history', [
-            'formTitle' => sprintf(lang('admin::lang.stocks.text_title_stock_history'), ''),
+            'formTitle' => sprintf(lang('igniter::admin.stocks.text_title_stock_history'), ''),
             'formWidget' => $this->makeHistoryFormWidget(),
         ]);
     }
@@ -139,19 +136,19 @@ class StockEditor extends BaseFormWidget
         $widgetConfig = [
             'columns' => [
                 'staff_name' => [
-                    'title' => 'lang:admin::lang.stocks.column_staff_name',
+                    'title' => 'lang:igniter::admin.stocks.column_staff_name',
                 ],
                 'order_id' => [
-                    'title' => 'lang:admin::lang.orders.label_order_id',
+                    'title' => 'lang:igniter::admin.orders.label_order_id',
                 ],
                 'state_text' => [
-                    'title' => 'lang:admin::lang.stocks.label_stock_action',
+                    'title' => 'lang:igniter::admin.stocks.label_stock_action',
                 ],
                 'quantity' => [
-                    'title' => 'lang:admin::lang.stocks.column_quantity',
+                    'title' => 'lang:igniter::admin.stocks.column_quantity',
                 ],
                 'created_at_since' => [
-                    'title' => 'lang:admin::lang.stocks.column_created_at',
+                    'title' => 'lang:igniter::admin.stocks.column_created_at',
                 ],
             ],
         ];
@@ -160,7 +157,7 @@ class StockEditor extends BaseFormWidget
         $widgetConfig['alias'] = $this->alias.'FormStockHistory';
         $widgetConfig['arrayName'] = $this->formField->arrayName.'[stockHistory]';
 
-        $widget = $this->makeFormWidget(\Admin\FormWidgets\DataTable::class, $field, $widgetConfig);
+        $widget = $this->makeFormWidget(\Igniter\Admin\FormWidgets\DataTable::class, $field, $widgetConfig);
         $widget->bindToController();
         $widget->previewMode = $this->previewMode;
 

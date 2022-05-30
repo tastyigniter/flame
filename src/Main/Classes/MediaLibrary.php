@@ -1,16 +1,16 @@
 <?php
 
-namespace Main\Classes;
+namespace Igniter\Main\Classes;
 
 use Igniter\Flame\Database\Attach\Manipulator;
 use Igniter\Flame\Exception\SystemException;
 use Igniter\Flame\Support\Facades\File;
 use Igniter\Flame\Support\Str;
 use Igniter\Flame\Traits\Singleton;
+use Igniter\System\Models\Settings;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
-use System\Models\Settings;
 
 /**
  * MediaLibrary Class
@@ -39,15 +39,15 @@ class MediaLibrary
     {
         $config = setting('image_manager', []);
 
-        $this->storageFolder = $this->validatePath(Config::get('system.assets.media.folder', 'data'));
-        $this->storagePath = rtrim(Config::get('system.assets.media.path', '/assets/images/data'), '/');
+        $this->storageFolder = $this->validatePath(Config::get('igniter.system.assets.media.folder', 'data'));
+        $this->storagePath = rtrim(Config::get('igniter.system.assets.media.path', '/assets/images/data'), '/');
 
         if (!starts_with($this->storagePath, ['//', 'http://', 'https://'])) {
             $this->storagePath = asset($this->storagePath);
         }
 
-        $this->ignoreNames = Config::get('system.assets.media.ignore', []);
-        $this->ignorePatterns = Config::get('system.assets.media.ignorePatterns', ['^\..*']);
+        $this->ignoreNames = Config::get('igniter.system.assets.media.ignore', []);
+        $this->ignorePatterns = Config::get('igniter.system.assets.media.ignorePatterns', ['^\..*']);
         $this->storageFolderNameLength = strlen($this->storageFolder);
         $this->config = $config;
     }
@@ -74,7 +74,7 @@ class MediaLibrary
             Cache::put(
                 self::$cacheKey,
                 base64_encode(serialize($cached)),
-                Config::get('system.assets.media.ttl', now()->addMinutes(10))
+                Config::get('igniter.system.assets.media.ttl', now()->addMinutes(10))
             );
         }
 
@@ -280,7 +280,7 @@ class MediaLibrary
             $filePath = $this->getDefaultThumbPath($thumbPath, array_get($options, 'default'));
 
         $manipulator = Manipulator::make($filePath)->useSource(
-            $this->getStorageDisk()->getDriver()
+            $this->getStorageDisk()
         );
 
         if ($manipulator->isSupported())
@@ -447,7 +447,7 @@ class MediaLibrary
 
     protected function getThumbDirectory()
     {
-        return $this->validatePath(Config::get('system.assets.media.thumbFolder', 'public')).'/';
+        return $this->validatePath(Config::get('igniter.system.assets.media.thumbFolder', 'public')).'/';
     }
 
     protected function getStorageDisk()
@@ -456,7 +456,7 @@ class MediaLibrary
             return $this->storageDisk;
 
         return $this->storageDisk = Storage::disk(
-            Config::get('system.assets.media.disk', 'local')
+            Config::get('igniter.system.assets.media.disk', 'local')
         );
     }
 

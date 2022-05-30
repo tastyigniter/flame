@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Events\Order;
+namespace Igniter\Admin\Events\Order;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;

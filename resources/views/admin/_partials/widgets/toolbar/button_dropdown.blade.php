@@ -4,7 +4,7 @@
         tabindex="0"
         {!! $button->getAttributes() !!}
     >{!! $button->label ?: $button->name !!}</button>
-    @if ($buttonMenuItems = $button->menuItems())
+    @if($buttonMenuItems = $button->menuItems())
         <button
             type="button"
             class="{{ $button->cssClass }} dropdown-toggle dropdown-toggle-split"
@@ -13,7 +13,7 @@
             aria-expanded="false"
         ><span class="sr-only">Toggle Dropdown</span></button>
         <div class="dropdown-menu">
-            @foreach ($buttonMenuItems as $buttonObj)
+            @foreach($buttonMenuItems as $buttonObj)
                 {!! $this->renderButtonMarkup($buttonObj) !!}
             @endforeach
         </div>

@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\DashboardWidgets;
+namespace Igniter\Admin\DashboardWidgets;
 
-use Admin\Classes\BaseDashboardWidget;
-use Admin\Classes\OnboardingSteps;
+use Igniter\Admin\Classes\BaseDashboardWidget;
+use Igniter\Admin\Classes\OnboardingSteps;
 
 /**
  * Onboard dashboard widget.
@@ -24,8 +24,8 @@ class Onboarding extends BaseDashboardWidget
     {
         return [
             'title' => [
-                'label' => 'admin::lang.dashboard.label_widget_title',
-                'default' => 'admin::lang.dashboard.onboarding.title',
+                'label' => 'igniter::admin.dashboard.label_widget_title',
+                'default' => 'igniter::admin.dashboard.onboarding.title',
             ],
         ];
     }
@@ -42,7 +42,7 @@ class Onboarding extends BaseDashboardWidget
 
     public function loadAssets()
     {
-        $this->addCss('css/onboarding.css', 'onboarding-css');
+        $this->addCss('onboarding.css', 'onboarding-css');
     }
 
     protected function prepareVars()

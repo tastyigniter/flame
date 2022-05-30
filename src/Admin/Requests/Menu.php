@@ -1,25 +1,25 @@
 <?php
 
-namespace Admin\Requests;
+namespace Igniter\Admin\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class Menu extends FormRequest
 {
     public function attributes()
     {
         return [
-            'menu_name' => lang('admin::lang.label_name'),
-            'menu_description' => lang('admin::lang.label_description'),
-            'menu_price' => lang('admin::lang.menus.label_price'),
-            'categories.*' => lang('admin::lang.menus.label_category'),
-            'locations.*' => lang('admin::lang.column_location'),
-            'minimum_qty' => lang('admin::lang.menus.label_minimum_qty'),
-            'order_restriction.*' => lang('admin::lang.menus.label_order_restriction'),
-            'menu_status' => lang('admin::lang.label_status'),
-            'mealtime_id' => lang('admin::lang.menus.label_mealtime'),
-            'menu_priority' => lang('admin::lang.menus.label_menu_priority'),
-            'menu_option_values' => lang('admin::lang.menu_options.label_option_value_id'),
+            'menu_name' => lang('igniter::admin.label_name'),
+            'menu_description' => lang('igniter::admin.label_description'),
+            'menu_price' => lang('igniter::admin.menus.label_price'),
+            'categories.*' => lang('igniter::admin.menus.label_category'),
+            'locations.*' => lang('igniter::admin.column_location'),
+            'minimum_qty' => lang('igniter::admin.menus.label_minimum_qty'),
+            'order_restriction.*' => lang('igniter::admin.menus.label_order_restriction'),
+            'menu_status' => lang('igniter::admin.label_status'),
+            'mealtime_id' => lang('igniter::admin.menus.label_mealtime'),
+            'menu_priority' => lang('igniter::admin.menus.label_menu_priority'),
+            'menu_option_values' => lang('igniter::admin.menu_options.label_option_value_id'),
         ];
     }
 

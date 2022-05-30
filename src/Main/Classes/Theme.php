@@ -1,17 +1,18 @@
 <?php
 
-namespace Main\Classes;
+namespace Igniter\Main\Classes;
 
 use Exception;
+use Igniter\Flame\Igniter;
 use Igniter\Flame\Pagic\Source\FileSource;
 use Igniter\Flame\Support\Facades\File;
-use Illuminate\Support\Facades\App;
-use Main\Events\Theme\ExtendFormConfig;
-use Main\Template\Content as ContentTemplate;
-use Main\Template\Layout as LayoutTemplate;
-use Main\Template\Page as PageTemplate;
-use Main\Template\Partial as PartialTemplate;
-use System\Models\Theme as ThemeModel;
+use Igniter\Main\Events\Theme\ExtendFormConfig;
+use Igniter\Main\Models\Theme as ThemeModel;
+use Igniter\Main\Template\Content as ContentTemplate;
+use Igniter\Main\Template\Layout as LayoutTemplate;
+use Igniter\Main\Template\Page as PageTemplate;
+use Igniter\Main\Template\Partial as PartialTemplate;
+use Igniter\System\Classes\PackageManifest;
 
 class Theme
 {
@@ -49,6 +50,16 @@ class Theme
      * @var string The theme path absolute base path
      */
     public $path;
+
+    /**
+     * @var string The theme relative path to the templates files
+     */
+    public $sourcePath;
+
+    /**
+     * @var string The theme relative path to the assets directory
+     */
+    public $assetPath;
 
     /**
      * @var string The theme path relative to base path
@@ -100,6 +111,7 @@ class Theme
     {
         $this->fillFromConfig();
         $this->registerAsSource();
+        $this->registerPathSymbol();
 
         return $this;
     }
@@ -123,6 +135,22 @@ class Theme
     /**
      * @return string
      */
+    public function getSourcePath()
+    {
+        return $this->path.$this->sourcePath;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAssetPath()
+    {
+        return $this->path.$this->sourcePath.$this->assetPath;
+    }
+
+    /**
+     * @return string
+     */
     public function getDirName()
     {
         return basename($this->path);
@@ -130,7 +158,7 @@ class Theme
 
     public function getParentPath()
     {
-        return dirname($this->path).'/'.$this->parentName;
+        return optional($this->getParent())->getPath();
     }
 
     public function getParentName()
@@ -140,7 +168,7 @@ class Theme
 
     public function getParent()
     {
-        return ThemeManager::instance()->findTheme($this->getParentName());
+        return resolve(ThemeManager::class)->findTheme($this->getParentName());
     }
 
     public function hasParent()
@@ -223,8 +251,8 @@ class Theme
         $config = $this->getConfigValue('form', []);
 
         // @deprecated namespaced event, remove before v5
-        event('main.theme.extendFormConfig', [$this->getDirName(), &$config]);
-        event($event = new ExtendFormConfig($this->getDirName(), $config));
+        event('main.theme.extendFormConfig', [$this->getName(), &$config]);
+        event($event = new ExtendFormConfig($this->getName(), $config));
 
         return $event->config;
     }
@@ -287,6 +315,12 @@ class Theme
         if (isset($this->config['require']))
             $this->requires($this->config['require']);
 
+        if (!$this->sourcePath)
+            $this->sourcePath = $this->config['source-path'] ?? '';
+
+        if (!$this->assetPath)
+            $this->assetPath = $this->config['asset-path'] ?? '/assets';
+
         $this->screenshot('screenshot');
 
         if (array_key_exists('locked', $this->config))
@@ -316,6 +350,11 @@ class Theme
     {
     }
 
+    public function listRequires()
+    {
+        return resolve(PackageManifest::class)->getCodeFromPackageName($this->requires);
+    }
+
     //
     //
     //
@@ -326,38 +365,46 @@ class Theme
      */
     public function registerAsSource()
     {
-        $resolver = App::make('pagic');
-        if (!$resolver->hasSource($this->getDirName())) {
-            $files = App::make('files');
+        $resolver = resolve('pagic');
+        if (!$resolver->hasSource($this->getName())) {
+            $files = resolve('files');
 
             if ($this->hasParent()) {
                 $source = new ChainFileSource([
-                    new FileSource($this->getPath(), $files),
-                    new FileSource($this->getParentPath(), $files),
+                    new FileSource($this->getSourcePath(), $files),
+                    new FileSource($this->getParent()->getSourcePath(), $files),
                 ]);
             }
             else {
-                $source = new FileSource($this->getPath(), $files);
+                $source = new FileSource($this->getSourcePath(), $files);
             }
 
-            $resolver->addSource($this->getDirName(), $source);
+            $resolver->addSource($this->getName(), $source);
         }
+    }
+
+    public function registerPathSymbol()
+    {
+        Igniter::loadResourcesFrom($this->getAssetPath(), $this->getName());
+
+        if ($this->hasParent())
+            Igniter::loadResourcesFrom($this->getParent()->getAssetPath(), $this->getParent()->getName());
     }
 
     /**
      * @param $dirName
-     * @return \Main\Template\Model|\Igniter\Flame\Pagic\Finder
+     * @return \Igniter\Main\Template\Model|\Igniter\Flame\Pagic\Finder
      */
     public function onTemplate($dirName)
     {
         $modelClass = $this->getTemplateClass($dirName);
 
-        return $modelClass::on($this->getDirName());
+        return $modelClass::on($this->getName());
     }
 
     /**
      * @param $dirName
-     * @return \Main\Template\Model
+     * @return \Igniter\Main\Template\Model
      */
     public function newTemplate($dirName)
     {

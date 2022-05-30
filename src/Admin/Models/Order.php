@@ -1,21 +1,21 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
-use Admin\Events\Order\BeforePaymentProcessed;
-use Admin\Events\Order\PaymentProcessed;
-use Admin\Traits\Assignable;
-use Admin\Traits\HasInvoice;
-use Admin\Traits\Locationable;
-use Admin\Traits\LogsStatusHistory;
-use Admin\Traits\ManagesOrderItems;
 use Carbon\Carbon;
+use Igniter\Admin\Events\Order\BeforePaymentProcessed;
+use Igniter\Admin\Events\Order\PaymentProcessed;
+use Igniter\Admin\Traits\Assignable;
+use Igniter\Admin\Traits\HasInvoice;
+use Igniter\Admin\Traits\Locationable;
+use Igniter\Admin\Traits\LogsStatusHistory;
+use Igniter\Admin\Traits\ManagesOrderItems;
 use Igniter\Flame\Auth\Models\User;
 use Igniter\Flame\Database\Casts\Serialize;
 use Igniter\Flame\Database\Model;
+use Igniter\Main\Classes\MainController;
+use Igniter\System\Traits\SendsMailTemplate;
 use Illuminate\Support\Facades\Request;
-use Main\Classes\MainController;
-use System\Traits\SendsMailTemplate;
 
 /**
  * Order Model Class
@@ -72,13 +72,13 @@ class Order extends Model
 
     public $relation = [
         'belongsTo' => [
-            'customer' => \Admin\Models\Customer::class,
-            'location' => \Admin\Models\Location::class,
-            'address' => \Admin\Models\Address::class,
-            'payment_method' => [\Admin\Models\Payment::class, 'foreignKey' => 'payment', 'otherKey' => 'code'],
+            'customer' => \Igniter\Main\Models\Customer::class,
+            'location' => \Igniter\Admin\Models\Location::class,
+            'address' => \Igniter\Admin\Models\Address::class,
+            'payment_method' => [\Igniter\Admin\Models\Payment::class, 'foreignKey' => 'payment', 'otherKey' => 'code'],
         ],
         'hasMany' => [
-            'payment_logs' => \Admin\Models\PaymentLog::class,
+            'payment_logs' => \Igniter\Admin\Models\PaymentLog::class,
         ],
     ];
 
@@ -366,17 +366,17 @@ class Order extends Model
         $data['order_comment'] = $model->comment;
 
         $data['order_type'] = $model->order_type_name;
-        $data['order_time'] = Carbon::createFromTimeString($model->order_time)->format(lang('system::lang.php.time_format'));
-        $data['order_date'] = $model->order_date->format(lang('system::lang.php.date_format'));
-        $data['order_added'] = $model->created_at->format(lang('system::lang.php.date_time_format'));
+        $data['order_time'] = Carbon::createFromTimeString($model->order_time)->format(lang('igniter::system.php.time_format'));
+        $data['order_date'] = $model->order_date->format(lang('igniter::system.php.date_format'));
+        $data['order_added'] = $model->created_at->format(lang('igniter::system.php.date_time_format'));
 
         $data['invoice_id'] = $model->invoice_number;
         $data['invoice_number'] = $model->invoice_number;
-        $data['invoice_date'] = $model->invoice_date ? $model->invoice_date->format(lang('system::lang.php.date_format')) : null;
+        $data['invoice_date'] = $model->invoice_date ? $model->invoice_date->format(lang('igniter::system.php.date_format')) : null;
 
         $data['order_payment'] = ($model->payment_method)
             ? $model->payment_method->name
-            : lang('admin::lang.orders.text_no_payment');
+            : lang('igniter::admin.orders.text_no_payment');
 
         $data['order_menus'] = [];
         $menus = $model->getOrderMenusWithOptions();
@@ -386,9 +386,9 @@ class Order extends Model
                 $optionData[] = $menuItemOptionGroupName;
                 foreach ($menuItemOptions as $menuItemOption) {
                     $optionData[] = $menuItemOption->quantity
-                        .'&nbsp;'.lang('admin::lang.text_times').'&nbsp;'
+                        .'&nbsp;'.lang('igniter::admin.text_times').'&nbsp;'
                         .$menuItemOption->order_option_name
-                        .lang('admin::lang.text_equals')
+                        .lang('igniter::admin.text_equals')
                         .currency_format($menuItemOption->order_option_price);
                 }
             }
@@ -413,7 +413,7 @@ class Order extends Model
             ];
         }
 
-        $data['order_address'] = lang('admin::lang.orders.text_collection_order_type');
+        $data['order_address'] = lang('igniter::admin.orders.text_collection_order_type');
         if ($model->address)
             $data['order_address'] = format_address($model->address->toArray(), false);
 

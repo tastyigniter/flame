@@ -176,6 +176,66 @@ return [
         ],
     ],
 
+    'customer_groups' => [
+        'text_title' => 'Customer Groups',
+        'text_form_name' => 'Customer Group',
+        'text_empty' => 'There are no customer groups available.',
+
+        'column_customers' => '# Customers',
+
+        'label_approval' => 'Approval',
+
+        'alert_set_default' => 'Customer group set as default',
+
+        'help_approval' => 'New customers must be approved before they can login.',
+    ],
+
+    'customers' => [
+        'text_title' => 'Customers',
+        'text_form_name' => 'Customer',
+        'text_tab_general' => 'Customer',
+        'text_tab_address' => 'Addresses',
+        'text_tab_orders' => 'Orders',
+        'text_tab_reservations' => 'Reservations',
+        'text_filter_search' => 'Search by name or email.',
+        'text_empty' => 'There are no customers available.',
+        'text_subscribe' => 'Subscribe',
+        'text_un_subscribe' => 'Un-subscribe',
+        'text_title_edit_address' => 'Address',
+        'text_impersonate' => 'Impersonate Customer',
+
+        'column_full_name' => 'Full Name',
+        'column_telephone' => 'Telephone',
+        'column_date_added' => 'Date Registered',
+
+        'button_activate' => 'Manually Activate',
+
+        'label_first_name' => 'First Name',
+        'label_last_name' => 'Last Name',
+        'label_password' => 'Password',
+        'label_confirm_password' => 'Confirm Password',
+        'label_telephone' => 'Telephone',
+        'label_newsletter' => 'Newsletter',
+        'label_send_invite' => 'Send Invitation Email',
+        'label_customer_group' => 'Customer Group',
+        'label_address_1' => 'Address 1',
+        'label_address_2' => 'Address 2',
+        'label_city' => 'City',
+        'label_state' => 'State',
+        'label_postcode' => 'Postcode',
+        'label_country' => 'Country',
+
+        'help_send_invite' => 'Sends an invitation message containing a link to set a password on their account.',
+        'help_password' => 'Leave blank to leave password unchanged',
+
+        'alert_login_restricted' => 'Warning: You do not have the right permission to <b>access a customer account</b>, please contact system administrator.',
+        'alert_impersonate_confirm' => 'Are you sure you want to impersonate this customer? You can revert to your original state by logging out.',
+        'alert_impersonate_success' => 'You are now impersonating customer: %s',
+        'alert_activation_success' => 'Customer activated successfully.',
+        'alert_customer_not_active' => "Cannot login user '%s' until activated.",
+        'alert_customer_payment_profile_not_found' => 'Customer payment profile not found!',
+    ],
+
     'reservation' => [
         'title' => 'Reservation',
         'success' => [

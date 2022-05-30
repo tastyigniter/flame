@@ -1,5 +1,5 @@
-@if (count($components))
-    @foreach ($components as $component)
+@if(count($components))
+    @foreach($components as $component)
         {!! $this->makePartial('component', [
             'component' => $component,
         ]) !!}

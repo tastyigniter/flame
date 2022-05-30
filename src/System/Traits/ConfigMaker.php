@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Traits;
+namespace Igniter\System\Traits;
 
 use Igniter\Flame\Exception\SystemException;
 use Igniter\Flame\Support\Facades\File;
@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Lang;
 trait ConfigMaker
 {
     /**
-     * @var string Specifies a path to the config directory.
+     * @var array Specifies a path to the config directory.
      */
     public $configPath;
 
@@ -31,7 +31,7 @@ trait ConfigMaker
         if (is_null($index))
             return $config;
 
-        return isset($config[$index]) ? $config[$index] : null;
+        return $config[$index] ?? null;
     }
 
     /**
@@ -64,7 +64,7 @@ trait ConfigMaker
 
             if (!File::isFile($configFile)) {
                 throw new SystemException(sprintf(
-                    Lang::get('system::lang.not_found.config'),
+                    Lang::get('igniter::system.not_found.config'),
                     $configFile, get_called_class()
                 ));
             }
@@ -76,7 +76,7 @@ trait ConfigMaker
         foreach ($requiredConfig as $property) {
             if (!is_array($config) || !array_key_exists($property, $config)) {
                 throw new SystemException(sprintf(
-                    Lang::get('system::lang.required.config'),
+                    Lang::get('igniter::system.required.config'),
                     get_called_class(), $property
                 ));
             }
@@ -115,23 +115,16 @@ trait ConfigMaker
      */
     public function getConfigPath($fileName, $configPath = null)
     {
-        if (!isset($this->configPath)) {
-            $this->configPath = $this->guessConfigPath();
-        }
-
-        if (!$configPath) {
+        if (!$configPath)
             $configPath = $this->configPath;
-        }
 
         $fileName = File::symbolizePath($fileName);
 
-        if (File::isLocalPath($fileName) || realpath($fileName) !== false) {
+        if (File::isLocalPath($fileName) || realpath($fileName) !== false)
             return $fileName;
-        }
 
-        if (!is_array($configPath)) {
+        if (!is_array($configPath))
             $configPath = [$configPath];
-        }
 
         foreach ($configPath as $path) {
             $path = File::symbolizePath($path);
@@ -142,36 +135,5 @@ trait ConfigMaker
         }
 
         return $fileName;
-    }
-
-    /**
-     * Guess the package path for the called class.
-     *
-     * @param string $suffix An extra path to attach to the end
-     *
-     * @return string
-     */
-    public function guessConfigPath($suffix = '')
-    {
-        $class = get_called_class();
-
-        return $this->guessConfigPathFrom($class, $suffix);
-    }
-
-    /**
-     * Guess the package path from a specified class.
-     *
-     * @param string $class Class to guess path from.
-     * @param string $suffix An extra path to attach to the end
-     *
-     * @return string
-     */
-    public function guessConfigPathFrom($class, $suffix = '')
-    {
-        $classFolder = strtolower(class_basename($class));
-        $classFile = realpath(dirname(File::fromClass($class)));
-        $guessedPath = $classFile ? $classFile.'/'.$classFolder.$suffix : null;
-
-        return $guessedPath;
     }
 }

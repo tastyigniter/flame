@@ -1,6 +1,6 @@
 <?php
 
-namespace Main\Facades;
+namespace Igniter\Main\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

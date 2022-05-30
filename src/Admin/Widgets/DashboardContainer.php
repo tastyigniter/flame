@@ -1,10 +1,10 @@
 <?php
 
-namespace Admin\Widgets;
+namespace Igniter\Admin\Widgets;
 
-use Admin\Classes\BaseWidget;
-use Admin\Classes\Widgets;
-use Admin\Models\UserPreference;
+use Igniter\Admin\Classes\BaseWidget;
+use Igniter\Admin\Classes\Widgets;
+use Igniter\Admin\Models\UserPreference;
 use Igniter\Flame\Exception\ApplicationException;
 
 class DashboardContainer extends BaseWidget
@@ -101,11 +101,8 @@ class DashboardContainer extends BaseWidget
 
     public function loadAssets()
     {
-        $this->addJs('~/app/admin/formwidgets/repeater/assets/vendor/sortablejs/Sortable.min.js', 'sortable-js');
-        $this->addJs('~/app/admin/formwidgets/repeater/assets/vendor/sortablejs/jquery-sortable.js', 'jquery-sortable-js');
-
-        $this->addCss('css/dashboardcontainer.css');
-        $this->addJs('js/dashboardcontainer.js');
+        $this->addCss('dashboardcontainer.css');
+        $this->addJs('dashboardcontainer.js');
     }
 
     //
@@ -133,7 +130,7 @@ class DashboardContainer extends BaseWidget
         $widgetAlias = trim(post('widgetAlias'));
 
         if (!$widgetAlias)
-            throw new ApplicationException(lang('admin::lang.dashboard.alert_select_widget_to_update'));
+            throw new ApplicationException(lang('igniter::admin.dashboard.alert_select_widget_to_update'));
 
         $this->vars['widgetAlias'] = $widgetAlias;
         $this->vars['widget'] = $widget = $this->findWidgetByAlias($widgetAlias);
@@ -148,14 +145,14 @@ class DashboardContainer extends BaseWidget
         $size = trim(post('size'));
 
         if (!$className)
-            throw new ApplicationException(lang('admin::lang.dashboard.alert_select_widget_to_add'));
+            throw new ApplicationException(lang('igniter::admin.dashboard.alert_select_widget_to_add'));
 
         if (!class_exists($className))
-            throw new ApplicationException(lang('admin::lang.dashboard.alert_widget_class_not_found'));
+            throw new ApplicationException(lang('igniter::admin.dashboard.alert_widget_class_not_found'));
 
         $widget = new $className($this->controller);
-        if (!($widget instanceof \Admin\Classes\BaseDashboardWidget))
-            throw new ApplicationException(lang('admin::lang.dashboard.alert_invalid_widget'));
+        if (!($widget instanceof \Igniter\Admin\Classes\BaseDashboardWidget))
+            throw new ApplicationException(lang('igniter::admin.dashboard.alert_invalid_widget'));
 
         $widgetInfo = $this->addWidget($widget, $size);
 
@@ -171,14 +168,14 @@ class DashboardContainer extends BaseWidget
     public function onResetWidgets()
     {
         if (!$this->canManage) {
-            throw new ApplicationException(lang('admin::lang.alert_access_denied'));
+            throw new ApplicationException(lang('igniter::admin.alert_access_denied'));
         }
 
         $this->resetWidgets();
 
         $this->vars['widgets'] = $this->dashboardWidgets;
 
-        flash()->success(lang('admin::lang.dashboard.alert_reset_layout_success'));
+        flash()->success(lang('igniter::admin.dashboard.alert_reset_layout_success'));
 
         return ['#'.$this->getId('container-list') => $this->makePartial('widget_list')];
     }
@@ -186,20 +183,20 @@ class DashboardContainer extends BaseWidget
     public function onSetAsDefault()
     {
         if (!$this->canSetDefault) {
-            throw new ApplicationException(lang('admin::lang.alert_access_denied'));
+            throw new ApplicationException(lang('igniter::admin.alert_access_denied'));
         }
 
         $widgets = $this->getWidgetsFromUserPreferences();
 
         params()->set($this->getSystemParametersKey(), $widgets);
 
-        flash()->success(lang('admin::lang.dashboard.make_default_success'));
+        flash()->success(lang('igniter::admin.dashboard.make_default_success'));
     }
 
     public function onUpdateWidget()
     {
         if (!$this->canManage) {
-            throw new ApplicationException(lang('admin::lang.alert_access_denied'));
+            throw new ApplicationException(lang('igniter::admin.alert_access_denied'));
         }
 
         $alias = post('alias');
@@ -225,7 +222,7 @@ class DashboardContainer extends BaseWidget
     }
 
     /**
-     * @param \Admin\Classes\BaseDashboardWidget $widget
+     * @param \Igniter\Admin\Classes\BaseDashboardWidget $widget
      * @param $size
      *
      * @return array
@@ -234,7 +231,7 @@ class DashboardContainer extends BaseWidget
     public function addWidget($widget, $size)
     {
         if (!$this->canManage) {
-            throw new ApplicationException(lang('admin::lang.alert_access_denied'));
+            throw new ApplicationException(lang('igniter::admin.alert_access_denied'));
         }
 
         $widgets = $this->getWidgetsFromUserPreferences();
@@ -270,18 +267,18 @@ class DashboardContainer extends BaseWidget
         $priorities = trim(post('priorities'));
 
         if (!$aliases) {
-            throw new ApplicationException(lang('admin::lang.dashboard.alert_invalid_aliases'));
+            throw new ApplicationException(lang('igniter::admin.dashboard.alert_invalid_aliases'));
         }
 
         if (!$priorities) {
-            throw new ApplicationException(lang('admin::lang.dashboard.alert_invalid_priorities'));
+            throw new ApplicationException(lang('igniter::admin.dashboard.alert_invalid_priorities'));
         }
 
         $aliases = explode(',', $aliases);
         $priorities = explode(',', $priorities);
 
         if (count($aliases) != count($priorities)) {
-            throw new ApplicationException(lang('admin::lang.dashboard.alert_invalid_data_posted'));
+            throw new ApplicationException(lang('igniter::admin.dashboard.alert_invalid_data_posted'));
         }
 
         $widgets = $this->getWidgetsFromUserPreferences();
@@ -293,7 +290,7 @@ class DashboardContainer extends BaseWidget
 
         $this->setWidgetsToUserPreferences($widgets);
 
-        flash()->success(sprintf(lang('admin::lang.alert_success'), 'Dashboard widgets updated'))->now();
+        flash()->success(sprintf(lang('igniter::admin.alert_success'), 'Dashboard widgets updated'))->now();
     }
 
     //
@@ -355,7 +352,7 @@ class DashboardContainer extends BaseWidget
     protected function removeWidget($alias)
     {
         if (!$this->canManage) {
-            throw new ApplicationException(lang('admin::lang.alert_access_denied'));
+            throw new ApplicationException(lang('igniter::admin.alert_access_denied'));
         }
 
         $widgets = $this->getWidgetsFromUserPreferences();
@@ -367,7 +364,7 @@ class DashboardContainer extends BaseWidget
         $this->setWidgetsToUserPreferences($widgets);
     }
 
-    protected function getFormWidget($alias, $widget)
+    public function getFormWidget($alias, $widget)
     {
         $formConfig['fields'] = $this->getWidgetPropertyConfig($widget);
 
@@ -377,7 +374,7 @@ class DashboardContainer extends BaseWidget
         $formConfig['alias'] = $this->alias.studly_case('Form_'.$alias);
         $formConfig['arrayName'] = $alias.'_fields';
 
-        $formWidget = $this->makeWidget(\Admin\Widgets\Form::class, $formConfig);
+        $formWidget = $this->makeWidget(\Igniter\Admin\Widgets\Form::class, $formConfig);
         $formWidget->bindToController();
 
         return $formWidget;
@@ -389,7 +386,7 @@ class DashboardContainer extends BaseWidget
 
         $widgets = $this->dashboardWidgets;
         if (!isset($widgets[$alias])) {
-            throw new ApplicationException(lang('admin::lang.dashboard.alert_widget_not_found'));
+            throw new ApplicationException(lang('igniter::admin.dashboard.alert_widget_not_found'));
         }
 
         return $widgets[$alias]['widget'];
@@ -408,7 +405,7 @@ class DashboardContainer extends BaseWidget
     }
 
     /**
-     * @param \Admin\Classes\BaseDashboardWidget $widget
+     * @param \Igniter\Admin\Classes\BaseDashboardWidget $widget
      *
      * @return array
      */
@@ -419,8 +416,8 @@ class DashboardContainer extends BaseWidget
         $result = [
             'width' => [
                 'property' => 'width',
-                'label' => lang('admin::lang.dashboard.label_widget_columns'),
-                'comment' => lang('admin::lang.dashboard.help_widget_columns'),
+                'label' => lang('igniter::admin.dashboard.label_widget_columns'),
+                'comment' => lang('igniter::admin.dashboard.help_widget_columns'),
                 'type' => 'select',
                 'options' => $this->getWidgetPropertyWidthOptions(),
             ],
@@ -452,7 +449,7 @@ class DashboardContainer extends BaseWidget
     }
 
     /**
-     * @param \Admin\Classes\BaseDashboardWidget $widget
+     * @param \Igniter\Admin\Classes\BaseDashboardWidget $widget
      *
      * @return array
      */

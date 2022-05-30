@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Traits;
+namespace Igniter\Admin\Traits;
 
 use Carbon\Carbon;
 use DateInterval;
@@ -14,14 +14,11 @@ trait HasChartDatasets
 
     public function loadAssets()
     {
-        $this->addJs('~/app/admin/assets/src/js/vendor/moment.min.js', 'moment-js');
-        $this->addJs('~/app/admin/dashboardwidgets/charts/assets/vendor/daterange/daterangepicker.js', 'daterangepicker-js');
-        $this->addCss('~/app/admin/dashboardwidgets/charts/assets/vendor/daterange/daterangepicker.css', 'daterangepicker-css');
+        $this->addJs('js/vendor.datetime.js', 'vendor-datetime-js');
+        $this->addJs('js/vendor.chart.js', 'vendor-chart-js');
 
-        $this->addJs('~/app/admin/dashboardwidgets/charts/assets/vendor/chartjs/Chart.min.js', 'chartsjs-js');
-        $this->addJs('~/app/admin/dashboardwidgets/charts/assets/vendor/chartjs/chartjs-adapter-moment.min.js', 'chartsjs-adapter-js');
-        $this->addCss('~/app/admin/dashboardwidgets/charts/assets/css/charts.css', 'charts-css');
-        $this->addJs('~/app/admin/dashboardwidgets/charts/assets/js/charts.js', 'charts-js');
+        $this->addCss('dashboardwidgets/charts.css', 'charts-css');
+        $this->addJs('dashboardwidgets/charts.js', 'charts-js');
     }
 
     public function onFetchDatasets()

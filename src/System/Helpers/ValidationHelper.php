@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Helpers;
+namespace Igniter\System\Helpers;
 
 class ValidationHelper
 {

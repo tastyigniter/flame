@@ -1,19 +1,19 @@
 <?php
 
-namespace Admin\Requests;
+namespace Igniter\Admin\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class Mealtime extends FormRequest
 {
     public function attributes()
     {
         return [
-            'mealtime_name' => lang('admin::lang.mealtimes.label_mealtime_name'),
-            'start_time' => lang('admin::lang.mealtimes.label_start_time'),
-            'end_time' => lang('admin::lang.mealtimes.label_end_time'),
-            'mealtime_status' => lang('admin::lang.label_status'),
-            'locations.*' => lang('admin::lang.label_location'),
+            'mealtime_name' => lang('igniter::admin.mealtimes.label_mealtime_name'),
+            'start_time' => lang('igniter::admin.mealtimes.label_start_time'),
+            'end_time' => lang('igniter::admin.mealtimes.label_end_time'),
+            'mealtime_status' => lang('igniter::admin.label_status'),
+            'locations.*' => lang('igniter::admin.label_location'),
         ];
     }
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
-use Admin\Traits\Locationable;
+use Igniter\Admin\Traits\Locationable;
 use Carbon\Carbon;
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Model;
@@ -35,7 +35,7 @@ class Mealtime extends Model
 
     public $relation = [
         'morphToMany' => [
-            'locations' => [\Admin\Models\Location::class, 'name' => 'locationable'],
+            'locations' => [\Igniter\Admin\Models\Location::class, 'name' => 'locationable'],
         ],
     ];
 

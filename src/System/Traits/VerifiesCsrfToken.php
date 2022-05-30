@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Traits;
+namespace Igniter\System\Traits;
 
 use Carbon\Carbon;
 use Illuminate\Contracts\Encryption\DecryptException;
@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 
 /**
  * Verifies CSRF token Trait
+ * @deprecated
  */
 trait VerifiesCsrfToken
 {
@@ -36,7 +37,7 @@ trait VerifiesCsrfToken
 
     protected function verifyCsrfToken()
     {
-        if (!config('system.enableCsrfProtection', true) || !$this->enableCsrfProtection)
+        if (!config('igniter.system.enableCsrfProtection', true) || !$this->enableCsrfProtection)
             return true;
 
         if (in_array(Request::method(), ['HEAD', 'GET', 'OPTIONS']))

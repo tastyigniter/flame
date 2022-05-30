@@ -1,12 +1,12 @@
 <?php
 
-namespace System\Models;
+namespace Igniter\System\Models;
 
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Mail\MailParser;
 use Igniter\Flame\Support\Facades\File;
+use Igniter\System\Classes\MailManager;
 use Illuminate\Support\Facades\View;
-use System\Classes\MailManager;
 
 /**
  * MailTemplate Model Class
@@ -28,7 +28,7 @@ class MailTemplate extends Model
 
     public $relation = [
         'belongsTo' => [
-            'layout' => [\System\Models\MailLayout::class, 'foreignKey' => 'layout_id'],
+            'layout' => [\Igniter\System\Models\MailLayout::class, 'foreignKey' => 'layout_id'],
         ],
     ];
 
@@ -41,7 +41,7 @@ class MailTemplate extends Model
 
     public static function getVariableOptions()
     {
-        return MailManager::instance()->listRegisteredVariables();
+        return resolve(MailManager::class)->listRegisteredVariables();
     }
 
     protected function afterFetch()
@@ -95,7 +95,7 @@ class MailTemplate extends Model
         MailLayout::createLayouts();
         MailPartial::createPartials();
 
-        $templates = (array)MailManager::instance()->listRegisteredTemplates();
+        $templates = (array)resolve(MailManager::class)->listRegisteredTemplates();
         $dbTemplates = self::lists('is_custom', 'code')->all();
         $newTemplates = array_diff_key($templates, $dbTemplates);
 
@@ -135,7 +135,7 @@ class MailTemplate extends Model
 
     public static function listAllTemplates()
     {
-        $registeredTemplates = (array)MailManager::instance()->listRegisteredTemplates();
+        $registeredTemplates = (array)resolve(MailManager::class)->listRegisteredTemplates();
         $dbTemplates = (array)self::lists('code', 'code');
         $templates = $registeredTemplates + $dbTemplates;
         ksort($templates);

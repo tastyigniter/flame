@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Classes;
+namespace Igniter\System\Classes;
 
 use Igniter\Flame\Support\Extendable;
 use Igniter\Flame\Traits\EventEmitter;

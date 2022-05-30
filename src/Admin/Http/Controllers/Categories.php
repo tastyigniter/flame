@@ -1,47 +1,47 @@
 <?php
 
-namespace Admin\Controllers;
+namespace Igniter\Admin\Http\Controllers;
 
-use Admin\Classes\AdminController;
-use Admin\Facades\AdminMenu;
-use Admin\Models\Category;
+use Igniter\Admin\Classes\AdminController;
+use Igniter\Admin\Facades\AdminMenu;
+use Igniter\Admin\Models\Category;
 
 class Categories extends AdminController
 {
     public $implement = [
-        \Admin\Actions\ListController::class,
-        \Admin\Actions\FormController::class,
-        \Admin\Actions\LocationAwareController::class,
+        \Igniter\Admin\Http\Actions\ListController::class,
+        \Igniter\Admin\Http\Actions\FormController::class,
+        \Igniter\Admin\Http\Actions\LocationAwareController::class,
     ];
 
     public $listConfig = [
         'list' => [
-            'model' => \Admin\Models\Category::class,
-            'title' => 'lang:admin::lang.categories.text_title',
-            'emptyMessage' => 'lang:admin::lang.categories.text_empty',
+            'model' => \Igniter\Admin\Models\Category::class,
+            'title' => 'lang:igniter::admin.categories.text_title',
+            'emptyMessage' => 'lang:igniter::admin.categories.text_empty',
             'defaultSort' => ['category_id', 'DESC'],
             'configFile' => 'category',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.categories.text_form_name',
-        'model' => \Admin\Models\Category::class,
-        'request' => \Admin\Requests\Category::class,
+        'name' => 'lang:igniter::admin.categories.text_form_name',
+        'model' => \Igniter\Admin\Models\Category::class,
+        'request' => \Igniter\Admin\Requests\Category::class,
         'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
+            'title' => 'lang:igniter::admin.form.create_title',
             'redirect' => 'categories/edit/{category_id}',
             'redirectClose' => 'categories',
             'redirectNew' => 'categories/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
+            'title' => 'lang:igniter::admin.form.edit_title',
             'redirect' => 'categories/edit/{category_id}',
             'redirectClose' => 'categories',
             'redirectNew' => 'categories/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title' => 'lang:igniter::admin.form.preview_title',
             'redirect' => 'categories',
         ],
         'delete' => [
@@ -50,7 +50,7 @@ class Categories extends AdminController
         'configFile' => 'category',
     ];
 
-    protected $requiredPermissions = 'Admin.Categories';
+    protected $requiredPermissions = ['Admin.Categories'];
 
     public function __construct()
     {

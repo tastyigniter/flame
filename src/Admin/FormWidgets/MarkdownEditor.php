@@ -1,8 +1,8 @@
 <?php
 
-namespace Admin\FormWidgets;
+namespace Igniter\Admin\FormWidgets;
 
-use Admin\Classes\BaseFormWidget;
+use Igniter\Admin\Classes\BaseFormWidget;
 use Igniter\Flame\Mail\Markdown;
 
 /**
@@ -58,10 +58,9 @@ class MarkdownEditor extends BaseFormWidget
 
     public function loadAssets()
     {
-        $this->addCss('vendor/easymde/easymde.min.css', 'easymde-css');
-        $this->addCss('css/markdowneditor.css', 'markdowneditor-css');
-        $this->addJs('vendor/easymde/easymde.min.js', 'easymde-js');
-        $this->addJs('js/markdowneditor.js', 'markdowneditor-js');
+        $this->addJs('js/vendor.editor.js', 'vendor-editor-js');
+        $this->addCss('igniter::formwidgets.markdowneditor', 'markdowneditor-css');
+        $this->addJs('markdowneditor.js', 'markdowneditor-js');
     }
 
     public function onRefresh()

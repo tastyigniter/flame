@@ -1,46 +1,46 @@
 <?php
 
-namespace Admin\Controllers;
+namespace Igniter\Admin\Http\Controllers;
 
-use Admin\Classes\AdminController;
-use Admin\Facades\AdminMenu;
+use Igniter\Admin\Classes\AdminController;
+use Igniter\Admin\Facades\AdminMenu;
 
 class Menus extends AdminController
 {
     public $implement = [
-        \Admin\Actions\ListController::class,
-        \Admin\Actions\FormController::class,
-        \Admin\Actions\LocationAwareController::class,
+        \Igniter\Admin\Http\Actions\ListController::class,
+        \Igniter\Admin\Http\Actions\FormController::class,
+        \Igniter\Admin\Http\Actions\LocationAwareController::class,
     ];
 
     public $listConfig = [
         'list' => [
-            'model' => \Admin\Models\Menu::class,
-            'title' => 'lang:admin::lang.menus.text_title',
-            'emptyMessage' => 'lang:admin::lang.menus.text_empty',
+            'model' => \Igniter\Admin\Models\Menu::class,
+            'title' => 'lang:igniter::admin.menus.text_title',
+            'emptyMessage' => 'lang:igniter::admin.menus.text_empty',
             'defaultSort' => ['menu_id', 'DESC'],
             'configFile' => 'menu',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.menus.text_form_name',
-        'model' => \Admin\Models\Menu::class,
-        'request' => \Admin\Requests\Menu::class,
+        'name' => 'lang:igniter::admin.menus.text_form_name',
+        'model' => \Igniter\Admin\Models\Menu::class,
+        'request' => \Igniter\Admin\Requests\Menu::class,
         'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
+            'title' => 'lang:igniter::admin.form.create_title',
             'redirect' => 'menus/edit/{menu_id}',
             'redirectClose' => 'menus',
             'redirectNew' => 'menus/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
+            'title' => 'lang:igniter::admin.form.edit_title',
             'redirect' => 'menus/edit/{menu_id}',
             'redirectClose' => 'menus',
             'redirectNew' => 'menus/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title' => 'lang:igniter::admin.form.preview_title',
             'redirect' => 'menus',
         ],
         'delete' => [

@@ -1,10 +1,11 @@
 <?php
 
-namespace Admin\Classes;
+namespace Igniter\Admin\Classes;
 
 use ArrayAccess;
 use ArrayIterator;
 use IteratorAggregate;
+use Traversable;
 
 /**
  * Form Tabs definition
@@ -31,7 +32,7 @@ class FormTabs implements IteratorAggregate, ArrayAccess
     /**
      * @var string Default tab label to use when none is specified.
      */
-    public $defaultTab = 'admin::lang.form.undefined_tab';
+    public $defaultTab = 'igniter::admin.form.undefined_tab';
 
     /**
      * @var bool Should these tabs stretch to the bottom of the page layout.
@@ -176,7 +177,7 @@ class FormTabs implements IteratorAggregate, ArrayAccess
      * Get an iterator for the items.
      * @return ArrayIterator
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->suppressTabs
             ? $this->getAllFields()

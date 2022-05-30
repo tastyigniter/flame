@@ -1,11 +1,11 @@
 <?php
 
-namespace Admin\Widgets;
+namespace Igniter\Admin\Widgets;
 
-use Admin\Classes\BaseWidget;
-use Admin\Classes\ToolbarButton;
-use Admin\Facades\AdminAuth;
-use Admin\Facades\Template;
+use Igniter\Admin\Classes\BaseWidget;
+use Igniter\Admin\Classes\ToolbarButton;
+use Igniter\Admin\Facades\AdminAuth;
+use Igniter\Admin\Facades\Template;
 
 class Toolbar extends BaseWidget
 {

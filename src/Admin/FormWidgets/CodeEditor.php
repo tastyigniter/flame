@@ -1,8 +1,8 @@
 <?php
 
-namespace Admin\FormWidgets;
+namespace Igniter\Admin\FormWidgets;
 
-use Admin\Classes\BaseFormWidget;
+use Igniter\Admin\Classes\BaseFormWidget;
 
 /**
  * Code Editor
@@ -53,18 +53,9 @@ class CodeEditor extends BaseFormWidget
 
     public function loadAssets()
     {
-        $this->addCss('vendor/codemirror/material.css', 'material-css');
-        $this->addCss('vendor/codemirror/codemirror.css', 'codemirror-css');
-        $this->addJs('vendor/codemirror/codemirror.js', 'codemirror-js');
-        $this->addJs('vendor/codemirror/xml/xml.js', 'codemirror-xml-js');
-        $this->addJs('vendor/codemirror/css/css.js', 'codemirror-css-js');
-        $this->addJs('vendor/codemirror/javascript/javascript.js', 'codemirror-javascript-js');
-        $this->addJs('vendor/codemirror/php/php.js', 'codemirror-php-js');
-        $this->addJs('vendor/codemirror/htmlmixed/htmlmixed.js', 'codemirror-htmlmixed-js');
-        $this->addJs('vendor/codemirror/clike/clike.js', 'codemirror-clike-js');
-
-        $this->addCss('css/codeeditor.css', 'codeeditor-css');
-        $this->addJs('js/codeeditor.js', 'codeeditor-js');
+        $this->addJs('js/vendor.editor.js', 'vendor-editor-js');
+        $this->addCss('codeeditor.css', 'codeeditor-css');
+        $this->addJs('codeeditor.js', 'codeeditor-js');
     }
 
     /**

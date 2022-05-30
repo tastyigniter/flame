@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\Traits;
+namespace Igniter\Admin\Traits;
 
-use Admin\Facades\AdminLocation;
-use Admin\Models\Location;
+use Igniter\Admin\Facades\AdminLocation;
+use Igniter\Admin\Models\Location;
 
 trait LocationAwareWidget
 {
@@ -29,7 +29,7 @@ trait LocationAwareWidget
             return;
         }
 
-        if (!in_array(\Admin\Traits\Locationable::class, class_uses($model)))
+        if (!in_array(\Igniter\Admin\Traits\Locationable::class, class_uses($model)))
             return;
 
         $query->whereHasLocation($ids);

@@ -6,7 +6,7 @@
     >
         <option value="">@lang($scope->label)</option>
         @php $options = $this->getSelectOptions($scope->scopeName) @endphp
-        @foreach ($options['available'] as $key => $value)
+        @foreach($options['available'] as $key => $value)
             <option
                 value="{{ $key }}"
                 {!! ($options['active'] == $key) ? 'selected="selected"' : '' !!}

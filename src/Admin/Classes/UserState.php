@@ -1,10 +1,10 @@
 <?php
 
-namespace Admin\Classes;
+namespace Igniter\Admin\Classes;
 
-use Admin\Facades\AdminAuth;
-use Admin\Models\UserPreference;
 use Carbon\Carbon;
+use Igniter\Admin\Facades\AdminAuth;
+use Igniter\Admin\Models\UserPreference;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -84,26 +84,26 @@ class UserState
     public static function getStatusDropdownOptions()
     {
         return [
-            static::ONLINE_STATUS => 'admin::lang.staff_status.text_online',
-            static::BACK_SOON_STATUS => 'admin::lang.staff_status.text_back_soon',
-            static::AWAY_STATUS => 'admin::lang.staff_status.text_away',
-            static::CUSTOM_STATUS => 'admin::lang.staff_status.text_custom_status',
+            static::ONLINE_STATUS => 'igniter::admin.staff_status.text_online',
+            static::BACK_SOON_STATUS => 'igniter::admin.staff_status.text_back_soon',
+            static::AWAY_STATUS => 'igniter::admin.staff_status.text_away',
+            static::CUSTOM_STATUS => 'igniter::admin.staff_status.text_custom_status',
         ];
     }
 
     public static function getClearAfterMinutesDropdownOptions()
     {
         return [
-            1440 => 'admin::lang.staff_status.text_clear_tomorrow',
-            240 => 'admin::lang.staff_status.text_clear_hours',
-            30 => 'admin::lang.staff_status.text_clear_minutes',
-            0 => 'admin::lang.staff_status.text_dont_clear',
+            1440 => 'igniter::admin.staff_status.text_clear_tomorrow',
+            240 => 'igniter::admin.staff_status.text_clear_hours',
+            30 => 'igniter::admin.staff_status.text_clear_minutes',
+            0 => 'igniter::admin.staff_status.text_dont_clear',
         ];
     }
 
     public static function clearExpiredStatus()
     {
-        DB::table(User_preferences_model::make()->getTable())
+        DB::table(UserPreference::make()->getTable())
             ->where('item', static::USER_PREFERENCE_KEY)
             ->where('value->status', static::CUSTOM_STATUS)
             ->where('value->clearAfterMinutes', '!=', 0)
@@ -119,7 +119,7 @@ class UserState
                 if (Carbon::now()->lessThan($clearAfterAt))
                     return true;
 
-                DB::table(User_preferences_model::make()->getTable())
+                DB::table(UserPreference::make()->getTable())
                     ->where('id', $preference->id)
                     ->update(['value' => json_encode((new static)->defaultStateConfig)]);
             });

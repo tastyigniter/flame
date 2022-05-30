@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Traits;
+namespace Igniter\System\Traits;
 
 use Illuminate\Support\Facades\Mail;
 
@@ -24,21 +24,18 @@ trait SendsMailTemplate
         if ($result && is_array($result))
             $vars = array_merge(...$result) + $vars;
 
-        Mail::queue($view, $vars, $this->mailBuildMessage($recipientType));
+        if ($recipients = $this->mailBuildMessageTo($recipientType))
+            Mail::queueTemplate($view, $vars, $recipients);
     }
 
-    protected function mailBuildMessage($recipientType = null)
+    protected function mailBuildMessageTo($recipientType = null)
     {
-        if (is_callable($recipientType))
-            return $recipientType;
+        $recipients = [];
+        foreach ($this->mailGetRecipients($recipientType) as $recipient) {
+            [$email, $name] = $recipient;
+            $recipients[] = ['name' => $name, 'email' => $email];
+        }
 
-        $recipients = $this->mailGetRecipients($recipientType);
-
-        return function ($message) use ($recipients) {
-            foreach ($recipients as $recipient) {
-                [$email, $name] = $recipient;
-                $message->to($email, $name);
-            }
-        };
+        return $recipients;
     }
 }

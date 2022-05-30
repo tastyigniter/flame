@@ -1,35 +1,35 @@
 <?php
 
-namespace System\Requests;
+namespace Igniter\System\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class MailSettings extends FormRequest
 {
     public function attributes()
     {
         return [
-            'sender_name' => lang('system::lang.settings.label_sender_name'),
-            'sender_email' => lang('system::lang.settings.label_sender_email'),
-            'protocol' => lang('system::lang.settings.label_protocol'),
+            'sender_name' => lang('igniter::system.settings.label_sender_name'),
+            'sender_email' => lang('igniter::system.settings.label_sender_email'),
+            'protocol' => lang('igniter::system.settings.label_protocol'),
 
-            'mail_logo' => lang('system::lang.settings.label_mail_logo'),
-            'sendmail_path' => lang('system::lang.settings.label_sendmail_path'),
+            'mail_logo' => lang('igniter::system.settings.label_mail_logo'),
+            'sendmail_path' => lang('igniter::system.settings.label_sendmail_path'),
 
-            'smtp_host' => lang('system::lang.settings.label_smtp_host'),
-            'smtp_port' => lang('system::lang.settings.label_smtp_port'),
-            'smtp_encryption' => lang('system::lang.settings.label_smtp_encryption'),
-            'smtp_user' => lang('system::lang.settings.label_smtp_user'),
-            'smtp_pass' => lang('system::lang.settings.label_smtp_pass'),
+            'smtp_host' => lang('igniter::system.settings.label_smtp_host'),
+            'smtp_port' => lang('igniter::system.settings.label_smtp_port'),
+            'smtp_encryption' => lang('igniter::system.settings.label_smtp_encryption'),
+            'smtp_user' => lang('igniter::system.settings.label_smtp_user'),
+            'smtp_pass' => lang('igniter::system.settings.label_smtp_pass'),
 
-            'mailgun_domain' => lang('system::lang.settings.label_mailgun_domain'),
-            'mailgun_secret' => lang('system::lang.settings.label_mailgun_secret'),
+            'mailgun_domain' => lang('igniter::system.settings.label_mailgun_domain'),
+            'mailgun_secret' => lang('igniter::system.settings.label_mailgun_secret'),
 
-            'postmark_token' => lang('system::lang.settings.label_postmark_token'),
+            'postmark_token' => lang('igniter::system.settings.label_postmark_token'),
 
-            'ses_key' => lang('system::lang.settings.label_ses_key'),
-            'ses_secret' => lang('system::lang.settings.label_ses_secret'),
-            'ses_region' => lang('system::lang.settings.label_ses_region'),
+            'ses_key' => lang('igniter::system.settings.label_ses_key'),
+            'ses_secret' => lang('igniter::system.settings.label_ses_secret'),
+            'ses_region' => lang('igniter::system.settings.label_ses_region'),
         ];
     }
 

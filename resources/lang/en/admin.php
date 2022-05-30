@@ -299,66 +299,6 @@ return [
         'help_photo' => 'Select a file to update category image, otherwise leave blank.',
     ],
 
-    'customer_groups' => [
-        'text_title' => 'Customer Groups',
-        'text_form_name' => 'Customer Group',
-        'text_empty' => 'There are no customer groups available.',
-
-        'column_customers' => '# Customers',
-
-        'label_approval' => 'Approval',
-
-        'alert_set_default' => 'Customer group set as default',
-
-        'help_approval' => 'New customers must be approved before they can login.',
-    ],
-
-    'customers' => [
-        'text_title' => 'Customers',
-        'text_form_name' => 'Customer',
-        'text_tab_general' => 'Customer',
-        'text_tab_address' => 'Addresses',
-        'text_tab_orders' => 'Orders',
-        'text_tab_reservations' => 'Reservations',
-        'text_filter_search' => 'Search by name or email.',
-        'text_empty' => 'There are no customers available.',
-        'text_subscribe' => 'Subscribe',
-        'text_un_subscribe' => 'Un-subscribe',
-        'text_title_edit_address' => 'Address',
-        'text_impersonate' => 'Impersonate Customer',
-
-        'column_full_name' => 'Full Name',
-        'column_telephone' => 'Telephone',
-        'column_date_added' => 'Date Registered',
-
-        'button_activate' => 'Manually Activate',
-
-        'label_first_name' => 'First Name',
-        'label_last_name' => 'Last Name',
-        'label_password' => 'Password',
-        'label_confirm_password' => 'Confirm Password',
-        'label_telephone' => 'Telephone',
-        'label_newsletter' => 'Newsletter',
-        'label_send_invite' => 'Send Invitation Email',
-        'label_customer_group' => 'Customer Group',
-        'label_address_1' => 'Address 1',
-        'label_address_2' => 'Address 2',
-        'label_city' => 'City',
-        'label_state' => 'State',
-        'label_postcode' => 'Postcode',
-        'label_country' => 'Country',
-
-        'help_send_invite' => 'Sends an invitation message containing a link to set a password on their account.',
-        'help_password' => 'Leave blank to leave password unchanged',
-
-        'alert_login_restricted' => 'Warning: You do not have the right permission to <b>access a customer account</b>, please contact system administrator.',
-        'alert_impersonate_confirm' => 'Are you sure you want to impersonate this customer? You can revert to your original state by logging out.',
-        'alert_impersonate_success' => 'You are now impersonating customer: %s',
-        'alert_activation_success' => 'Customer activated successfully.',
-        'alert_customer_not_active' => "Cannot login user '%s' until activated.",
-        'alert_customer_payment_profile_not_found' => 'Customer payment profile not found!',
-    ],
-
     'dashboard' => [
         'text_title' => 'Dashboard',
         'text_heading' => 'Dashboard',
@@ -587,11 +527,11 @@ return [
         'button_reset_password' => 'Reset Password',
 
         'label_reset_code' => 'Reset code',
-        'label_username' => 'Username',
+        'label_email' => 'Email address',
         'label_password' => 'Password',
         'label_password_confirm' => 'Confirm Password',
 
-        'alert_username_not_found' => 'Login failed, please try again or contact the system administrator!',
+        'alert_login_failed' => 'Login failed, please try again or contact the system administrator!',
         'alert_success_reset' => 'You\'ve successfully changed your password.',
         'alert_failed_reset' => 'The reset code is either invalid or expired.',
         'alert_success_logout' => 'You are now logged out.',

@@ -1,6 +1,6 @@
 <?php
 
-namespace Main\Template\Code;
+namespace Igniter\Main\Template\Code;
 
 use Igniter\Flame\Pagic\TemplateCode;
 

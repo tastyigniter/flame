@@ -1,16 +1,16 @@
 <?php
 
-namespace Main\Template;
+namespace Igniter\Main\Template;
 
 use Igniter\Flame\Pagic\Contracts\TemplateSource;
 use Igniter\Flame\Support\Extendable;
 use Igniter\Flame\Support\Facades\File;
-use System\Classes\BaseComponent;
+use Igniter\System\Classes\BaseComponent;
 
 class ComponentPartial extends Extendable implements TemplateSource
 {
     /**
-     * @var \System\Classes\BaseComponent The component object.
+     * @var \Igniter\System\Classes\BaseComponent The component object.
      */
     protected $component;
 
@@ -32,12 +32,12 @@ class ComponentPartial extends Extendable implements TemplateSource
     /**
      * @var array Allowable file extensions.
      */
-    protected $allowedExtensions = ['php'];
+    protected $allowedExtensions = ['blade.php', 'php'];
 
     /**
      * @var string Default file extension.
      */
-    protected $defaultExtension = 'php';
+    protected $defaultExtension = 'blade.php';
 
     /**
      * @var int The maximum allowed path nesting level. The default value is 2,
@@ -49,7 +49,7 @@ class ComponentPartial extends Extendable implements TemplateSource
     /**
      * Creates an instance of the object and associates it with a component.
      *
-     * @param \System\Classes\BaseComponent $component
+     * @param \Igniter\System\Classes\BaseComponent $component
      */
     public function __construct(BaseComponent $component)
     {
@@ -59,9 +59,9 @@ class ComponentPartial extends Extendable implements TemplateSource
     }
 
     /**
-     * @param \System\Classes\BaseComponent $component
+     * @param \Igniter\System\Classes\BaseComponent $component
      * @param string $fileName
-     * @return \Main\Template\ComponentPartial|mixed
+     * @return \Igniter\Main\Template\ComponentPartial|mixed
      */
     public static function load($component, $fileName)
     {
@@ -69,9 +69,9 @@ class ComponentPartial extends Extendable implements TemplateSource
     }
 
     /**
-     * @param \System\Classes\BaseComponent $component
+     * @param \Igniter\System\Classes\BaseComponent $component
      * @param string $fileName
-     * @return \Main\Template\ComponentPartial|mixed
+     * @return \Igniter\Main\Template\ComponentPartial|mixed
      */
     public static function loadCached($component, $fileName)
     {
@@ -79,8 +79,8 @@ class ComponentPartial extends Extendable implements TemplateSource
     }
 
     /**
-     * @param \Main\Classes\Theme $theme
-     * @param \System\Classes\BaseComponent $component
+     * @param \Igniter\Main\Classes\Theme $theme
+     * @param \Igniter\System\Classes\BaseComponent $component
      * @param string $fileName
      * @return mixed
      */
@@ -174,15 +174,18 @@ class ComponentPartial extends Extendable implements TemplateSource
         $component = $this->component;
         $componentPath = $component->getPath();
 
+        if (File::isPathSymbol($componentPath))
+            $componentPath = File::symbolizePath($componentPath);
+
         $basename = $fileName;
         if (!strlen(File::extension($basename)))
-            $basename .= '.blade.'.$this->defaultExtension;
+            $basename .= '.'.$this->defaultExtension;
 
         if (File::isFile($path = $componentPath.'/'.$basename))
             return $path;
 
         // Check the shared "/partials" directory for the partial
-        $sharedPath = dirname($componentPath).'/partials/'.$basename;
+        $sharedPath = dirname($componentPath, 2).'/_partials/'.$basename;
         if (File::isFile($sharedPath)) {
             return $sharedPath;
         }

@@ -1,8 +1,8 @@
 <?php
 
-namespace Admin\Classes;
+namespace Igniter\Admin\Classes;
 
-use Admin\Models\WorkingHour;
+use Igniter\Admin\Models\WorkingHour;
 
 class ScheduleItem
 {

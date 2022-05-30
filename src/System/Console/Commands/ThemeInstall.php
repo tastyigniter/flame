@@ -1,11 +1,11 @@
 <?php
 
-namespace System\Console\Commands;
+namespace Igniter\System\Console\Commands;
 
+use Igniter\Main\Classes\ThemeManager;
+use Igniter\System\Classes\UpdateManager;
 use Illuminate\Console\Command;
-use Main\Classes\ThemeManager;
 use Symfony\Component\Console\Input\InputArgument;
-use System\Classes\UpdateManager;
 
 class ThemeInstall extends Command
 {
@@ -51,8 +51,8 @@ class ThemeInstall extends Command
         $manager->extractFile($code, theme_path('/'));
 
         $this->output->writeln(sprintf('<info>Installing %s theme</info>', $code));
-        ThemeManager::instance()->loadThemes();
-        ThemeManager::instance()->installTheme($code, $version);
+        resolve(ThemeManager::class)->loadThemes();
+        resolve(ThemeManager::class)->installTheme($code, $version);
     }
 
     /**

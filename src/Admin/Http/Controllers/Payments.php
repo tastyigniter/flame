@@ -1,44 +1,44 @@
 <?php
 
-namespace Admin\Controllers;
+namespace Igniter\Admin\Http\Controllers;
 
-use Admin\Classes\PaymentGateways;
-use Admin\Facades\AdminMenu;
-use Admin\Models\Payment;
 use Exception;
+use Igniter\Admin\Classes\PaymentGateways;
+use Igniter\Admin\Facades\AdminMenu;
+use Igniter\Admin\Models\Payment;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Exception\ApplicationException;
+use Igniter\System\Helpers\ValidationHelper;
 use Illuminate\Support\Arr;
-use System\Helpers\ValidationHelper;
 
-class Payments extends \Admin\Classes\AdminController
+class Payments extends \Igniter\Admin\Classes\AdminController
 {
     public $implement = [
-        \Admin\Actions\ListController::class,
-        \Admin\Actions\FormController::class,
+        \Igniter\Admin\Http\Actions\ListController::class,
+        \Igniter\Admin\Http\Actions\FormController::class,
     ];
 
     public $listConfig = [
         'list' => [
-            'model' => \Admin\Models\Payment::class,
-            'title' => 'lang:admin::lang.payments.text_title',
-            'emptyMessage' => 'lang:admin::lang.payments.text_empty',
+            'model' => \Igniter\Admin\Models\Payment::class,
+            'title' => 'lang:igniter::admin.payments.text_title',
+            'emptyMessage' => 'lang:igniter::admin.payments.text_empty',
             'defaultSort' => ['updated_at', 'DESC'],
             'configFile' => 'payment',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.payments.text_form_name',
-        'model' => \Admin\Models\Payment::class,
+        'name' => 'lang:igniter::admin.payments.text_form_name',
+        'model' => \Igniter\Admin\Models\Payment::class,
         'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
+            'title' => 'lang:igniter::admin.form.create_title',
             'redirect' => 'payments/edit/{code}',
             'redirectClose' => 'payments',
             'redirectNew' => 'payments/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
+            'title' => 'lang:igniter::admin.form.edit_title',
             'redirect' => 'payments/edit/{code}',
             'redirectClose' => 'payments',
             'redirectNew' => 'payments/create',
@@ -79,7 +79,7 @@ class Payments extends \Admin\Classes\AdminController
     public function formFindModelObject($paymentCode = null)
     {
         if (!strlen($paymentCode)) {
-            throw new Exception(lang('admin::lang.payments.alert_setting_missing_id'));
+            throw new Exception(lang('igniter::admin.payments.alert_setting_missing_id'));
         }
 
         $model = $this->formCreateModelObject();
@@ -90,7 +90,7 @@ class Payments extends \Admin\Classes\AdminController
         $result = $query->whereCode($paymentCode)->first();
 
         if (!$result)
-            throw new Exception(sprintf(lang('admin::lang.form.not_found'), $paymentCode));
+            throw new Exception(sprintf(lang('igniter::admin.form.not_found'), $paymentCode));
 
         $result = $this->formExtendModel($result) ?: $result;
 
@@ -104,7 +104,7 @@ class Payments extends \Admin\Classes\AdminController
         }
 
         if (!$gateway = PaymentGateways::instance()->findGateway($code)) {
-            throw new Exception(sprintf(lang('admin::lang.payments.alert_code_not_found'), $code));
+            throw new Exception(sprintf(lang('igniter::admin.payments.alert_code_not_found'), $code));
         }
 
         return $this->gateway = $gateway;
@@ -135,7 +135,7 @@ class Payments extends \Admin\Classes\AdminController
     public function formBeforeCreate($model)
     {
         if (!strlen($code = post('Payment.payment')))
-            throw new ApplicationException(lang('admin::lang.payments.alert_invalid_code'));
+            throw new ApplicationException(lang('igniter::admin.payments.alert_invalid_code'));
 
         $paymentGateway = PaymentGateways::instance()->findGateway($code);
 
@@ -157,13 +157,13 @@ class Payments extends \Admin\Classes\AdminController
         $messages = [];
 
         $attributes = [
-            'payment' => lang('admin::lang.payments.label_payments'),
-            'name' => lang('admin::lang.label_name'),
-            'code' => lang('admin::lang.payments.label_code'),
-            'priority' => lang('admin::lang.payments.label_priority'),
-            'description' => lang('admin::lang.label_description'),
-            'is_default' => lang('admin::lang.payments.label_default'),
-            'status' => lang('lang:admin::lang.label_status'),
+            'payment' => lang('igniter::admin.payments.label_payments'),
+            'name' => lang('igniter::admin.label_name'),
+            'code' => lang('igniter::admin.payments.label_code'),
+            'priority' => lang('igniter::admin.payments.label_priority'),
+            'description' => lang('igniter::admin.label_description'),
+            'is_default' => lang('igniter::admin.payments.label_default'),
+            'status' => lang('lang:igniter::admin.label_status'),
         ];
 
         if ($form->model->exists) {

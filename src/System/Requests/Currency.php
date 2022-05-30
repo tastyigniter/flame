@@ -1,24 +1,24 @@
 <?php
 
-namespace System\Requests;
+namespace Igniter\System\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class Currency extends FormRequest
 {
     public function attributes()
     {
         return [
-            'currency_name' => lang('system::lang.currencies.label_title'),
-            'currency_code' => lang('system::lang.currencies.label_code'),
-            'currency_symbol' => lang('system::lang.currencies.label_symbol'),
-            'country_id' => lang('system::lang.currencies.label_country'),
-            'symbol_position' => lang('system::lang.currencies.label_symbol_position'),
-            'currency_rate' => lang('system::lang.currencies.label_rate'),
-            'thousand_sign' => lang('system::lang.currencies.label_thousand_sign'),
-            'decimal_sign' => lang('system::lang.currencies.label_decimal_sign'),
-            'decimal_position' => lang('system::lang.currencies.label_decimal_position'),
-            'currency_status' => lang('admin::lang.label_status'),
+            'currency_name' => lang('igniter::system.currencies.label_title'),
+            'currency_code' => lang('igniter::system.currencies.label_code'),
+            'currency_symbol' => lang('igniter::system.currencies.label_symbol'),
+            'country_id' => lang('igniter::system.currencies.label_country'),
+            'symbol_position' => lang('igniter::system.currencies.label_symbol_position'),
+            'currency_rate' => lang('igniter::system.currencies.label_rate'),
+            'thousand_sign' => lang('igniter::system.currencies.label_thousand_sign'),
+            'decimal_sign' => lang('igniter::system.currencies.label_decimal_sign'),
+            'decimal_position' => lang('igniter::system.currencies.label_decimal_position'),
+            'currency_status' => lang('igniter::admin.label_status'),
         ];
     }
 

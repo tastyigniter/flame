@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
 use Igniter\Flame\Database\Model;
 
@@ -26,8 +26,8 @@ class MenuCategory extends Model
 
     public $relation = [
         'belongsTo' => [
-            'menu' => [\Admin\Models\Menu::class],
-            'category' => [\Admin\Models\Category::class],
+            'menu' => [\Igniter\Admin\Models\Menu::class],
+            'category' => [\Igniter\Admin\Models\Category::class],
         ],
     ];
 }

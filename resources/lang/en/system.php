@@ -14,15 +14,16 @@ return [
         'config' => "Configuration used in %s must supply a value '%s'.",
     ],
     'not_found' => [
-        'model' => "The model ':name' is not found.",
-        'layout' => "The layout ':name' is not found.",
-        'partial' => "The partial ':name' is not found.",
+        'model' => "The model '%s' is not found.",
+        'layout' => "The layout '%s' is not found.",
+        'partial' => "The partial '%s' is not found.",
         'config' => 'Unable to find configuration file %s defined for %s.',
         'class' => "Unable to find '%s' in %s",
         'combiner' => "Unable to find assets '%s'",
     ],
     'missing' => [
         'config_key' => 'Missing required [%s] key in %s',
+        'config_code_mismatch' => 'Code key [%s] should match the directory name %s',
         'carte_key' => 'No carte key found, click the carte button below to enter one.',
     ],
     'error' => [

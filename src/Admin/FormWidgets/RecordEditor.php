@@ -1,11 +1,11 @@
 <?php
 
-namespace Admin\FormWidgets;
+namespace Igniter\Admin\FormWidgets;
 
-use Admin\Classes\BaseFormWidget;
-use Admin\Traits\FormModelWidget;
-use Admin\Traits\ValidatesForm;
-use Admin\Widgets\Form;
+use Igniter\Admin\Classes\BaseFormWidget;
+use Igniter\Admin\Traits\FormModelWidget;
+use Igniter\Admin\Traits\ValidatesForm;
+use Igniter\Admin\Widgets\Form;
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Flame\Html\HtmlFacade as Html;
 use Illuminate\Support\Facades\DB;
@@ -77,12 +77,10 @@ class RecordEditor extends BaseFormWidget
 
     public function loadAssets()
     {
-        $this->addJs('../../repeater/assets/vendor/sortablejs/Sortable.min.js', 'sortable-js');
-        $this->addJs('../../repeater/assets/vendor/sortablejs/jquery-sortable.js', 'jquery-sortable-js');
-        $this->addJs('../../repeater/assets/js/repeater.js', 'repeater-js');
+        $this->addJs('formwidgets/repeater.js', 'repeater-js');
 
-        $this->addJs('js/recordeditor.modal.js', 'recordeditor-modal-js');
-        $this->addJs('js/recordeditor.js', 'recordeditor-js');
+        $this->addJs('formwidgets/recordeditor.modal.js', 'recordeditor-modal-js');
+        $this->addJs('formwidgets/recordeditor.js', 'recordeditor-js');
     }
 
     public function prepareVars()
@@ -102,7 +100,7 @@ class RecordEditor extends BaseFormWidget
 
     public function onLoadRecord()
     {
-        $model = strlen($recordId = post('recordId'))
+        $model = strlen($recordId = post('recordId', ''))
             ? $this->findFormModel($recordId)
             : $this->createFormModel();
 
@@ -131,7 +129,7 @@ class RecordEditor extends BaseFormWidget
             }
         });
 
-        flash()->success(sprintf(lang('admin::lang.alert_success'),
+        flash()->success(sprintf(lang('igniter::admin.alert_success'),
             lang($this->formName).' '.($form->context == 'create' ? 'created' : 'updated')))->now();
 
         return [
@@ -150,7 +148,7 @@ class RecordEditor extends BaseFormWidget
 
         $model->delete();
 
-        flash()->success(sprintf(lang('admin::lang.alert_success'), lang($this->formName).' deleted'))->now();
+        flash()->success(sprintf(lang('igniter::admin.alert_success'), lang($this->formName).' deleted'))->now();
 
         return [
             '#notification' => $this->makePartial('flash'),
@@ -202,7 +200,7 @@ class RecordEditor extends BaseFormWidget
         $methodName = 'get'.studly_case($this->fieldName).'RecordEditorOptions';
 
         if (!$model->methodExists($methodName) && !$model->methodExists('getRecordEditorOptions')) {
-            throw new ApplicationException(sprintf(lang('admin::lang.alert_missing_method'), 'getRecordEditorOptions', get_class($model)));
+            throw new ApplicationException(sprintf(lang('igniter::admin.alert_missing_method'), 'getRecordEditorOptions', get_class($model)));
         }
 
         if ($model->methodExists($methodName)) {

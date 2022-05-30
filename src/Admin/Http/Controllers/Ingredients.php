@@ -1,46 +1,46 @@
 <?php
 
-namespace Admin\Controllers;
+namespace Igniter\Admin\Http\Controllers;
 
-use Admin\Classes\AdminController;
-use Admin\Facades\AdminMenu;
+use Igniter\Admin\Classes\AdminController;
+use Igniter\Admin\Facades\AdminMenu;
 
 class Ingredients extends AdminController
 {
     public $implement = [
-        \Admin\Actions\ListController::class,
-        \Admin\Actions\FormController::class,
-        \Admin\Actions\LocationAwareController::class,
+        \Igniter\Admin\Http\Actions\ListController::class,
+        \Igniter\Admin\Http\Actions\FormController::class,
+        \Igniter\Admin\Http\Actions\LocationAwareController::class,
     ];
 
     public $listConfig = [
         'list' => [
-            'model' => \Admin\Models\Ingredient::class,
-            'title' => 'lang:admin::lang.ingredients.text_title',
-            'emptyMessage' => 'lang:admin::lang.ingredients.text_empty',
+            'model' => \Igniter\Admin\Models\Ingredient::class,
+            'title' => 'lang:igniter::admin.ingredients.text_title',
+            'emptyMessage' => 'lang:igniter::admin.ingredients.text_empty',
             'defaultSort' => ['ingredient_id', 'DESC'],
             'configFile' => 'ingredient',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.ingredients.text_form_name',
-        'model' => \Admin\Models\Ingredient::class,
-        'request' => \Admin\Requests\Ingredient::class,
+        'name' => 'lang:igniter::admin.ingredients.text_form_name',
+        'model' => \Igniter\Admin\Models\Ingredient::class,
+        'request' => \Igniter\Admin\Requests\Ingredient::class,
         'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
+            'title' => 'lang:igniter::admin.form.create_title',
             'redirect' => 'ingredients/edit/{ingredient_id}',
             'redirectClose' => 'ingredients',
             'redirectNew' => 'ingredients/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
+            'title' => 'lang:igniter::admin.form.edit_title',
             'redirect' => 'ingredients/edit/{ingredient_id}',
             'redirectClose' => 'ingredients',
             'redirectNew' => 'ingredients/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title' => 'lang:igniter::admin.form.preview_title',
             'redirect' => 'ingredients',
         ],
         'delete' => [

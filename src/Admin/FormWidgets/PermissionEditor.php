@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\FormWidgets;
+namespace Igniter\Admin\FormWidgets;
 
-use Admin\Classes\BaseFormWidget;
-use Admin\Classes\PermissionManager;
+use Igniter\Admin\Classes\BaseFormWidget;
+use Igniter\Admin\Classes\PermissionManager;
 
 /**
  * User group permission editor
@@ -39,7 +39,7 @@ class PermissionEditor extends BaseFormWidget
 
     public function loadAssets()
     {
-        $this->addJs('js/permissioneditor.js', 'permissioneditor-js');
+        $this->addJs('permissioneditor.js', 'permissioneditor-js');
     }
 
     /**

@@ -1,14 +1,14 @@
 <?php
 
-namespace System\Classes;
+namespace Igniter\System\Classes;
 
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Flame\Support\Facades\File;
 use Igniter\Flame\Traits\Singleton;
+use Igniter\System\Models\Language;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\App;
-use System\Models\Languages_model;
 use ZipArchive;
 
 class LanguageManager
@@ -51,7 +51,7 @@ class LanguageManager
 
     public function listLanguages()
     {
-        return Languages_model::isEnabled()->get();
+        return Language::isEnabled()->get();
     }
 
     /**
@@ -68,7 +68,7 @@ class LanguageManager
         if (!File::exists($directory = base_path('language')))
             return $paths;
 
-//        $directories = array_merge([App::themesPath()], self::$directories);
+//        $directories = array_merge([Igniter::themesPath()], self::$directories);
 //        foreach ($directories as $directory) {
         foreach (File::directories($directory) as $path) {
             $langDir = basename($path);
@@ -94,7 +94,7 @@ class LanguageManager
                 $result[] = [
                     'namespace' => $namespace,
                     'group' => pathinfo($filePath, PATHINFO_FILENAME),
-                    'system' => in_array(ucfirst($namespace), config('system.modules', [])),
+                    'system' => in_array(ucfirst($namespace), config('igniter.system.modules', [])),
                 ];
             }
         }
@@ -172,7 +172,7 @@ class LanguageManager
         ));
     }
 
-    public function canUpdate(Languages_model $language)
+    public function canUpdate(Language $language)
     {
         return !in_array($language->code, ['en', 'en_US', 'en_GB']) && $language->can_update;
     }
@@ -239,7 +239,7 @@ class LanguageManager
 
     public function installPack($item)
     {
-        $model = Languages_model::firstOrCreate(['code' => $item['code']]);
+        $model = Language::firstOrCreate(['code' => $item['code']]);
         $model->name = $item['name'];
         $model->version = $item['version'];
         $model->save();
@@ -255,7 +255,7 @@ class LanguageManager
     }
 
     /**
-     * @return \System\Classes\HubManager
+     * @return \Igniter\System\Classes\HubManager
      */
     protected function getHubManager()
     {

@@ -5,13 +5,13 @@ return [
         'tabs' => [
             'fields' => [
                 'markup' => [
-                    'tab' => 'lang:system::lang.themes.text_tab_markup',
+                    'tab' => 'igniter::system.themes.text_tab_markup',
                     'type' => 'codeeditor',
                     'mode' => 'html',
                 ],
                 'settings[description]' => [
-                    'tab' => 'lang:system::lang.themes.text_tab_meta',
-                    'label' => 'lang:admin::lang.label_description',
+                    'tab' => 'igniter::system.themes.text_tab_meta',
+                    'label' => 'lang:igniter::admin.label_description',
                     'type' => 'textarea',
                 ],
             ],
@@ -21,8 +21,8 @@ return [
             'settings.description' => ['max:255'],
         ],
         'validationAttributes' => [
-            'markup' => lang('system::lang.themes.text_tab_markup'),
-            'settings.description' => lang('admin::lang.label_description'),
+            'markup' => lang('igniter::system.themes.text_tab_markup'),
+            'settings.description' => lang('igniter::admin.label_description'),
         ],
     ],
 ];

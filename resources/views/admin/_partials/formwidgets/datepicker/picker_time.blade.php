@@ -10,7 +10,7 @@
         autocomplete="off"
         value="{{ $value ? $value->format($timeFormat) : null }}"
         {!! $field->getAttributes() !!}
-        @if ($this->previewMode) readonly="readonly" @endif
+        @if($this->previewMode) readonly="readonly" @endif
     />
     <span class="input-group-text"><i class="fa fa-clock-o"></i></span>
 </div>

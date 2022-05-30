@@ -1,12 +1,12 @@
 <?php
 
-namespace Admin\Classes;
+namespace Igniter\Admin\Classes;
 
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Exception\SystemException;
 use Igniter\Flame\Support\Facades\File;
+use Igniter\System\Actions\ModelAction;
 use Illuminate\Support\Facades\URL;
-use System\Actions\ModelAction;
 
 /**
  * Base Payment Gateway Class
@@ -14,13 +14,13 @@ use System\Actions\ModelAction;
 class BasePaymentGateway extends ModelAction
 {
     /**
-     * @var \Admin\Models\Payment|Model Reference to the controller associated to this action
+     * @var \Igniter\Admin\Models\Payment|Model Reference to the controller associated to this action
      */
     protected $model;
 
-    protected $orderModel = \Admin\Models\Order::class;
+    protected $orderModel = \Igniter\Admin\Models\Order::class;
 
-    protected $orderStatusModel = \Admin\Models\Status::class;
+    protected $orderStatusModel = \Igniter\Admin\Models\Status::class;
 
     protected $configFields = [];
 
@@ -40,8 +40,8 @@ class BasePaymentGateway extends ModelAction
     {
         parent::__construct($model);
 
-        $calledClass = strtolower(get_called_class());
-        $this->configPath = extension_path(File::normalizePath($calledClass));
+        $calledClass = strtolower(class_basename(get_called_class()));
+        $this->configPath = dirname(File::fromClass(get_called_class())).'/'.$calledClass;
 
         $formConfig = $this->loadConfig($this->defineFieldsConfig(), ['fields']);
         $this->configFields = array_get($formConfig, 'fields');
@@ -212,7 +212,7 @@ class BasePaymentGateway extends ModelAction
     }
 
     /**
-     * @return \Admin\Models\Payment
+     * @return \Igniter\Admin\Models\Payment
      */
     public function getHostObject()
     {
@@ -234,33 +234,33 @@ class BasePaymentGateway extends ModelAction
 
     /**
      * Creates a customer profile on the payment gateway or update if the profile already exists.
-     * @param \Admin\Models\Customer $customer Customer model to create a profile for
+     * @param \Igniter\Main\Models\Customer $customer Customer model to create a profile for
      * @param array $data Posted payment form data
-     * @return \Admin\Models\PaymentProfile|object Returns the customer payment profile model
+     * @return \Igniter\Admin\Models\PaymentProfile|object Returns the customer payment profile model
      */
     public function updatePaymentProfile($customer, $data)
     {
-        throw new SystemException(lang('admin::lang.payments.alert_update_payment_profile'));
+        throw new SystemException(lang('igniter::admin.payments.alert_update_payment_profile'));
     }
 
     /**
      * Deletes a customer payment profile from the payment gateway.
-     * @param \Admin\Models\Customer $customer Customer model
-     * @param \Admin\Models\PaymentProfile $profile Payment profile model
+     * @param \Igniter\Main\Models\Customer $customer Customer model
+     * @param \Igniter\Admin\Models\PaymentProfile $profile Payment profile model
      */
     public function deletePaymentProfile($customer, $profile)
     {
-        throw new SystemException(lang('admin::lang.payments.alert_delete_payment_profile'));
+        throw new SystemException(lang('igniter::admin.payments.alert_delete_payment_profile'));
     }
 
     /**
      * Creates a payment transaction from an existing payment profile.
-     * @param \Admin\Models\Order $order An order object to pay
+     * @param \Igniter\Admin\Models\Order $order An order object to pay
      * @param array $data
      */
     public function payFromPaymentProfile($order, $data = [])
     {
-        throw new SystemException(lang('admin::lang.payments.alert_pay_from_payment_profile'));
+        throw new SystemException(lang('igniter::admin.payments.alert_pay_from_payment_profile'));
     }
 
     //

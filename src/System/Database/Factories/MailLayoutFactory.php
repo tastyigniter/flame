@@ -1,12 +1,12 @@
 <?php
 
-namespace System\Database\Factories;
+namespace Igniter\System\Database\Factories;
 
 use Igniter\Flame\Database\Factories\Factory;
 
 class MailLayoutFactory extends Factory
 {
-    protected $model = \System\Models\MailLayout::class;
+    protected $model = \Igniter\System\Models\MailLayout::class;
 
     public function definition(): array
     {

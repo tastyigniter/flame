@@ -1,4 +1,4 @@
-@forelse ($fieldItems as $fieldItem)
+@forelse($fieldItems as $fieldItem)
     <div
         id="{{ $this->getId('item-'.$loop->iteration) }}"
         class="card bg-light shadow-sm mb-2"
@@ -14,7 +14,7 @@
                 >
                     {!! $this->makePartial('menuoptioneditor/item', ['item' => $fieldItem]) !!}
                 </div>
-                @unless ($this->previewMode)
+                @unless($this->previewMode)
                     <div class="align-self-center ml-auto">
                         <a
                             class="close text-danger"

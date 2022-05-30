@@ -1,10 +1,10 @@
 <?php
 
-namespace Admin\Classes;
+namespace Igniter\Admin\Classes;
 
-use Admin\Events\Navigation\ExtendUserMenuLinks;
-use Admin\Facades\AdminAuth;
-use Admin\Facades\AdminLocation;
+use Igniter\Admin\Events\Navigation\ExtendUserMenuLinks;
+use Igniter\Admin\Facades\AdminAuth;
+use Igniter\Admin\Facades\AdminLocation;
 
 /**
  * Admin User Panel
@@ -34,7 +34,7 @@ class UserPanel
         $items = collect([
             'userState' => [
                 'priority' => 10,
-                'label' => 'admin::lang.text_set_status',
+                'label' => 'igniter::admin.text_set_status',
                 'iconCssClass' => 'fa fa-circle fa-fw text-'.UserState::forUser()->getStatusColorName(),
                 'attributes' => [
                     'data-bs-toggle' => 'modal',
@@ -43,13 +43,13 @@ class UserPanel
                 ],
             ],
             'account' => [
-                'label' => 'admin::lang.text_edit_details',
+                'label' => 'igniter::admin.text_edit_details',
                 'iconCssClass' => 'fa fa-user fa-fw',
                 'url' => admin_url('users/account'),
                 'priority' => 20,
             ],
             'logout' => [
-                'label' => 'admin::lang.text_logout',
+                'label' => 'igniter::admin.text_logout',
                 'cssClass' => 'text-danger',
                 'iconCssClass' => 'fa fa-power-off fa-fw',
                 'url' => admin_url('logout'),

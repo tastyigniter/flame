@@ -1,12 +1,12 @@
 <?php
 
-namespace Admin\Database\Factories;
+namespace Igniter\Admin\Database\Factories;
 
 use Igniter\Flame\Database\Factories\Factory;
 
 class CustomerGroupFactory extends Factory
 {
-    protected $model = \Admin\Models\CustomerGroup::class;
+    protected $model = \Igniter\Main\Models\CustomerGroup::class;
 
     public function definition(): array
     {

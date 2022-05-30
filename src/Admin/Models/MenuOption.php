@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
-use Admin\Facades\AdminLocation;
-use Admin\Traits\Locationable;
+use Igniter\Admin\Facades\AdminLocation;
+use Igniter\Admin\Traits\Locationable;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Database\Traits\Purgeable;
 
@@ -37,11 +37,11 @@ class MenuOption extends Model
 
     public $relation = [
         'hasMany' => [
-            'option_values' => [\Admin\Models\MenuOptionValue::class, 'foreignKey' => 'option_id', 'delete' => TRUE],
-            'menu_option_values' => [\Admin\Models\MenuItemOptionValue::class, 'foreignKey' => 'option_id', 'delete' => TRUE],
+            'option_values' => [\Igniter\Admin\Models\MenuOptionValue::class, 'foreignKey' => 'option_id', 'delete' => TRUE],
+            'menu_option_values' => [\Igniter\Admin\Models\MenuItemOptionValue::class, 'foreignKey' => 'option_id', 'delete' => TRUE],
         ],
         'morphToMany' => [
-            'locations' => [\Admin\Models\Location::class, 'name' => 'locationable'],
+            'locations' => [\Igniter\Admin\Models\Location::class, 'name' => 'locationable'],
         ],
     ];
 
@@ -62,10 +62,10 @@ class MenuOption extends Model
     public static function getDisplayTypeOptions()
     {
         return [
-            'radio' => 'lang:admin::lang.menu_options.text_radio',
-            'checkbox' => 'lang:admin::lang.menu_options.text_checkbox',
-            'select' => 'lang:admin::lang.menu_options.text_select',
-            'quantity' => 'lang:admin::lang.menu_options.text_quantity',
+            'radio' => 'lang:igniter::admin.menu_options.text_radio',
+            'checkbox' => 'lang:igniter::admin.menu_options.text_checkbox',
+            'select' => 'lang:igniter::admin.menu_options.text_select',
+            'quantity' => 'lang:igniter::admin.menu_options.text_quantity',
         ];
     }
 

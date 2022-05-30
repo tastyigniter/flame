@@ -1,22 +1,22 @@
 <?php
 
-namespace Admin\Requests;
+namespace Igniter\Admin\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class Reservation extends FormRequest
 {
     public function attributes()
     {
         return [
-            'location_id' => lang('admin::lang.reservations.text_restaurant'),
-            'first_name' => lang('admin::lang.reservations.label_first_name'),
-            'last_name' => lang('admin::lang.reservations.label_last_name'),
-            'email' => lang('admin::lang.label_email'),
-            'telephone' => lang('admin::lang.reservations.label_customer_telephone'),
-            'reserve_date' => lang('admin::lang.reservations.label_reservation_date'),
-            'reserve_time' => lang('admin::lang.reservations.label_reservation_time'),
-            'guest_num' => lang('admin::lang.reservations.label_guest'),
+            'location_id' => lang('igniter::admin.reservations.text_restaurant'),
+            'first_name' => lang('igniter::admin.reservations.label_first_name'),
+            'last_name' => lang('igniter::admin.reservations.label_last_name'),
+            'email' => lang('igniter::admin.label_email'),
+            'telephone' => lang('igniter::admin.reservations.label_customer_telephone'),
+            'reserve_date' => lang('igniter::admin.reservations.label_reservation_date'),
+            'reserve_time' => lang('igniter::admin.reservations.label_reservation_time'),
+            'guest_num' => lang('igniter::admin.reservations.label_guest'),
         ];
     }
 

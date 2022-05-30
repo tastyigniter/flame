@@ -1,9 +1,9 @@
 <?php
 
-namespace System\Traits;
+namespace Igniter\System\Traits;
 
 use Igniter\Flame\Support\Facades\File;
-use System\Facades\Assets;
+use Igniter\System\Facades\Assets;
 
 trait AssetMaker
 {
@@ -34,7 +34,7 @@ trait AssetMaker
         }
 
         if ($symbolizedPath = File::symbolizePath($fileName, null))
-            return File::localToPublic($symbolizedPath);
+            return $symbolizedPath;
 
         if (!$assetPath)
             $assetPath = $this->assetPath;
@@ -43,9 +43,9 @@ trait AssetMaker
             $assetPath = [$assetPath];
 
         foreach ($assetPath as $path) {
-            $_fileName = File::symbolizePath($path).'/'.$fileName;
+            $_fileName = File::symbolizePath($path.'/'.$fileName);
             if (File::isFile($_fileName)) {
-                return File::localToPublic($_fileName);
+                return $_fileName;
             }
         }
 

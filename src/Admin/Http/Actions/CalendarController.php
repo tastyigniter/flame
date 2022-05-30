@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\Actions;
+namespace Igniter\Admin\Http\Actions;
 
-use Admin\Facades\Template;
-use System\Classes\ControllerAction;
+use Igniter\Admin\Facades\Template;
+use Igniter\System\Classes\ControllerAction;
 
 class CalendarController extends ControllerAction
 {
@@ -25,17 +25,17 @@ class CalendarController extends ControllerAction
     public $calendarConfig;
 
     /**
-     * @var \Admin\Widgets\Calendar[] Reference to the list widget objects
+     * @var \Igniter\Admin\Widgets\Calendar[] Reference to the list widget objects
      */
     protected $calendarWidgets;
 
     /**
-     * @var \Admin\Widgets\Toolbar[] Reference to the toolbar widget objects.
+     * @var \Igniter\Admin\Widgets\Toolbar[] Reference to the toolbar widget objects.
      */
     protected $toolbarWidget;
 
     /**
-     * @var \Admin\Widgets\Filter[] Reference to the filter widget objects.
+     * @var \Igniter\Admin\Widgets\Filter[] Reference to the filter widget objects.
      */
     protected $filterWidgets = [];
 
@@ -83,7 +83,7 @@ class CalendarController extends ControllerAction
     /**
      * Creates all the widgets based on the model config.
      *
-     * @return array List of Admin\Classes\BaseWidget objects
+     * @return array List of Igniter\Admin\Classes\BaseWidget objects
      */
     protected function makeCalendars()
     {
@@ -101,7 +101,7 @@ class CalendarController extends ControllerAction
      *
      * @param $alias
      *
-     * @return \Admin\Classes\BaseWidget
+     * @return \Igniter\Admin\Classes\BaseWidget
      */
     protected function makeCalendar($alias)
     {
@@ -115,7 +115,7 @@ class CalendarController extends ControllerAction
         $configFile = $calendarConfig['configFile'];
         $modelConfig = $this->loadConfig($configFile, ['calendar'], 'calendar');
 
-        $widget = $this->makeWidget(\Admin\Widgets\Calendar::class, $calendarConfig);
+        $widget = $this->makeWidget(\Igniter\Admin\Widgets\Calendar::class, $calendarConfig);
 
         $widget->bindEvent('calendar.generateEvents', function ($startAt, $endAt) {
             return $this->controller->calendarGenerateEvents($startAt, $endAt);
@@ -130,7 +130,7 @@ class CalendarController extends ControllerAction
         // Prep the optional toolbar widget
         if (isset($modelConfig['toolbar']) && isset($this->controller->widgets['toolbar'])) {
             $this->toolbarWidget = $this->controller->widgets['toolbar'];
-            if ($this->toolbarWidget instanceof \Admin\Widgets\Toolbar)
+            if ($this->toolbarWidget instanceof \Igniter\Admin\Widgets\Toolbar)
                 $this->toolbarWidget->reInitialize($modelConfig['toolbar']);
         }
 
@@ -162,7 +162,7 @@ class CalendarController extends ControllerAction
      *
      * @param string $alias
      *
-     * @return \Admin\Classes\BaseWidget
+     * @return \Igniter\Admin\Classes\BaseWidget
      */
     public function getCalendarWidget($alias = null)
     {

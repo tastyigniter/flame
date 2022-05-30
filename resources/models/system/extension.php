@@ -1,7 +1,7 @@
 <?php
 $config['list']['filter'] = [
     'search' => [
-        'prompt' => 'lang:system::lang.extensions.text_filter_search',
+        'prompt' => 'igniter::system.extensions.text_filter_search',
         'mode' => 'all',
     ],
 ];
@@ -9,29 +9,29 @@ $config['list']['filter'] = [
 $config['list']['toolbar'] = [
     'buttons' => [
         'browse' => [
-            'label' => 'lang:system::lang.extensions.button_browse',
+            'label' => 'igniter::system.extensions.button_browse',
             'class' => 'btn btn-primary',
             'href' => 'https://tastyigniter.com/marketplace/extensions',
             'target' => '_blank',
         ],
         'check' => [
-            'label' => 'lang:system::lang.updates.button_check',
+            'label' => 'igniter::system.updates.button_check',
             'class' => 'btn btn-success',
             'href' => 'updates',
         ],
         'filter' => [
-            'label' => 'lang:admin::lang.button_icon_filter',
+            'label' => 'lang:igniter::admin.button_icon_filter',
             'class' => 'btn btn-default btn-filter pull-right',
             'data-toggle' => 'list-filter',
             'data-target' => '.list-filter',
         ],
         'setting' => [
-            'label' => 'lang:system::lang.extensions.button_settings',
+            'label' => 'igniter::system.extensions.button_settings',
             'class' => 'btn btn-default pull-right',
             'href' => 'settings',
         ],
         'payment' => [
-            'label' => 'lang:system::lang.extensions.button_payments',
+            'label' => 'igniter::system.extensions.button_payments',
             'class' => 'btn btn-default pull-right',
             'href' => 'payments',
         ],
@@ -68,9 +68,9 @@ $config['list']['columns'] = [
         ],
     ],
     'name' => [
-        'label' => 'lang:admin::lang.label_name',
+        'label' => 'lang:igniter::admin.label_name',
         'type' => 'partial',
-        'path' => 'lists/extension_card',
+        'path' => 'extensions/extension_card',
         'searchable' => true,
     ],
 ];
@@ -78,16 +78,16 @@ $config['list']['columns'] = [
 $config['form']['toolbar'] = [
     'buttons' => [
         'back' => [
-            'label' => 'lang:admin::lang.button_icon_back',
+            'label' => 'lang:igniter::admin.button_icon_back',
             'class' => 'btn btn-outline-secondary',
             'href' => 'settings',
         ],
         'save' => [
-            'label' => 'lang:admin::lang.button_save',
+            'label' => 'lang:igniter::admin.button_save',
             'class' => 'btn btn-primary',
             'data-request-submit' => 'true',
             'data-request' => 'onSave',
-            'data-progress-indicator' => 'admin::lang.text_saving',
+            'data-progress-indicator' => 'igniter::admin.text_saving',
         ],
     ],
 ];

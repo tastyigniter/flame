@@ -1,45 +1,45 @@
 <?php
 
-namespace Admin\Controllers;
+namespace Igniter\Admin\Http\Controllers;
 
-use Admin\Facades\AdminMenu;
+use Igniter\Admin\Facades\AdminMenu;
 
-class Mealtimes extends \Admin\Classes\AdminController
+class Mealtimes extends \Igniter\Admin\Classes\AdminController
 {
     public $implement = [
-        \Admin\Actions\ListController::class,
-        \Admin\Actions\FormController::class,
-        \Admin\Actions\LocationAwareController::class,
+        \Igniter\Admin\Http\Actions\ListController::class,
+        \Igniter\Admin\Http\Actions\FormController::class,
+        \Igniter\Admin\Http\Actions\LocationAwareController::class,
     ];
 
     public $listConfig = [
         'list' => [
-            'model' => \Admin\Models\Mealtime::class,
-            'title' => 'lang:admin::lang.mealtimes.text_title',
-            'emptyMessage' => 'lang:admin::lang.mealtimes.text_empty',
+            'model' => \Igniter\Admin\Models\Mealtime::class,
+            'title' => 'lang:igniter::admin.mealtimes.text_title',
+            'emptyMessage' => 'lang:igniter::admin.mealtimes.text_empty',
             'defaultSort' => ['mealtime_id', 'DESC'],
             'configFile' => 'mealtime',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.mealtimes.text_form_name',
-        'model' => \Admin\Models\Mealtime::class,
-        'request' => \Admin\Requests\Mealtime::class,
+        'name' => 'lang:igniter::admin.mealtimes.text_form_name',
+        'model' => \Igniter\Admin\Models\Mealtime::class,
+        'request' => \Igniter\Admin\Requests\Mealtime::class,
         'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
+            'title' => 'lang:igniter::admin.form.create_title',
             'redirect' => 'mealtimes/edit/{mealtime_id}',
             'redirectClose' => 'mealtimes',
             'redirectNew' => 'mealtimes/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
+            'title' => 'lang:igniter::admin.form.edit_title',
             'redirect' => 'mealtimes/edit/{mealtime_id}',
             'redirectClose' => 'mealtimes',
             'redirectNew' => 'mealtimes/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title' => 'lang:igniter::admin.form.preview_title',
             'redirect' => 'mealtimes',
         ],
         'delete' => [

@@ -1,44 +1,44 @@
 <?php
 
-namespace System\Controllers;
+namespace Igniter\System\Http\Controllers;
 
-use Admin\Facades\AdminMenu;
+use Igniter\Admin\Facades\AdminMenu;
 
-class MailLayouts extends \Admin\Classes\AdminController
+class MailLayouts extends \Igniter\Admin\Classes\AdminController
 {
     public $implement = [
-        \Admin\Actions\ListController::class,
-        \Admin\Actions\FormController::class,
+        \Igniter\Admin\Http\Actions\ListController::class,
+        \Igniter\Admin\Http\Actions\FormController::class,
     ];
 
     public $listConfig = [
         'list' => [
-            'model' => \System\Models\MailLayout::class,
-            'title' => 'lang:system::lang.mail_templates.text_title',
-            'emptyMessage' => 'lang:system::lang.mail_templates.text_empty',
+            'model' => \Igniter\System\Models\MailLayout::class,
+            'title' => 'lang:igniter::system.mail_templates.text_title',
+            'emptyMessage' => 'lang:igniter::system.mail_templates.text_empty',
             'defaultSort' => ['layout_id', 'DESC'],
             'configFile' => 'maillayout',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:system::lang.mail_templates.text_form_name',
-        'model' => \System\Models\MailLayout::class,
-        'request' => \System\Requests\MailLayout::class,
+        'name' => 'lang:igniter::system.mail_templates.text_form_name',
+        'model' => \Igniter\System\Models\MailLayout::class,
+        'request' => \Igniter\System\Requests\MailLayout::class,
         'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
+            'title' => 'lang:igniter::admin.form.create_title',
             'redirect' => 'mail_layouts/edit/{layout_id}',
             'redirectClose' => 'mail_layouts',
             'redirectNew' => 'mail_layouts/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
+            'title' => 'lang:igniter::admin.form.edit_title',
             'redirect' => 'mail_layouts/edit/{layout_id}',
             'redirectClose' => 'mail_layouts',
             'redirectNew' => 'mail_layouts/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title' => 'lang:igniter::admin.form.preview_title',
             'redirect' => 'mail_layouts',
         ],
         'delete' => [

@@ -1,15 +1,15 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
-use Admin\Classes\PermissionManager;
-use Admin\Classes\UserState;
-use Admin\Traits\Locationable;
 use Carbon\Carbon;
+use Igniter\Admin\Classes\PermissionManager;
+use Igniter\Admin\Classes\UserState;
+use Igniter\Admin\Traits\Locationable;
 use Igniter\Flame\Auth\Models\User as AuthUserModel;
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Traits\Purgeable;
-use System\Traits\SendsMailTemplate;
+use Igniter\System\Traits\SendsMailTemplate;
 
 /**
  * Users Model Class
@@ -53,17 +53,17 @@ class User extends AuthUserModel
 
     public $relation = [
         'hasMany' => [
-            'assignable_logs' => [\Admin\Models\AssignableLog::class, 'foreignKey' => 'assignee_id'],
+            'assignable_logs' => [\Igniter\Admin\Models\AssignableLog::class, 'foreignKey' => 'assignee_id'],
         ],
         'belongsTo' => [
-            'role' => [\Admin\Models\UserRole::class, 'foreignKey' => 'user_role_id'],
-            'language' => [\System\Models\Language::class],
+            'role' => [\Igniter\Admin\Models\UserRole::class, 'foreignKey' => 'user_role_id'],
+            'language' => [\Igniter\System\Models\Language::class],
         ],
         'belongsToMany' => [
-            'groups' => [\Admin\Models\UserGroup::class, 'table' => 'users_groups'],
+            'groups' => [\Igniter\Admin\Models\UserGroup::class, 'table' => 'users_groups'],
         ],
         'morphToMany' => [
-            'locations' => [\Admin\Models\Location::class, 'name' => 'locationable'],
+            'locations' => [\Igniter\Admin\Models\Location::class, 'name' => 'locationable'],
         ],
     ];
 
@@ -139,7 +139,7 @@ class User extends AuthUserModel
     protected function sendInvite()
     {
         $this->bindEventOnce('model.mailGetData', function ($view, $recipientType) {
-            if ($view === 'admin::_mail.invite') {
+            if ($view === 'igniter.admin::_mail.invite') {
                 $this->reset_code = $inviteCode = $this->generateResetCode();
                 $this->reset_time = now();
                 $this->save();
@@ -148,7 +148,7 @@ class User extends AuthUserModel
             }
         });
 
-        $this->mailSend('admin::_mail.invite');
+        $this->mailSend('igniter.admin::_mail.invite');
     }
 
     public function beforeLogin()
@@ -162,6 +162,13 @@ class User extends AuthUserModel
     {
         $this->last_login = Carbon::now();
         $this->save();
+    }
+
+    public function extendUserQuery($query)
+    {
+        $query
+            ->with(['role', 'groups', 'locations'])
+            ->isEnabled();
     }
 
     public function isSuperUser()

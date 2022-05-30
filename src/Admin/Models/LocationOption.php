@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
-use Admin\Facades\AdminLocation;
 use Exception;
+use Igniter\Admin\Facades\AdminLocation;
 use Igniter\Flame\Database\Model;
 use Illuminate\Support\Facades\Event;
 
@@ -44,7 +44,7 @@ class LocationOption extends Model
     public function resolveLocation()
     {
         if (!$location = AdminLocation::current())
-            throw new Exception(lang('admin::lang.alert_location_not_selected'));
+            throw new Exception(lang('igniter::admin.alert_location_not_selected'));
 
         return $location;
     }
@@ -151,7 +151,7 @@ class LocationOption extends Model
                     if ($triggerFieldName = array_get($fieldConfig, 'trigger.field'))
                         $fieldConfig['trigger']['field'] = $instance->wrapFieldName($triggerFieldName);
 
-                    $fieldConfig['tab'] = 'lang:admin::lang.locations.text_tab_options';
+                    $fieldConfig['tab'] = 'lang:igniter::admin.locations.text_tab_options';
                     $result[$fieldName] = $fieldConfig;
                 }
             }

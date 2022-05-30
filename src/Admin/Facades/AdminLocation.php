@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Facades;
+namespace Igniter\Admin\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
@@ -10,7 +10,7 @@ class AdminLocation extends Facade
      * Get the registered name of the component.
      *
      * @return string
-     * @see \Admin\Classes\User
+     * @see \Igniter\Flame\Auth\UserGuard
      */
     protected static function getFacadeAccessor()
     {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Admin\Controllers;
+namespace Igniter\Admin\Http\Controllers;
 
-use Admin\Facades\AdminAuth;
+use Igniter\Admin\Facades\AdminAuth;
 
-class Logout extends \Admin\Classes\AdminController
+class Logout extends \Igniter\Admin\Classes\AdminController
 {
     protected $requireAuthentication = false;
 
@@ -21,7 +21,7 @@ class Logout extends \Admin\Classes\AdminController
             session()->regenerateToken();
         }
 
-        flash()->success(lang('admin::lang.login.alert_success_logout'));
+        flash()->success(lang('igniter::admin.login.alert_success_logout'));
 
         return $this->redirect('login');
     }

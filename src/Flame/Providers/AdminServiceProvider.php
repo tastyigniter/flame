@@ -1,25 +1,25 @@
 <?php
 
-namespace Admin;
+namespace Igniter\Flame\Providers;
 
-use Admin\Classes\Navigation;
-use Admin\Classes\OnboardingSteps;
-use Admin\Classes\PermissionManager;
-use Admin\Classes\Widgets;
-use Admin\Facades\AdminLocation;
-use Admin\Facades\AdminMenu;
-use Admin\Middleware\LogUserLastSeen;
-use Admin\Requests\Location;
+use Igniter\Admin\ActivityTypes;
+use Igniter\Admin\Classes;
+use Igniter\Admin\Classes\RouteRegistrar;
+use Igniter\Admin\Facades\AdminLocation;
+use Igniter\Admin\Facades\AdminMenu;
+use Igniter\Admin\Helpers\Admin as AdminHelper;
+use Igniter\Admin\Requests\Location;
 use Igniter\Flame\ActivityLog\Models\Activity;
-use Igniter\Flame\Foundation\Providers\AppServiceProvider;
-use Igniter\Flame\Support\ClassLoader;
+use Igniter\Flame\Igniter;
+use Igniter\System\Classes\MailManager;
+use Igniter\System\Libraries\Assets;
+use Igniter\System\Models\Settings;
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Foundation\AliasLoader;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
-use System\Classes\MailManager;
-use System\Libraries\Assets;
-use System\Models\Settings;
+use Illuminate\Support\Facades\Route;
 
 class AdminServiceProvider extends AppServiceProvider
 {
@@ -29,12 +29,18 @@ class AdminServiceProvider extends AppServiceProvider
      */
     public function boot()
     {
-        parent::boot('admin');
+        $this->loadViewsFrom($this->root.'/resources/views/admin', 'igniter.admin');
+        $this->loadAnonymousComponentFrom('igniter.admin::_components.', 'igniter.admin');
+
+        $this->publishes([
+            $this->root.'/public' => public_path('vendor/igniter'),
+        ], ['igniter-assets', 'laravel-assets']);
+
+        $this->defineRoutes();
 
         $this->defineEloquentMorphMaps();
 
-        if ($this->app->runningInAdmin()) {
-            $this->resolveFlashSessionKey();
+        if (Igniter::runningInAdmin()) {
             $this->replaceNavMenuItem();
             $this->extendLocationOptionsFields();
         }
@@ -46,38 +52,76 @@ class AdminServiceProvider extends AppServiceProvider
      */
     public function register()
     {
-        parent::register('admin');
+        $this->registerSingletons();
+        $this->registerFacadeAliases();
 
-        // Provide backward compatibility for old model class names
-        $this->registerModelClassAliases();
-
-        $this->registerAssets();
         $this->registerActivityTypes();
         $this->registerMailTemplates();
         $this->registerSchedule();
 
-        if ($this->app->runningInAdmin()) {
-            $this->registerSystemSettings();
-            $this->registerPermissions();
+        $this->registerSystemSettings();
+        $this->registerPermissions();
+
+        if (Igniter::runningInAdmin()) {
+            $this->registerAssets();
             $this->registerDashboardWidgets();
             $this->registerBulkActionWidgets();
             $this->registerFormWidgets();
             $this->registerMainMenuItems();
             $this->registerNavMenuItems();
             $this->registerOnboardingSteps();
+        }
+    }
 
-            $this->app[Kernel::class]->appendMiddlewareToGroup('web', LogUserLastSeen::class);
+    /**
+     * Register singletons
+     */
+    protected function registerSingletons()
+    {
+        App::singleton('admin.helper', function () {
+            return new AdminHelper;
+        });
+
+        App::singleton('admin.auth', function () {
+            return resolve('auth')->guard(config('igniter.auth.guards.admin', 'web'));
+        });
+
+        App::singleton('admin.menu', function ($app) {
+            return new Classes\Navigation('igniter.admin::_partials');
+        });
+
+        App::singleton('admin.template', function ($app) {
+            return new Classes\Template;
+        });
+
+        App::singleton('admin.location', function ($app) {
+            return new \Igniter\Admin\Classes\Location;
+        });
+    }
+
+    protected function registerFacadeAliases()
+    {
+        $loader = AliasLoader::getInstance();
+
+        foreach ([
+            'Admin' => \Igniter\Admin\Facades\Admin::class,
+            'AdminAuth' => \Igniter\Admin\Facades\AdminAuth::class,
+            'AdminLocation' => \Igniter\Admin\Facades\AdminLocation::class,
+            'AdminMenu' => \Igniter\Admin\Facades\AdminMenu::class,
+            'Template' => \Igniter\Admin\Facades\Template::class,
+        ] as $alias => $class) {
+            $loader->alias($alias, $class);
         }
     }
 
     protected function registerMailTemplates()
     {
-        MailManager::instance()->registerCallback(function (MailManager $manager) {
+        resolve(MailManager::class)->registerCallback(function (MailManager $manager) {
             $manager->registerMailTemplates([
-                'admin::_mail.order_update' => 'lang:system::lang.mail_templates.text_order_update',
-                'admin::_mail.reservation_update' => 'lang:system::lang.mail_templates.text_reservation_update',
-                'admin::_mail.password_reset' => 'lang:system::lang.mail_templates.text_password_reset_alert',
-                'admin::_mail.password_reset_request' => 'lang:system::lang.mail_templates.text_password_reset_request_alert',
+                'igniter.admin::_mail.order_update' => 'lang:igniter::system.mail_templates.text_order_update',
+                'igniter.admin::_mail.reservation_update' => 'lang:igniter::system.mail_templates.text_reservation_update',
+                'igniter.admin::_mail.password_reset' => 'lang:igniter::system.mail_templates.text_password_reset_alert',
+                'igniter.admin::_mail.password_reset_request' => 'lang:igniter::system.mail_templates.text_password_reset_request_alert',
             ]);
         });
     }
@@ -85,14 +129,9 @@ class AdminServiceProvider extends AppServiceProvider
     protected function registerAssets()
     {
         Assets::registerCallback(function (Assets $manager) {
-            if ($this->app->runningInAdmin()) {
-                $manager->registerSourcePath(app_path('admin/assets'));
+            $manager->registerSourcePath(public_path('vendor/igniter'));
 
-                $manager->addFromManifest('~/app/admin/views/_meta/assets.json', 'admin');
-            }
-
-            // Admin asset bundles
-            $manager->registerBundle('scss', '~/app/admin/assets/scss/admin.scss', null, 'admin');
+            $manager->addFromManifest($this->root.'/resources/views/admin/_meta/assets.json', 'admin');
         });
     }
 
@@ -101,33 +140,33 @@ class AdminServiceProvider extends AppServiceProvider
      */
     protected function registerDashboardWidgets()
     {
-        Widgets::instance()->registerDashboardWidgets(function (Widgets $manager) {
-            $manager->registerDashboardWidget(\System\DashboardWidgets\Activities::class, [
+        Classes\Widgets::instance()->registerDashboardWidgets(function (Classes\Widgets $manager) {
+            $manager->registerDashboardWidget(\Igniter\System\DashboardWidgets\Activities::class, [
                 'label' => 'Recent activities',
                 'context' => 'dashboard',
             ]);
 
-            $manager->registerDashboardWidget(\System\DashboardWidgets\Cache::class, [
+            $manager->registerDashboardWidget(\Igniter\System\DashboardWidgets\Cache::class, [
                 'label' => 'Cache Usage',
                 'context' => 'dashboard',
             ]);
 
-            $manager->registerDashboardWidget(\System\DashboardWidgets\News::class, [
+            $manager->registerDashboardWidget(\Igniter\System\DashboardWidgets\News::class, [
                 'label' => 'Latest News',
                 'context' => 'dashboard',
             ]);
 
-            $manager->registerDashboardWidget(\Admin\DashboardWidgets\Statistics::class, [
+            $manager->registerDashboardWidget(\Igniter\Admin\DashboardWidgets\Statistics::class, [
                 'label' => 'Statistics widget',
                 'context' => 'dashboard',
             ]);
 
-            $manager->registerDashboardWidget(\Admin\DashboardWidgets\Onboarding::class, [
+            $manager->registerDashboardWidget(\Igniter\Admin\DashboardWidgets\Onboarding::class, [
                 'label' => 'Onboarding widget',
                 'context' => 'dashboard',
             ]);
 
-            $manager->registerDashboardWidget(\Admin\DashboardWidgets\Charts::class, [
+            $manager->registerDashboardWidget(\Igniter\Admin\DashboardWidgets\Charts::class, [
                 'label' => 'Charts widget',
                 'context' => 'dashboard',
             ]);
@@ -136,12 +175,12 @@ class AdminServiceProvider extends AppServiceProvider
 
     protected function registerBulkActionWidgets()
     {
-        Widgets::instance()->registerBulkActionWidgets(function (Widgets $manager) {
-            $manager->registerBulkActionWidget(\Admin\BulkActionWidgets\Status::class, [
+        Classes\Widgets::instance()->registerBulkActionWidgets(function (Classes\Widgets $manager) {
+            $manager->registerBulkActionWidget(\Igniter\Admin\BulkActionWidgets\Status::class, [
                 'code' => 'status',
             ]);
 
-            $manager->registerBulkActionWidget(\Admin\BulkActionWidgets\Delete::class, [
+            $manager->registerBulkActionWidget(\Igniter\Admin\BulkActionWidgets\Delete::class, [
                 'code' => 'delete',
             ]);
         });
@@ -152,93 +191,78 @@ class AdminServiceProvider extends AppServiceProvider
      */
     protected function registerFormWidgets()
     {
-        Widgets::instance()->registerFormWidgets(function (Widgets $manager) {
-            $manager->registerFormWidget(\Admin\FormWidgets\CodeEditor::class, [
+        Classes\Widgets::instance()->registerFormWidgets(function (Classes\Widgets $manager) {
+            $manager->registerFormWidget(\Igniter\Admin\FormWidgets\CodeEditor::class, [
                 'label' => 'Code editor',
                 'code' => 'codeeditor',
             ]);
 
-            $manager->registerFormWidget(\Admin\FormWidgets\ColorPicker::class, [
+            $manager->registerFormWidget(\Igniter\Admin\FormWidgets\ColorPicker::class, [
                 'label' => 'Color picker',
                 'code' => 'colorpicker',
             ]);
 
-            $manager->registerFormWidget(\Admin\FormWidgets\Connector::class, [
+            $manager->registerFormWidget(\Igniter\Admin\FormWidgets\Connector::class, [
                 'label' => 'Connector',
                 'code' => 'connector',
             ]);
 
-            $manager->registerFormWidget(\Admin\FormWidgets\DataTable::class, [
+            $manager->registerFormWidget(\Igniter\Admin\FormWidgets\DataTable::class, [
                 'label' => 'Data Table',
                 'code' => 'datatable',
             ]);
 
-            $manager->registerFormWidget(\Admin\FormWidgets\DatePicker::class, [
+            $manager->registerFormWidget(\Igniter\Admin\FormWidgets\DatePicker::class, [
                 'label' => 'Date picker',
                 'code' => 'datepicker',
             ]);
 
-            $manager->registerFormWidget(\Admin\FormWidgets\MapArea::class, [
-                'label' => 'Map Area',
-                'code' => 'maparea',
-            ]);
-
-            $manager->registerFormWidget(\Admin\FormWidgets\MapView::class, [
-                'label' => 'Map View',
-                'code' => 'mapview',
-            ]);
-
-            $manager->registerFormWidget(\Admin\FormWidgets\MarkdownEditor::class, [
+            $manager->registerFormWidget(\Igniter\Admin\FormWidgets\MarkdownEditor::class, [
                 'label' => 'Markdown Editor',
                 'code' => 'markdowneditor',
             ]);
 
-            $manager->registerFormWidget(\Admin\FormWidgets\MediaFinder::class, [
-                'label' => 'Media finder',
-                'code' => 'mediafinder',
-            ]);
-
-            $manager->registerFormWidget(\Admin\FormWidgets\MenuOptionEditor::class, [
+            $manager->registerFormWidget(\Igniter\Admin\FormWidgets\MenuOptionEditor::class, [
                 'label' => 'Menu Option Editor',
                 'code' => 'menuoptioneditor',
             ]);
 
-            $manager->registerFormWidget(\Admin\FormWidgets\PermissionEditor::class, [
+            $manager->registerFormWidget(\Igniter\Admin\FormWidgets\PermissionEditor::class, [
                 'label' => 'Permission Editor',
                 'code' => 'permissioneditor',
             ]);
 
-            $manager->registerFormWidget(\Admin\FormWidgets\RecordEditor::class, [
+            $manager->registerFormWidget(\Igniter\Admin\FormWidgets\RecordEditor::class, [
                 'label' => 'Record Editor',
                 'code' => 'recordeditor',
             ]);
 
-            $manager->registerFormWidget(\Admin\FormWidgets\Relation::class, [
+            $manager->registerFormWidget(\Igniter\Admin\FormWidgets\Relation::class, [
                 'label' => 'Relationship',
                 'code' => 'relation',
             ]);
 
-            $manager->registerFormWidget(\Admin\FormWidgets\Repeater::class, [
+            $manager->registerFormWidget(\Igniter\Admin\FormWidgets\Repeater::class, [
                 'label' => 'Repeater',
                 'code' => 'repeater',
             ]);
 
-            $manager->registerFormWidget(\Admin\FormWidgets\RichEditor::class, [
+            $manager->registerFormWidget(\Igniter\Admin\FormWidgets\RichEditor::class, [
                 'label' => 'Rich editor',
                 'code' => 'richeditor',
             ]);
 
-            $manager->registerFormWidget(\Admin\FormWidgets\StatusEditor::class, [
+            $manager->registerFormWidget(\Igniter\Admin\FormWidgets\StatusEditor::class, [
                 'label' => 'Status Editor',
                 'code' => 'statuseditor',
             ]);
 
-            $manager->registerFormWidget(\Admin\FormWidgets\ScheduleEditor::class, [
+            $manager->registerFormWidget(\Igniter\Admin\FormWidgets\ScheduleEditor::class, [
                 'label' => 'Schedule Editor',
                 'code' => 'scheduleeditor',
             ]);
 
-            $manager->registerFormWidget(\Admin\FormWidgets\StockEditor::class, [
+            $manager->registerFormWidget(\Igniter\Admin\FormWidgets\StockEditor::class, [
                 'label' => 'Stock Editor',
                 'code' => 'stockeditor',
             ]);
@@ -250,26 +274,26 @@ class AdminServiceProvider extends AppServiceProvider
      */
     protected function registerMainMenuItems()
     {
-        AdminMenu::registerCallback(function (Navigation $manager) {
+        AdminMenu::registerCallback(function (Classes\Navigation $manager) {
             $menuItems = [
                 'preview' => [
                     'icon' => 'fa-store',
                     'attributes' => [
                         'class' => 'nav-link front-end',
-                        'title' => 'lang:admin::lang.side_menu.storefront',
+                        'title' => 'lang:igniter::admin.side_menu.storefront',
                         'href' => root_url(),
                         'target' => '_blank',
                     ],
                 ],
                 'activity' => [
-                    'label' => 'lang:admin::lang.text_activity_title',
+                    'label' => 'lang:igniter::admin.text_activity_title',
                     'icon' => 'fa-bell',
                     'badge' => 'badge-danger',
                     'type' => 'dropdown',
-                    'badgeCount' => [\System\Models\Activity::class, 'unreadCount'],
-                    'markAsRead' => [\System\Models\Activity::class, 'markAllAsRead'],
-                    'options' => [\System\Models\Activity::class, 'listMenuActivities'],
-                    'partial' => '~/app/system/views/activities/latest',
+                    'badgeCount' => [\Igniter\System\Models\Activity::class, 'unreadCount'],
+                    'markAsRead' => [\Igniter\System\Models\Activity::class, 'markAllAsRead'],
+                    'options' => [\Igniter\System\Models\Activity::class, 'listMenuActivities'],
+                    'partial' => 'activities.latest',
                     'viewMoreUrl' => admin_url('activities'),
                     'permission' => 'Admin.Activities',
                     'attributes' => [
@@ -281,20 +305,20 @@ class AdminServiceProvider extends AppServiceProvider
                 ],
                 'settings' => [
                     'type' => 'partial',
-                    'path' => 'top_settings_menu',
-                    'badgeCount' => [\System\Models\Settings::class, 'updatesCount'],
-                    'options' => [\System\Models\Settings::class, 'listMenuSettingItems'],
+                    'path' => 'settings_menu',
+                    'badgeCount' => [\Igniter\System\Models\Settings::class, 'updatesCount'],
+                    'options' => [\Igniter\System\Models\Settings::class, 'listMenuSettingItems'],
                     'permission' => 'Site.Settings',
                 ],
                 'locations' => [
                     'type' => 'partial',
                     'path' => 'locations/picker',
-                    'options' => ['Admin\Classes\UserPanel', 'listLocations'],
+                    'options' => ['Igniter\Admin\Classes\UserPanel', 'listLocations'],
                 ],
                 'user' => [
                     'type' => 'partial',
-                    'path' => 'top_nav_user_menu',
-                    'options' => [\Admin\Classes\UserPanel::class, 'listMenuLinks'],
+                    'path' => 'user_menu',
+                    'options' => [\Igniter\Admin\Classes\UserPanel::class, 'listMenuLinks'],
                 ],
             ];
 
@@ -310,54 +334,54 @@ class AdminServiceProvider extends AppServiceProvider
      */
     protected function registerNavMenuItems()
     {
-        AdminMenu::registerCallback(function (Navigation $manager) {
+        AdminMenu::registerCallback(function (Classes\Navigation $manager) {
             $manager->registerNavItems([
                 'dashboard' => [
                     'priority' => 0,
                     'class' => 'dashboard admin',
                     'href' => admin_url('dashboard'),
                     'icon' => 'fa-tachometer-alt',
-                    'title' => lang('admin::lang.side_menu.dashboard'),
+                    'title' => lang('igniter::admin.side_menu.dashboard'),
                 ],
                 'restaurant' => [
                     'priority' => 10,
                     'class' => 'restaurant',
                     'icon' => 'fa-gem',
-                    'title' => lang('admin::lang.side_menu.restaurant'),
+                    'title' => lang('igniter::admin.side_menu.restaurant'),
                     'child' => [
                         'locations' => [
                             'priority' => 10,
                             'class' => 'locations',
                             'href' => admin_url('locations'),
-                            'title' => lang('admin::lang.side_menu.location'),
+                            'title' => lang('igniter::admin.side_menu.location'),
                             'permission' => 'Admin.Locations',
                         ],
                         'menus' => [
                             'priority' => 20,
                             'class' => 'menus',
                             'href' => admin_url('menus'),
-                            'title' => lang('admin::lang.side_menu.menu'),
+                            'title' => lang('igniter::admin.side_menu.menu'),
                             'permission' => 'Admin.Menus',
                         ],
                         'categories' => [
                             'priority' => 30,
                             'class' => 'categories',
                             'href' => admin_url('categories'),
-                            'title' => lang('admin::lang.side_menu.category'),
+                            'title' => lang('igniter::admin.side_menu.category'),
                             'permission' => 'Admin.Categories',
                         ],
                         'mealtimes' => [
                             'priority' => 40,
                             'class' => 'mealtimes',
                             'href' => admin_url('mealtimes'),
-                            'title' => lang('admin::lang.side_menu.mealtimes'),
+                            'title' => lang('igniter::admin.side_menu.mealtimes'),
                             'permission' => 'Admin.Mealtimes',
                         ],
                         'tables' => [
                             'priority' => 50,
                             'class' => 'tables',
                             'href' => admin_url('tables'),
-                            'title' => lang('admin::lang.side_menu.table'),
+                            'title' => lang('igniter::admin.side_menu.table'),
                             'permission' => 'Admin.Tables',
                         ],
                     ],
@@ -366,34 +390,34 @@ class AdminServiceProvider extends AppServiceProvider
                     'priority' => 30,
                     'class' => 'sales',
                     'icon' => 'fa-file-invoice',
-                    'title' => lang('admin::lang.side_menu.sale'),
+                    'title' => lang('igniter::admin.side_menu.sale'),
                     'child' => [
                         'orders' => [
                             'priority' => 10,
                             'class' => 'orders',
                             'href' => admin_url('orders'),
-                            'title' => lang('admin::lang.side_menu.order'),
+                            'title' => lang('igniter::admin.side_menu.order'),
                             'permission' => 'Admin.Orders',
                         ],
                         'reservations' => [
                             'priority' => 20,
                             'class' => 'reservations',
                             'href' => admin_url('reservations'),
-                            'title' => lang('admin::lang.side_menu.reservation'),
+                            'title' => lang('igniter::admin.side_menu.reservation'),
                             'permission' => 'Admin.Reservations',
                         ],
                         'statuses' => [
                             'priority' => 40,
                             'class' => 'statuses',
                             'href' => admin_url('statuses'),
-                            'title' => lang('admin::lang.side_menu.status'),
+                            'title' => lang('igniter::admin.side_menu.status'),
                             'permission' => 'Admin.Statuses',
                         ],
                         'payments' => [
                             'priority' => 50,
                             'class' => 'payments',
                             'href' => admin_url('payments'),
-                            'title' => lang('admin::lang.side_menu.payment'),
+                            'title' => lang('igniter::admin.side_menu.payment'),
                             'permission' => 'Admin.Payments',
                         ],
                     ],
@@ -402,7 +426,7 @@ class AdminServiceProvider extends AppServiceProvider
                     'priority' => 40,
                     'class' => 'marketing',
                     'icon' => 'fa-bullseye',
-                    'title' => lang('admin::lang.side_menu.marketing'),
+                    'title' => lang('igniter::admin.side_menu.marketing'),
                     'child' => [],
                 ],
                 'customers' => [
@@ -410,27 +434,27 @@ class AdminServiceProvider extends AppServiceProvider
                     'class' => 'customers',
                     'icon' => 'fa-user',
                     'href' => admin_url('customers'),
-                    'title' => lang('admin::lang.side_menu.customer'),
+                    'title' => lang('igniter::admin.side_menu.customer'),
                     'permission' => 'Admin.Customers',
                 ],
                 'design' => [
                     'priority' => 200,
                     'class' => 'design',
                     'icon' => 'fa-paint-brush',
-                    'title' => lang('admin::lang.side_menu.design'),
+                    'title' => lang('igniter::admin.side_menu.design'),
                     'child' => [
                         'themes' => [
                             'priority' => 10,
                             'class' => 'themes',
                             'href' => admin_url('themes'),
-                            'title' => lang('admin::lang.side_menu.theme'),
+                            'title' => lang('igniter::admin.side_menu.theme'),
                             'permission' => 'Site.Themes',
                         ],
                         'mail_templates' => [
                             'priority' => 20,
                             'class' => 'mail_templates',
                             'href' => admin_url('mail_templates'),
-                            'title' => lang('admin::lang.side_menu.mail_template'),
+                            'title' => lang('igniter::admin.side_menu.mail_template'),
                             'permission' => 'Admin.MailTemplates',
                         ],
                     ],
@@ -439,27 +463,27 @@ class AdminServiceProvider extends AppServiceProvider
                     'priority' => 300,
                     'class' => 'localisation',
                     'icon' => 'fa-globe',
-                    'title' => lang('admin::lang.side_menu.localisation'),
+                    'title' => lang('igniter::admin.side_menu.localisation'),
                     'child' => [
                         'languages' => [
                             'priority' => 10,
                             'class' => 'languages',
                             'href' => admin_url('languages'),
-                            'title' => lang('admin::lang.side_menu.language'),
+                            'title' => lang('igniter::admin.side_menu.language'),
                             'permission' => 'Site.Languages',
                         ],
                         'currencies' => [
                             'priority' => 20,
                             'class' => 'currencies',
                             'href' => admin_url('currencies'),
-                            'title' => lang('admin::lang.side_menu.currency'),
+                            'title' => lang('igniter::admin.side_menu.currency'),
                             'permission' => 'Site.Currencies',
                         ],
                         'countries' => [
                             'priority' => 30,
                             'class' => 'countries',
                             'href' => admin_url('countries'),
-                            'title' => lang('admin::lang.side_menu.country'),
+                            'title' => lang('igniter::admin.side_menu.country'),
                             'permission' => 'Site.Countries',
                         ],
                     ],
@@ -468,13 +492,13 @@ class AdminServiceProvider extends AppServiceProvider
                     'priority' => 400,
                     'class' => 'tools',
                     'icon' => 'fa-wrench',
-                    'title' => lang('admin::lang.side_menu.tool'),
+                    'title' => lang('igniter::admin.side_menu.tool'),
                     'child' => [
                         'media_manager' => [
                             'priority' => 10,
                             'class' => 'media_manager',
                             'href' => admin_url('media_manager'),
-                            'title' => lang('admin::lang.side_menu.media_manager'),
+                            'title' => lang('igniter::admin.side_menu.media_manager'),
                             'permission' => 'Admin.MediaManager',
                         ],
                     ],
@@ -483,41 +507,41 @@ class AdminServiceProvider extends AppServiceProvider
                     'priority' => 999,
                     'class' => 'system',
                     'icon' => 'fa-cog',
-                    'title' => lang('admin::lang.side_menu.system'),
+                    'title' => lang('igniter::admin.side_menu.system'),
                     'child' => [
                         'users' => [
                             'priority' => 0,
                             'class' => 'users',
                             'href' => admin_url('users'),
-                            'title' => lang('admin::lang.side_menu.user'),
+                            'title' => lang('igniter::admin.side_menu.user'),
                             'permission' => 'Admin.Staffs',
                         ],
                         'extensions' => [
                             'priority' => 10,
                             'class' => 'extensions',
                             'href' => admin_url('extensions'),
-                            'title' => lang('admin::lang.side_menu.extension'),
+                            'title' => lang('igniter::admin.side_menu.extension'),
                             'permission' => 'Admin.Extensions',
                         ],
                         'settings' => [
                             'priority' => 20,
                             'class' => 'settings',
                             'href' => admin_url('settings'),
-                            'title' => lang('admin::lang.side_menu.setting'),
+                            'title' => lang('igniter::admin.side_menu.setting'),
                             'permission' => 'Site.Settings',
                         ],
                         'updates' => [
                             'priority' => 30,
                             'class' => 'updates',
                             'href' => admin_url('updates'),
-                            'title' => lang('admin::lang.side_menu.updates'),
+                            'title' => lang('igniter::admin.side_menu.updates'),
                             'permission' => 'Site.Updates',
                         ],
                         'system_logs' => [
                             'priority' => 50,
                             'class' => 'system_logs',
                             'href' => admin_url('system_logs'),
-                            'title' => lang('admin::lang.side_menu.system_logs'),
+                            'title' => lang('igniter::admin.side_menu.system_logs'),
                             'permission' => 'Admin.SystemLogs',
                         ],
                     ],
@@ -528,12 +552,12 @@ class AdminServiceProvider extends AppServiceProvider
 
     protected function replaceNavMenuItem()
     {
-        AdminMenu::registerCallback(function (Navigation $manager) {
+        AdminMenu::registerCallback(function (Classes\Navigation $manager) {
             // Change nav menu if single location mode is activated
             if (AdminLocation::check()) {
                 $manager->mergeNavItem('locations', [
                     'href' => admin_url('locations/settings'),
-                    'title' => lang('admin::lang.locations.text_form_name'),
+                    'title' => lang('igniter::admin.locations.text_form_name'),
                 ], 'restaurant');
             }
         });
@@ -542,91 +566,84 @@ class AdminServiceProvider extends AppServiceProvider
     protected function defineEloquentMorphMaps()
     {
         Relation::morphMap([
-            'addresses' => \Admin\Models\Address::class,
-            'assignable_logs' => \Admin\Models\AssignableLog::class,
-            'categories' => \Admin\Models\Category::class,
-            'customer_groups' => \Admin\Models\CustomerGroup::class,
-            'customers' => \Admin\Models\Customer::class,
-            'ingredients' => \Admin\Models\Ingredient::class,
-            'location_areas' => \Admin\Models\LocationArea::class,
-            'locations' => \Admin\Models\Location::class,
-            'mealtimes' => \Admin\Models\Mealtime::class,
-            'menu_categories' => \Admin\Models\MenuCategory::class,
-            'menu_item_option_values' => \Admin\Models\MenuItemOptionValue::class,
-            'menu_option_values' => \Admin\Models\MenuOptionValue::class,
-            'menu_options' => \Admin\Models\MenuOption::class,
-            'menus' => \Admin\Models\Menu::class,
-            'menus_specials' => \Admin\Models\MenuSpecial::class,
-            'orders' => \Admin\Models\Order::class,
-            'payment_logs' => \Admin\Models\PaymentLog::class,
-            'payments' => \Admin\Models\Payment::class,
-            'reservations' => \Admin\Models\Reservation::class,
-            'status_history' => \Admin\Models\StatusHistory::class,
-            'statuses' => \Admin\Models\Status::class,
-            'stocks' => \Admin\Models\Stock::class,
-            'stock_history' => \Admin\Models\StockHistory::class,
-            'tables' => \Admin\Models\Table::class,
-            'user_groups' => \Admin\Models\UserGroup::class,
-            'users' => \Admin\Models\User::class,
-            'working_hours' => \Admin\Models\WorkingHour::class,
+            'addresses' => \Igniter\Admin\Models\Address::class,
+            'assignable_logs' => \Igniter\Admin\Models\AssignableLog::class,
+            'categories' => \Igniter\Admin\Models\Category::class,
+            'customer_groups' => \Igniter\Main\Models\CustomerGroup::class,
+            'customers' => \Igniter\Main\Models\Customer::class,
+            'ingredients' => \Igniter\Admin\Models\Ingredient::class,
+            'location_areas' => \Igniter\Admin\Models\LocationArea::class,
+            'locations' => \Igniter\Admin\Models\Location::class,
+            'mealtimes' => \Igniter\Admin\Models\Mealtime::class,
+            'menu_categories' => \Igniter\Admin\Models\MenuCategory::class,
+            'menu_item_option_values' => \Igniter\Admin\Models\MenuItemOptionValue::class,
+            'menu_option_values' => \Igniter\Admin\Models\MenuOptionValue::class,
+            'menu_options' => \Igniter\Admin\Models\MenuOption::class,
+            'menus' => \Igniter\Admin\Models\Menu::class,
+            'menus_specials' => \Igniter\Admin\Models\MenuSpecial::class,
+            'orders' => \Igniter\Admin\Models\Order::class,
+            'payment_logs' => \Igniter\Admin\Models\PaymentLog::class,
+            'payments' => \Igniter\Admin\Models\Payment::class,
+            'reservations' => \Igniter\Admin\Models\Reservation::class,
+            'status_history' => \Igniter\Admin\Models\StatusHistory::class,
+            'statuses' => \Igniter\Admin\Models\Status::class,
+            'stocks' => \Igniter\Admin\Models\Stock::class,
+            'stock_history' => \Igniter\Admin\Models\StockHistory::class,
+            'tables' => \Igniter\Admin\Models\Table::class,
+            'user_groups' => \Igniter\Admin\Models\UserGroup::class,
+            'users' => \Igniter\Admin\Models\User::class,
+            'working_hours' => \Igniter\Admin\Models\WorkingHour::class,
         ]);
-    }
-
-    protected function resolveFlashSessionKey()
-    {
-        $this->app->resolving('flash', function (\Igniter\Flame\Flash\FlashBag $flash) {
-            $flash->setSessionKey('flash_data_admin');
-        });
     }
 
     protected function registerOnboardingSteps()
     {
-        OnboardingSteps::registerCallback(function (OnboardingSteps $manager) {
+        Classes\OnboardingSteps::registerCallback(function (Classes\OnboardingSteps $manager) {
             $manager->registerSteps([
                 'admin::settings' => [
-                    'label' => 'admin::lang.dashboard.onboarding.label_settings',
-                    'description' => 'admin::lang.dashboard.onboarding.help_settings',
+                    'label' => 'igniter::admin.dashboard.onboarding.label_settings',
+                    'description' => 'igniter::admin.dashboard.onboarding.help_settings',
                     'icon' => 'fa-gears',
                     'url' => admin_url('settings'),
-                    'complete' => [\System\Models\Settings::class, 'onboardingIsComplete'],
+                    'complete' => [\Igniter\System\Models\Settings::class, 'onboardingIsComplete'],
                 ],
                 'admin::locations' => [
-                    'label' => 'admin::lang.dashboard.onboarding.label_locations',
-                    'description' => 'admin::lang.dashboard.onboarding.help_locations',
+                    'label' => 'igniter::admin.dashboard.onboarding.label_locations',
+                    'description' => 'igniter::admin.dashboard.onboarding.help_locations',
                     'icon' => 'fa-store',
                     'url' => admin_url('locations'),
-                    'complete' => [\Admin\Models\Location::class, 'onboardingIsComplete'],
+                    'complete' => [\Igniter\Admin\Models\Location::class, 'onboardingIsComplete'],
                 ],
                 'admin::themes' => [
-                    'label' => 'admin::lang.dashboard.onboarding.label_themes',
-                    'description' => 'admin::lang.dashboard.onboarding.help_themes',
+                    'label' => 'igniter::admin.dashboard.onboarding.label_themes',
+                    'description' => 'igniter::admin.dashboard.onboarding.help_themes',
                     'icon' => 'fa-paint-brush',
                     'url' => admin_url('themes'),
-                    'complete' => [\System\Models\Theme::class, 'onboardingIsComplete'],
+                    'complete' => [\Igniter\Main\Models\Theme::class, 'onboardingIsComplete'],
                 ],
                 'admin::extensions' => [
-                    'label' => 'admin::lang.dashboard.onboarding.label_extensions',
-                    'description' => 'admin::lang.dashboard.onboarding.help_extensions',
+                    'label' => 'igniter::admin.dashboard.onboarding.label_extensions',
+                    'description' => 'igniter::admin.dashboard.onboarding.help_extensions',
                     'icon' => 'fa-plug',
                     'url' => admin_url('extensions'),
-                    'complete' => [\System\Models\Extension::class, 'onboardingIsComplete'],
+                    'complete' => [\Igniter\System\Models\Extension::class, 'onboardingIsComplete'],
                 ],
                 'admin::payments' => [
-                    'label' => 'admin::lang.dashboard.onboarding.label_payments',
-                    'description' => 'admin::lang.dashboard.onboarding.help_payments',
+                    'label' => 'igniter::admin.dashboard.onboarding.label_payments',
+                    'description' => 'igniter::admin.dashboard.onboarding.help_payments',
                     'icon' => 'fa-credit-card',
                     'url' => admin_url('payments'),
-                    'complete' => [\Admin\Models\Payment::class, 'onboardingIsComplete'],
+                    'complete' => [\Igniter\Admin\Models\Payment::class, 'onboardingIsComplete'],
                 ],
                 'admin::menus' => [
-                    'label' => 'admin::lang.dashboard.onboarding.label_menus',
-                    'description' => 'admin::lang.dashboard.onboarding.help_menus',
+                    'label' => 'igniter::admin.dashboard.onboarding.label_menus',
+                    'description' => 'igniter::admin.dashboard.onboarding.help_menus',
                     'icon' => 'fa-cutlery',
                     'url' => admin_url('menus'),
                 ],
                 'admin::mail' => [
-                    'label' => 'admin::lang.dashboard.onboarding.label_mail',
-                    'description' => 'admin::lang.dashboard.onboarding.help_mail',
+                    'label' => 'igniter::admin.dashboard.onboarding.label_mail',
+                    'description' => 'igniter::admin.dashboard.onboarding.help_mail',
                     'icon' => 'fa-envelope',
                     'url' => admin_url('settings/edit/mail'),
                 ],
@@ -652,70 +669,70 @@ class AdminServiceProvider extends AppServiceProvider
 
     protected function registerPermissions()
     {
-        PermissionManager::instance()->registerCallback(function ($manager) {
+        Classes\PermissionManager::instance()->registerCallback(function ($manager) {
             $manager->registerPermissions('Admin', [
                 'Admin.Dashboard' => [
-                    'label' => 'admin::lang.permissions.dashboard', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.dashboard', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.Allergens' => [
-                    'label' => 'admin::lang.permissions.allergens', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.allergens', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.Categories' => [
-                    'label' => 'admin::lang.permissions.categories', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.categories', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.Menus' => [
-                    'label' => 'admin::lang.permissions.menus', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.menus', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.Mealtimes' => [
-                    'label' => 'admin::lang.permissions.mealtimes', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.mealtimes', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.Locations' => [
-                    'label' => 'admin::lang.permissions.locations', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.locations', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.Tables' => [
-                    'label' => 'admin::lang.permissions.tables', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.tables', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.Orders' => [
-                    'label' => 'admin::lang.permissions.orders', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.orders', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.DeleteOrders' => [
-                    'label' => 'admin::lang.permissions.delete_orders', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.delete_orders', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.AssignOrders' => [
-                    'label' => 'admin::lang.permissions.assign_orders', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.assign_orders', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.Reservations' => [
-                    'label' => 'admin::lang.permissions.reservations', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.reservations', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.DeleteReservations' => [
-                    'label' => 'admin::lang.permissions.delete_reservations', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.delete_reservations', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.AssignReservations' => [
-                    'label' => 'admin::lang.permissions.assign_reservations', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.assign_reservations', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.Payments' => [
-                    'label' => 'admin::lang.permissions.payments', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.payments', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.CustomerGroups' => [
-                    'label' => 'admin::lang.permissions.customer_groups', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.customer_groups', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.Customers' => [
-                    'label' => 'admin::lang.permissions.customers', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.customers', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.Impersonate' => [
-                    'label' => 'admin::lang.permissions.impersonate_staff', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.impersonate_staff', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.ImpersonateCustomers' => [
-                    'label' => 'admin::lang.permissions.impersonate_customers', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.impersonate_customers', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.StaffGroups' => [
-                    'label' => 'admin::lang.permissions.user_groups', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.user_groups', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.Staffs' => [
-                    'label' => 'admin::lang.permissions.staffs', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.staffs', 'group' => 'igniter::admin.permissions.name',
                 ],
                 'Admin.Statuses' => [
-                    'label' => 'admin::lang.permissions.statuses', 'group' => 'admin::lang.permissions.name',
+                    'label' => 'igniter::admin.permissions.statuses', 'group' => 'igniter::admin.permissions.name',
                 ],
             ]);
         });
@@ -742,74 +759,37 @@ class AdminServiceProvider extends AppServiceProvider
         Settings::registerCallback(function (Settings $manager) {
             $manager->registerSettingItems('core', [
                 'setup' => [
-                    'label' => 'lang:admin::lang.settings.text_tab_setup',
-                    'description' => 'lang:admin::lang.settings.text_tab_desc_setup',
+                    'label' => 'lang:igniter::admin.settings.text_tab_setup',
+                    'description' => 'lang:igniter::admin.settings.text_tab_desc_setup',
                     'icon' => 'fa fa-file-invoice',
                     'priority' => 1,
                     'permission' => ['Site.Settings'],
                     'url' => admin_url('settings/edit/setup'),
-                    'form' => '~/app/admin/models/config/setupsettings',
-                    'request' => \Admin\Requests\SetupSettings::class,
+                    'form' => 'setupsettings',
+                    'request' => \Igniter\Admin\Requests\SetupSettings::class,
                 ],
                 'tax' => [
-                    'label' => 'lang:admin::lang.settings.text_tab_tax',
-                    'description' => 'lang:admin::lang.settings.text_tab_desc_tax',
+                    'label' => 'lang:igniter::admin.settings.text_tab_tax',
+                    'description' => 'lang:igniter::admin.settings.text_tab_desc_tax',
                     'icon' => 'fa fa-file',
                     'priority' => 6,
                     'permission' => ['Site.Settings'],
                     'url' => admin_url('settings/edit/tax'),
-                    'form' => '~/app/admin/models/config/tax_settings',
-                    'request' => 'Admin\Requests\TaxSettings',
+                    'form' => 'taxsettings',
+                    'request' => 'Igniter\Admin\Requests\TaxSettings',
                 ],
                 'user' => [
-                    'label' => 'lang:admin::lang.settings.text_tab_user',
-                    'description' => 'lang:admin::lang.settings.text_tab_desc_user',
+                    'label' => 'lang:igniter::admin.settings.text_tab_user',
+                    'description' => 'lang:igniter::admin.settings.text_tab_desc_user',
                     'icon' => 'fa fa-user',
                     'priority' => 3,
                     'permission' => ['Site.Settings'],
                     'url' => admin_url('settings/edit/user'),
-                    'form' => '~/app/admin/models/config/usersettings',
-                    'request' => \Admin\Requests\UserSettings::class,
+                    'form' => 'usersettings',
+                    'request' => \Igniter\Admin\Requests\UserSettings::class,
                 ],
             ]);
         });
-    }
-
-    protected function registerModelClassAliases()
-    {
-        resolve(ClassLoader::class)->addAliases([
-            \Admin\Models\Status::class => 'Admin\Models\Statuses_model',
-            \Admin\Models\Location::class => 'Admin\Models\Locations_model',
-            \Admin\Models\Customer::class => 'Admin\Models\Customers_model',
-            \Admin\Models\Allergen::class => 'Admin\Models\Allergens_model',
-            \Admin\Models\StockHistory::class => 'Admin\Models\Stock_history_model',
-            \Admin\Models\MenuSpecial::class => 'Admin\Models\Menu_specials_model',
-            \Admin\Models\WorkingHour::class => 'Admin\Models\Working_hours_model',
-            \Admin\Models\Table::class => 'Admin\Models\Tables_model',
-            \Admin\Models\AssignableLog::class => 'Admin\Models\Assignable_logs_model',
-            \Admin\Models\StaffGroup::class => 'Admin\Models\Staff_groups_model',
-            \Admin\Models\MenuCategory::class => 'Admin\Models\Menu_categories_model',
-            \Admin\Models\Category::class => 'Admin\Models\Categories_model',
-            \Admin\Models\MenuItemOptionValue::class => 'Admin\Models\Menu_item_option_values_model',
-            \Admin\Models\User::class => 'Admin\Models\Users_model',
-            \Admin\Models\StaffRole::class => 'Admin\Models\Staff_roles_model',
-            \Admin\Models\Order::class => 'Admin\Models\Orders_model',
-            \Admin\Models\Mealtime::class => 'Admin\Models\Mealtimes_model',
-            \Admin\Models\Staff::class => 'Admin\Models\Staffs_model',
-            \Admin\Models\CustomerGroup::class => 'Admin\Models\Customer_groups_model',
-            \Admin\Models\StatusHistory::class => 'Admin\Models\Status_history_model',
-            \Admin\Models\MenuOption::class => 'Admin\Models\Menu_options_model',
-            \Admin\Models\PaymentProfile::class => 'Admin\Models\Payment_profiles_model',
-            \Admin\Models\LocationArea::class => 'Admin\Models\Location_areas_model',
-            \Admin\Models\Menu::class => 'Admin\Models\Menus_model',
-            \Admin\Models\PaymentLog::class => 'Admin\Models\Payment_logs_model',
-            \Admin\Models\Reservation::class => 'Admin\Models\Reservations_model',
-            \Admin\Models\MenuOptionValue::class => 'Admin\Models\Menu_option_values_model',
-            \Admin\Models\Stock::class => 'Admin\Models\Stocks_model',
-            \Admin\Models\Address::class => 'Admin\Models\Addresses_model',
-            \Admin\Models\UserPreference::class => 'Admin\Models\User_preferences_model',
-            \Admin\Models\Payment::class => 'Admin\Models\Payments_model',
-        ]);
     }
 
     protected function extendLocationOptionsFields()
@@ -817,15 +797,15 @@ class AdminServiceProvider extends AppServiceProvider
         Event::listen('admin.locations.defineOptionsFormFields', function () {
             return [
                 'guest_order' => [
-                    'label' => 'lang:system::lang.settings.label_guest_order',
-                    'accordion' => 'lang:admin::lang.locations.text_tab_general_options',
+                    'label' => 'lang:igniter::system.settings.label_guest_order',
+                    'accordion' => 'lang:igniter::admin.locations.text_tab_general_options',
                     'type' => 'radiotoggle',
-                    'comment' => 'lang:admin::lang.locations.help_guest_order',
+                    'comment' => 'lang:igniter::admin.locations.help_guest_order',
                     'default' => -1,
                     'options' => [
-                        -1 => 'lang:admin::lang.text_use_default',
-                        0 => 'lang:admin::lang.text_no',
-                        1 => 'lang:admin::lang.text_yes',
+                        -1 => 'lang:igniter::admin.text_use_default',
+                        0 => 'lang:igniter::admin.text_no',
+                        1 => 'lang:igniter::admin.text_yes',
                     ],
                 ],
             ];
@@ -836,12 +816,22 @@ class AdminServiceProvider extends AppServiceProvider
                 return;
 
             $dataHolder->attributes = array_merge($dataHolder->attributes, [
-                'guest_order' => lang('admin::lang.locations.label_guest_order'),
+                'guest_order' => lang('igniter::admin.locations.label_guest_order'),
             ]);
 
             $dataHolder->rules = array_merge($dataHolder->rules, [
                 'guest_order' => ['integer'],
             ]);
+        });
+    }
+
+    protected function defineRoutes()
+    {
+        if (app()->routesAreCached())
+            return;
+
+        Route::group([], function ($router) {
+            (new RouteRegistrar($router))->all();
         });
     }
 }

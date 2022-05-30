@@ -9,7 +9,7 @@
         >{!! $button->label ?: $button->name !!}</button>
         @if ($buttonMenuItems = $button->menuItems())
             <div class="dropdown-menu">
-                @foreach ($buttonMenuItems as $buttonObj)
+                @foreach($buttonMenuItems as $buttonObj)
                     {!! $this->renderBulkActionButton($buttonObj) !!}
                 @endforeach
             </div>

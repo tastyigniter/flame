@@ -1,5 +1,5 @@
 <div class="media-list row no-gutters">
-    @foreach ($items as $item)
+    @foreach($items as $item)
         <div class="media-item col-2">
             <div
                 class="media-thumb"

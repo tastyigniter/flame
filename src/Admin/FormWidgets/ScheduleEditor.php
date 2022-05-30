@@ -1,12 +1,12 @@
 <?php
 
-namespace Admin\FormWidgets;
+namespace Igniter\Admin\FormWidgets;
 
-use Admin\Classes\BaseFormWidget;
-use Admin\Models\Location;
-use Admin\Models\WorkingHour;
-use Admin\Traits\ValidatesForm;
-use Admin\Widgets\Form;
+use Igniter\Admin\Classes\BaseFormWidget;
+use Igniter\Admin\Models\Location;
+use Igniter\Admin\Models\WorkingHour;
+use Igniter\Admin\Traits\ValidatesForm;
+use Igniter\Admin\Widgets\Form;
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Flame\Location\Models\AbstractLocation;
 use Igniter\Flame\Location\OrderTypes;
@@ -17,7 +17,7 @@ class ScheduleEditor extends BaseFormWidget
     use ValidatesForm;
 
     /**
-     * @var \Admin\Models\Location Form model object.
+     * @var \Igniter\Admin\Models\Location Form model object.
      */
     public $model;
 
@@ -25,7 +25,7 @@ class ScheduleEditor extends BaseFormWidget
 
     public $popupSize = 'modal-lg';
 
-    public $formTitle = 'admin::lang.locations.text_title_schedule';
+    public $formTitle = 'igniter::admin.locations.text_title_schedule';
 
     protected $availableSchedules = [
         AbstractLocation::OPENING,
@@ -57,16 +57,14 @@ class ScheduleEditor extends BaseFormWidget
 
     public function loadAssets()
     {
-        $this->addCss('../../datepicker/assets/vendor/clockpicker/bootstrap-clockpicker.min.css', 'bootstrap-clockpicker-css');
-        $this->addJs('../../datepicker/assets/vendor/clockpicker/bootstrap-clockpicker.min.js', 'bootstrap-clockpicker-js');
-        $this->addCss('../../datepicker/assets/css/clockpicker.css', 'clockpicker-css');
-        $this->addJs('../../datepicker/assets/js/clockpicker.js', 'clockpicker-js');
+        $this->addCss('formwidgets/clockpicker.css', 'clockpicker-css');
+        $this->addJs('formwidgets/clockpicker.js', 'clockpicker-js');
 
-        $this->addJs('../../recordeditor/assets/js/recordeditor.modal.js', 'recordeditor-modal-js');
+        $this->addJs('formwidgets/recordeditor.modal.js', 'recordeditor-modal-js');
         $this->addJs('vendor/timesheet/timesheet.js', 'timesheet-js');
-        $this->addJs('js/scheduleeditor.js', 'scheduleeditor-js');
+        $this->addJs('scheduleeditor.js', 'scheduleeditor-js');
         $this->addCss('vendor/timesheet/timesheet.css', 'timesheet-css');
-        $this->addCss('css/scheduleeditor.css', 'scheduleeditor-css');
+        $this->addCss('scheduleeditor.css', 'scheduleeditor-css');
     }
 
     public function onLoadRecord()
@@ -100,8 +98,8 @@ class ScheduleEditor extends BaseFormWidget
             $this->model->newWorkingSchedule($scheduleCode);
         });
 
-        $formName = sprintf('%s %s', $scheduleCode, lang('admin::lang.locations.text_schedule'));
-        flash()->success(sprintf(lang('admin::lang.alert_success'), ucfirst($formName).' '.'updated'))->now();
+        $formName = sprintf('%s %s', $scheduleCode, lang('igniter::admin.locations.text_schedule'));
+        flash()->success(sprintf(lang('igniter::admin.alert_success'), ucfirst($formName).' '.'updated'))->now();
 
         $this->model->reloadRelations();
         $this->schedulesCache = null;
@@ -117,7 +115,7 @@ class ScheduleEditor extends BaseFormWidget
     protected function getSchedule($scheduleCode)
     {
         if (!$schedule = array_get($this->listSchedules(), $scheduleCode))
-            throw new ApplicationException(lang('admin::lang.locations.alert_schedule_not_loaded'));
+            throw new ApplicationException(lang('igniter::admin.locations.alert_schedule_not_loaded'));
 
         return $schedule;
     }
@@ -128,7 +126,7 @@ class ScheduleEditor extends BaseFormWidget
             return $this->schedulesCache;
 
         $schedules = collect(OrderTypes::instance()->listOrderTypes())
-            ->prepend(['name' => 'admin::lang.text_opening'], Location::OPENING)
+            ->prepend(['name' => 'igniter::admin.text_opening'], Location::OPENING)
             ->mapWithKeys(function ($definition, $code) {
                 $scheduleItem = $this->model->createScheduleItem($code);
                 $scheduleItem->name = array_get($definition, 'name');

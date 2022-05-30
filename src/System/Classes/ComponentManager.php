@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Classes;
+namespace Igniter\System\Classes;
 
 use Igniter\Flame\Exception\SystemException;
 
@@ -54,7 +54,7 @@ class ComponentManager
         }
 
         // Load extensions components
-        $extensions = ExtensionManager::instance()->getExtensions();
+        $extensions = resolve(ExtensionManager::class)->getExtensions();
         foreach ($extensions as $name => $extension) {
             $components = $extension->registerComponents();
             if (!is_array($components)) {
@@ -223,10 +223,10 @@ class ComponentManager
      * Makes a component/gateway object with properties set.
      *
      * @param string $name A component/gateway class name or code.
-     * @param \Main\Template\Code\PageCode $page The page that spawned this component.
+     * @param \Igniter\Main\Template\Code\PageCode $page The page that spawned this component.
      * @param array $params The properties set by the Page or Layout.
      *
-     * @return \System\Classes\BaseComponent The component object.
+     * @return \Igniter\System\Classes\BaseComponent The component object.
      * @throws \Igniter\Flame\Exception\SystemException
      */
     public function makeComponent($name, $page = null, $params = [])

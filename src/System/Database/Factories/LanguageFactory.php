@@ -1,12 +1,12 @@
 <?php
 
-namespace System\Database\Factories;
+namespace Igniter\System\Database\Factories;
 
 use Igniter\Flame\Database\Factories\Factory;
 
 class LanguageFactory extends Factory
 {
-    protected $model = \System\Models\Language::class;
+    protected $model = \Igniter\System\Models\Language::class;
 
     public function definition(): array
     {

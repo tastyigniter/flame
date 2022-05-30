@@ -1,49 +1,49 @@
 <?php
 
-namespace Admin\Controllers;
+namespace Igniter\Admin\Http\Controllers;
 
-use Admin\Facades\AdminLocation;
-use Admin\Facades\AdminMenu;
-use Admin\Models\Location;
-use Admin\Models\LocationOption;
 use Exception;
+use Igniter\Admin\Facades\AdminLocation;
+use Igniter\Admin\Facades\AdminMenu;
+use Igniter\Admin\Models\Location;
+use Igniter\Admin\Models\LocationOption;
 use Igniter\Flame\Geolite\Facades\Geocoder;
 
-class Locations extends \Admin\Classes\AdminController
+class Locations extends \Igniter\Admin\Classes\AdminController
 {
     public $implement = [
-        \Admin\Actions\ListController::class,
-        \Admin\Actions\FormController::class,
+        \Igniter\Admin\Http\Actions\ListController::class,
+        \Igniter\Admin\Http\Actions\FormController::class,
     ];
 
     public $listConfig = [
         'list' => [
-            'model' => \Admin\Models\Location::class,
-            'title' => 'lang:admin::lang.locations.text_title',
-            'emptyMessage' => 'lang:admin::lang.locations.text_empty',
+            'model' => \Igniter\Admin\Models\Location::class,
+            'title' => 'lang:igniter::admin.locations.text_title',
+            'emptyMessage' => 'lang:igniter::admin.locations.text_empty',
             'defaultSort' => ['location_id', 'DESC'],
             'configFile' => 'location',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.locations.text_form_name',
-        'model' => \Admin\Models\Location::class,
-        'request' => \Admin\Requests\Location::class,
+        'name' => 'lang:igniter::admin.locations.text_form_name',
+        'model' => \Igniter\Admin\Models\Location::class,
+        'request' => \Igniter\Admin\Requests\Location::class,
         'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
+            'title' => 'lang:igniter::admin.form.create_title',
             'redirect' => 'locations/edit/{location_id}',
             'redirectClose' => 'locations',
             'redirectNew' => 'locations/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
+            'title' => 'lang:igniter::admin.form.edit_title',
             'redirect' => 'locations/edit/{location_id}',
             'redirectClose' => 'locations',
             'redirectNew' => 'locations/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title' => 'lang:igniter::admin.form.preview_title',
             'redirect' => 'locations',
         ],
         'delete' => [
@@ -82,7 +82,7 @@ class Locations extends \Admin\Classes\AdminController
         $defaultId = post('default');
 
         if (Location::updateDefault($defaultId)) {
-            flash()->success(sprintf(lang('admin::lang.alert_success'), lang('admin::lang.locations.alert_set_default')));
+            flash()->success(sprintf(lang('igniter::admin.alert_success'), lang('igniter::admin.locations.alert_set_default')));
         }
 
         return $this->refreshList('list');

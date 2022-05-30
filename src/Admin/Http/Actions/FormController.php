@@ -1,19 +1,19 @@
 <?php
 
-namespace Admin\Actions;
+namespace Igniter\Admin\Http\Actions;
 
-use Admin\Classes\AdminController;
-use Admin\Classes\FormField;
-use Admin\Facades\Template;
-use Admin\Traits\FormExtendable;
-use Admin\Widgets\Toolbar;
 use Exception;
+use Igniter\Admin\Classes\AdminController;
+use Igniter\Admin\Classes\FormField;
+use Igniter\Admin\Facades\Template;
+use Igniter\Admin\Traits\FormExtendable;
+use Igniter\Admin\Widgets\Toolbar;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Exception\ApplicationException;
+use Igniter\System\Classes\ControllerAction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
-use System\Classes\ControllerAction;
 
 /**
  * Form Controller Class
@@ -49,12 +49,12 @@ class FormController extends ControllerAction
     public $formConfig;
 
     /**
-     * @var \Admin\Widgets\Form Reference to the widget object.
+     * @var \Igniter\Admin\Widgets\Form Reference to the widget object.
      */
     protected $formWidget;
 
     /**
-     * @var \Admin\Classes\BaseWidget Reference to the toolbar widget objects.
+     * @var \Igniter\Admin\Classes\BaseWidget Reference to the toolbar widget objects.
      */
     protected $toolbarWidget;
 
@@ -173,7 +173,7 @@ class FormController extends ControllerAction
         $this->controller->formExtendConfig($formConfig);
 
         // Form Widget with extensibility
-        $this->formWidget = $this->makeWidget(\Admin\Widgets\Form::class, $formConfig);
+        $this->formWidget = $this->makeWidget(\Igniter\Admin\Widgets\Form::class, $formConfig);
 
         $this->formWidget->bindEvent('form.extendFieldsBefore', function () {
             $this->controller->formExtendFieldsBefore($this->formWidget);
@@ -226,7 +226,7 @@ class FormController extends ControllerAction
         try {
             $this->context = $context ?: $this->getConfig('create[context]', self::CONTEXT_CREATE);
 
-            $this->setFormTitle('lang:admin::lang.form.create_title');
+            $this->setFormTitle('lang:igniter::admin.form.create_title');
 
             $model = $this->controller->formCreateModelObject();
             $model = $this->controller->formExtendModel($model) ?: $model;
@@ -263,7 +263,7 @@ class FormController extends ControllerAction
         $this->controller->formAfterSave($model);
         $this->controller->formAfterCreate($model);
 
-        $title = sprintf(lang('admin::lang.form.create_success'), lang($this->getConfig('name')));
+        $title = sprintf(lang('igniter::admin.form.create_success'), lang($this->getConfig('name')));
         flash()->success(lang($this->getConfig('create[flashSave]', $title)));
 
         if ($redirect = $this->makeRedirect($context, $model)) {
@@ -276,7 +276,7 @@ class FormController extends ControllerAction
         try {
             $this->context = $context ?: $this->getConfig('edit[context]', self::CONTEXT_CREATE);
 
-            $this->setFormTitle('lang:admin::lang.form.edit_title');
+            $this->setFormTitle('lang:igniter::admin.form.edit_title');
 
             $model = $this->controller->formFindModelObject($recordId);
 
@@ -313,7 +313,7 @@ class FormController extends ControllerAction
         $this->controller->formAfterSave($model);
         $this->controller->formAfterUpdate($model);
 
-        $title = sprintf(lang('admin::lang.form.edit_success'), lang($this->getConfig('name')));
+        $title = sprintf(lang('igniter::admin.form.edit_success'), lang($this->getConfig('name')));
         flash()->success(lang($this->getConfig('edit[flashSave]', $title)));
 
         if ($redirect = $this->makeRedirect($context, $model)) {
@@ -329,13 +329,13 @@ class FormController extends ControllerAction
         $this->initForm($model, $context);
 
         if (!$model->delete()) {
-            flash()->warning(lang('admin::lang.form.delete_failed'));
+            flash()->warning(lang('igniter::admin.form.delete_failed'));
         }
         else {
             $this->controller->formAfterDelete($model);
 
             $title = lang($this->getConfig('name'));
-            flash()->success(sprintf(lang($this->getConfig('edit[flashDelete]', 'admin::lang.form.delete_success')), $title));
+            flash()->success(sprintf(lang($this->getConfig('edit[flashDelete]', 'igniter::admin.form.delete_success')), $title));
         }
 
         if ($redirect = $this->makeRedirect('delete', $model)) {
@@ -348,7 +348,7 @@ class FormController extends ControllerAction
         try {
             $this->context = $context ?: $this->getConfig('preview[context]', self::CONTEXT_PREVIEW);
 
-            $this->setFormTitle('lang:admin::lang.form.preview_title');
+            $this->setFormTitle('lang:igniter::admin.form.preview_title');
 
             $model = $this->controller->formFindModelObject($recordId);
             $this->initForm($model, $context);
@@ -373,7 +373,7 @@ class FormController extends ControllerAction
     public function renderForm($options = [])
     {
         if (!$this->formWidget) {
-            throw new Exception(lang('admin::lang.form.not_ready'));
+            throw new Exception(lang('igniter::admin.form.not_ready'));
         }
 
         if (!is_null($this->toolbarWidget)) {
@@ -533,7 +533,7 @@ class FormController extends ControllerAction
             return;
 
         if (!class_exists($requestClass))
-            throw new ApplicationException(sprintf(lang('admin::lang.form.request_class_not_found'), $requestClass));
+            throw new ApplicationException(sprintf(lang('igniter::admin.form.request_class_not_found'), $requestClass));
 
         $this->resolveFormRequest($requestClass);
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Events\Order;
+namespace Igniter\Admin\Events\Order;
 
 class BeforeRefundProcessed
 {

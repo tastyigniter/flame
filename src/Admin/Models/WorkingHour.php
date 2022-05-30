@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
 use Igniter\Flame\Location\Models\AbstractWorkingHour;
 
@@ -52,7 +52,7 @@ class WorkingHour extends AbstractWorkingHour
     public function getWeekDaysOptions()
     {
         return collect(self::$weekDays)->map(function ($day, $index) {
-            return now()->startOfWeek()->addDays($index)->isoFormat(lang('system::lang.moment.weekday_format'));
+            return now()->startOfWeek()->addDays($index)->isoFormat(lang('igniter::system.moment.weekday_format'));
         })->all();
     }
 

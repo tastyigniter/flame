@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\Traits;
+namespace Igniter\Admin\Traits;
 
-use Admin\Classes\FormField;
 use Exception;
+use Igniter\Admin\Classes\FormField;
 
 /**
  * Widget Maker Trait Class
@@ -19,7 +19,7 @@ trait WidgetMaker
      * @param string $class Widget class name
      * @param array $widgetConfig An array of config.
      *
-     * @return \Admin\Classes\BaseWidget The widget object
+     * @return \Igniter\Admin\Classes\BaseWidget The widget object
      */
     public function makeWidget($class, $widgetConfig = [])
     {
@@ -28,7 +28,7 @@ trait WidgetMaker
             : $this;
 
         if (!class_exists($class)) {
-            throw new Exception(sprintf(lang('admin::lang.alert_widget_class_name'), $class));
+            throw new Exception(sprintf(lang('igniter::admin.alert_widget_class_name'), $class));
         }
 
         return new $class($controller, $widgetConfig);
@@ -41,7 +41,7 @@ trait WidgetMaker
      * @param mixed $fieldConfig A field name, an array of config or a FormField object.
      * @param array $widgetConfig An array of config.
      *
-     * @return \Admin\Classes\BaseFormWidget The widget object
+     * @return \Igniter\Admin\Classes\BaseFormWidget The widget object
      * @throws \Exception
      */
     public function makeFormWidget($class, $fieldConfig = [], $widgetConfig = [])
@@ -51,7 +51,7 @@ trait WidgetMaker
             : $this;
 
         if (!class_exists($class)) {
-            throw new Exception(sprintf(lang('admin::lang.alert_widget_class_name'), $class));
+            throw new Exception(sprintf(lang('igniter::admin.alert_widget_class_name'), $class));
         }
 
         if (is_string($fieldConfig)) {

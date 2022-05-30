@@ -1,6 +1,6 @@
 <?php
 
-namespace Main\Events\Theme;
+namespace Igniter\Main\Events\Theme;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;

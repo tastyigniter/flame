@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\Classes;
+namespace Igniter\Admin\Classes;
 
-use Admin\Jobs\AllocateAssignable;
-use Admin\Models\AssignableLog;
+use Igniter\Admin\Jobs\AllocateAssignable;
+use Igniter\Admin\Models\AssignableLog;
 
 class Allocator
 {

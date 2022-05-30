@@ -1,16 +1,16 @@
 <?php
 
-namespace System\Actions;
+namespace Igniter\System\Actions;
 
 use Igniter\Flame\Database\Model;
-use Igniter\Flame\Support\Facades\File;
+use Igniter\Flame\Igniter;
 
 /**
  * Settings model extension
  * Based on October/ModelBehaviour
  * Usage:
  * In the model class definition:
- *   public $implement = [\System\Actions\SettingsModel::class];
+ *   public $implement = [\Igniter\System\Actions\SettingsModel::class];
  *   public $settingsCode = 'owner_extension_settings';
  *   public $settingsFieldsConfig = 'Settings';
  */
@@ -44,8 +44,13 @@ class SettingsModel extends ModelAction
         $this->model->guard([]);
         $this->model->timestamps = false;
 
-        $relativePath = dirname(dirname(File::fromClass($model)));
-        $this->configPath = $relativePath.'/models/config';
+        $parts = explode('\\', strtolower(get_class($model)));
+        $namespace = implode('.', array_slice($parts, 0, 2));
+
+        $this->configPath[] = $namespace.'::models';
+        $this->configPath[] = 'igniter::models/admin';
+        $this->configPath[] = 'igniter::models/system';
+        $this->configPath[] = 'igniter::models/main';
 
         // Access to model's overrides is unavailable, using events instead
         $this->model->bindEvent('model.afterFetch', [$this, 'afterModelFetch']);
@@ -94,7 +99,7 @@ class SettingsModel extends ModelAction
      */
     public function isConfigured()
     {
-        return app()->hasDatabase() && $this->getSettingsRecord() !== null;
+        return Igniter::hasDatabase() && $this->getSettingsRecord() !== null;
     }
 
     /**

@@ -1,12 +1,12 @@
 <?php
 
-namespace Admin\DashboardWidgets;
+namespace Igniter\Admin\DashboardWidgets;
 
-use Admin\Classes\BaseDashboardWidget;
-use Admin\Models\Customer;
-use Admin\Models\Order;
-use Admin\Models\Reservation;
-use Admin\Traits\HasChartDatasets;
+use Igniter\Admin\Classes\BaseDashboardWidget;
+use Igniter\Admin\Models\Order;
+use Igniter\Admin\Models\Reservation;
+use Igniter\Admin\Traits\HasChartDatasets;
+use Igniter\Main\Models\Customer;
 
 /**
  * Charts dashboard widget.
@@ -39,8 +39,8 @@ class Charts extends BaseDashboardWidget
     {
         return [
             'title' => [
-                'label' => 'admin::lang.dashboard.label_widget_title',
-                'default' => 'admin::lang.dashboard.text_reports_chart',
+                'label' => 'igniter::admin.dashboard.label_widget_title',
+                'default' => 'igniter::admin.dashboard.text_reports_chart',
             ],
         ];
     }
@@ -57,19 +57,19 @@ class Charts extends BaseDashboardWidget
     {
         $this->contextDefinitions = [
             'customer' => [
-                'label' => 'lang:admin::lang.dashboard.charts.text_customers',
+                'label' => 'lang:igniter::admin.dashboard.charts.text_customers',
                 'color' => '#4DB6AC',
                 'model' => Customer::class,
                 'column' => 'created_at',
             ],
             'order' => [
-                'label' => 'lang:admin::lang.dashboard.charts.text_orders',
+                'label' => 'lang:igniter::admin.dashboard.charts.text_orders',
                 'color' => '#64B5F6',
                 'model' => Order::class,
                 'column' => 'order_date',
             ],
             'reservation' => [
-                'label' => 'lang:admin::lang.dashboard.charts.text_reservations',
+                'label' => 'lang:igniter::admin.dashboard.charts.text_reservations',
                 'color' => '#BA68C8',
                 'model' => Reservation::class,
                 'column' => 'reserve_date',

@@ -1,48 +1,48 @@
 <?php
 
-namespace Admin\Controllers;
+namespace Igniter\Admin\Http\Controllers;
 
-use Admin\Facades\AdminMenu;
+use Igniter\Admin\Facades\AdminMenu;
 
 /**
  * Admin Controller Class Tables
  */
-class Tables extends \Admin\Classes\AdminController
+class Tables extends \Igniter\Admin\Classes\AdminController
 {
     public $implement = [
-        \Admin\Actions\ListController::class,
-        \Admin\Actions\FormController::class,
-        \Admin\Actions\LocationAwareController::class,
+        \Igniter\Admin\Http\Actions\ListController::class,
+        \Igniter\Admin\Http\Actions\FormController::class,
+        \Igniter\Admin\Http\Actions\LocationAwareController::class,
     ];
 
     public $listConfig = [
         'list' => [
-            'model' => \Admin\Models\Table::class,
-            'title' => 'lang:admin::lang.tables.text_title',
-            'emptyMessage' => 'lang:admin::lang.tables.text_empty',
+            'model' => \Igniter\Admin\Models\Table::class,
+            'title' => 'lang:igniter::admin.tables.text_title',
+            'emptyMessage' => 'lang:igniter::admin.tables.text_empty',
             'defaultSort' => ['table_id', 'DESC'],
             'configFile' => 'table',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.tables.text_form_name',
-        'model' => \Admin\Models\Table::class,
-        'request' => \Admin\Requests\Table::class,
+        'name' => 'lang:igniter::admin.tables.text_form_name',
+        'model' => \Igniter\Admin\Models\Table::class,
+        'request' => \Igniter\Admin\Requests\Table::class,
         'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
+            'title' => 'lang:igniter::admin.form.create_title',
             'redirect' => 'tables/edit/{table_id}',
             'redirectClose' => 'tables',
             'redirectNew' => 'tables/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
+            'title' => 'lang:igniter::admin.form.edit_title',
             'redirect' => 'tables/edit/{table_id}',
             'redirectClose' => 'tables',
             'redirectNew' => 'tables/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title' => 'lang:igniter::admin.form.preview_title',
             'redirect' => 'tables',
         ],
         'delete' => [

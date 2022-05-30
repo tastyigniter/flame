@@ -1,12 +1,12 @@
 <?php
 
-namespace Admin\FormWidgets;
+namespace Igniter\Admin\FormWidgets;
 
-use Admin\Classes\BaseFormWidget;
-use Admin\Classes\FormField;
-use Admin\Traits\FormModelWidget;
-use Admin\Traits\ValidatesForm;
-use Admin\Widgets\Form;
+use Igniter\Admin\Classes\BaseFormWidget;
+use Igniter\Admin\Classes\FormField;
+use Igniter\Admin\Traits\FormModelWidget;
+use Igniter\Admin\Traits\ValidatesForm;
+use Igniter\Admin\Widgets\Form;
 use Igniter\Flame\Exception\ApplicationException;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
@@ -54,9 +54,9 @@ class Connector extends BaseFormWidget
 
     public $editRecordTitle = 'Edit %s';
 
-    public $emptyMessage = 'admin::lang.list.text_empty';
+    public $emptyMessage = 'igniter::admin.list.text_empty';
 
-    public $confirmMessage = 'admin::lang.alert_warning_confirm';
+    public $confirmMessage = 'igniter::admin.alert_warning_confirm';
 
     /**
      * @var bool Items can be sorted.
@@ -104,14 +104,12 @@ class Connector extends BaseFormWidget
 
     public function loadAssets()
     {
-        $this->addJs('../../repeater/assets/vendor/sortablejs/Sortable.min.js', 'sortable-js');
-        $this->addJs('../../repeater/assets/vendor/sortablejs/jquery-sortable.js', 'jquery-sortable-js');
-        $this->addJs('../../repeater/assets/js/repeater.js', 'repeater-js');
+        $this->addJs('formwidgets/repeater.js', 'repeater-js');
 
-        $this->addJs('../../recordeditor/assets/js/recordeditor.modal.js', 'recordeditor-modal-js');
-        $this->addJs('../../recordeditor/assets/js/recordeditor.js', 'recordeditor-js');
+        $this->addJs('formwidgets/recordeditor.modal.js', 'recordeditor-modal-js');
+        $this->addJs('formwidgets/recordeditor.js', 'recordeditor-js');
 
-        $this->addJs('js/connector.js', 'connector-js');
+        $this->addJs('connector.js', 'connector-js');
     }
 
     public function getSaveValue($value)
@@ -193,7 +191,7 @@ class Connector extends BaseFormWidget
             }
         });
 
-        flash()->success(sprintf(lang('admin::lang.alert_success'), 'Item updated'))->now();
+        flash()->success(sprintf(lang('igniter::admin.alert_success'), 'Item updated'))->now();
 
         return $this->reload();
     }
@@ -205,11 +203,11 @@ class Connector extends BaseFormWidget
 
         $model = $this->getRelationModel()->find($recordId);
         if (!$model)
-            throw new ApplicationException(sprintf(lang('admin::lang.form.not_found'), $recordId));
+            throw new ApplicationException(sprintf(lang('igniter::admin.form.not_found'), $recordId));
 
         $model->delete();
 
-        flash()->success(sprintf(lang('admin::lang.alert_success'), lang($this->formName).' deleted'))->now();
+        flash()->success(sprintf(lang('igniter::admin.alert_success'), lang($this->formName).' deleted'))->now();
 
         $this->prepareVars();
 

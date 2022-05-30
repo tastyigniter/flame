@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Widgets\Table\Source;
+namespace Igniter\Admin\Classes;
 
 /**
  * The server-side data source for the Table widget.

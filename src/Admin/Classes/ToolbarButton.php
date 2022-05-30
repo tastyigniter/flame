@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Classes;
+namespace Igniter\Admin\Classes;
 
 use Igniter\Flame\Html\HtmlFacade as Html;
 

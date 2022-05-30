@@ -7,16 +7,16 @@ $config['form']['fields'] = [
         'type' => 'hidden',
     ],
     'option_value[value]' => [
-        'label' => 'lang:admin::lang.menu_options.label_option_value',
+        'label' => 'lang:igniter::admin.menu_options.label_option_value',
         'type' => 'text',
-        'disabled' => TRUE,
+        'disabled' => true,
     ],
     'price' => [
-        'label' => 'lang:admin::lang.menu_options.label_new_price',
+        'label' => 'lang:igniter::admin.menu_options.label_new_price',
         'type' => 'currency',
     ],
     'is_default' => [
-        'label' => 'lang:admin::lang.menu_options.label_option_default_value',
+        'label' => 'lang:igniter::admin.menu_options.label_option_default_value',
         'type' => 'checkbox',
         'options' => [],
     ],

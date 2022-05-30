@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Events\Navigation;
+namespace Igniter\Admin\Events\Navigation;
 
 use Illuminate\Foundation\Events\Dispatchable;
 

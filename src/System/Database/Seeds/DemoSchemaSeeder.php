@@ -1,14 +1,13 @@
 <?php
 
-namespace System\Database\Seeds;
+namespace Igniter\System\Database\Seeds;
 
+use Igniter\Flame\Igniter;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class DemoSchemaSeeder extends Seeder
 {
-    protected $recordsPath = __DIR__.'/../records';
-
     /**
      * Run the demo schema seeds.
      * @return void
@@ -45,7 +44,7 @@ class DemoSchemaSeeder extends Seeder
         if (DB::table('categories')->count())
             return;
 
-        DB::table('categories')->insert($this->getSeedRecords('categories'));
+        DB::table('categories')->insert(Igniter::getSeedRecords('categories'));
 
         DB::table('categories')->update(['updated_at' => now(), 'created_at' => now()]);
     }
@@ -55,7 +54,7 @@ class DemoSchemaSeeder extends Seeder
         if (DB::table('menu_options')->count())
             return;
 
-        foreach ($this->getSeedRecords('menu_options') as $menuOption) {
+        foreach (Igniter::getSeedRecords('menu_options') as $menuOption) {
             $optionId = DB::table('menu_options')->insertGetId(array_except($menuOption, 'option_values'));
 
             foreach (array_get($menuOption, 'option_values') as $optionValue) {
@@ -73,7 +72,7 @@ class DemoSchemaSeeder extends Seeder
         if (DB::table('menus')->count())
             return;
 
-        foreach ($this->getSeedRecords('menus') as $menu) {
+        foreach (Igniter::getSeedRecords('menus') as $menu) {
             $menuId = DB::table('menus')->insertGetId(array_except($menu, 'menu_options'));
 
             foreach (array_get($menu, 'menu_options', []) as $name) {
@@ -95,10 +94,5 @@ class DemoSchemaSeeder extends Seeder
 
         DB::table('menus')->update(['updated_at' => now(), 'created_at' => now()]);
         DB::table('menu_item_option_values')->update(['updated_at' => now(), 'created_at' => now()]);
-    }
-
-    protected function getSeedRecords($name)
-    {
-        return json_decode(file_get_contents($this->recordsPath.'/'.$name.'.json'), true);
     }
 }

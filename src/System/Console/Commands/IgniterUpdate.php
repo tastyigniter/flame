@@ -1,10 +1,10 @@
 <?php
 
-namespace System\Console\Commands;
+namespace Igniter\System\Console\Commands;
 
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
-use System\Classes\UpdateManager;
+use Igniter\System\Classes\UpdateManager;
 
 /**
  * Console command to perform a system update.

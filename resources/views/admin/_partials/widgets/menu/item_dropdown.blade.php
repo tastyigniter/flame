@@ -18,7 +18,7 @@
     >
         @if (!strlen($item->partial))
             <li class="dropdown-header">@if ($item->label) @lang($item->label) @endif</li>
-            @foreach ($itemOptions as $key => $value)
+            @foreach($itemOptions as $key => $value)
                 <li><a class="menu-link" href="{{ $key }}">@lang($value)</a></li>
             @endforeach
         @else

@@ -1,8 +1,8 @@
 <?php
 
-namespace Main\Template;
+namespace Igniter\Main\Template;
 
-use Main\Template\Partial as PartialTemplate;
+use Igniter\Main\Template\Partial as PartialTemplate;
 
 /**
  * This class implements a template loader for the main app.
@@ -82,7 +82,7 @@ class Loader extends \Igniter\Flame\Pagic\Loader
      *
      * @param $name
      *
-     * @return bool|\Main\Template\Partial
+     * @return bool|\Igniter\Main\Template\Partial
      */
     protected function findFallbackObject($name)
     {

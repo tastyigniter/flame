@@ -1,15 +1,15 @@
 <?php
 
-namespace Admin\Widgets;
+namespace Igniter\Admin\Widgets;
 
-use Admin\Classes\BaseWidget;
-use Admin\Classes\ListColumn;
-use Admin\Classes\ToolbarButton;
-use Admin\Classes\Widgets;
-use Admin\Facades\AdminAuth;
-use Admin\Traits\LocationAwareWidget;
 use Carbon\Carbon;
 use Exception;
+use Igniter\Admin\Classes\BaseWidget;
+use Igniter\Admin\Classes\ListColumn;
+use Igniter\Admin\Classes\ToolbarButton;
+use Igniter\Admin\Classes\Widgets;
+use Igniter\Admin\Facades\AdminAuth;
+use Igniter\Admin\Traits\LocationAwareWidget;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Flame\Html\HtmlFacade as Html;
@@ -40,7 +40,7 @@ class Lists extends BaseWidget
     /**
      * @var string Message to display when there are no records in the list.
      */
-    public $emptyMessage = 'lang:admin::lang.text_empty';
+    public $emptyMessage = 'lang:igniter::admin.text_empty';
 
     /**
      * @var int Maximum rows to display for each page.
@@ -183,9 +183,7 @@ class Lists extends BaseWidget
 
     public function loadAssets()
     {
-        $this->addJs('../../../formwidgets/repeater/assets/vendor/sortablejs/Sortable.min.js', 'sortable-js');
-        $this->addJs('../../../formwidgets/repeater/assets/vendor/sortablejs/jquery-sortable.js', 'jquery-sortable-js');
-        $this->addJs('js/lists.js', 'lists-js');
+        $this->addJs('lists.js', 'lists-js');
     }
 
     public function render()
@@ -237,7 +235,7 @@ class Lists extends BaseWidget
     protected function validateModel()
     {
         if (!$this->model || !$this->model instanceof \Illuminate\Database\Eloquent\Model) {
-            throw new Exception(sprintf(lang('admin::lang.list.missing_model'), get_class($this->controller)));
+            throw new Exception(sprintf(lang('igniter::admin.list.missing_model'), get_class($this->controller)));
         }
 
         return $this->model;
@@ -343,7 +341,7 @@ class Lists extends BaseWidget
             if (isset($column->relation)) {
                 $relationType = $this->model->getRelationType($column->relation);
                 if ($relationType == 'morphTo') {
-                    throw new Exception(sprintf(lang('admin::lang.list.alert_relationship_not_supported'), 'morphTo'));
+                    throw new Exception(sprintf(lang('igniter::admin.list.alert_relationship_not_supported'), 'morphTo'));
                 }
 
                 $table = $this->model->makeRelation($column->relation)->getTable();
@@ -450,7 +448,7 @@ class Lists extends BaseWidget
             $invalidColumns = array_diff($this->columnOverride, array_keys($definitions));
             if (!count($definitions)) {
                 throw new Exception(sprintf(
-                    lang('admin::lang.list.missing_column'), implode(',', $invalidColumns)
+                    lang('igniter::admin.list.missing_column'), implode(',', $invalidColumns)
                 ));
             }
 
@@ -477,7 +475,7 @@ class Lists extends BaseWidget
     protected function defineListColumns()
     {
         if (!isset($this->columns) || !is_array($this->columns) || !count($this->columns)) {
-            throw new Exception(sprintf(lang('admin::lang.list.missing_column'), get_class($this->controller)));
+            throw new Exception(sprintf(lang('igniter::admin.list.missing_column'), get_class($this->controller)));
         }
 
         $this->addColumns($this->columns);
@@ -546,7 +544,7 @@ class Lists extends BaseWidget
      * @param $name
      * @param array $config
      *
-     * @return \Admin\Classes\ListColumn
+     * @return \Igniter\Admin\Classes\ListColumn
      */
     public function makeListColumn($name, $config)
     {
@@ -779,8 +777,8 @@ class Lists extends BaseWidget
      */
     protected function evalSwitchTypeValue($record, $column, $value)
     {
-        $onText = lang($column->config['onText'] ?? 'admin::lang.text_enabled');
-        $offText = lang($column->config['offText'] ?? 'admin::lang.text_disabled');
+        $onText = lang($column->config['onText'] ?? 'igniter::admin.text_enabled');
+        $offText = lang($column->config['offText'] ?? 'igniter::admin.text_disabled');
 
         return $value ? $onText : $offText;
     }
@@ -796,7 +794,7 @@ class Lists extends BaseWidget
 
         $dateTime = $this->validateDateTimeValue($value, $column);
 
-        $format = $column->format ?? lang('system::lang.moment.date_time_format');
+        $format = $column->format ?? lang('igniter::system.moment.date_time_format');
         $format = parse_date_format($format);
 
         return $dateTime->isoFormat($format);
@@ -813,7 +811,7 @@ class Lists extends BaseWidget
 
         $dateTime = $this->validateDateTimeValue($value, $column);
 
-        $format = $column->format ?? lang('system::lang.moment.time_format');
+        $format = $column->format ?? lang('igniter::system.moment.time_format');
         $format = parse_date_format($format);
 
         return $dateTime->isoFormat($format);
@@ -830,7 +828,7 @@ class Lists extends BaseWidget
 
         $dateTime = $this->validateDateTimeValue($value, $column);
 
-        $format = $column->format ?? lang('system::lang.moment.date_format');
+        $format = $column->format ?? lang('igniter::system.moment.date_format');
         $format = parse_date_format($format);
 
         return $dateTime->isoFormat($format);
@@ -894,7 +892,7 @@ class Lists extends BaseWidget
 
         if (!$value instanceof Carbon) {
             throw new ApplicationException(sprintf(
-                lang('admin::lang.list.invalid_column_datetime'), $column->columnName
+                lang('igniter::admin.list.invalid_column_datetime'), $column->columnName
             ));
         }
 
@@ -1165,16 +1163,16 @@ class Lists extends BaseWidget
     {
         $requestData = post();
         if (!strlen($code = array_get($requestData, 'code')))
-            throw new ApplicationException(lang('admin::lang.list.missing_action_code'));
+            throw new ApplicationException(lang('igniter::admin.list.missing_action_code'));
 
         $parts = explode('.', $code);
         $actionCode = array_shift($parts);
         if (!$bulkAction = array_get($this->getAvailableBulkActions(), $actionCode))
-            throw new ApplicationException(sprintf(lang('admin::lang.list.action_not_found'), $actionCode));
+            throw new ApplicationException(sprintf(lang('igniter::admin.list.action_not_found'), $actionCode));
 
         $checkedIds = array_get($requestData, 'checked');
         if (!$checkedIds || !is_array($checkedIds) || !count($checkedIds))
-            throw new ApplicationException(lang('admin::lang.list.delete_empty'));
+            throw new ApplicationException(lang('igniter::admin.list.delete_empty'));
 
         $alias = post('alias') ?: $this->primaryAlias;
 
@@ -1265,7 +1263,7 @@ class Lists extends BaseWidget
         $actionCode = array_get($actionButton->config, 'code', $actionButton->name);
         $widgetClass = Widgets::instance()->resolveBulkActionWidget($actionCode);
         if (!class_exists($widgetClass))
-            throw new Exception(sprintf(lang('admin::lang.alert_widget_class_name'), $widgetClass));
+            throw new Exception(sprintf(lang('igniter::admin.alert_widget_class_name'), $widgetClass));
 
         $widget = new $widgetClass($this->controller, $actionButton, $widgetConfig);
         $widget->code = $actionButton->name;
@@ -1293,7 +1291,7 @@ class Lists extends BaseWidget
         }
 
         if (!$this->model->hasRelation($column->relation)) {
-            throw new Exception(sprintf(lang('admin::lang.alert_missing_model_definition'), get_class($this->model), $column->relation));
+            throw new Exception(sprintf(lang('igniter::admin.alert_missing_model_definition'), get_class($this->model), $column->relation));
         }
 
         if (!$multi) {

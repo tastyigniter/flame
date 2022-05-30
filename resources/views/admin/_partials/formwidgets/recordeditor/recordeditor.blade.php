@@ -1,4 +1,4 @@
-@unless ($this->previewMode)
+@unless($this->previewMode)
     <div
         id="{{ $this->getId() }}"
         class="control-recordeditor"
@@ -6,7 +6,7 @@
         data-alias="{{ $this->alias }}"
     >
         <div class="input-group">
-            @if ($addonLeft)
+            @if($addonLeft)
                 <div class="input-group-text">{{ $addonLeft }}</div>
             @endif
             <select
@@ -16,10 +16,10 @@
                 data-control="choose-record"
                 {!! $field->getAttributes() !!}
             >
-                @if ($fieldPlaceholder = $field->placeholder ?: $this->emptyOption)
+                @if($fieldPlaceholder = $field->placeholder ?: $this->emptyOption)
                     <option value="0">@lang($fieldPlaceholder)</option>
                 @endif
-                @foreach ($fieldOptions as $value => $option)
+                @foreach($fieldOptions as $value => $option)
                     @php if (!is_array($option)) $option = [$option] @endphp
                     <option
                         {!! $value == $field->value ? 'selected="selected"' : '' !!}
@@ -28,10 +28,10 @@
                     >{{ is_lang_key($option[0]) ? lang($option[0]) : $option[0] }}</option>
                 @endforeach
             </select>
-            @if ($addonRight)
+            @if($addonRight)
                 {!! $addonRight !!}
             @endif
-            @if ($showEditButton)
+            @if($showEditButton)
                 <button
                     type="button"
                     class="btn btn-outline-default"
@@ -39,17 +39,17 @@
                     {!! ($this->previewMode) ? 'disabled="disabled"' : '' !!}
                 ><i class="fa fa-pencil"></i>&nbsp;&nbsp;@lang($editLabel)&nbsp;@lang($this->formName)</button>
             @endif
-            @if ($showDeleteButton)
+            @if($showDeleteButton)
                 <button
                     type="button"
                     class="btn btn-outline-danger"
                     title="{{ lang($deleteLabel).' '.lang($this->formName) }}"
                     data-control="delete-record"
-                    data-confirm-message="@lang('admin::lang.alert_warning_confirm')"
+                    data-confirm-message="@lang('igniter::admin.alert_warning_confirm')"
                     {!! ($this->previewMode) ? 'disabled="disabled"' : '' !!}
                 ><i class="fa fa-trash"></i></button>
             @endif
-            @if ($showCreateButton)
+            @if($showCreateButton)
                 <button
                     type="button"
                     class="btn btn-outline-default"

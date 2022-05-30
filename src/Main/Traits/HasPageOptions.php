@@ -1,6 +1,6 @@
 <?php
 
-namespace Main\Traits;
+namespace Igniter\Main\Traits;
 
 /**
  * Trait HasPageOptions

@@ -1,22 +1,23 @@
 <?php
 
-namespace System\Console\Commands;
+namespace Igniter\System\Console\Commands;
 
-use Admin\Facades\AdminAuth;
-use Admin\Models\CustomerGroup;
-use Admin\Models\Location;
-use Admin\Models\User;
-use Admin\Models\UserGroup;
-use Admin\Models\UserRole;
+use Igniter\Admin\Facades\AdminAuth;
+use Igniter\Admin\Models\Location;
+use Igniter\Admin\Models\User;
+use Igniter\Admin\Models\UserGroup;
+use Igniter\Admin\Models\UserRole;
+use Igniter\Flame\Igniter;
 use Igniter\Flame\Support\ConfigRewrite;
+use Igniter\Main\Models\CustomerGroup;
+use Igniter\System\Classes\UpdateManager;
+use Igniter\System\Database\Seeds\DatabaseSeeder;
+use Igniter\System\Helpers\SystemHelper;
+use Igniter\System\Models\Language;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Input\InputOption;
-use System\Classes\UpdateManager;
-use System\Database\Seeds\DatabaseSeeder;
-use System\Models\Language;
 
 /**
  * Console command to install TastyIgniter.
@@ -61,7 +62,7 @@ class IgniterInstall extends Command
         $this->alert('INSTALLATION');
 
         if (
-            App::hasDatabase() &&
+            Igniter::hasDatabase() &&
             !$this->confirm('Application appears to be installed already. Continue anyway?', false)
         ) {
             return;
@@ -94,27 +95,29 @@ class IgniterInstall extends Command
 
     protected function rewriteEnvFile()
     {
-        if (file_exists(base_path().'/.env') && !$this->confirm('Rewrite environment file?', false))
-            return;
+        if (!file_exists(base_path().'/.env')) {
+            $this->moveExampleFile('env', null, 'backup');
+            $this->copyExampleFile('env', 'example', null);
+        }
 
-        $this->moveExampleFile('env', null, 'backup');
-        $this->copyExampleFile('env', 'example', null);
+        if (strlen(!$this->laravel['config']['app.key']))
+            SystemHelper::replaceInEnv('APP_KEY=', 'APP_KEY='.$this->generateEncryptionKey());
 
-        $this->replaceInEnv('APP_KEY=', 'APP_KEY='.$this->generateEncryptionKey());
-
-        $this->replaceInEnv('APP_NAME=', 'APP_NAME="'.DatabaseSeeder::$siteName.'"');
-        $this->replaceInEnv('APP_URL=', 'APP_URL='.DatabaseSeeder::$siteUrl);
+        SystemHelper::replaceInEnv('APP_NAME=', 'APP_NAME="'.DatabaseSeeder::$siteName.'"');
+        SystemHelper::replaceInEnv('APP_URL=', 'APP_URL='.DatabaseSeeder::$siteUrl);
 
         $name = Config::get('database.default');
         foreach ($this->dbConfig as $key => $value) {
             Config::set("database.connections.$name.".strtolower($key), $value);
 
             if ($key === 'password') $value = '"'.$value.'"';
-            $this->replaceInEnv('DB_'.strtoupper($key).'=', 'DB_'.strtoupper($key).'='.$value);
+            SystemHelper::replaceInEnv('DB_'.strtoupper($key).'=', 'DB_'.strtoupper($key).'='.$value);
         }
 
-        $this->moveExampleFile('htaccess', null, 'backup');
-        $this->moveExampleFile('htaccess', 'example', null);
+        if (!file_exists(base_path().'/.htaccess')) {
+            $this->moveExampleFile('htaccess', null, 'backup');
+            $this->moveExampleFile('htaccess', 'example', null);
+        }
     }
 
     protected function migrateDatabase()
@@ -257,17 +260,5 @@ class IgniterInstall extends Command
 
             copy(base_path().'/'.$old.'.'.$name, base_path().'/'.$new.'.'.$name);
         }
-    }
-
-    protected function replaceInEnv(string $search, string $replace)
-    {
-        $file = base_path().'/.env';
-
-        file_put_contents(
-            $file,
-            preg_replace('/^'.$search.'(.*)$/m', $replace, file_get_contents($file))
-        );
-
-        putenv($replace);
     }
 }

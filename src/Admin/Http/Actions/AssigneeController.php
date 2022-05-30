@@ -1,12 +1,12 @@
 <?php
 
-namespace Admin\Actions;
+namespace Igniter\Admin\Http\Actions;
 
-use Admin\Traits\Assignable;
-use Admin\Widgets\Form;
-use Admin\Widgets\Toolbar;
+use Igniter\Admin\Traits\Assignable;
+use Igniter\Admin\Widgets\Form;
+use Igniter\Admin\Widgets\Toolbar;
+use Igniter\System\Classes\ControllerAction;
 use Illuminate\Support\Facades\Event;
-use System\Classes\ControllerAction;
 
 class AssigneeController extends ControllerAction
 {
@@ -87,7 +87,7 @@ class AssigneeController extends ControllerAction
 
     protected function assigneeBindListsEvents()
     {
-        if ($this->controller->isClassExtendedWith(\Admin\Actions\ListController::class)) {
+        if ($this->controller->isClassExtendedWith(\Igniter\Admin\Http\Actions\ListController::class)) {
             Event::listen('admin.list.extendQuery', function ($listWidget, $query) {
                 if (!(bool)$this->getConfig('applyScopeOnListQuery', true))
                     return;
@@ -106,7 +106,7 @@ class AssigneeController extends ControllerAction
 
     protected function assigneeBindFormEvents()
     {
-        if ($this->controller->isClassExtendedWith(\Admin\Actions\FormController::class)) {
+        if ($this->controller->isClassExtendedWith(\Igniter\Admin\Http\Actions\FormController::class)) {
             $this->controller->bindEvent('admin.controller.extendFormQuery', function ($query) {
                 if (!(bool)$this->getConfig('applyScopeOnFormQuery', true))
                     return;

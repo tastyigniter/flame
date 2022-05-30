@@ -1,12 +1,12 @@
 <?php
 
-namespace Admin\Database\Factories;
+namespace Igniter\Admin\Database\Factories;
 
 use Igniter\Flame\Database\Factories\Factory;
 
 class UserRoleFactory extends Factory
 {
-    protected $model = \Admin\Models\UserRole::class;
+    protected $model = \Igniter\Admin\Models\UserRole::class;
 
     public function definition(): array
     {

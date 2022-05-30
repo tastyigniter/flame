@@ -1,14 +1,14 @@
 <?php
 
-namespace System\Models;
+namespace Igniter\System\Models;
 
 use Exception;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Flame\Mail\MailParser;
 use Igniter\Flame\Support\Facades\File;
+use Igniter\System\Classes\MailManager;
 use Illuminate\Support\Facades\View;
-use System\Classes\MailManager;
 
 /**
  * MailPartial Model Class
@@ -57,7 +57,7 @@ class MailPartial extends Model
         if (is_null($code))
             $code = $this->code;
 
-        $definitions = MailManager::instance()->listRegisteredPartials();
+        $definitions = resolve(MailManager::class)->listRegisteredPartials();
         if (!$definition = array_get($definitions, $code))
             throw new ApplicationException('Unable to find a registered partial with code: '.$code);
 
@@ -96,7 +96,7 @@ class MailPartial extends Model
     public static function createPartials()
     {
         $dbPartials = self::lists('code', 'code')->all();
-        $definitions = MailManager::instance()->listRegisteredPartials();
+        $definitions = resolve(MailManager::class)->listRegisteredPartials();
         foreach ($definitions as $code => $path) {
             if (array_key_exists($code, $dbPartials)) {
                 continue;

@@ -1,5 +1,5 @@
 <div class="d-flex flex-nowrap overflow-auto">
-    @foreach ($schedules as $scheduleCode => $schedule)
+    @foreach($schedules as $scheduleCode => $schedule)
         <div class="col-lg-3 {{ $loop->first ? 'py-2 pr-2 pl-0' : 'p-2' }}">
             <div
                 id="{{ $this->getId('item-'.$loop->iteration) }}"
@@ -10,8 +10,8 @@
             >
                 <div class="card-body">
                     <div class="flex-fill">
-                        <h5 class="card-title">{{ lang($schedule->name).' '.lang('admin::lang.locations.text_schedule') }}</h5>
-                        <p class="card-text">{{ lang('admin::lang.locations.text_'.$schedule->type) }}</p>
+                        <h5 class="card-title">{{ lang($schedule->name).' '.lang('igniter::admin.locations.text_schedule') }}</h5>
+                        <p class="card-text">{{ lang('igniter::admin.locations.text_'.$schedule->type) }}</p>
                     </div>
 
                     <div class="pt-3">

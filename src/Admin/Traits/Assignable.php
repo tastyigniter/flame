@@ -1,10 +1,10 @@
 <?php
 
-namespace Admin\Traits;
+namespace Igniter\Admin\Traits;
 
-use Admin\Facades\AdminAuth;
-use Admin\Models\AssignableLog;
-use Admin\Models\UserGroup;
+use Igniter\Admin\Facades\AdminAuth;
+use Igniter\Admin\Models\AssignableLog;
+use Igniter\Admin\Models\UserGroup;
 use Illuminate\Database\Eloquent\Builder;
 
 trait Assignable
@@ -12,10 +12,10 @@ trait Assignable
     public static function bootAssignable()
     {
         static::extend(function (self $model) {
-            $model->relation['belongsTo']['assignee'] = [\Admin\Models\User::class];
-            $model->relation['belongsTo']['assignee_group'] = [\Admin\Models\UserGroup::class];
+            $model->relation['belongsTo']['assignee'] = [\Igniter\Admin\Models\User::class];
+            $model->relation['belongsTo']['assignee_group'] = [\Igniter\Admin\Models\UserGroup::class];
             $model->relation['morphMany']['assignable_logs'] = [
-                \Admin\Models\AssignableLog::class, 'name' => 'assignable', 'delete' => true,
+                \Igniter\Admin\Models\AssignableLog::class, 'name' => 'assignable', 'delete' => true,
             ];
 
             $model->addCasts([
@@ -43,7 +43,7 @@ trait Assignable
     //
 
     /**
-     * @param \Admin\Models\User $assignee
+     * @param \Igniter\Admin\Models\User $assignee
      * @return bool
      */
     public function assignTo($assignee)
@@ -55,7 +55,7 @@ trait Assignable
     }
 
     /**
-     * @param \Admin\Models\UserGroup $group
+     * @param \Igniter\Admin\Models\UserGroup $group
      * @return bool
      */
     public function assignToGroup($group)

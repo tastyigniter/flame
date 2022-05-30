@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Models;
+namespace Igniter\System\Models;
 
 use Exception;
 use Igniter\Flame\Database\Model;
@@ -27,7 +27,7 @@ class MailTheme extends Model
     const BORDER_COLOR = '#edeff2';
     const PROMOTION_BORDER_COLOR = '#9ba2ab';
 
-    public $implement = [\System\Actions\SettingsModel::class];
+    public $implement = [\Igniter\System\Actions\SettingsModel::class];
 
     /**
      * @var string Unique code

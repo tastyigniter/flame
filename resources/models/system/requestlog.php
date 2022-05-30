@@ -1,7 +1,7 @@
 <?php
 $config['list']['filter'] = [
     'search' => [
-        'prompt' => 'lang:system::lang.request_logs.text_filter_search',
+        'prompt' => 'lang:igniter::system.request_logs.text_filter_search',
         'mode' => 'all', // or any, exact
     ],
 ];
@@ -9,32 +9,32 @@ $config['list']['filter'] = [
 $config['list']['toolbar'] = [
     'buttons' => [
         'back' => [
-            'label' => 'lang:admin::lang.button_icon_back',
+            'label' => 'lang:igniter::admin.button_icon_back',
             'class' => 'btn btn-outline-secondary',
             'href' => 'system_logs',
         ],
         'refresh' => [
-            'label' => 'lang:admin::lang.button_refresh',
+            'label' => 'lang:igniter::admin.button_refresh',
             'class' => 'btn btn-primary',
             'href' => 'request_logs',
         ],
         'empty_log' => [
-            'label' => 'lang:system::lang.system_logs.button_empty',
+            'label' => 'lang:igniter::system.system_logs.button_empty',
             'class' => 'btn btn-danger',
             'data-attach-loading' => '',
             'data-request' => 'onEmptyLog',
             'data-request-form' => '#list-form',
             'data-request-data' => "_method:'DELETE'",
-            'data-request-confirm' => 'lang:admin::lang.alert_warning_confirm',
+            'data-request-confirm' => 'lang:igniter::admin.alert_warning_confirm',
         ],
     ],
 ];
 
 $config['list']['bulkActions'] = [
     'delete' => [
-        'label' => 'lang:admin::lang.button_delete',
+        'label' => 'lang:igniter::admin.button_delete',
         'class' => 'btn btn-light text-danger',
-        'data-request-confirm' => 'lang:admin::lang.alert_warning_confirm',
+        'data-request-confirm' => 'lang:igniter::admin.alert_warning_confirm',
     ],
 ];
 
@@ -48,17 +48,17 @@ $config['list']['columns'] = [
         ],
     ],
     'status_code' => [
-        'label' => 'lang:system::lang.request_logs.column_status_code',
+        'label' => 'lang:igniter::system.request_logs.column_status_code',
         'type' => 'text',
         'searchable' => true,
     ],
     'url' => [
-        'label' => 'lang:system::lang.request_logs.column_url',
+        'label' => 'lang:igniter::system.request_logs.column_url',
         'type' => 'text',
         'searchable' => true,
     ],
     'count' => [
-        'label' => 'lang:system::lang.request_logs.column_count',
+        'label' => 'lang:igniter::system.request_logs.column_count',
         'type' => 'text',
     ],
 ];
@@ -66,7 +66,7 @@ $config['list']['columns'] = [
 $config['form']['toolbar'] = [
     'buttons' => [
         'back' => [
-            'label' => 'lang:admin::lang.button_icon_back',
+            'label' => 'lang:igniter::admin.button_icon_back',
             'class' => 'btn btn-outline-secondary',
             'href' => 'request_logs',
         ],
@@ -75,29 +75,29 @@ $config['form']['toolbar'] = [
 
 $config['form']['fields'] = [
     'currency_id' => [
-        'label' => 'lang:admin::lang.column_id',
+        'label' => 'lang:igniter::admin.column_id',
         'type' => 'number',
         'span' => 'left',
         'cssClass' => 'flex-width',
     ],
     'status_code' => [
-        'label' => 'lang:system::lang.request_logs.column_status_code',
+        'label' => 'lang:igniter::system.request_logs.column_status_code',
         'type' => 'number',
         'span' => 'left',
         'cssClass' => 'flex-width',
     ],
     'count' => [
-        'label' => 'lang:system::lang.request_logs.column_count',
+        'label' => 'lang:igniter::system.request_logs.column_count',
         'type' => 'number',
         'span' => 'left',
         'cssClass' => 'flex-width',
     ],
     'url' => [
-        'label' => 'lang:system::lang.request_logs.label_url',
+        'label' => 'lang:igniter::system.request_logs.label_url',
         'type' => 'text',
     ],
     'referrer' => [
-        'label' => 'lang:system::lang.request_logs.label_referer',
+        'label' => 'lang:igniter::system.request_logs.label_referer',
         'type' => 'partial',
         'path' => 'field_referrer',
     ],

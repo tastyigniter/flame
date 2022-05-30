@@ -1,12 +1,12 @@
 <?php
 
-namespace System\Database\Factories;
+namespace Igniter\System\Database\Factories;
 
 use Igniter\Flame\Database\Factories\Factory;
 
 class CountryFactory extends Factory
 {
-    protected $model = \System\Models\Country::class;
+    protected $model = \Igniter\System\Models\Country::class;
 
     public function definition(): array
     {

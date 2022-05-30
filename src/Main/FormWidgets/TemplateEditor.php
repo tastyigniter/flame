@@ -1,16 +1,16 @@
 <?php
 
-namespace Main\FormWidgets;
+namespace Igniter\Main\FormWidgets;
 
-use Admin\Classes\BaseFormWidget;
-use Admin\Traits\FormModelWidget;
-use Admin\Traits\ValidatesForm;
-use Admin\Widgets\Form;
 use Exception;
+use Igniter\Admin\Classes\BaseFormWidget;
+use Igniter\Admin\Traits\FormModelWidget;
+use Igniter\Admin\Traits\ValidatesForm;
+use Igniter\Admin\Widgets\Form;
 use Igniter\Flame\Exception\ApplicationException;
+use Igniter\Main\Classes\Theme;
+use Igniter\Main\Classes\ThemeManager;
 use Illuminate\Contracts\Validation\Validator;
-use Main\Classes\Theme;
-use Main\Classes\ThemeManager;
 
 /**
  * Template Editor
@@ -22,15 +22,15 @@ class TemplateEditor extends BaseFormWidget
 
     public $form;
 
-    public $placeholder = 'system::lang.themes.text_select_file';
+    public $placeholder = 'igniter::system.themes.text_select_file';
 
-    public $formName = 'system::lang.themes.label_template';
+    public $formName = 'igniter::system.themes.label_template';
 
-    public $addLabel = 'system::lang.themes.button_new_source';
+    public $addLabel = 'igniter::system.themes.button_new_source';
 
-    public $editLabel = 'system::lang.themes.button_rename_source';
+    public $editLabel = 'igniter::system.themes.button_rename_source';
 
-    public $deleteLabel = 'system::lang.themes.button_delete_source';
+    public $deleteLabel = 'igniter::system.themes.button_delete_source';
 
     //
     // Object properties
@@ -41,14 +41,14 @@ class TemplateEditor extends BaseFormWidget
     protected $manager;
 
     protected $templateConfig = [
-        '_pages' => '~/app/main/template/config/page',
-        '_partials' => '~/app/main/template/config/partial',
-        '_layouts' => '~/app/main/template/config/layout',
-        '_content' => '~/app/main/template/config/content',
+        '_pages' => 'igniter::models/main/page',
+        '_partials' => 'igniter::models/main/partial',
+        '_layouts' => 'igniter::models/main/layout',
+        '_content' => 'igniter::models/main/content',
     ];
 
     /**
-     * @var \Admin\Classes\BaseWidget|string|null
+     * @var \Igniter\Admin\Classes\BaseWidget|string|null
      */
     protected $templateWidget;
 
@@ -73,7 +73,7 @@ class TemplateEditor extends BaseFormWidget
             'placeholder',
         ]);
 
-        $this->manager = ThemeManager::instance();
+        $this->manager = resolve(ThemeManager::class);
         $this->templateType = $this->controller->getTemplateValue('type') ?? '_pages';
         $this->templateFile = $this->controller->getTemplateValue('file');
 
@@ -124,7 +124,7 @@ class TemplateEditor extends BaseFormWidget
     public function onManageSource()
     {
         if ($this->manager->isLocked($this->model->code))
-            throw new ApplicationException(lang('system::lang.themes.alert_theme_locked'));
+            throw new ApplicationException(lang('igniter::system.themes.alert_theme_locked'));
 
         $this->validate(post(), [
             'action' => ['required', 'in:delete,rename,new'],
@@ -140,15 +140,15 @@ class TemplateEditor extends BaseFormWidget
 
         if ($fileAction == 'rename') {
             $this->manager->renameFile($fileName, $newFileName, $this->model->code);
-            flash()->success(sprintf(lang('admin::lang.alert_success'), 'Template file renamed '));
+            flash()->success(sprintf(lang('igniter::admin.alert_success'), 'Template file renamed '));
         }
         elseif ($fileAction == 'delete') {
             $this->manager->deleteFile($fileName, $this->model->code);
-            flash()->success(sprintf(lang('admin::lang.alert_success'), 'Template file deleted '));
+            flash()->success(sprintf(lang('igniter::admin.alert_success'), 'Template file deleted '));
         }
         else {
             $this->manager->newFile($newFileName, $this->model->code);
-            flash()->success(sprintf(lang('admin::lang.alert_success'), 'Template file created '));
+            flash()->success(sprintf(lang('igniter::admin.alert_success'), 'Template file created '));
         }
 
         $this->controller->setTemplateValue('type', post('Theme.source.template.type'));
@@ -160,7 +160,7 @@ class TemplateEditor extends BaseFormWidget
     public function onSaveSource()
     {
         if ($this->manager->isLocked($this->model->code))
-            throw new ApplicationException(lang('system::lang.themes.alert_theme_locked'));
+            throw new ApplicationException(lang('igniter::system.themes.alert_theme_locked'));
 
         if (!$this->templateWidget)
             return;
@@ -170,7 +170,7 @@ class TemplateEditor extends BaseFormWidget
 
         $this->validateAfter(function (Validator $validator) {
             if ($this->wasTemplateModified())
-                $validator->errors()->add('markup', lang('system::lang.themes.alert_changes_confirm'));
+                $validator->errors()->add('markup', lang('igniter::system.themes.alert_changes_confirm'));
         });
 
         $this->validate($data,
@@ -223,7 +223,7 @@ class TemplateEditor extends BaseFormWidget
             throw new ApplicationException('Missing theme object on '.get_class($this->model));
 
         $type = $this->templateType ?? '_pages';
-        /** @var \Main\Template\Model $templateClass */
+        /** @var \Igniter\Main\Template\Model $templateClass */
         $templateClass = $themeObject->getTemplateClass($type);
 
         return $templateClass::getDropdownOptions($themeObject, true);
@@ -232,10 +232,10 @@ class TemplateEditor extends BaseFormWidget
     protected function getTemplateTypes()
     {
         return [
-            '_pages' => 'system::lang.themes.label_type_page',
-            '_partials' => 'system::lang.themes.label_type_partial',
-            '_layouts' => 'system::lang.themes.label_type_layout',
-            '_content' => 'system::lang.themes.label_type_content',
+            '_pages' => 'igniter::system.themes.label_type_page',
+            '_partials' => 'igniter::system.themes.label_type_partial',
+            '_layouts' => 'igniter::system.themes.label_type_layout',
+            '_content' => 'igniter::system.themes.label_type_content',
         ];
     }
 

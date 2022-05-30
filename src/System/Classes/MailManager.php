@@ -1,23 +1,18 @@
 <?php
 
-namespace System\Classes;
+namespace Igniter\System\Classes;
 
-use Igniter\Flame\Support\PagicHelper;
 use Igniter\Flame\Support\StringParser;
-use Igniter\Flame\Traits\Singleton;
+use Igniter\System\Models\MailPartial;
+use Igniter\System\Models\MailTemplate;
+use Igniter\System\Models\MailTheme;
 use Illuminate\Mail\Markdown;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
-use System\Helpers\ViewHelper;
-use System\Models\MailPartial;
-use System\Models\MailTemplate;
-use System\Models\MailTheme;
 
 class MailManager
 {
-    use Singleton;
-
     /**
      * @var array A cache of templates.
      */
@@ -69,26 +64,12 @@ class MailManager
 
     public function addContentToMailer($message, $code, $data, $plainOnly = false)
     {
-        if (isset($this->templateCache[$code])) {
-            $template = $this->templateCache[$code];
-        }
-        else {
-            $this->templateCache[$code] = $template = MailTemplate::findOrMakeTemplate($code);
-        }
-
-        if (!$template)
-            return false;
-
-        return $this->addContentToMailerInternal($message, $template, $data, $plainOnly);
+        traceLog('Deprecated method, use Mailable');
     }
 
     public function addRawContentToMailer($message, $content, $data)
     {
-        $template = new MailTemplate();
-
-        $template->fillFromContent($content);
-
-        return $this->addContentToMailerInternal($message, $template, $data);
+        traceLog('Deprecated method, use Mailable');
     }
 
     public function applyMailerConfigValues()
@@ -140,30 +121,18 @@ class MailManager
      */
     protected function addContentToMailerInternal($message, $template, $data, $plainOnly = false)
     {
-        $globalVars = ViewHelper::getGlobalVars();
-        if (!empty($globalVars)) {
-            $data = (array)$data + $globalVars;
+    }
+
+    public function getTemplate($code)
+    {
+        if (isset($this->templateCache[$code])) {
+            $template = $this->templateCache[$code];
+        }
+        else {
+            $this->templateCache[$code] = $template = MailTemplate::findOrMakeTemplate($code);
         }
 
-        // Subject
-        $swiftMessage = $message->getSwiftMessage();
-        if (empty($swiftMessage->getSubject())) {
-            $message->subject($this->renderView($template->subject, $data));
-        }
-
-        $data += ['subject' => $swiftMessage->getSubject()];
-
-        // HTML contents
-        if (!$plainOnly) {
-            $html = $this->renderTemplate($template, $data);
-            $message->setBody($html, 'text/html');
-        }
-
-        // Text contents
-        $text = $this->renderTextTemplate($template, $data);
-        $message->addPart($text, 'text/plain');
-
-        return true;
+        return $template;
     }
 
     //
@@ -184,9 +153,7 @@ class MailManager
 
         $html = $this->renderView($content, $data);
 
-        $html = Markdown::parse($html);
-
-        return $html;
+        return Markdown::parse($html);
     }
 
     /**
@@ -203,9 +170,7 @@ class MailManager
 
         $text = $this->renderView($content, $data);
 
-        $text = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n\n", $text), ENT_QUOTES, 'UTF-8');
-
-        return $text;
+        return html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n\n", $text), ENT_QUOTES, 'UTF-8');
     }
 
     public function renderTemplate($template, $data = [])
@@ -248,11 +213,11 @@ class MailManager
         return $text;
     }
 
-    protected function renderView($content, $data)
+    public function renderView($content, $data)
     {
         $this->registerBladeDirectives();
 
-        $content = PagicHelper::parse($content, $data);
+        $content = Blade::render($content, $data);
 
         return (new StringParser)->parse($content, $data);
     }
@@ -302,7 +267,7 @@ class MailManager
             $callback($this);
         }
 
-        $extensions = ExtensionManager::instance()->getExtensions();
+        $extensions = resolve(ExtensionManager::class)->getExtensions();
         foreach ($extensions as $extensionCode => $extensionObj) {
             $this->processRegistrationMethodValues($extensionObj, 'registerMailLayouts');
             $this->processRegistrationMethodValues($extensionObj, 'registerMailTemplates');
@@ -416,7 +381,7 @@ class MailManager
      * registerMailTemplates() function. This instance is passed to the
      * callback function as an argument. Usage:
      * <pre>
-     *   MailManager::instance()->registerCallback(function($manager){
+     *   resolve(MailManager::class)->registerCallback(function($manager){
      *       $manager->registerMailTemplates([...]);
      *   });
      * </pre>
@@ -431,11 +396,11 @@ class MailManager
     protected function registerBladeDirectives()
     {
         Blade::directive('partial', function ($expression) {
-            return "<?php \System\Classes\MailManager::instance()->startPartial({$expression}); ?>";
+            return "<?php resolve(\Igniter\System\Classes\MailManager::class)->startPartial({$expression}); ?>";
         });
 
         Blade::directive('endpartial', function () {
-            return "<?php echo \System\Classes\MailManager::instance()->renderPartial(); ?>";
+            return "<?php echo resolve(\Igniter\System\Classes\MailManager::class)->renderPartial(); ?>";
         });
     }
 

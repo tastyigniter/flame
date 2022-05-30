@@ -1,12 +1,12 @@
 <?php
 
-namespace System\Libraries;
+namespace Igniter\System\Libraries;
 
 use Igniter\Flame\Html\HtmlFacade as Html;
 use Igniter\Flame\Support\Facades\File;
+use Igniter\System\Traits\CombinesAssets;
 use JsonSerializable;
 use stdClass;
-use System\Traits\CombinesAssets;
 
 /**
  * Assets Class
@@ -62,7 +62,7 @@ class Assets
 
     public function addFromManifest($path)
     {
-        $assetsConfigPath = base_path().$this->getAssetPath($path);
+        $assetsConfigPath = $this->getAssetPath($path);
         if (!File::exists($assetsConfigPath))
             return;
 
@@ -244,12 +244,15 @@ class Assets
         if (starts_with($name, ['//', 'http://', 'https://']))
             return $name;
 
+        if (starts_with($name, base_path()))
+            return $name;
+
         if (File::isPathSymbol($name))
-            return File::localToPublic(File::symbolizePath($name));
+            return File::symbolizePath($name);
 
         foreach (static::$registeredPaths as $path) {
             if (File::exists($path = realpath($path.'/'.$name)))
-                return File::localToPublic($path);
+                return $path;
         }
 
         return $name;
@@ -260,7 +263,7 @@ class Assets
         $result = [];
         foreach ($assets as $key => $asset) {
             $path = array_get($asset, 'path');
-            if (starts_with($path, ['//', 'http://', 'https://']))
+            if (!$path || starts_with($path, ['//', 'http://', 'https://']))
                 continue;
 
             $result[] = $path;
@@ -288,7 +291,7 @@ class Assets
             $path = array_get($asset, 'path');
             if (!$path) continue;
 
-            $realPath = realpath(base_path($path)) ?: $path;
+            $realPath = realpath(public_path($path)) ?: $path;
             if (isset($pathCache[$realPath])) {
                 array_forget($collection, $key);
                 continue;
@@ -303,6 +306,9 @@ class Assets
     protected function prepUrl($path, $suffix = null)
     {
         $path = $this->getAssetPath($path);
+
+        if (starts_with($path, public_path()))
+            $path = File::localToPublic($path);
 
         if (!is_null($suffix))
             $suffix = (strpos($path, '?') === false) ? '?'.$suffix : '&'.$suffix;

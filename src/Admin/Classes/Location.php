@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Classes;
+namespace Igniter\Admin\Classes;
 
 use Igniter\Flame\Location\Manager;
 
@@ -8,7 +8,7 @@ class Location extends Manager
 {
     protected $sessionKey = 'admin_local_info';
 
-    protected $locationModel = \Admin\Models\Location::class;
+    protected $locationModel = \Igniter\Admin\Models\Location::class;
 
     protected $listLocationsCache = [];
 
@@ -144,7 +144,7 @@ class Location extends Manager
     }
 
     /**
-     * @return \Admin\Classes\User
+     * @return \Igniter\Flame\Auth\UserGuard
      */
     protected function getAuth()
     {

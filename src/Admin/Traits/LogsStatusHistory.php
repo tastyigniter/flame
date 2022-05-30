@@ -1,9 +1,9 @@
 <?php
 
-namespace Admin\Traits;
+namespace Igniter\Admin\Traits;
 
-use Admin\Models\Reservation;
-use Admin\Models\StatusHistory;
+use Igniter\Admin\Models\Reservation;
+use Igniter\Admin\Models\StatusHistory;
 
 trait LogsStatusHistory
 {
@@ -12,9 +12,9 @@ trait LogsStatusHistory
     public static function bootLogsStatusHistory()
     {
         self::extend(function (self $model) {
-            $model->relation['belongsTo']['status'] = [\Admin\Models\Status::class];
+            $model->relation['belongsTo']['status'] = [\Igniter\Admin\Models\Status::class];
             $model->relation['morphMany']['status_history'] = [
-                \Admin\Models\StatusHistory::class, 'name' => 'object', 'delete' => TRUE,
+                \Igniter\Admin\Models\StatusHistory::class, 'name' => 'object', 'delete' => TRUE,
             ];
 
             $model->appends[] = 'status_name';
@@ -57,7 +57,7 @@ trait LogsStatusHistory
 
         if ($history->notify) {
             $mailView = ($this instanceof Reservation)
-                ? 'admin::_mail.reservation_update' : 'admin::_mail.order_update';
+                ? 'igniter.admin::_mail.reservation_update' : 'igniter.admin::_mail.order_update';
 
             $this->mailSend($mailView, 'customer');
         }

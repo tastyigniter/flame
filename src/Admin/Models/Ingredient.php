@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Models;
+namespace Igniter\Admin\Models;
 
 use Igniter\Flame\Database\Attach\HasMedia;
 use Igniter\Flame\Database\Factories\HasFactory;
@@ -34,8 +34,8 @@ class Ingredient extends Model
 
     public $relation = [
         'morphedByMany' => [
-            'menus' => [\Admin\Models\Menu::class, 'name' => 'ingredientable'],
-            'menu_option_values' => [\Admin\Models\MenuOptionValue::class, 'name' => 'ingredientable'],
+            'menus' => [\Igniter\Admin\Models\Menu::class, 'name' => 'ingredientable'],
+            'menu_option_values' => [\Igniter\Admin\Models\MenuOptionValue::class, 'name' => 'ingredientable'],
         ],
     ];
 

@@ -1,18 +1,18 @@
 <?php
 
-namespace System\Requests;
+namespace Igniter\System\Requests;
 
-use System\Classes\FormRequest;
+use Igniter\System\Classes\FormRequest;
 
 class AdvancedSettings extends FormRequest
 {
     public function attributes()
     {
         return [
-            'enable_request_log' => lang('system::lang.settings.label_enable_request_log'),
-            'maintenance_mode' => lang('system::lang.settings.label_maintenance_mode'),
-            'maintenance_message' => lang('system::lang.settings.label_maintenance_message'),
-            'activity_log_timeout' => lang('system::lang.settings.label_activity_log_timeout'),
+            'enable_request_log' => lang('igniter::system.settings.label_enable_request_log'),
+            'maintenance_mode' => lang('igniter::system.settings.label_maintenance_mode'),
+            'maintenance_message' => lang('igniter::system.settings.label_maintenance_message'),
+            'activity_log_timeout' => lang('igniter::system.settings.label_activity_log_timeout'),
         ];
     }
 
