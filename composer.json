@@ -1,84 +1,72 @@
 {
-  "name": "tastyigniter/flame",
-  "description": "TastyIgniter Flame core library of TastyIgniter, add some flame to laravel",
-  "homepage": "https://tastyigniter.com",
+  "name": "tastyigniter/tastyigniter",
+  "description": "TastyIgniter is a free open source online ordering and restaurant management system",
+  "type": "project",
   "keywords": [
-    "tastyigniter",
-    "igniter",
-    "flame",
-    "laravel"
+    "tastyigniter", "igniter", "restaurant",
+    "ordering", "ecommerce", "opensource"
   ],
-  "license": "MIT",
   "authors": [
     {
       "name": "Samuel Adepoyigi",
-      "email": "sam@sampoyigi.com"
+      "email": "sam@sampoyigi.com",
+      "role": "Creator"
     }
   ],
+  "license": "MIT",
+  "homepage": "https://tastyigniter.com",
+  "support": {
+    "paid": "https://tastyigniter.com/premium-support",
+    "issues": "https://github.com/tastyigniter/TastyIgniter/issues",
+    "forum": "https://forum.tastyigniter.com",
+    "discord": "https/tastyigniter.com/discord",
+    "docs": "https://tastyigniter.com/docs",
+    "source": "https://github.com/tastyigniter/TastyIgniter"
+  },
   "require": {
     "php": ">=7.4",
-    "ext-ctype": "*",
-    "ext-curl": "*",
-    "ext-dom": "*",
-    "ext-fileinfo": "*",
-    "ext-gd": "*",
-    "ext-json": "*",
-    "ext-libxml": "*",
-    "ext-PDO": "*",
-    "ext-zip": "*",
-    "ext-mbstring": "*",
-    "ext-openssl": "*",
-    "fideloper/proxy": "~4.0",
-    "doctrine/instantiator": "~1.0",
-    "doctrine/dbal": "~2.6",
-    "fruitcake/laravel-cors": "^2.0",
-    "guzzlehttp/guzzle": "^6.3|^7.3",
-    "kalnoy/nestedset": "~6.0",
-    "linkorb/jsmin-php": "~1.0",
-    "natxet/cssmin": "~3.0",
-    "symfony/yaml": "~5.1",
-    "scssphp/scssphp": "~1.0",
-    "league/glide": "~1.5",
-    "laravel/tinker": "~2.0"
+    "composer/installers": "dev-main as 2.0",
+    "tastyigniter/flame": "~1.2",
+    "tastyigniter/ti-module-system": "dev-develop as 3.0",
+    "tastyigniter/ti-module-admin": "dev-develop as 3.0",
+    "tastyigniter/ti-module-main": "dev-develop as 3.0",
+    "laravel/framework": "~8.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^8.0|^9.0",
-    "illuminate/database": "^8.0",
-    "illuminate/encryption": "^8.0",
-    "illuminate/filesystem": "^8.0",
-    "illuminate/queue": "^8.0",
-    "illuminate/support": "^8.0",
-    "illuminate/log": "^8.0",
-    "illuminate/mail": "^8.0",
-    "illuminate/events": "^8.0",
-    "illuminate/pagination": "^8.0",
-    "illuminate/routing": "^8.0",
-    "illuminate/validation": "^8.0",
-    "illuminate/view": "^8.0",
-    "illuminate/cache": "^8.0",
-    "mockery/mockery": "^1.3",
-    "fakerphp/faker": "^1.14"
+    "phpunit/phpunit": "^9.0",
+    "mockery/mockery": "^1.4.2",
+    "facade/ignition": "^2.5",
+    "fakerphp/faker": "~1.14",
+    "squizlabs/php_codesniffer": "3.*",
+    "jakub-onderka/php-parallel-lint": "^1.0",
+    "pestphp/pest": "^1.21",
+    "pestphp/pest-plugin-laravel": "^1.2",
+    "pestphp/pest-plugin-faker": "^1.0"
   },
-  "suggest": {
-    "ext-pdo_mysql": "Required to use MySQL databases"
-  },
-  "replace": {
-    "kriswallsmith/assetic": "*",
-    "leafo/scssphp": "*"
-  },
-  "autoload": {
-    "files": [
-      "src/Support/helpers.php"
-    ],
+  "autoload-dev": {
     "psr-4": {
-      "Igniter\\Flame\\": "src/"
+      "Tests\\": "tests"
     }
   },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "1.0-dev"
-    }
+  "scripts": {
+    "test": "vendor/bin/pest",
+    "post-create-project-cmd": [
+      "php artisan key:generate"
+    ]
   },
   "minimum-stability": "dev",
-  "prefer-stable": true
+  "prefer-stable": true,
+  "extra": {
+    "laravel": {
+      "dont-discover": [
+        "*"
+      ]
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true,
+      "composer/installers": true
+    }
+  }
 }
