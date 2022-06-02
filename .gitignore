@@ -4,4 +4,5 @@
 composer.lock
 node_modules
 mix-manifest.json
-/public
+/public/js/app.js.LICENSE.txt
+
