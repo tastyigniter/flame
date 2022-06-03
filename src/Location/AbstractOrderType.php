@@ -79,7 +79,7 @@ abstract class AbstractOrderType implements OrderTypeInterface
             return $this->schedule;
 
         $schedule = $this->model->newWorkingSchedule(
-            $this->code, $this->getFutureDays()
+            $this->code, [$this->getMinimumFutureDays(), $this->getFutureDays()]
         );
 
         return $this->schedule = $schedule;

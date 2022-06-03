@@ -30,16 +30,18 @@ class WorkingSchedule
      */
     protected $exceptions = [];
 
-    protected $days;
+    protected $minDays;
+
+    protected $maxDays;
 
     /**
      * @param null $timezone
-     * @param int $days
+     * @param int|array $days
      */
     public function __construct($timezone = null, $days = 5)
     {
         $this->timezone = $timezone ? new DateTimeZone($timezone) : null;
-        $this->days = (int)$days;
+        [$this->minDays, $this->maxDays] = is_array($days) ? $days : [0, (int)$days];
 
         $this->periods = WorkingDay::mapDays(function () {
             return new WorkingPeriod;
@@ -112,9 +114,14 @@ class WorkingSchedule
         return $this->type;
     }
 
+    public function minDays()
+    {
+        return $this->minDays;
+    }
+
     public function days()
     {
-        return $this->days;
+        return $this->maxDays;
     }
 
     public function exceptions(): array
@@ -218,12 +225,10 @@ class WorkingSchedule
                 : false;
         }
 
-        $dateTime = $dateTime->setTime(
+        return $dateTime->setTime(
             $nextOpenAt->toDateTime()->format('G'),
             $nextOpenAt->toDateTime()->format('i')
         );
-
-        return $dateTime;
     }
 
     /**
@@ -425,19 +430,22 @@ class WorkingSchedule
         return $date;
     }
 
-    protected function isTimeslotValid(DateTimeInterface $date, DateTimeInterface $dateTime, int $leadTimeMinutes)
+    protected function isTimeslotValid(DateTimeInterface $timeslot, DateTimeInterface $dateTime, int $leadTimeMinutes)
     {
-        if (Carbon::instance($dateTime)->gt($date) || Carbon::now()->gt($date))
+        if (Carbon::instance($dateTime)->gt($timeslot) || Carbon::now()->gt($timeslot))
             return false;
 
-        if (Carbon::now()->diffInMinutes($date) < $leadTimeMinutes)
+        if (Carbon::now()->diffInMinutes($timeslot) < $leadTimeMinutes)
+            return false;
+
+        if (!$this->isBetweenPeriodForDays($timeslot))
             return false;
 
         // +2 as we subtracted a day and need to count the current day
-        if (Carbon::instance($dateTime)->addDays($this->days + 2)->lt($date))
+        if (Carbon::instance($dateTime)->addDays($this->maxDays + 2)->lt($timeslot))
             return false;
 
-        $result = Event::fire('igniter.workingSchedule.timeslotValid', [$this, $date], true);
+        $result = Event::fire('igniter.workingSchedule.timeslotValid', [$this, $timeslot], true);
 
         return is_bool($result) ? $result : true;
     }
@@ -461,7 +469,7 @@ class WorkingSchedule
         if (!$startDate = $this->nextOpenAt($startDate))
             return false;
 
-        $endDate = $dateTime->copy()->endOfDay()->addDays($this->days);
+        $endDate = $dateTime->copy()->endOfDay()->addDays($this->maxDays);
         if ($this->forDate($endDate)->closesLate())
             $endDate->addDay();
 
@@ -470,5 +478,13 @@ class WorkingSchedule
             $endDate = $nextEndDate->addDay();
 
         return new DatePeriod($startDate, new DateInterval('P1D'), $endDate);
+    }
+
+    protected function isBetweenPeriodForDays($timeslot)
+    {
+        return $timeslot->between(
+            now()->startOfDay()->addDays($this->minDays),
+            now()->endOfDay()->addDays($this->maxDays + 2)
+        );
     }
 }
