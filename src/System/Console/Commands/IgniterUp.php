@@ -2,8 +2,8 @@
 
 namespace Igniter\System\Console\Commands;
 
-use Illuminate\Console\Command;
 use Igniter\System\Classes\UpdateManager;
+use Illuminate\Console\Command;
 
 class IgniterUp extends Command
 {
@@ -27,7 +27,7 @@ class IgniterUp extends Command
     {
         $this->output->writeln('<info>Migrating application and extensions...</info>');
 
-        $manager = UpdateManager::instance();
+        $manager = resolve(UpdateManager::class);
         $manager->setLogsOutput($this->output);
         $manager->update();
     }

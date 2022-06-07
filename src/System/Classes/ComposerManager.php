@@ -9,8 +9,6 @@ use Igniter\Flame\Support\Facades\File;
  */
 class ComposerManager
 {
-    use \Igniter\Flame\Traits\Singleton;
-
     /**
      * @var \Composer\Autoload\ClassLoader The primary composer instance.
      */

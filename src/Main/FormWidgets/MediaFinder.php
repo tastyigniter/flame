@@ -130,7 +130,7 @@ class MediaFinder extends BaseFormWidget
             return $media->getDiskPath();
 
         try {
-            return MediaLibrary::instance()->getMediaRelativePath(trim($media, '/'));
+            return resolve(MediaLibrary::class)->getMediaRelativePath(trim($media, '/'));
         }
         catch (SystemException $ex) {
             return $media;
@@ -145,7 +145,7 @@ class MediaFinder extends BaseFormWidget
         if (!strlen($path = trim($media, '/')))
             return $path;
 
-        return MediaLibrary::instance()->getMediaThumb($path, $this->thumbOptions);
+        return resolve(MediaLibrary::class)->getMediaThumb($path, $this->thumbOptions);
     }
 
     public function getMediaFileType($media)
@@ -246,7 +246,7 @@ class MediaFinder extends BaseFormWidget
         if (!$model->exists)
             throw new ApplicationException(lang('igniter::main.media_manager.alert_only_attach_to_saved'));
 
-        $manager = MediaLibrary::instance();
+        $manager = resolve(MediaLibrary::class);
         foreach ($items as &$item) {
             $media = $model->newMediaInstance();
             $media->addFromRaw(

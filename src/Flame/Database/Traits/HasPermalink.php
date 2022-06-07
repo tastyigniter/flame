@@ -131,6 +131,6 @@ trait HasPermalink
      */
     protected function getPermalinkMaker()
     {
-        return PermalinkMaker::instance();
+        return resolve(PermalinkMaker::class);
     }
 }

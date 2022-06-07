@@ -42,7 +42,7 @@ class ExtensionRefresh extends Command
             throw new \InvalidArgumentException(sprintf('Extension "%s" not found.', $extensionName));
         }
 
-        $manager = UpdateManager::instance();
+        $manager = resolve(UpdateManager::class);
         $manager->setLogsOutput($this->output);
 
         if ($step = (int)$this->option('step')) {

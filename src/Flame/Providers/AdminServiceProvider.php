@@ -4,7 +4,6 @@ namespace Igniter\Flame\Providers;
 
 use Igniter\Admin\ActivityTypes;
 use Igniter\Admin\Classes;
-use Igniter\Admin\Classes\RouteRegistrar;
 use Igniter\Admin\Facades\AdminLocation;
 use Igniter\Admin\Facades\AdminMenu;
 use Igniter\Admin\Helpers\Admin as AdminHelper;
@@ -17,7 +16,6 @@ use Igniter\System\Models\Settings;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\AliasLoader;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 
@@ -78,25 +76,30 @@ class AdminServiceProvider extends AppServiceProvider
      */
     protected function registerSingletons()
     {
-        App::singleton('admin.helper', function () {
+        $this->app->singleton('admin.helper', function () {
             return new AdminHelper;
         });
 
-        App::singleton('admin.auth', function () {
+        $this->app->singleton('admin.auth', function () {
             return resolve('auth')->guard(config('igniter.auth.guards.admin', 'web'));
         });
 
-        App::singleton('admin.menu', function ($app) {
+        $this->app->singleton('admin.menu', function ($app) {
             return new Classes\Navigation('igniter.admin::_partials');
         });
 
-        App::singleton('admin.template', function ($app) {
+        $this->app->singleton('admin.template', function ($app) {
             return new Classes\Template;
         });
 
-        App::singleton('admin.location', function ($app) {
+        $this->app->singleton('admin.location', function ($app) {
             return new \Igniter\Admin\Classes\Location;
         });
+
+        $this->app->singleton(Classes\OnboardingSteps::class);
+        $this->app->singleton(Classes\PaymentGateways::class);
+        $this->app->singleton(Classes\PermissionManager::class);
+        $this->tapSingleton(Classes\Widgets::class);
     }
 
     protected function registerFacadeAliases()
@@ -140,7 +143,7 @@ class AdminServiceProvider extends AppServiceProvider
      */
     protected function registerDashboardWidgets()
     {
-        Classes\Widgets::instance()->registerDashboardWidgets(function (Classes\Widgets $manager) {
+        resolve(Classes\Widgets::class)->registerDashboardWidgets(function (Classes\Widgets $manager) {
             $manager->registerDashboardWidget(\Igniter\System\DashboardWidgets\Activities::class, [
                 'label' => 'Recent activities',
                 'context' => 'dashboard',
@@ -175,7 +178,7 @@ class AdminServiceProvider extends AppServiceProvider
 
     protected function registerBulkActionWidgets()
     {
-        Classes\Widgets::instance()->registerBulkActionWidgets(function (Classes\Widgets $manager) {
+        resolve(Classes\Widgets::class)->registerBulkActionWidgets(function (Classes\Widgets $manager) {
             $manager->registerBulkActionWidget(\Igniter\Admin\BulkActionWidgets\Status::class, [
                 'code' => 'status',
             ]);
@@ -191,7 +194,7 @@ class AdminServiceProvider extends AppServiceProvider
      */
     protected function registerFormWidgets()
     {
-        Classes\Widgets::instance()->registerFormWidgets(function (Classes\Widgets $manager) {
+        resolve(Classes\Widgets::class)->registerFormWidgets(function (Classes\Widgets $manager) {
             $manager->registerFormWidget(\Igniter\Admin\FormWidgets\CodeEditor::class, [
                 'label' => 'Code editor',
                 'code' => 'codeeditor',
@@ -669,7 +672,7 @@ class AdminServiceProvider extends AppServiceProvider
 
     protected function registerPermissions()
     {
-        Classes\PermissionManager::instance()->registerCallback(function ($manager) {
+        resolve(Classes\PermissionManager::class)->registerCallback(function ($manager) {
             $manager->registerPermissions('Admin', [
                 'Admin.Dashboard' => [
                     'label' => 'igniter::admin.permissions.dashboard', 'group' => 'igniter::admin.permissions.name',
@@ -831,7 +834,7 @@ class AdminServiceProvider extends AppServiceProvider
             return;
 
         Route::group([], function ($router) {
-            (new RouteRegistrar($router))->all();
+            (new Classes\RouteRegistrar($router))->all();
         });
     }
 }

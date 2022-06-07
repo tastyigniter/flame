@@ -453,7 +453,7 @@ class MediaManager extends BaseWidget
      */
     protected function getMediaLibrary()
     {
-        return MediaLibrary::instance();
+        return resolve(MediaLibrary::class);
     }
 
     protected function listFolderItems($folder, $sortBy, $filter)

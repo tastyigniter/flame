@@ -88,7 +88,7 @@ class Languages extends \Igniter\Admin\Classes\AdminController
         if (!$filter || !is_array($filter) || !isset($filter['search']) || !strlen($filter['search']))
             return [];
 
-        return LanguageManager::instance()->searchLanguages($filter['search']);
+        return resolve(LanguageManager::class)->searchLanguages($filter['search']);
     }
 
     public function edit($context = null, $recordId = null)
@@ -125,7 +125,7 @@ class Languages extends \Igniter\Admin\Classes\AdminController
     {
         $model = $this->formFindModelObject($recordId);
 
-        $response = LanguageManager::instance()->applyLanguagePack($model->code, $model->version);
+        $response = resolve(LanguageManager::class)->applyLanguagePack($model->code, $model->version);
 
         $title = $response
             ? lang('igniter::system.languages.text_title_update_available')
@@ -150,7 +150,7 @@ class Languages extends \Igniter\Admin\Classes\AdminController
 
         $this->validateItems();
 
-        $response = LanguageManager::instance()->applyLanguagePack($items[0]['name']);
+        $response = resolve(LanguageManager::class)->applyLanguagePack($items[0]['name']);
 
         return [
             'steps' => $this->buildProcessSteps([$response], $items),
@@ -161,7 +161,7 @@ class Languages extends \Igniter\Admin\Classes\AdminController
     {
         $model = $this->formFindModelObject($recordId);
 
-        $response = LanguageManager::instance()->applyLanguagePack($model->code);
+        $response = resolve(LanguageManager::class)->applyLanguagePack($model->code);
 
         return [
             'steps' => $this->buildProcessSteps([$response], [[
@@ -179,7 +179,7 @@ class Languages extends \Igniter\Admin\Classes\AdminController
 
         $meta = post('meta');
 
-        $languageManager = LanguageManager::instance();
+        $languageManager = resolve(LanguageManager::class);
 
         $processMeta = $meta['process'];
         switch ($processMeta) {
@@ -216,7 +216,7 @@ class Languages extends \Igniter\Admin\Classes\AdminController
         $field->value = $this->getFilterValue('search');
 
         if (is_null($this->localeFiles))
-            $this->localeFiles = LanguageManager::instance()->listLocaleFiles('en');
+            $this->localeFiles = resolve(LanguageManager::class)->listLocaleFiles('en');
 
         $fileField->options = $this->prepareNamespaces();
         $field->options = post($field->getName()) ?: $this->prepareTranslations($form->model);
@@ -276,7 +276,7 @@ class Languages extends \Igniter\Admin\Classes\AdminController
             $files = $files->where('group', $group)->where('namespace', $namespace);
         }
 
-        $manager = LanguageManager::instance();
+        $manager = resolve(LanguageManager::class);
 
         $result = [];
         $files->each(function ($file) use ($manager, $model, &$result, $stringFilter) {

@@ -46,7 +46,7 @@ class Updates extends \Igniter\Admin\Classes\AdminController
         $this->prepareAssets();
 
         try {
-            $updateManager = UpdateManager::instance();
+            $updateManager = resolve(UpdateManager::class);
             $this->vars['carteInfo'] = $updateManager->getSiteDetail();
             $this->vars['updates'] = $updates = $updateManager->requestUpdateList();
 

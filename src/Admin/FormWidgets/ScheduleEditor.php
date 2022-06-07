@@ -125,7 +125,7 @@ class ScheduleEditor extends BaseFormWidget
         if ($this->schedulesCache)
             return $this->schedulesCache;
 
-        $schedules = collect(OrderTypes::instance()->listOrderTypes())
+        $schedules = collect(resolve(OrderTypes::class)->listOrderTypes())
             ->prepend(['name' => 'igniter::admin.text_opening'], Location::OPENING)
             ->mapWithKeys(function ($definition, $code) {
                 $scheduleItem = $this->model->createScheduleItem($code);

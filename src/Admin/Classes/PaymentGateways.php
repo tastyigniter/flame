@@ -4,7 +4,6 @@ namespace Igniter\Admin\Classes;
 
 use Igniter\Admin\Models\Payment;
 use Igniter\Flame\Support\Facades\File;
-use Igniter\Flame\Traits\Singleton;
 use Igniter\Main\Classes\ThemeManager;
 use Igniter\System\Classes\ExtensionManager;
 use Illuminate\Support\Facades\Response;
@@ -14,8 +13,6 @@ use Illuminate\Support\Facades\Response;
  */
 class PaymentGateways
 {
-    use Singleton;
-
     /**
      * @var array Cache of registration callbacks.
      */

@@ -8,8 +8,6 @@ use Igniter\Flame\Igniter;
 use Igniter\Flame\Setting\Facades\Setting;
 use Igniter\Flame\Translation\Drivers\Database;
 use Igniter\System\Classes;
-use Igniter\System\Classes\ExtensionManager;
-use Igniter\System\Classes\MailManager;
 use Igniter\System\Console;
 use Igniter\System\Exception\ErrorHandler;
 use Igniter\System\Libraries;
@@ -38,7 +36,7 @@ class SystemServiceProvider extends AppServiceProvider
         $this->registerFacadeAliases();
 
         // Register all extensions
-        resolve(ExtensionManager::class)->registerExtensions();
+        resolve(Classes\ExtensionManager::class)->registerExtensions();
 
         $this->registerSchedule();
         $this->registerConsole();
@@ -63,7 +61,7 @@ class SystemServiceProvider extends AppServiceProvider
         $this->defineEloquentMorphMaps();
         $this->resolveFlashSessionKey();
 
-        resolve(ExtensionManager::class)->bootExtensions();
+        resolve(Classes\ExtensionManager::class)->bootExtensions();
 
         $this->updateTimezone();
         $this->setConfiguration();
@@ -92,13 +90,13 @@ class SystemServiceProvider extends AppServiceProvider
 
         $this->app->instance('path.uploads', base_path(Config::get('igniter.system.assets.media.path', 'assets/media/uploads')));
 
-        $this->app->singleton(ExtensionManager::class, function () {
-            return tap(new ExtensionManager, function ($manager) {
-                $manager->initialize();
-            });
-        });
-
-        $this->app->singleton(MailManager::class);
+        $this->app->singleton(Classes\ComponentManager::class);
+        $this->tapSingleton(Classes\ComposerManager::class);
+        $this->tapSingleton(Classes\ExtensionManager::class);
+        $this->tapSingleton(Classes\HubManager::class);
+        $this->tapSingleton(Classes\LanguageManager::class);
+        $this->app->singleton(Classes\MailManager::class);
+        $this->tapSingleton(Classes\UpdateManager::class);
     }
 
     protected function registerFacadeAliases()
@@ -120,7 +118,7 @@ class SystemServiceProvider extends AppServiceProvider
     {
         // Allow extensions to use the scheduler
         Event::listen('console.schedule', function ($schedule) {
-            $extensions = resolve(ExtensionManager::class)->getExtensions();
+            $extensions = resolve(Classes\ExtensionManager::class)->getExtensions();
             foreach ($extensions as $extension) {
                 if (method_exists($extension, 'registerSchedule')) {
                     $extension->registerSchedule($schedule);
@@ -135,7 +133,7 @@ class SystemServiceProvider extends AppServiceProvider
 
         Event::listen(\Illuminate\Console\Events\CommandFinished::class, function ($event) {
             if ($event->command === 'clear-compiled')
-                \Igniter\System\Helpers\CacheHelper::instance()->clearCompiled();
+                \Igniter\System\Helpers\CacheHelper::clearCompiled();
         });
 
         foreach (
@@ -192,7 +190,7 @@ class SystemServiceProvider extends AppServiceProvider
 
     protected function registerMailer()
     {
-        resolve(MailManager::class)->registerCallback(function (MailManager $manager) {
+        resolve(Classes\MailManager::class)->registerCallback(function (Classes\MailManager $manager) {
             $manager->registerMailLayouts([
                 'default' => 'igniter.system::_mail.layouts.default',
             ]);
@@ -213,7 +211,7 @@ class SystemServiceProvider extends AppServiceProvider
         });
 
         Event::listen('mailer.beforeRegister', function () {
-            resolve(MailManager::class)->applyMailerConfigValues();
+            resolve(Classes\MailManager::class)->applyMailerConfigValues();
         });
     }
 
@@ -312,7 +310,7 @@ class SystemServiceProvider extends AppServiceProvider
         Event::listen('console.schedule', function (Schedule $schedule) {
             // Check for system updates every 12 hours
             $schedule->call(function () {
-                Classes\UpdateManager::instance()->requestUpdateList(true);
+                resolve(Classes\UpdateManager::class)->requestUpdateList(true);
             })->name('System Updates Checker')->cron('0 */12 * * *')->evenInMaintenanceMode();
 
             // Cleanup activity log
@@ -322,7 +320,7 @@ class SystemServiceProvider extends AppServiceProvider
 
     protected function registerPermissions()
     {
-        PermissionManager::instance()->registerCallback(function ($manager) {
+        resolve(PermissionManager::class)->registerCallback(function ($manager) {
             $manager->registerPermissions('System', [
                 'Admin.Activities' => [
                     'label' => 'igniter::system.permissions.activities', 'group' => 'igniter::system.permissions.name',

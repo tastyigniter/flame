@@ -2,14 +2,11 @@
 
 namespace Igniter\Flame\Database;
 
-use Igniter\Flame\Traits\Singleton;
 use Illuminate\Support\Collection;
 
 class PermalinkMaker
 {
-    use Singleton;
-
-    /** @var \Model */
+    /** @var \Igniter\Flame\Database\Model */
     protected $model;
 
     public function slug(Model $model, $force = false)
@@ -74,7 +71,6 @@ class PermalinkMaker
         $slug = $this->model->getAttribute($attribute);
 
         if ($force || $this->needsSlugging($attribute, $config)) {
-
             $source = $this->getSlugSource($config['source']);
 
             if ($source || is_numeric($source)) {

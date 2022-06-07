@@ -28,7 +28,7 @@ class IgniterPackageDiscover extends Command
     {
         $manifest->build();
 
-        foreach (array_keys($manifest->manifest) as $package) {
+        foreach (array_keys($manifest->packages()) as $package) {
             $this->line("Discovered Addon: <info>{$package}</info>");
         }
 

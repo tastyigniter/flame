@@ -17,6 +17,6 @@ class ImageHelper
         if (starts_with($path, $rootFolder))
             $path = substr($path, strlen($rootFolder));
 
-        return MediaLibrary::instance()->getMediaThumb($path, $options);
+        return resolve(MediaLibrary::class)->getMediaThumb($path, $options);
     }
 }

@@ -725,7 +725,7 @@ class MainController extends Controller
         $codeObj = $addToLayout ? $this->layoutObj : $this->pageObj;
         $templateObj = $addToLayout ? $this->layout : $this->page;
 
-        $manager = ComponentManager::instance();
+        $manager = resolve(ComponentManager::class);
         $componentObj = $manager->makeComponent($name, $codeObj, $properties);
 
         $componentObj->alias = $alias;

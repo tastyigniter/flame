@@ -15,8 +15,6 @@ use Illuminate\Support\Facades\Request;
  */
 class HubManager
 {
-    use \Igniter\Flame\Traits\Singleton;
-
     const ENDPOINT = 'https://api.tastyigniter.com/v2';
 
     protected $cachePrefix;

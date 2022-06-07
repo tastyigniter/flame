@@ -93,7 +93,7 @@ if (!function_exists('uploads_url')) {
      */
     function uploads_url($path = null)
     {
-        return \Igniter\Main\Classes\MediaLibrary::instance()->getMediaUrl($path);
+        return resolve(\Igniter\Main\Classes\MediaLibrary::class)->getMediaUrl($path);
     }
 }
 

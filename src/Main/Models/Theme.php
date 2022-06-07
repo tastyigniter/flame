@@ -91,7 +91,7 @@ class Theme extends Model
     public static function getComponentOptions()
     {
         $components = [];
-        $manager = ComponentManager::instance();
+        $manager = resolve(ComponentManager::class);
         foreach ($manager->listComponents() as $code => $definition) {
             try {
                 $componentObj = $manager->makeComponent($code, null, $definition);

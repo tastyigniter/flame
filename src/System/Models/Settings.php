@@ -119,7 +119,7 @@ class Settings extends Model
     public static function updatesCount()
     {
         try {
-            $updates = UpdateManager::instance()->requestUpdateList();
+            $updates = resolve(UpdateManager::class)->requestUpdateList();
 
             return count(array_get($updates, 'items', []));
         }

@@ -21,8 +21,6 @@ use ZipArchive;
  */
 class UpdateManager
 {
-    use \Igniter\Flame\Traits\Singleton;
-
     protected $logs = [];
 
     /**
@@ -71,7 +69,7 @@ class UpdateManager
 
     public function initialize()
     {
-        $this->hubManager = HubManager::instance();
+        $this->hubManager = resolve(HubManager::class);
         $this->themeManager = resolve(ThemeManager::class);
         $this->extensionManager = resolve(ExtensionManager::class);
 
@@ -175,12 +173,9 @@ class UpdateManager
 
     public function setCoreVersion($version = null, $hash = null)
     {
-        params()->set('ti_version', $version ?? $this->getHubManager()->applyCoreVersion());
-
-        if (strlen($hash))
-            params()->set('sys_hash', $hash);
-
-        params()->save();
+        params()
+            ->set('ti_version', $version ?? resolve(PackageManifest::class)->coreVersion())
+            ->save();
     }
 
     protected function prepareDatabase()
@@ -528,11 +523,14 @@ class UpdateManager
 
     protected function parseTagDescription($update)
     {
-        $tags = array_get($update, 'tags.data', []);
-        foreach ($tags as &$tag) {
-            if (strlen($tag['description']))
-                $tag['description'] = Markdown::parse($tag['description'])->toHtml();
-        }
+        $tags = collect(array_get($update, 'tags.data', []))
+            ->map(function ($tag) {
+                if (strlen($tag['description']))
+                    $tag['description'] = Markdown::parse($tag['description'])->toHtml();
+
+                return $tag;
+            })
+            ->all();
 
         array_set($update, 'tags.data', $tags);
 

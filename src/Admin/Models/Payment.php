@@ -68,7 +68,7 @@ class Payment extends Model
     public function listGateways()
     {
         $result = [];
-        $this->gatewayManager = PaymentGateways::instance();
+        $this->gatewayManager = resolve(PaymentGateways::class);
         foreach ($this->gatewayManager->listGateways() as $code => $gateway) {
             $result[$gateway['code']] = $gateway['name'];
         }
@@ -229,7 +229,7 @@ class Payment extends Model
     {
         $payments = self::pluck('code')->all();
 
-        $gatewayManager = PaymentGateways::instance();
+        $gatewayManager = resolve(PaymentGateways::class);
         foreach ($gatewayManager->listGateways() as $code => $gateway) {
             if (in_array($code, $payments)) continue;
 

@@ -25,7 +25,7 @@ trait HasWorkingHours
     {
         return array_merge([
             static::OPENING,
-        ], collect(OrderTypes::instance()->listOrderTypes())->keys()->all());
+        ], collect(resolve(OrderTypes::class)->listOrderTypes())->keys()->all());
     }
 
     public function listWorkingHours()

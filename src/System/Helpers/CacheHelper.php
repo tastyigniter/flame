@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Cache;
 
 class CacheHelper
 {
-    use \Igniter\Flame\Traits\Singleton;
-
     /**
      * Execute the console command.
      */
@@ -22,17 +20,16 @@ class CacheHelper
 
     public static function clearInternal()
     {
-        $instance = self::instance();
-        $instance->clearCache();
-        $instance->clearView();
-        $instance->clearTemplates();
+        self::clearCache();
+        self::clearView();
+        self::clearTemplates();
 
-        $instance->clearCombiner();
+        self::clearCombiner();
 
-        $instance->clearMeta();
+        self::clearMeta();
     }
 
-    public function clearView()
+    public static function clearView()
     {
         $path = config('view.compiled');
         foreach (File::glob("{$path}/*") as $view) {
@@ -40,12 +37,12 @@ class CacheHelper
         }
     }
 
-    public function clearCombiner()
+    public static function clearCombiner()
     {
-        $this->clearDirectory('/igniter/combiner');
+        self::clearDirectory('/igniter/combiner');
     }
 
-    public function clearCache()
+    public static function clearCache()
     {
         $path = config('igniter.system.parsedTemplateCachePath', '/igniter/cache');
         foreach (File::directories($path) as $directory) {
@@ -53,18 +50,18 @@ class CacheHelper
         }
     }
 
-    public function clearTemplates()
+    public static function clearTemplates()
     {
     }
 
-    public function clearCompiled()
+    public static function clearCompiled()
     {
         File::delete(Igniter::getCachedAddonsPath());
         File::delete(App::getCachedPackagesPath());
         File::delete(App::getCachedServicesPath());
     }
 
-    public function clearDirectory($path)
+    public static function clearDirectory($path)
     {
         if (!File::isDirectory(storage_path().$path))
             return;

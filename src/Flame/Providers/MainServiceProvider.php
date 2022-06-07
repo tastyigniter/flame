@@ -10,6 +10,7 @@ use Igniter\Flame\Pagic\Environment;
 use Igniter\Flame\Pagic\Loader;
 use Igniter\Flame\Pagic\Parsers\FileParser;
 use Igniter\Flame\Setting\Facades\Setting;
+use Igniter\Main\Classes\MediaLibrary;
 use Igniter\Main\Classes\Router;
 use Igniter\Main\Classes\RouteRegistrar;
 use Igniter\Main\Classes\Theme;
@@ -72,22 +73,19 @@ class MainServiceProvider extends AppServiceProvider
      */
     protected function registerComponents()
     {
-        ComponentManager::instance()->registerComponents(function ($manager) {
+        resolve(ComponentManager::class)->registerComponents(function ($manager) {
             $manager->registerComponent(\Igniter\Main\Components\ViewBag::class, 'viewBag');
         });
     }
 
     protected function registerSingletons()
     {
-        App::singleton('main.auth', function () {
+        $this->app->singleton('main.auth', function () {
             return resolve('auth')->guard(config('igniter.auth.guards.web', 'web'));
         });
 
-        App::singleton(ThemeManager::class, function () {
-            return tap(new ThemeManager, function ($manager) {
-                $manager->initialize();
-            });
-        });
+        $this->tapSingleton(MediaLibrary::class);
+        $this->tapSingleton(ThemeManager::class);
 
         $this->app->when(Router::class)
             ->needs(Theme::class)
@@ -154,7 +152,7 @@ class MainServiceProvider extends AppServiceProvider
 
     protected function registerFormWidgets()
     {
-        Widgets::instance()->registerFormWidgets(function (Widgets $manager) {
+        resolve(Widgets::class)->registerFormWidgets(function (Widgets $manager) {
             $manager->registerFormWidget(\Igniter\Main\FormWidgets\Components::class, [
                 'label' => 'Components',
                 'code' => 'components',
@@ -184,7 +182,7 @@ class MainServiceProvider extends AppServiceProvider
 
     protected function registerPermissions()
     {
-        PermissionManager::instance()->registerCallback(function ($manager) {
+        resolve(PermissionManager::class)->registerCallback(function ($manager) {
             $manager->registerPermissions('System', [
                 'Admin.MediaManager' => [
                     'label' => 'igniter::main.permissions.media_manager', 'group' => 'igniter::main.permissions.name',

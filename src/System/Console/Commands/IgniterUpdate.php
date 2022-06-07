@@ -2,9 +2,9 @@
 
 namespace Igniter\System\Console\Commands;
 
+use Igniter\System\Classes\UpdateManager;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
-use Igniter\System\Classes\UpdateManager;
 
 /**
  * Console command to perform a system update.
@@ -32,7 +32,7 @@ class IgniterUpdate extends Command
         $forceUpdate = $this->option('force');
 
         // update system
-        $updateManager = UpdateManager::instance()->setLogsOutput($this->output);
+        $updateManager = resolve(UpdateManager::class)->setLogsOutput($this->output);
         $this->output->writeln('<info>Updating TastyIgniter...</info>');
 
         $updates = $updateManager->requestUpdateList($forceUpdate);

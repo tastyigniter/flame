@@ -216,13 +216,7 @@ class ExtensionManager
         if (is_string($extension) && (!$extension = $this->findExtension($extension)))
             return false;
 
-        if (!$require = array_get($extension->extensionMeta(), 'require'))
-            return null;
-
-        if (!is_array($require))
-            $require = [$require];
-
-        return resolve(PackageManifest::class)->getCodeFromPackageName($require);
+        return $extension->listRequires();
     }
 
     /**
@@ -282,8 +276,9 @@ class ExtensionManager
     public function loadExtensions()
     {
         $this->extensions = [];
+        $this->packageManifest->manifest = null;
 
-        foreach (resolve(PackageManifest::class)->extensions() as $code => $config) {
+        foreach ($this->packageManifest->extensions() as $code => $config) {
             $this->loadExtensionFromConfig($code, $config);
         }
 
@@ -346,8 +341,12 @@ class ExtensionManager
         if (!$path || !File::isDirectory($path))
             return false;
 
-        if (!($class = array_get($config, 'extensionClass')) || !class_exists($class))
-            return false;
+        if (!($class = array_get($config, 'extensionClass')) || !class_exists($class)) {
+            require_once $path.'/Extension.php';
+
+            if (!class_exists($class))
+                return false;
+        }
 
         $classObj = new $class(app());
 
@@ -502,7 +501,7 @@ class ExtensionManager
      *
      * @param $code
      *
-     * @return mixed|null
+     * @return \Igniter\System\Classes\BaseExtension|null
      */
     public function findExtension($code)
     {
@@ -566,7 +565,7 @@ class ExtensionManager
     {
         $classNames = [];
 
-        foreach (resolve(PackageManifest::class)->extensions() as $extension) {
+        foreach ($this->packageManifest->extensions() as $extension) {
             $namespace = normalize_class_name(array_get($extension, 'namespace'));
             $classNames[$namespace] = array_get($extension, 'path');
         }
@@ -728,7 +727,7 @@ class ExtensionManager
         $this->bootExtension($extension);
 
         // set extension migration to the latest version
-        UpdateManager::instance()->migrateExtension($model->name);
+        resolve(UpdateManager::class)->migrateExtension($model->name);
 
         $model->version = $version ?? $this->packageManifest->getVersion($model->name) ?? $model->version;
         $model->save();
@@ -749,7 +748,7 @@ class ExtensionManager
     public function uninstallExtension($code, $purgeData = false)
     {
         if ($purgeData)
-            UpdateManager::instance()->purgeExtension($code);
+            resolve(UpdateManager::class)->purgeExtension($code);
 
         $this->updateInstalledExtensions($code, false);
 
@@ -771,7 +770,7 @@ class ExtensionManager
             $extensionModel->delete();
 
         if ($purgeData)
-            UpdateManager::instance()->purgeExtension($code);
+            resolve(UpdateManager::class)->purgeExtension($code);
 
         // Remove extensions files from filesystem
         $this->removeExtension($code);

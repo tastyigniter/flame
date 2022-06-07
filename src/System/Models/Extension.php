@@ -165,6 +165,7 @@ class Extension extends Model
      */
     public static function syncAll()
     {
+        $availableExtensions = [];
         $manifest = resolve(PackageManifest::class);
         $extensionManager = resolve(ExtensionManager::class);
 
@@ -172,6 +173,8 @@ class Extension extends Model
             $code = $extensionManager->getIdentifier($namespace);
 
             if (!($extension = $extensionManager->findExtension($code))) continue;
+
+            $availableExtensions[] = $code;
 
             $model = self::firstOrNew(['name' => $code]);
 
@@ -182,5 +185,7 @@ class Extension extends Model
 
             $extensionManager->updateInstalledExtensions($code, $enableExtension);
         }
+
+        self::query()->whereNotIn('name', $availableExtensions)->delete();
     }
 }

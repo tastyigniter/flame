@@ -14,6 +14,10 @@ class DatabaseSeeder extends Seeder
 
     public static $staffName = 'Chef Admin';
 
+    public static $username = 'admin';
+
+    public static $password = '123456';
+
     public static $seedDemo = true;
 
     /**

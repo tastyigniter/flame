@@ -12,7 +12,7 @@ use Igniter\Main\Template\Content as ContentTemplate;
 use Igniter\Main\Template\Layout as LayoutTemplate;
 use Igniter\Main\Template\Page as PageTemplate;
 use Igniter\Main\Template\Partial as PartialTemplate;
-use Igniter\System\Classes\PackageManifest;
+use Igniter\System\Helpers\SystemHelper;
 
 class Theme
 {
@@ -352,7 +352,7 @@ class Theme
 
     public function listRequires()
     {
-        return resolve(PackageManifest::class)->getCodeFromPackageName($this->requires);
+        return SystemHelper::parsePackageCodes($this->requires);
     }
 
     //

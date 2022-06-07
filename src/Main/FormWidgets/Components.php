@@ -9,7 +9,7 @@ use Igniter\Admin\Traits\ValidatesForm;
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Flame\Support\Facades\File;
 use Igniter\Main\Classes\ThemeManager;
-use Igniter\System\Classes\ComponentManager as ComponentsManager;
+use Igniter\System\Classes\ComponentManager;
 
 /**
  * Components
@@ -22,7 +22,7 @@ class Components extends BaseFormWidget
     protected static $onAddItemCalled;
 
     /**
-     * @var ComponentsManager
+     * @var \Igniter\System\Classes\ComponentManager
      */
     protected $manager;
 
@@ -52,7 +52,7 @@ class Components extends BaseFormWidget
             'prompt',
         ]);
 
-        $this->manager = ComponentsManager::instance();
+        $this->manager = resolve(ComponentManager::class);
     }
 
     public function render()

@@ -39,4 +39,13 @@ abstract class AppServiceProvider extends ServiceProvider
             $files->pathSymbols[$namespace] = $path;
         });
     }
+
+    protected function tapSingleton($className)
+    {
+        $this->app->singleton($className, function () use ($className) {
+            return tap(new $className, function ($manager) {
+                $manager->initialize();
+            });
+        });
+    }
 }

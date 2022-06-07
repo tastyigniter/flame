@@ -10,6 +10,7 @@ use Igniter\Admin\Models\UserRole;
 use Igniter\Flame\Igniter;
 use Igniter\Flame\Support\ConfigRewrite;
 use Igniter\Main\Models\CustomerGroup;
+use Igniter\System\Classes\ExtensionManager;
 use Igniter\System\Classes\UpdateManager;
 use Igniter\System\Database\Seeds\DatabaseSeeder;
 use Igniter\System\Helpers\SystemHelper;
@@ -18,6 +19,8 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Process\PhpExecutableFinder;
+use Symfony\Component\Process\Process;
 
 /**
  * Console command to install TastyIgniter.
@@ -61,6 +64,9 @@ class IgniterInstall extends Command
     {
         $this->alert('INSTALLATION');
 
+//        $this->callSilent('igniter:package-discover');
+//        $this->callSilent('vendor:publish', ['--tag' => 'igniter-assets', '--force' => true]);
+
         if (
             Igniter::hasDatabase() &&
             !$this->confirm('Application appears to be installed already. Continue anyway?', false)
@@ -73,6 +79,8 @@ class IgniterInstall extends Command
         $this->setSeederProperties();
 
         $this->rewriteEnvFile();
+
+        $this->installRecommendedPackages();
 
         $this->migrateDatabase();
 
@@ -89,7 +97,7 @@ class IgniterInstall extends Command
     protected function getOptions()
     {
         return [
-            ['force', null, InputOption::VALUE_NONE, 'Force install.'],
+            ['composer', null, InputOption::VALUE_REQUIRED, 'Absolute path to the Composer binary which should be used to install packages.', 'global'],
         ];
     }
 
@@ -126,7 +134,7 @@ class IgniterInstall extends Command
 
         DB::purge();
 
-        $manager = UpdateManager::instance()->setLogsOutput($this->output);
+        $manager = resolve(UpdateManager::class)->setLogsOutput($this->output);
 
         $manager->update();
 
@@ -147,30 +155,26 @@ class IgniterInstall extends Command
         DatabaseSeeder::$siteUrl = $this->ask('Site URL', Config::get('app.url'));
 
         DatabaseSeeder::$seedDemo = $this->confirm('Install demo data?', DatabaseSeeder::$seedDemo);
-
-        DatabaseSeeder::$siteEmail = $this->ask('Admin Email', DatabaseSeeder::$siteEmail);
-        DatabaseSeeder::$staffName = $this->ask('Admin Name', DatabaseSeeder::$staffName);
     }
 
     protected function createSuperUser()
     {
-        $email = $this->output->ask('Admin Email', DatabaseSeeder::$siteEmail, function ($answer) {
+        DatabaseSeeder::$staffName = $this->ask('Admin Name', DatabaseSeeder::$staffName);
+        DatabaseSeeder::$siteEmail = $this->output->ask('Admin Email', DatabaseSeeder::$siteEmail, function ($answer) {
             if (User::whereEmail($answer)->first()) {
                 throw new \RuntimeException('An administrator with that email already exists, please choose a different email.');
             }
 
             return $answer;
         });
-
-        $username = $this->output->ask('Admin Username', 'admin', function ($answer) {
+        DatabaseSeeder::$username = $this->output->ask('Admin Username', 'admin', function ($answer) {
             if (User::whereUsername($answer)->first()) {
                 throw new \RuntimeException('An administrator with that username already exists, please choose a different username.');
             }
 
             return $answer;
         });
-
-        $password = $this->output->ask('Admin Password', '123456', function ($answer) {
+        DatabaseSeeder::$password = $this->output->ask('Admin Password', '123456', function ($answer) {
             if (!is_string($answer) || strlen($answer) < 6) {
                 throw new \RuntimeException('Please specify the administrator password, at least 6 characters');
             }
@@ -179,13 +183,13 @@ class IgniterInstall extends Command
         });
 
         $user = AdminAuth::register([
-            'email' => $email,
+            'email' => DatabaseSeeder::$siteEmail,
             'name' => DatabaseSeeder::$staffName,
             'language_id' => Language::first()->language_id,
             'user_role_id' => UserRole::first()->user_role_id,
             'status' => true,
-            'username' => $username,
-            'password' => $password,
+            'username' => DatabaseSeeder::$username,
+            'password' => DatabaseSeeder::$password,
             'super_user' => true,
             'groups' => [UserGroup::first()->user_group_id],
             'locations' => [Location::first()->location_id],
@@ -216,26 +220,7 @@ class IgniterInstall extends Command
         // These parameters are no longer in use
         params()->forget('main_address');
 
-        UpdateManager::instance()->setCoreVersion();
-    }
-
-    protected function writeToConfig($file, $values)
-    {
-        $configFile = $this->getConfigFile($file);
-
-        foreach ($values as $key => $value) {
-            Config::set($file.'.'.$key, $value);
-        }
-
-        $this->configRewrite->toFile($configFile, $values);
-    }
-
-    protected function getConfigFile($name = 'app')
-    {
-        $env = $this->option('env') ? $this->option('env').'/' : '';
-        $path = $this->laravel['path.config']."/{$env}{$name}.php";
-
-        return $path;
+        resolve(UpdateManager::class)->setCoreVersion();
     }
 
     protected function generateEncryptionKey()
@@ -260,5 +245,52 @@ class IgniterInstall extends Command
 
             copy(base_path().'/'.$old.'.'.$name, base_path().'/'.$new.'.'.$name);
         }
+    }
+
+    protected function installRecommendedPackages()
+    {
+        $this->requireComposerPackages(array_map(function ($package) {
+            return str_before($package, ':').':v4.x-dev';
+        }, [
+            'tastyigniter/ti-ext-cart:~2.0',
+            'tastyigniter/ti-ext-coupons:~1.0',
+            'tastyigniter/ti-ext-frontend:~1.0',
+            'tastyigniter/ti-ext-local:~2.0',
+            'tastyigniter/ti-ext-pages:~1.0',
+            'tastyigniter/ti-ext-payregister:~1.0',
+            'tastyigniter/ti-ext-reservation:~2.0',
+            'tastyigniter/ti-ext-user:~1.0',
+            'tastyigniter/ti-ext-api:~1.0',
+            'tastyigniter/ti-ext-automation:~1.0',
+            'tastyigniter/ti-ext-broadcast:~1.0',
+            'tastyigniter/ti-ext-socialite:~1.0',
+        ]));
+
+        app()->forgetInstance(ExtensionManager::class);
+        resolve(ExtensionManager::class)->registerExtensions();
+    }
+
+    protected function requireComposerPackages($packages)
+    {
+        $composer = $this->option('composer');
+
+        if ($composer !== 'global')
+            $command = [$this->phpBinary(), $composer, 'require'];
+
+        $command = array_merge(
+            $command ?? ['composer', 'require'],
+            is_array($packages) ? $packages : func_get_args()
+        );
+
+        (new Process($command, base_path(), ['COMPOSER_MEMORY_LIMIT' => '-1']))
+            ->setTimeout(null)
+            ->run(function ($type, $output) {
+                $this->output->write($output);
+            });
+    }
+
+    protected function phpBinary()
+    {
+        return (new PhpExecutableFinder())->find(false) ?: 'php';
     }
 }

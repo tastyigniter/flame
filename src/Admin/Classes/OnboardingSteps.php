@@ -2,7 +2,6 @@
 
 namespace Igniter\Admin\Classes;
 
-use Igniter\Flame\Traits\Singleton;
 use Igniter\System\Classes\ExtensionManager;
 
 /**
@@ -11,8 +10,6 @@ use Igniter\System\Classes\ExtensionManager;
  */
 class OnboardingSteps
 {
-    use Singleton;
-
     /**
      * @var array Cache of registration callbacks.
      */

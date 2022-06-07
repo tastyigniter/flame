@@ -4,7 +4,6 @@ namespace Igniter\System\Classes;
 
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Flame\Support\Facades\File;
-use Igniter\Flame\Traits\Singleton;
 use Igniter\System\Models\Language;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -13,8 +12,6 @@ use ZipArchive;
 
 class LanguageManager
 {
-    use Singleton;
-
     /**
      * @var \Igniter\Flame\Translation\FileLoader
      */
@@ -38,7 +35,7 @@ class LanguageManager
         $this->files = App::make('files');
         $this->langPath = App::langPath();
 
-        $this->hubManager = HubManager::instance();
+        $this->hubManager = resolve(HubManager::class);
     }
 
     public function namespaces()

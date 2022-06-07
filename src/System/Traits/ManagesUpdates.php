@@ -19,7 +19,7 @@ trait ManagesUpdates
             $searchQuery = isset($filter['search']) ? strtolower($filter['search']) : '';
 
             try {
-                $json = UpdateManager::instance()->searchItems($itemType, $searchQuery);
+                $json = resolve(UpdateManager::class)->searchItems($itemType, $searchQuery);
             }
             catch (Exception $ex) {
                 $json = $ex->getMessage();
@@ -38,7 +38,7 @@ trait ManagesUpdates
 
         $this->validateItems();
 
-        $response = UpdateManager::instance()->requestApplyItems($items->all());
+        $response = resolve(UpdateManager::class)->requestApplyItems($items->all());
         $response = array_get($response, 'data', []);
 
         return [
@@ -54,7 +54,7 @@ trait ManagesUpdates
 
         $this->validateItems();
 
-        $response = UpdateManager::instance()->requestApplyItems($items);
+        $response = resolve(UpdateManager::class)->requestApplyItems($items);
         $response = collect(array_get($response, 'data', []))
             ->whereIn('code', collect($items)->pluck('name')->all())
             ->all();
@@ -72,7 +72,7 @@ trait ManagesUpdates
 
         $this->validateItems();
 
-        $updates = UpdateManager::instance()->requestUpdateList(input('check') == 'force');
+        $updates = resolve(UpdateManager::class)->requestUpdateList(input('check') == 'force');
         $response = array_get($updates, 'items');
 
         return [
@@ -84,7 +84,7 @@ trait ManagesUpdates
     {
         $itemType = post('itemType');
         $items = (in_array($itemType, ['theme', 'extension']))
-            ? UpdateManager::instance()->listItems($itemType)
+            ? resolve(UpdateManager::class)->listItems($itemType)
             : [];
 
         return $this->makePartial('updates/list_recommended', [
@@ -95,7 +95,7 @@ trait ManagesUpdates
 
     public function onCheckUpdates()
     {
-        $updateManager = UpdateManager::instance();
+        $updateManager = resolve(UpdateManager::class);
         $updateManager->requestUpdateList(true);
 
         return $this->redirect($this->checkUrl);
@@ -107,7 +107,7 @@ trait ManagesUpdates
         if (!$items || count($items) < 1)
             throw new ApplicationException(lang('igniter::system.updates.alert_item_to_ignore'));
 
-        $updateManager = UpdateManager::instance();
+        $updateManager = resolve(UpdateManager::class);
 
         $updateManager->ignoreUpdates($items);
 
@@ -124,7 +124,7 @@ trait ManagesUpdates
         if (!strlen($carteKey))
             throw new ApplicationException(lang('igniter::system.updates.alert_no_carte_key'));
 
-        $response = UpdateManager::instance()->applySiteDetail($carteKey);
+        $response = resolve(UpdateManager::class)->applySiteDetail($carteKey);
 
         return [
             '#carte-details' => $this->makePartial('updates/carte_info', ['carteInfo' => $response]),
@@ -144,7 +144,7 @@ trait ManagesUpdates
     {
         $this->prepareAssets();
 
-        $updateManager = UpdateManager::instance();
+        $updateManager = resolve(UpdateManager::class);
 
         $this->vars['itemType'] = $itemType;
         $this->vars['carteInfo'] = $updateManager->getSiteDetail();
@@ -229,7 +229,7 @@ trait ManagesUpdates
             ];
         }
 
-        $updateManager = UpdateManager::instance();
+        $updateManager = resolve(UpdateManager::class);
 
         $processMeta = $meta['process'];
         switch ($processMeta) {
@@ -271,7 +271,7 @@ trait ManagesUpdates
         foreach ($items as $item) {
             switch ($item['type']) {
                 case 'core':
-                    $updateManager = UpdateManager::instance();
+                    $updateManager = resolve(UpdateManager::class);
                     $updateManager->update();
                     $updateManager->setCoreVersion($item['version'], $item['hash']);
                     break;
@@ -284,7 +284,7 @@ trait ManagesUpdates
             }
         }
 
-        UpdateManager::instance()->requestUpdateList(true);
+        resolve(UpdateManager::class)->requestUpdateList(true);
 
         return true;
     }

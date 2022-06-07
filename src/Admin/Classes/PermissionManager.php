@@ -2,13 +2,10 @@
 
 namespace Igniter\Admin\Classes;
 
-use Igniter\Flame\Traits\Singleton;
 use Igniter\System\Classes\ExtensionManager;
 
 class PermissionManager
 {
-    use Singleton;
-
     protected $permissions;
 
     /**

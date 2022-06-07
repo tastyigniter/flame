@@ -30,7 +30,7 @@ class User extends AuthUserModel
 
     protected $primaryKey = 'user_id';
 
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     protected $fillable = ['username', 'super_user'];
 
@@ -194,25 +194,25 @@ class User extends AuthUserModel
 
     public function hasAnyPermission($permissions)
     {
-        return $this->hasPermission($permissions, FALSE);
+        return $this->hasPermission($permissions, false);
     }
 
-    public function hasPermission($permissions, $checkAll = TRUE)
+    public function hasPermission($permissions, $checkAll = true)
     {
         // Bail out if the user is a super user
         if ($this->isSuperUser())
-            return TRUE;
+            return true;
 
         $staffPermissions = $this->getPermissions();
 
         if (!is_array($permissions))
             $permissions = [$permissions];
 
-        if (PermissionManager::instance()->checkPermission(
+        if (resolve(PermissionManager::class)->checkPermission(
             $staffPermissions, $permissions, $checkAll)
-        ) return TRUE;
+        ) return true;
 
-        return FALSE;
+        return false;
     }
 
     public function getPermissions()

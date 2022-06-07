@@ -164,7 +164,7 @@ class Themes extends \Igniter\Admin\Classes\AdminController
     {
         $themeName = post('code');
         if ($theme = Theme::activateTheme($themeName)) {
-            CacheHelper::instance()->clearView();
+            CacheHelper::clearView();
 
             flash()->success(sprintf(lang('igniter::admin.alert_success'), 'Theme ['.$theme->name.'] set as default '));
         }

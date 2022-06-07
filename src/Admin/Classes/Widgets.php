@@ -2,7 +2,6 @@
 
 namespace Igniter\Admin\Classes;
 
-use Igniter\Flame\Traits\Singleton;
 use Igniter\System\Classes\ExtensionManager;
 
 /**
@@ -12,8 +11,6 @@ use Igniter\System\Classes\ExtensionManager;
  */
 class Widgets
 {
-    use Singleton;
-
     /**
      * @var array An array of list action widgets.
      */

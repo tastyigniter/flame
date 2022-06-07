@@ -2,8 +2,10 @@
 
 namespace Igniter\System\Console\Commands;
 
+use Igniter\Flame\Igniter;
 use Igniter\Flame\Support\Facades\File;
 use Igniter\Main\Models\Theme;
+use Igniter\System\Classes\PackageManifest;
 use Igniter\System\Classes\UpdateManager;
 use Igniter\System\Facades\Assets;
 use Igniter\System\Helpers\SystemHelper;
@@ -78,7 +80,7 @@ class IgniterUtil extends Command
             return;
         }
 
-        UpdateManager::instance()->setCoreVersion();
+        resolve(UpdateManager::class)->setCoreVersion();
 
         $this->comment('*** TastyIgniter sets latest version: '.params('ti_version'));
 
@@ -162,29 +164,21 @@ class IgniterUtil extends Command
 
         SystemHelper::replaceInEnv('IGNITER_CARTE_KEY=', 'IGNITER_CARTE_KEY='.$carteKey);
 
-        UpdateManager::instance()->applySiteDetail($carteKey);
+        resolve(UpdateManager::class)->applySiteDetail($carteKey);
     }
 
     protected function setItemsVersion()
     {
-        $updates = UpdateManager::instance()->requestUpdateList(true);
+        $manifest = resolve(PackageManifest::class);
+        $manifest->build();
 
-        collect(array_get($updates, 'items', []))
-            ->filter(function ($update) {
-                return in_array($update['type'], ['extension', 'theme']);
-            })
+        collect($manifest->packages())
             ->each(function ($update) {
-                if ($update['type'] === 'extension') {
-                    Extension::where('name', $update['code'])->update([
-                        'version' => $update['version'],
-                    ]);
-                }
+                if ($update['type'] === 'tastyigniter-extension')
+                    Extension::where('name', $update['code'])->update(['version' => $update['version']]);
 
-                if ($update['type'] === 'theme') {
-                    Theme::where('code', $update['code'])->update([
-                        'version' => $update['version'],
-                    ]);
-                }
+                if ($update['type'] === 'tastyigniter-theme')
+                    Theme::where('code', $update['code'])->update(['version' => $update['version']]);
 
                 $this->comment('*** '.$update['code'].' sets latest version: '.$update['version']);
             });

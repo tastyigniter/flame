@@ -26,6 +26,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         \Igniter\Flame\Flash\FlashServiceProvider::class,
         \Igniter\Flame\Geolite\GeoliteServiceProvider::class,
         \Igniter\Flame\Html\HtmlServiceProvider::class,
+        \Igniter\Flame\Location\LocationServiceProvider::class,
         \Igniter\Flame\Mail\MailServiceProvider::class,
         \Igniter\Flame\Providers\MacroServiceProvider::class,
         \Igniter\Flame\Pagic\PagicServiceProvider::class,
@@ -102,11 +103,13 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             return new \Igniter\Flame\Support\Str;
         });
 
-        $this->app->instance(PackageManifest::class, new PackageManifest(
-            new Filesystem,
-            $this->app->basePath(),
-            Igniter::getCachedAddonsPath()
-        ));
+        $this->app->singleton(PackageManifest::class, function () {
+            return new PackageManifest(
+                new Filesystem,
+                $this->app->basePath(),
+                Igniter::getCachedAddonsPath()
+            );
+        });
 
         $this->app->instance(ClassLoader::class, $loader = new ClassLoader(
             new Filesystem,

@@ -170,7 +170,7 @@ class Igniter
 
     public static function getSeedRecords($name)
     {
-        return json_decode(file_get_contents(__DIR__.'/../database/records/'.$name.'.json'), true);
+        return json_decode(file_get_contents(__DIR__.'/../../database/records/'.$name.'.json'), true);
     }
 
     /**

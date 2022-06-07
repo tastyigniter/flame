@@ -52,6 +52,6 @@ class Onboarding extends BaseDashboardWidget
 
     protected function getOnboarding()
     {
-        return OnboardingSteps::instance();
+        return resolve(OnboardingSteps::class);
     }
 }

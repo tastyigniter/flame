@@ -2,10 +2,10 @@
 
 namespace Igniter\System\Console\Commands;
 
+use Igniter\System\Classes\UpdateManager;
 use Illuminate\Console\Command;
 use Illuminate\Console\ConfirmableTrait;
 use Symfony\Component\Console\Input\InputOption;
-use Igniter\System\Classes\UpdateManager;
 
 class IgniterDown extends Command
 {
@@ -33,7 +33,7 @@ class IgniterDown extends Command
             return;
         }
 
-        $manager = UpdateManager::instance();
+        $manager = resolve(UpdateManager::class);
         $manager->setLogsOutput($this->output);
         $manager->down();
     }

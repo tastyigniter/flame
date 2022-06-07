@@ -186,7 +186,7 @@ class Activity extends Model
             $type = $this->type;
 
         $className = self::getActivityType($type);
-        if (!class_exists($className)) {
+        if ($className && !class_exists($className)) {
             $className = null;
         }
 

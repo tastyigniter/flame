@@ -25,7 +25,7 @@ class ThemeInstall extends Command
     public function handle()
     {
         $themeName = $this->argument('name');
-        $manager = UpdateManager::instance();
+        $manager = resolve(UpdateManager::class);
 
         $response = $manager->requestApplyItems([[
             'name' => $themeName,

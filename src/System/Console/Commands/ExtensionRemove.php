@@ -46,7 +46,7 @@ class ExtensionRemove extends Command
             return;
         }
 
-        $manager = UpdateManager::instance();
+        $manager = resolve(UpdateManager::class);
         $manager->setLogsOutput($this->output);
 
         $extensionManager->deleteExtension($extensionName);

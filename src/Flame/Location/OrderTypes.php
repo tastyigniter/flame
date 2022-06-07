@@ -2,12 +2,8 @@
 
 namespace Igniter\Flame\Location;
 
-use Igniter\Flame\Traits\Singleton;
-
 class OrderTypes
 {
-    use Singleton;
-
     /**
      * @var array An array of registered order types.
      */
@@ -18,7 +14,7 @@ class OrderTypes
      */
     protected static $registeredCallbacks = [];
 
-    protected function initialize()
+    public function __construct()
     {
         $this->loadOrderTypes();
     }

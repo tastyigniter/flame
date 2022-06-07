@@ -25,7 +25,7 @@ class ExtensionInstall extends Command
     public function handle()
     {
         $extensionName = $this->argument('name');
-        $manager = UpdateManager::instance();
+        $manager = resolve(UpdateManager::class);
         $manager->setLogsOutput($this->output);
 
         $response = $manager->requestApplyItems([[

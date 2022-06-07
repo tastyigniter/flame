@@ -10,8 +10,6 @@ use Igniter\Flame\Exception\SystemException;
  */
 class ComponentManager
 {
-    use \Igniter\Flame\Traits\Singleton;
-
     /**
      * @var array Cache of registration callbacks.
      */
@@ -71,7 +69,7 @@ class ComponentManager
      * Manually registers a component.
      * Usage:
      * <pre>
-     *   ComponentManager::instance()->registerComponents(function($manager){
+     *   resolve(ComponentManager::class)->registerComponents(function($manager){
      *       $manager->registerComponent('account_module/components/Account_module', array(
      *          'name' => 'account_module',
      *            'title' => 'Account Component',

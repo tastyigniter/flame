@@ -161,12 +161,12 @@ class AbstractLocation extends Model implements LocationInterface
 
     public function availableOrderTypes()
     {
-        return OrderTypes::instance()->makeOrderTypes($this);
+        return resolve(OrderTypes::class)->makeOrderTypes($this);
     }
 
     public static function getOrderTypeOptions()
     {
-        return collect(OrderTypes::instance()->listOrderTypes())->pluck('name', 'code');
+        return collect(resolve(OrderTypes::class)->listOrderTypes())->pluck('name', 'code');
     }
 
     public function calculateDistance(CoordinatesInterface $position)

@@ -47,6 +47,6 @@ class PermissionEditor extends BaseFormWidget
      */
     protected function listPermissions()
     {
-        return PermissionManager::instance()->listGroupedPermissions();
+        return resolve(PermissionManager::class)->listGroupedPermissions();
     }
 }

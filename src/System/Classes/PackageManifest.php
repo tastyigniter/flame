@@ -9,6 +9,11 @@ class PackageManifest extends BasePackageManifest
 {
     protected $metaFile = '/installed.json';
 
+    public function packages()
+    {
+        return $this->getManifest();
+    }
+
     public function extensions()
     {
         return collect($this->getManifest())->where('type', 'tastyigniter-extension')->all();
@@ -33,58 +38,25 @@ class PackageManifest extends BasePackageManifest
         })->filter()->all();
     }
 
-    public function installExtensions($extensions = null)
-    {
-        $installed = $this->installed();
-
-        if (is_null($extensions))
-            return array_get($installed, 'extensions', []);
-
-        $installed['extensions'] = $extensions;
-        $this->writeInstalled($installed);
-    }
-
-    public function installThemes($themes = null)
-    {
-        $installed = $this->installed();
-
-        if (is_null($themes))
-            return array_get($installed, 'themes', []);
-
-        $installed['themes'] = $themes;
-        $this->writeInstalled($installed);
-    }
-
     public function getVersion($code)
     {
         return collect($this->getManifest())->where('code', $code)->value('version');
     }
 
-    public function installed()
+    public function coreVersion()
     {
-        $path = dirname($this->manifestPath).$this->metaFile;
-        if (!is_file($path))
-            return [];
+        $packages = [];
 
-        return json_decode($this->files->get($path, true), true) ?: [];
-    }
+        if ($this->files->exists($path = $this->vendorPath.'/composer/installed.json')) {
+            $installed = json_decode($this->files->get($path), true);
+            $packages = $installed['packages'] ?? $installed;
+        }
 
-    public function getCodeFromPackageName($requires)
-    {
-        $extensions = collect($this->extensions())->keyBy('package_name');
-
-        return collect($requires)
-            ->mapWithKeys(function ($version, $code) use ($extensions) {
-                if (str_contains($code, '/'))
-                    $code = array_get($extensions->get($code, []), 'code');
-
-                return $code ? [$code => $version] : [];
-            })->filter()->all();
-    }
-
-    protected function writeInstalled($installed)
-    {
-        $this->files->replace(dirname($this->manifestPath).$this->metaFile, json_encode($installed));
+        return collect($packages)
+            ->filter(function ($package) {
+                return array_get($package, 'name') === 'tastyigniter/flame';
+            })
+            ->value('version');
     }
 
     public function build()
@@ -95,6 +67,8 @@ class PackageManifest extends BasePackageManifest
             $installed = json_decode($this->files->get($path), true);
             $packages = $installed['packages'] ?? $installed;
         }
+
+        $this->manifest = [];
 
         $this->write(collect($packages)
             ->filter(function ($package) {
@@ -169,5 +143,45 @@ class PackageManifest extends BasePackageManifest
     protected function formatRequire($require)
     {
         return $require;
+    }
+
+    //
+    //
+    //
+
+    public function installExtensions($extensions = null)
+    {
+        $installed = $this->installed();
+
+        if (is_null($extensions))
+            return array_get($installed, 'extensions', []);
+
+        $installed['extensions'] = $extensions;
+        $this->writeInstalled($installed);
+    }
+
+    public function installThemes($themes = null)
+    {
+        $installed = $this->installed();
+
+        if (is_null($themes))
+            return array_get($installed, 'themes', []);
+
+        $installed['themes'] = $themes;
+        $this->writeInstalled($installed);
+    }
+
+    public function installed()
+    {
+        $path = dirname($this->manifestPath).$this->metaFile;
+        if (!is_file($path))
+            return [];
+
+        return json_decode($this->files->get($path, true), true) ?: [];
+    }
+
+    protected function writeInstalled($installed)
+    {
+        $this->files->replace(dirname($this->manifestPath).$this->metaFile, json_encode($installed));
     }
 }

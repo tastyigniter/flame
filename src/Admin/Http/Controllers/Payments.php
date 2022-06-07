@@ -103,7 +103,7 @@ class Payments extends \Igniter\Admin\Classes\AdminController
             return $this->gateway;
         }
 
-        if (!$gateway = PaymentGateways::instance()->findGateway($code)) {
+        if (!$gateway = resolve(PaymentGateways::class)->findGateway($code)) {
             throw new Exception(sprintf(lang('igniter::admin.payments.alert_code_not_found'), $code));
         }
 
@@ -137,7 +137,7 @@ class Payments extends \Igniter\Admin\Classes\AdminController
         if (!strlen($code = post('Payment.payment')))
             throw new ApplicationException(lang('igniter::admin.payments.alert_invalid_code'));
 
-        $paymentGateway = PaymentGateways::instance()->findGateway($code);
+        $paymentGateway = resolve(PaymentGateways::class)->findGateway($code);
 
         $model->class_name = $paymentGateway['class'];
     }

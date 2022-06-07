@@ -5,14 +5,13 @@ namespace Igniter\System\Database\Migrations;
 use Igniter\Admin\Models\Category;
 use Igniter\Admin\Models\Location;
 use Igniter\Admin\Models\Menu;
+use Igniter\Main\Classes\MediaLibrary;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
-use Igniter\Main\Classes\MediaLibrary;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -71,7 +70,7 @@ return new class extends Migration
     protected function createMediaAttachment($path, $model, $tagName)
     {
         try {
-            $mediaLibrary = MediaLibrary::instance();
+            $mediaLibrary = resolve(MediaLibrary::class);
             $path = $mediaLibrary->getMediaRelativePath($path);
 
             $media = $model->newMediaInstance();

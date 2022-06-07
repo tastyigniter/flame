@@ -131,7 +131,7 @@ class Form extends BaseWidget
             'partial',
         ];
 
-        $this->widgetManager = Widgets::instance();
+        $this->widgetManager = resolve(Widgets::class);
         $this->allTabs = (object)$this->allTabs;
         $this->validateModel();
     }

@@ -140,7 +140,7 @@ class MenuItem
      */
     public function displayAs($type, $config = [])
     {
-        $this->type = strtolower($type) ?: $this->type;
+        $this->type = !is_null($type) ? $type : $this->type;
         $this->config = $this->evalConfig($config);
 
         return $this;
