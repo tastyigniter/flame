@@ -4,26 +4,26 @@ namespace Tests\Main\Classes;
 
 use Igniter\Main\Classes\ThemeManager;
 
-function path()
+function testThemePath()
 {
     return realpath(__DIR__.'/../../_fixtures/tests-theme');
 }
 
-function bootTheme()
+function testBootTheme()
 {
-    return resolve(ThemeManager::class)->loadTheme(path())->boot();
+    return resolve(ThemeManager::class)->loadTheme(testThemePath())->boot();
 }
 
 function themeManager()
 {
     $manager = resolve(ThemeManager::class);
-    $manager->loadTheme(path())->boot();
+    $manager->loadTheme(testThemePath())->boot();
 
     return $manager;
 }
 
 it('loads a single theme', function () {
-    expect(bootTheme())->getPath()->toStartWith(path());
+    expect(testBootTheme())->getPath()->toStartWith(testThemePath());
 });
 
 it('has active theme', function () {
@@ -31,7 +31,7 @@ it('has active theme', function () {
 
 it('finds a theme file', function () {
     expect(themeManager()->findFile('_pages/components.blade.php', 'tests-theme'))
-        ->toStartWith(path());
+        ->toStartWith(testThemePath());
 });
 
 it('fails when theme file does not exist', function () {

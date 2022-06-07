@@ -386,7 +386,7 @@ class Cart
 
     public function loadConditions()
     {
-        traceLog('Deprecated. Use CartConditionManager::instance()->loadCartConditions($cart) instead');
+        traceLog('Deprecated. Use resolve(CartConditionManager::class)->loadCartConditions($cart) instead');
     }
 
     public function loadCondition(CartCondition $condition)

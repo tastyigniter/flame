@@ -99,7 +99,7 @@ class AdminServiceProvider extends AppServiceProvider
         $this->app->singleton(Classes\OnboardingSteps::class);
         $this->app->singleton(Classes\PaymentGateways::class);
         $this->app->singleton(Classes\PermissionManager::class);
-        $this->tapSingleton(Classes\Widgets::class);
+        $this->app->singleton(Classes\Widgets::class);
     }
 
     protected function registerFacadeAliases()

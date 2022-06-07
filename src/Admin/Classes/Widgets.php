@@ -54,9 +54,9 @@ class Widgets
     /**
      * Initialize this singleton.
      */
-    protected function initialize()
+    public function __construct(ExtensionManager $extensionManager)
     {
-        $this->extensionManager = resolve(ExtensionManager::class);
+        $this->extensionManager = $extensionManager;
     }
 
     //

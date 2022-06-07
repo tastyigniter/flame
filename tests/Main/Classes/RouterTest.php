@@ -6,25 +6,25 @@ use Igniter\Flame\Igniter;
 use Igniter\Main\Classes\Router;
 use Igniter\Main\Classes\ThemeManager;
 
-function path()
+function themePath()
 {
     return realpath(__DIR__.'/../../_fixtures/tests-theme');
 }
 
 function bootTheme()
 {
-    return resolve(ThemeManager::class)->loadTheme(path())->boot();
+    return resolve(ThemeManager::class)->loadTheme(themePath())->boot();
 }
 
 function defineEnvironment($app)
 {
-    Igniter::useThemesPath(dirname(path()));
+    Igniter::useThemesPath(dirname(themePath()));
 }
 
 beforeEach(function () {
     $case = $this;
     config('igniter.system.defaultTheme', 'tests-theme');
-    ThemeManager::addDirectory(path());
+    ThemeManager::addDirectory(themePath());
 });
 
 it('finds a theme page', function () {
@@ -33,6 +33,6 @@ it('finds a theme page', function () {
     $route = route('igniter.theme.components');
 
     $page = $router->findPage('components', []);
-});
+})->skip();
 
 it('rewrites page path to url')->skip();
