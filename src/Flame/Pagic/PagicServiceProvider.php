@@ -2,6 +2,7 @@
 
 namespace Igniter\Flame\Pagic;
 
+use Igniter\Flame\Pagic\Cache\FileSystem as FileCache;
 use Igniter\Flame\Pagic\Source\SourceResolver;
 use Illuminate\Support\ServiceProvider;
 
@@ -32,6 +33,12 @@ class PagicServiceProvider extends ServiceProvider
     {
         $this->app->singleton('pagic', function () {
             return new SourceResolver;
+        });
+
+        $this->app->singleton('pagic.environment', function () {
+            return new Environment(new Loader, [
+                'cache' => new FileCache(config('view.compiled')),
+            ]);
         });
     }
 }

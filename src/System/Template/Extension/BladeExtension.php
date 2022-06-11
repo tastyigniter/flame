@@ -10,6 +10,11 @@ class BladeExtension
 {
     public function register()
     {
+        Blade::directive('mainauth', [$this, 'compilesMainAuth']);
+        Blade::directive('endmainauth', [$this, 'compilesEndMainAuth']);
+        Blade::directive('adminauth', [$this, 'compilesAdminAuth']);
+        Blade::directive('endadminauth', [$this, 'compilesEndAdminAuth']);
+
         Blade::directive('styles', [$this, 'compilesStyles']);
         Blade::directive('scripts', [$this, 'compilesScripts']);
 
@@ -30,6 +35,26 @@ class BladeExtension
     //
     //
     //
+
+    public function compilesMainAuth($expression)
+    {
+        return "<?php if(\Igniter\Main\Facades\Auth::check()): ?>";
+    }
+
+    public function compilesAdminAuth($expression)
+    {
+        return "<?php if(\Igniter\Admin\Facades\AdminAuth::check()): ?>";
+    }
+
+    public function compilesEndMainAuth()
+    {
+        return "<?php endif ?>";
+    }
+
+    public function compilesEndAdminAuth()
+    {
+        return "<?php endif ?>";
+    }
 
     public function compilesStyles($expression)
     {

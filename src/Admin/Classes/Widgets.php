@@ -70,7 +70,7 @@ class Widgets
 
             // Load app widgets
             foreach ($this->bulkActionWidgetCallbacks as $callback) {
-                $callback($this->instance());
+                $callback($this);
             }
 
             // Load extension widgets
@@ -145,7 +145,7 @@ class Widgets
 
             // Load app widgets
             foreach ($this->formWidgetCallbacks as $callback) {
-                $callback($this->instance());
+                $callback($this);
             }
 
             // Load extension widgets
@@ -247,7 +247,7 @@ class Widgets
 
             // Load app widgets
             foreach ($this->dashboardWidgetCallbacks as $callback) {
-                $callback($this->instance());
+                $callback($this);
             }
 
             // Load extension widgets

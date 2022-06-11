@@ -134,7 +134,7 @@ class Admin
 
     public function validateAjaxHandlerPartials()
     {
-        if (!$partials = trim(request()->header('X-IGNITER-REQUEST-PARTIALS')))
+        if (!$partials = trim(request()->header('X-IGNITER-REQUEST-PARTIALS', '')))
             return [];
 
         $partials = explode('&', $partials);

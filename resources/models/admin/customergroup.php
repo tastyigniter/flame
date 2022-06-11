@@ -46,12 +46,12 @@ $config['list']['columns'] = [
         'searchable' => true,
     ],
     'customer_count' => [
-        'label' => 'lang:admin::lang.customer_groups.column_customers',
+        'label' => 'lang:igniter::main.customer_groups.column_customers',
         'type' => 'number',
         'sortable' => false,
     ],
     'approval' => [
-        'label' => 'lang:admin::lang.customer_groups.label_approval',
+        'label' => 'lang:igniter::main.customer_groups.label_approval',
         'type' => 'switch',
     ],
     'customer_group_id' => [
@@ -103,9 +103,9 @@ $config['form']['fields'] = [
         'type' => 'text',
     ],
     'approval' => [
-        'label' => 'lang:admin::lang.customer_groups.label_approval',
+        'label' => 'lang:igniter::main.customer_groups.label_approval',
         'type' => 'switch',
-        'comment' => 'lang:admin::lang.customer_groups.help_approval',
+        'comment' => 'lang:igniter::main.customer_groups.help_approval',
     ],
     'description' => [
         'label' => 'lang:admin::lang.label_description',

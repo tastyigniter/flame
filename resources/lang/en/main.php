@@ -183,7 +183,7 @@ return [
 
         'column_customers' => '# Customers',
 
-        'label_approval' => 'Approval',
+        'label_approval' => 'Requires Approval',
 
         'alert_set_default' => 'Customer group set as default',
 

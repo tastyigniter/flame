@@ -6,6 +6,9 @@ use Carbon\Carbon;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Location\Contracts;
 
+/**
+ * @deprecated
+ */
 abstract class AbstractWorkingHour extends Model implements Contracts\WorkingHourInterface
 {
     const CLOSED = 'closed';

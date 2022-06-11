@@ -1,50 +1,12 @@
 <?php
 
-namespace Igniter\Flame\Location\Models;
+namespace Igniter\Admin\Traits;
 
-use Igniter\Flame\Database\Model;
 use Igniter\Flame\Geolite\Contracts\CoordinatesInterface;
-use Igniter\Flame\Location\Contracts\LocationInterface;
 use Igniter\Flame\Location\OrderTypes;
-use Illuminate\Support\Facades\DB;
 
-/**
- * Class AbstractLocation
- * @deprecated use Igniter\Admin\Traits\LocationHelpers instead
- */
-class AbstractLocation extends Model implements LocationInterface
+trait LocationHelpers
 {
-    const KM_UNIT = 111.13384;
-
-    const M_UNIT = 69.05482;
-
-    const OPENING = 'opening';
-
-    const DELIVERY = 'delivery';
-
-    const COLLECTION = 'collection';
-
-    /**
-     * @var string The database table name
-     */
-    protected $table = 'locations';
-
-    /**
-     * @var string The database table primary key
-     */
-    protected $primaryKey = 'location_id';
-
-    public $relation = [
-        'hasMany' => [
-            'working_hours' => [\Igniter\Admin\Models\WorkingHour::class],
-            'delivery_areas' => [\Igniter\Admin\Models\LocationArea::class],
-        ],
-    ];
-
-    protected $casts = [
-        'options' => 'array',
-    ];
-
     public function getName()
     {
         return $this->location_name;
@@ -67,6 +29,8 @@ class AbstractLocation extends Model implements LocationInterface
 
     public function getAddress()
     {
+        $country = optional($this->country);
+
         return [
             'address_1' => $this->location_address_1,
             'address_2' => $this->location_address_2,
@@ -76,6 +40,10 @@ class AbstractLocation extends Model implements LocationInterface
             'location_lat' => $this->location_lat,
             'location_lng' => $this->location_lng,
             'country_id' => $this->location_country_id,
+            'country' => $country->country_name,
+            'iso_code_2' => $country->iso_code_2,
+            'iso_code_3' => $country->iso_code_3,
+            'format' => $country->format,
         ];
     }
 
@@ -198,26 +166,5 @@ class AbstractLocation extends Model implements LocationInterface
     public function makeDistance()
     {
         return app('geolite')->distance();
-    }
-
-    //
-    // Scopes
-    //
-
-    public function scopeSelectDistance($query, $latitude = null, $longitude = null)
-    {
-        if (setting('distance_unit') === 'km') {
-            $sql = '( 6371 * acos( cos( radians(?) ) * cos( radians( location_lat ) ) *';
-        }
-        else {
-            $sql = '( 3959 * acos( cos( radians(?) ) * cos( radians( location_lat ) ) *';
-        }
-
-        $sql .= ' cos( radians( location_lng ) - radians(?) ) + sin( radians(?) ) *';
-        $sql .= ' sin( radians( location_lat ) ) ) ) AS distance';
-
-        $query->selectRaw(DB::raw($sql), [$latitude, $longitude, $latitude]);
-
-        return $query;
     }
 }

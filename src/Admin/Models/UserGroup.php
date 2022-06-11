@@ -19,7 +19,7 @@ class UserGroup extends Model
     /**
      * @var string The database table name
      */
-    protected $table = 'user_groups';
+    protected $table = 'admin_user_groups';
 
     /**
      * @var string The database table primary key
@@ -31,7 +31,7 @@ class UserGroup extends Model
             'assignable_logs' => [\Igniter\Admin\Models\AssignableLog::class, 'foreignKey' => 'assignee_group_id'],
         ],
         'belongsToMany' => [
-            'users' => [\Igniter\Admin\Models\User::class, 'table' => 'users_groups'],
+            'users' => [\Igniter\Admin\Models\User::class, 'table' => 'admin_users_groups'],
         ],
     ];
 

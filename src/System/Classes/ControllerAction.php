@@ -2,8 +2,8 @@
 
 namespace Igniter\System\Classes;
 
-use Igniter\Admin\Traits\WidgetMaker;
 use Exception;
+use Igniter\Admin\Traits\WidgetMaker;
 use Igniter\Flame\Traits\ExtensionTrait;
 use Igniter\System\Traits\ConfigMaker;
 use Igniter\System\Traits\ViewMaker;
@@ -19,7 +19,7 @@ class ControllerAction
     use ExtensionTrait;
 
     /**
-     * @var \Illuminate\Routing\Controller Reference to the controller associated to this action
+     * @var \Igniter\Admin\Classes\AdminController|\Illuminate\Routing\Controller Reference to the controller associated to this action
      */
     protected $controller;
 

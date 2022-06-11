@@ -74,33 +74,7 @@ class UserProvider implements \Illuminate\Contracts\Auth\UserProvider
 
     public function register(array $attributes, $activate = false)
     {
-        $user = $this->createModel();
-        $user->name = array_get($attributes, 'name');
-        $user->email = array_get($attributes, 'email');
-        $user->username = array_get($attributes, 'username');
-        $user->password = array_get($attributes, 'password');
-        $user->language_id = array_get($attributes, 'language_id');
-        $user->user_role_id = array_get($attributes, 'user_role_id');
-        $user->super_user = array_get($attributes, 'super_user', false);
-        $user->status = array_get($attributes, 'status', true);
-
-        if ($activate) {
-            $user->is_activated = true;
-            $user->date_activated = now();
-        }
-
-        $user->save();
-
-        // Prevents subsequent saves to this model object
-        $user->password = null;
-
-        if (array_key_exists('groups', $attributes))
-            $user->groups()->attach($attributes['groups']);
-
-        if (array_key_exists('locations', $attributes))
-            $user->locations()->attach($attributes['locations']);
-
-        return $user->reload();
+        return $this->createModel()->register($attributes, $activate);
     }
 
     /**

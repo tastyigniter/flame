@@ -20,6 +20,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         \Igniter\Flame\Auth\AuthServiceProvider::class,
         \Igniter\Flame\Currency\CurrencyServiceProvider::class,
         \Igniter\Flame\Providers\ConsoleSupportServiceProvider::class,
+        \Igniter\Flame\Cart\CartServiceProvider::class,
         \Igniter\Flame\Database\DatabaseServiceProvider::class,
         \Igniter\Flame\Events\EventServiceProvider::class,
         \Igniter\Flame\Filesystem\FilesystemServiceProvider::class,
@@ -38,8 +39,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         \Igniter\Flame\Validation\ValidationServiceProvider::class,
 
         \Igniter\Flame\Providers\SystemServiceProvider::class,
-        \Igniter\Flame\Providers\AdminServiceProvider::class,
-        \Igniter\Flame\Providers\MainServiceProvider::class,
     ];
 
     protected $configFiles = [

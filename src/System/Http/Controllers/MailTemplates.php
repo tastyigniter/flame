@@ -89,11 +89,9 @@ class MailTemplates extends \Igniter\Admin\Classes\AdminController
 
         $adminUser = $this->getUser();
 
-        config()->set('system.suppressTemplateRuntimeNotice', TRUE);
+        config()->set('igniter.system.suppressTemplateRuntimeNotice', true);
 
-        Mail::send($model->code, [], function ($message) use ($adminUser) {
-            $message->to($adminUser->email, $adminUser->name);
-        });
+        Mail::sendTemplate($model->code, $model->getDummyData(), [$adminUser->email, $adminUser->name]);
 
         flash()->success(sprintf(lang('igniter::system.mail_templates.alert_test_message_sent'), $adminUser->staff_email));
 

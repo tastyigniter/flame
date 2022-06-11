@@ -9,7 +9,7 @@ interface AreaInterface
 {
     public function getLocationId();
 
-    public function checkBoundary($position);
+    public function checkBoundary($coordinate);
 
     public function pointInVertices(CoordinatesInterface $coordinate);
 

@@ -40,7 +40,7 @@ class MailSettings extends FormRequest
             'sender_email' => ['required', 'email:filter'],
             'protocol' => ['required', 'string'],
 
-            'mail_logo' => ['string'],
+            'mail_logo' => ['nullable', 'string'],
             'sendmail_path' => ['required_if:protocol,sendmail', 'string'],
 
             'smtp_host' => ['string'],

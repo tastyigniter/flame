@@ -45,16 +45,12 @@ return [
 
     'middleware' => [
         'web',
-//        \Igniter\Admin\Http\Middleware\Authenticate::class,
-//        \Igniter\Admin\Http\Middleware\LogUserLastSeen::class,
-////        Authorize::class,
     ],
 
     'adminMiddleware' => [
         'igniter',
         \Igniter\Admin\Http\Middleware\Authenticate::class,
         \Igniter\Admin\Http\Middleware\LogUserLastSeen::class,
-//        Authorize::class,
     ],
 
     'coreNamespaces' => [

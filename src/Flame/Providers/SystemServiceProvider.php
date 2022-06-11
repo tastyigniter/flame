@@ -16,12 +16,14 @@ use Igniter\System\Template\Extension\BladeExtension;
 use Illuminate\Console\Events\CommandStarting;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 
 class SystemServiceProvider extends AppServiceProvider
@@ -46,6 +48,9 @@ class SystemServiceProvider extends AppServiceProvider
         $this->registerPermissions();
         $this->registerSystemSettings();
         $this->registerBladeDirectives();
+
+        $this->app->register(\Igniter\Flame\Providers\AdminServiceProvider::class);
+        $this->app->register(\Igniter\Flame\Providers\MainServiceProvider::class);
     }
 
     /**
@@ -92,7 +97,7 @@ class SystemServiceProvider extends AppServiceProvider
 
         $this->app->singleton(Classes\ComponentManager::class);
         $this->tapSingleton(Classes\ComposerManager::class);
-        $this->tapSingleton(Classes\ExtensionManager::class);
+        $this->app->singleton(Classes\ExtensionManager::class);
         $this->tapSingleton(Classes\HubManager::class);
         $this->tapSingleton(Classes\LanguageManager::class);
         $this->app->singleton(Classes\MailManager::class);
@@ -302,6 +307,10 @@ class SystemServiceProvider extends AppServiceProvider
 
         \Illuminate\Database\Eloquent\Builder::macro('toRawSql', function () {
             return $this->getQuery()->toRawSql();
+        });
+
+        $this->app['events']->listen(MigrationsStarted::class, function () {
+            Schema::disableForeignKeyConstraints();
         });
     }
 

@@ -63,11 +63,12 @@ class InitialSchemaSeeder extends Seeder
             $query = DB::table('countries')->where('iso_code_3', $currency['iso_alpha3']);
             if ($country = $query->first()) {
                 $currency['country_id'] = $country->country_id;
-                DB::table('currencies')->insert($currency);
+                DB::table('currencies')->insert(array_merge($currency, [
+                    'updated_at' => now(),
+                    'created_at' => now(),
+                ]));
             }
         }
-
-        DB::table('currencies')->update(['updated_at' => now(), 'created_at' => now()]);
     }
 
     protected function seedCustomerGroups()
@@ -175,65 +176,65 @@ class InitialSchemaSeeder extends Seeder
 
     protected function seedUserGroups()
     {
-        if (DB::table('user_groups')->count())
+        if (DB::table('admin_user_groups')->count())
             return;
 
-        DB::table('user_groups')->insert([
+        DB::table('admin_user_groups')->insert([
             'user_group_name' => 'Owners',
             'description' => 'Default group for owners',
         ]);
 
-        DB::table('user_groups')->insert([
+        DB::table('admin_user_groups')->insert([
             'user_group_name' => 'Managers',
             'description' => 'Default group for managers',
         ]);
 
-        DB::table('user_groups')->insert([
+        DB::table('admin_user_groups')->insert([
             'user_group_name' => 'Waiters',
             'description' => 'Default group for waiters.',
         ]);
 
-        DB::table('user_groups')->insert([
+        DB::table('admin_user_groups')->insert([
             'user_group_name' => 'Delivery',
             'description' => 'Default group for delivery drivers.',
         ]);
 
-        DB::table('user_groups')->update(['updated_at' => now(), 'created_at' => now()]);
+        DB::table('admin_user_groups')->update(['updated_at' => now(), 'created_at' => now()]);
     }
 
     protected function seedUserRoles()
     {
-        if (DB::table('user_roles')->count())
+        if (DB::table('admin_user_roles')->count())
             return;
 
-        DB::table('user_roles')->insert([
+        DB::table('admin_user_roles')->insert([
             'name' => 'Owner',
             'code' => 'owner',
             'description' => 'Default role for restaurant owners',
         ]);
 
-        DB::table('user_roles')->insert([
+        DB::table('admin_user_roles')->insert([
             'name' => 'Manager',
             'code' => 'manager',
             'description' => 'Default role for restaurant managers.',
             'permissions' => 'a:16:{s:15:"Admin.Dashboard";s:1:"1";s:16:"Admin.Categories";s:1:"1";s:14:"Admin.Statuses";s:1:"1";s:12:"Admin.Staffs";s:1:"1";s:17:"Admin.StaffGroups";s:1:"1";s:15:"Admin.Customers";s:1:"1";s:20:"Admin.CustomerGroups";s:1:"1";s:14:"Admin.Payments";s:1:"1";s:18:"Admin.Reservations";s:1:"1";s:12:"Admin.Orders";s:1:"1";s:12:"Admin.Tables";s:1:"1";s:15:"Admin.Locations";s:1:"1";s:15:"Admin.Mealtimes";s:1:"1";s:11:"Admin.Menus";s:1:"1";s:11:"Site.Themes";s:1:"1";s:18:"Admin.MediaManager";s:1:"1";}',
         ]);
 
-        DB::table('user_roles')->insert([
+        DB::table('admin_user_roles')->insert([
             'name' => 'Waiter',
             'code' => 'waiter',
             'description' => 'Default role for restaurant waiters.',
             'permissions' => 'a:4:{s:16:"Admin.Categories";s:1:"1";s:18:"Admin.Reservations";s:1:"1";s:12:"Admin.Orders";s:1:"1";s:11:"Admin.Menus";s:1:"1";}',
         ]);
 
-        DB::table('user_roles')->insert([
+        DB::table('admin_user_roles')->insert([
             'name' => 'Delivery',
             'code' => 'delivery',
             'description' => 'Default role for restaurant delivery.',
             'permissions' => 'a:3:{s:14:"Admin.Statuses";s:1:"1";s:18:"Admin.Reservations";s:1:"1";s:12:"Admin.Orders";s:1:"1";}',
         ]);
 
-        DB::table('user_roles')->update(['updated_at' => now(), 'created_at' => now()]);
+        DB::table('admin_user_roles')->update(['updated_at' => now(), 'created_at' => now()]);
     }
 
     protected function seedStatuses()

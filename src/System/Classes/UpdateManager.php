@@ -134,12 +134,18 @@ class UpdateManager
         if (!$this->migrator->repositoryExists())
             return $this->log('<error>Migration table not found.</error>');
 
-        foreach (array_reverse(Igniter::migrationPath(), true) as $group => $path) {
+        // Rollback extensions
+        foreach (array_keys(Igniter::migrationPath()) as $code) {
+            $this->purgeExtension($code);
+        }
+
+        if ($this->logsOutput)
+            $this->migrator->setOutput($this->logsOutput);
+
+        foreach (array_reverse(Igniter::coreMigrationPath(), true) as $group => $path) {
             $this->log("<info>Rolling back $group</info>");
 
-            $this->migrator
-                ->setOutput($this->logsOutput)
-                ->resetAll([$group => $path]);
+            $this->migrator->resetAll([$group => $path]);
 
             $this->log("<info>Rolled back $group</info>");
         }
@@ -153,21 +159,14 @@ class UpdateManager
     {
         $wasPreviouslyMigrated = $this->prepareDatabase();
 
-        foreach (Igniter::migrationPath() as $group => $path) {
-            $this->log("<info>Migrating $group</info>");
-
-            $this->migrator
-                ->setOutput($this->logsOutput)
-                ->run([$group => $path]);
-
-            $this->log("<info>Migrated $group</info>");
-        }
+        $this->migrateApp();
 
         if (!$wasPreviouslyMigrated) {
-            Artisan::call('db:seed', [
-                '--class' => '\Igniter\System\Database\Seeds\DatabaseSeeder',
-                '--force' => true,
-            ]);
+            $this->seedApp();
+        }
+
+        foreach (array_keys(Igniter::migrationPath()) as $code) {
+            $this->migrateExtension($code);
         }
     }
 
@@ -196,6 +195,34 @@ class UpdateManager
         $this->log("Migration table {$action}");
     }
 
+    public function migrateApp()
+    {
+        if ($this->logsOutput)
+            $this->migrator->setOutput($this->logsOutput);
+
+        foreach (Igniter::coreMigrationPath() as $group => $path) {
+            $this->log("<info>Migrating $group</info>");
+
+            $this->migrator->runGroup([$group => $path]);
+
+            $this->log("<info>Migrated $group</info>");
+        }
+
+        return $this;
+    }
+
+    public function seedApp()
+    {
+        Artisan::call('db:seed', [
+            '--class' => '\Igniter\System\Database\Seeds\DatabaseSeeder',
+            '--force' => true,
+        ]);
+
+        $this->log('<info>Seeded app</info> ');
+
+        return $this;
+    }
+
     public function migrateExtension($name)
     {
         if (!$this->migrator->repositoryExists())
@@ -206,9 +233,10 @@ class UpdateManager
 
         $this->log("<info>Migrating extension $name</info>");
 
-        $this->migrator->run(
-            array_only(Igniter::migrationPath(), $name)
-        );
+        if ($this->logsOutput)
+            $this->migrator->setOutput($this->logsOutput);
+
+        $this->migrator->runGroup(array_only(Igniter::migrationPath(), $name));
 
         $this->log("<info>Migrated extension $name</info>");
 
@@ -223,9 +251,12 @@ class UpdateManager
         if (!$this->extensionManager->findExtension($name))
             return $this->log('<error>Unable to find:</error> '.$name);
 
-        $this->migrator->rollDown(
-            array_only(Igniter::migrationPath(), $name)
-        );
+        $this->log("<info>Purging extension $name</info>");
+
+        if ($this->logsOutput)
+            $this->migrator->setOutput($this->logsOutput);
+
+        $this->migrator->rollDown(array_only(Igniter::migrationPath(), $name));
 
         $this->log("<info>Purged extension $name</info>");
 
@@ -239,6 +270,9 @@ class UpdateManager
 
         if (!$this->extensionManager->findExtension($name))
             return $this->log('<error>Unable to find:</error> '.$name);
+
+        if ($this->logsOutput)
+            $this->migrator->setOutput($this->logsOutput);
 
         $this->migrator->rollbackAll(array_only(Igniter::migrationPath(), $name), $options);
 

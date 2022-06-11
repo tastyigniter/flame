@@ -12,8 +12,8 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
         </div>
         <input type="hidden" name="recordId" value="{{ $formRecordId }}">
-        <div class="modal-body">
-            <div class="form-fields p-0">
+        <div class="modal-body p-0">
+            <div class="form-fields">
                 @foreach($formWidget->getFields() as $field)
                     {!! $formWidget->renderField($field) !!}
                 @endforeach

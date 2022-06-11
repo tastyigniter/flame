@@ -9,13 +9,6 @@ use Illuminate\Foundation\Providers\ConsoleSupportServiceProvider as BaseService
 class ConsoleSupportServiceProvider extends BaseServiceProvider
 {
     /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = true;
-
-    /**
      * The provider class names.
      *
      * @var array

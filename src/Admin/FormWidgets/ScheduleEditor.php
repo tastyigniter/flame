@@ -8,7 +8,6 @@ use Igniter\Admin\Models\WorkingHour;
 use Igniter\Admin\Traits\ValidatesForm;
 use Igniter\Admin\Widgets\Form;
 use Igniter\Flame\Exception\ApplicationException;
-use Igniter\Flame\Location\Models\AbstractLocation;
 use Igniter\Flame\Location\OrderTypes;
 use Illuminate\Support\Facades\DB;
 
@@ -28,9 +27,9 @@ class ScheduleEditor extends BaseFormWidget
     public $formTitle = 'igniter::admin.locations.text_title_schedule';
 
     protected $availableSchedules = [
-        AbstractLocation::OPENING,
-        AbstractLocation::DELIVERY,
-        AbstractLocation::COLLECTION,
+        Location::OPENING,
+        Location::DELIVERY,
+        Location::COLLECTION,
     ];
 
     protected $schedulesCache;

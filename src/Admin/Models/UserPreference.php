@@ -11,7 +11,7 @@ class UserPreference extends Model
     /**
      * @var string The database table used by the model.
      */
-    protected $table = 'user_preferences';
+    protected $table = 'admin_user_preferences';
 
     protected $casts = [
         'user_id' => 'integer',

@@ -112,17 +112,6 @@ class MailManager
         }
     }
 
-    /**
-     * @param \Illuminate\Mail\Message $message
-     * @param $template
-     * @param $data
-     * @param bool $plainOnly
-     * @return bool
-     */
-    protected function addContentToMailerInternal($message, $template, $data, $plainOnly = false)
-    {
-    }
-
     public function getTemplate($code)
     {
         if (isset($this->templateCache[$code])) {
@@ -213,7 +202,7 @@ class MailManager
         return $text;
     }
 
-    public function renderView($content, $data)
+    public function renderView($content, $data = [])
     {
         $this->registerBladeDirectives();
 
@@ -268,7 +257,7 @@ class MailManager
         }
 
         $extensions = resolve(ExtensionManager::class)->getExtensions();
-        foreach ($extensions as $extensionCode => $extensionObj) {
+        foreach ($extensions as $extensionObj) {
             $this->processRegistrationMethodValues($extensionObj, 'registerMailLayouts');
             $this->processRegistrationMethodValues($extensionObj, 'registerMailTemplates');
             $this->processRegistrationMethodValues($extensionObj, 'registerMailPartials');

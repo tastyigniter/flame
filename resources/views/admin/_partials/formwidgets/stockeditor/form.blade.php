@@ -42,8 +42,8 @@
                             aria-labelledby="{{ $formWidget->getId('heading') }}-{{$loop->index}}"
                             data-bs-parent="#{{ $this->getId('stock-locations') }}"
                         >
-                            <div class="accordion-body">
-                                <div class="form-fields p-0">
+                            <div class="accordion-body p-0">
+                                <div class="form-fields">
                                     @foreach($formWidget->getFields() as $field)
                                         {!! $formWidget->renderField($field) !!}
                                     @endforeach

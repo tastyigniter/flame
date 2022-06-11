@@ -22,7 +22,9 @@
         <env name="QUEUE_DRIVER" value="sync"/>
         <env name="APP_URL" value="http://localhost"/>
         <env name="APP_KEY" value="base64:cuULT9tUWlbKtqv1Mk3jBw832yDSMEv0BvXx6hZOFQQ="/>
-        <env name="DB_CONNECTION" value="sqlite"/>
-        <env name="DB_DATABASE" value=":memory:"/>
+        <env name="DB_CONNECTION" value="mysql"/>
+        <env name="DB_DATABASE" value="core_test"/>
+        <env name="DB_USERNAME" value="homestead"/>
+        <env name="DB_PASSWORD" value="secret"/>
     </php>
 </phpunit>

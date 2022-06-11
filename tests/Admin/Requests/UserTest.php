@@ -39,7 +39,7 @@ it('has max characters rule for inputs', function () {
 });
 
 it('has unique rule for inputs', function () {
-    expect('unique:users,email')->toBeIn(array_get((new User)->rules(), 'email'));
+    expect('unique:admin_users,email')->toBeIn(array_get((new User)->rules(), 'email'));
 
-    expect('unique:users,username')->toBeIn(array_get((new User)->rules(), 'username'));
+    expect('unique:admin_users,username')->toBeIn(array_get((new User)->rules(), 'username'));
 });

@@ -9,6 +9,9 @@ use Igniter\Flame\Geolite\Facades\Geocoder;
 use Igniter\Flame\Location\Contracts\AreaInterface;
 use InvalidArgumentException;
 
+/**
+ * @deprecated
+ */
 abstract class AbstractArea extends Model implements AreaInterface
 {
     const VERTEX = 'vertex';

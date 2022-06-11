@@ -7,11 +7,11 @@ use Illuminate\Database\Migrations\Migrator as BaseMigrator;
 
 class Migrator extends BaseMigrator
 {
-    public function run($paths = [], array $options = [])
+    public function runGroup($paths = [], array $options = [])
     {
         foreach ($paths as $group => $path) {
             $this->getRepository()->setGroup($group);
-            parent::run($path, $options);
+            $this->run($path, $options);
         }
     }
 

@@ -15,15 +15,15 @@ class CustomerGroups extends \Igniter\Admin\Classes\AdminController
     public $listConfig = [
         'list' => [
             'model' => \Igniter\Main\Models\CustomerGroup::class,
-            'title' => 'lang:admin::lang.customer_groups.text_title',
-            'emptyMessage' => 'lang:admin::lang.customer_groups.text_empty',
+            'title' => 'lang:igniter::main.customer_groups.text_title',
+            'emptyMessage' => 'lang:igniter::main.customer_groups.text_empty',
             'defaultSort' => ['customer_group_id', 'DESC'],
             'configFile' => 'customergroup',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.customer_groups.text_form_name',
+        'name' => 'lang:igniter::main.customer_groups.text_form_name',
         'model' => \Igniter\Main\Models\CustomerGroup::class,
         'request' => \Igniter\Main\Requests\CustomerGroup::class,
         'create' => [
@@ -60,7 +60,7 @@ class CustomerGroups extends \Igniter\Admin\Classes\AdminController
     public function index_onSetDefault()
     {
         if (CustomerGroup::updateDefault(post('default'))) {
-            flash()->success(sprintf(lang('admin::lang.alert_success'), lang('admin::lang.customer_groups.alert_set_default')));
+            flash()->success(sprintf(lang('admin::lang.alert_success'), lang('igniter::main.customer_groups.alert_set_default')));
         }
 
         return $this->refreshList('list');

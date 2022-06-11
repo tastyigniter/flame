@@ -2,9 +2,18 @@
 
 namespace Tests\System\Classes;
 
-use Igniter\System\Mail\TemplateMailable;
-use Illuminate\Support\Facades\Mail;
+use Igniter\System\Classes\MailManager;
 
-it('sends registered mail template', function () {
-    Mail::mailer('log')->queue(TemplateMailable::create('igniter.admin::_mail.order_update'), []);
-})->skip();
+it('renders mail templates', function () {
+    $manager = resolve(MailManager::class);
+    $template = $manager->getTemplate('_mail.test_template');
+
+    expect((string)$manager->renderTextTemplate($template))
+        ->toContain('PLAIN TEXT CONTENT');
+
+    expect((string)$manager->renderTemplate($template))
+        ->toContain('HTML CONTENT');
+
+    expect((string)$manager->renderView($template->subject))
+        ->toContain('Test mail template subject');
+});

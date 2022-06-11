@@ -28,8 +28,8 @@ class User extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'between:2,128'],
-            'email' => ['required', 'max:96', 'email:filter', 'unique:users,email'],
-            'username' => ['required', 'alpha_dash', 'between:2,32', 'unique:users,username'],
+            'email' => ['required', 'max:96', 'email:filter', 'unique:admin_users,email'],
+            'username' => ['required', 'alpha_dash', 'between:2,32', 'unique:admin_users,username'],
             'password' => ['sometimes', 'required_if:send_invite,0', 'string', 'between:6,32', 'same:password_confirm'],
             'status' => ['boolean'],
             'language_id' => ['nullable', 'integer'],

@@ -13,9 +13,13 @@ permalink: /components
             <p>This is a stack</p>
         @endpush
 
-        @auth('admin')
-            <p>This is a logged admin</p>
-        @endauth
+        @adminauth()
+        <p>This is a logged admin</p>
+        @endadminauth
+
+        @mainauth()
+        <p>This is a logged customer</p>
+        @endmainauth
 
         @partialIf('scriprts')
 

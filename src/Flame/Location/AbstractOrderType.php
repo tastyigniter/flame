@@ -11,7 +11,7 @@ abstract class AbstractOrderType implements OrderTypeInterface
     public const LATER_ONLY = 2;
 
     /**
-     * @var \Igniter\Flame\Location\Models\AbstractLocation
+     * @var \Igniter\Admin\Models\Location
      */
     protected $model;
 

@@ -70,17 +70,6 @@ class CustomerGuard extends \Illuminate\Auth\SessionGuard
      */
     public function register(array $attributes, $activate = false)
     {
-        $model = $this->createModel();
-        $model->fill($attributes);
-        $model->save();
-
-        if ($activate) {
-            $model->completeActivation($model->getActivationCode());
-        }
-
-        // Prevents subsequent saves to this model object
-        $model->password = null;
-
-        return $this->user = $model;
+        return $this->getProvider()->register($attributes, $activate);
     }
 }

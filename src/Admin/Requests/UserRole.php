@@ -20,7 +20,7 @@ class UserRole extends FormRequest
     {
         return [
             'code' => ['string', 'between:2,32', 'alpha_dash'],
-            'name' => ['required', 'string', 'between:2,128', 'unique:user_roles'],
+            'name' => ['required', 'string', 'between:2,128', 'unique:admin_user_roles'],
             'permissions' => ['required', 'array'],
             'permissions.*' => ['required', 'integer'],
         ];

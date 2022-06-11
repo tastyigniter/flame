@@ -39,7 +39,7 @@ class SetupSettings extends FormRequest
             'canceled_reservation_status' => ['required', 'integer'],
             'guest_order' => ['required', 'integer'],
             'location_order' => ['required', 'integer'],
-            'invoice_logo' => ['string'],
+            'invoice_logo' => ['nullable', 'string'],
         ];
     }
 }

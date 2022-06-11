@@ -3,9 +3,11 @@
 namespace Igniter\System\Models;
 
 use Igniter\Flame\Database\Model;
+use Igniter\Flame\Exception\SystemException;
 use Igniter\Flame\Mail\MailParser;
 use Igniter\Flame\Support\Facades\File;
 use Igniter\System\Classes\MailManager;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
 
 /**
@@ -74,6 +76,27 @@ class MailTemplate extends Model
     public function fillFromView()
     {
         $this->fillFromSections(self::getTemplateSections($this->code));
+    }
+
+    public function getDummyData()
+    {
+        $result = [];
+
+        $response = Event::fire('mail.templates.getDummyData', [$this->code]);
+
+        if (is_array($response)) {
+            foreach ($response as $templateData) {
+                if (!is_array($templateData))
+                    continue;
+
+                $result += $templateData;
+            }
+        }
+
+        if (!$result)
+            throw new SystemException('No dummy data found for: '.$this->code);
+
+        return $result;
     }
 
     protected function fillFromSections(array $sections)

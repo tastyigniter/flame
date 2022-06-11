@@ -14,7 +14,7 @@ class UserRole extends Model
     /**
      * @var string The database table name
      */
-    protected $table = 'user_roles';
+    protected $table = 'admin_user_roles';
 
     /**
      * @var string The database table primary key

@@ -7,6 +7,8 @@ use Igniter\Admin\Classes;
 use Igniter\Admin\Facades\AdminLocation;
 use Igniter\Admin\Facades\AdminMenu;
 use Igniter\Admin\Helpers\Admin as AdminHelper;
+use Igniter\Admin\Models\Order;
+use Igniter\Admin\Models\Reservation;
 use Igniter\Admin\Requests\Location;
 use Igniter\Flame\ActivityLog\Models\Activity;
 use Igniter\Flame\Igniter;
@@ -126,6 +128,18 @@ class AdminServiceProvider extends AppServiceProvider
                 'igniter.admin::_mail.password_reset' => 'lang:igniter::system.mail_templates.text_password_reset_alert',
                 'igniter.admin::_mail.password_reset_request' => 'lang:igniter::system.mail_templates.text_password_reset_request_alert',
             ]);
+        });
+
+        Event::listen('mail.templates.getDummyData', function ($templateCode) {
+            return match ($templateCode) {
+                'igniter.admin::_mail.order_update' => optional(Order::first())->mailGetData(),
+                'igniter.admin::_mail.reservation_update' => optional(Reservation::first())->mailGetData(),
+                'igniter.admin::_mail.password_reset' => ['staff_name' => 'Staff name'],
+                'igniter.admin::_mail.password_reset_request' => [
+                    'staff_name' => 'Staff name',
+                    'reset_link' => admin_url('login/reset?code='),
+                ],
+            };
         });
     }
 

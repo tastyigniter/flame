@@ -5,17 +5,20 @@ namespace Igniter\Admin\Models;
 use Igniter\Admin\Traits\HasDeliveryAreas;
 use Igniter\Admin\Traits\HasLocationOptions;
 use Igniter\Admin\Traits\HasWorkingHours;
+use Igniter\Admin\Traits\LocationHelpers;
 use Igniter\Flame\Database\Attach\HasMedia;
 use Igniter\Flame\Database\Factories\HasFactory;
+use Igniter\Flame\Database\Model;
 use Igniter\Flame\Database\Traits\HasPermalink;
 use Igniter\Flame\Database\Traits\Purgeable;
 use Igniter\Flame\Exception\ValidationException;
-use Igniter\Flame\Location\Models\AbstractLocation;
+use Igniter\Flame\Location\Contracts\LocationInterface;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Location Model Class
  */
-class Location extends AbstractLocation
+class Location extends Model implements LocationInterface
 {
     use HasWorkingHours;
     use HasDeliveryAreas;
@@ -23,11 +26,32 @@ class Location extends AbstractLocation
     use HasPermalink;
     use HasMedia;
     use HasLocationOptions;
+    use LocationHelpers;
     use Purgeable;
+
+    const KM_UNIT = 111.13384;
+
+    const M_UNIT = 69.05482;
+
+    const OPENING = 'opening';
+
+    const DELIVERY = 'delivery';
+
+    const COLLECTION = 'collection';
 
     const LOCATION_CONTEXT_SINGLE = 'single';
 
     const LOCATION_CONTEXT_MULTIPLE = 'multiple';
+
+    /**
+     * @var string The database table name
+     */
+    protected $table = 'locations';
+
+    /**
+     * @var string The database table primary key
+     */
+    protected $primaryKey = 'location_id';
 
     protected $appends = ['location_thumb'];
 
@@ -40,8 +64,8 @@ class Location extends AbstractLocation
 
     public $relation = [
         'hasMany' => [
-            'working_hours' => [\Igniter\Admin\Models\WorkingHour::class, 'delete' => TRUE],
-            'delivery_areas' => [\Igniter\Admin\Models\LocationArea::class, 'delete' => TRUE],
+            'working_hours' => [\Igniter\Admin\Models\WorkingHour::class, 'delete' => true],
+            'delivery_areas' => [\Igniter\Admin\Models\LocationArea::class, 'delete' => true],
         ],
         'belongsTo' => [
             'country' => [\Igniter\System\Models\Country::class, 'otherKey' => 'country_id', 'foreignKey' => 'location_country_id'],
@@ -52,7 +76,7 @@ class Location extends AbstractLocation
         ],
     ];
 
-    protected $purgeable = ['options', 'delivery_areas'];
+    protected $purgeable = ['_options', '_delivery_areas'];
 
     public $permalinkable = [
         'permalink_slug' => [
@@ -193,6 +217,23 @@ class Location extends AbstractLocation
         return $query->paginate($pageLimit, $page);
     }
 
+    public function scopeSelectDistance($query, $latitude = null, $longitude = null)
+    {
+        if (setting('distance_unit') === 'km') {
+            $sql = '( 6371 * acos( cos( radians(?) ) * cos( radians( location_lat ) ) *';
+        }
+        else {
+            $sql = '( 3959 * acos( cos( radians(?) ) * cos( radians( location_lat ) ) *';
+        }
+
+        $sql .= ' cos( radians( location_lng ) - radians(?) ) + sin( radians(?) ) *';
+        $sql .= ' sin( radians( location_lat ) ) ) ) AS distance';
+
+        $query->selectRaw(DB::raw($sql), [$latitude, $longitude, $latitude]);
+
+        return $query;
+    }
+
     //
     // Accessors & Mutators
     //
@@ -232,18 +273,6 @@ class Location extends AbstractLocation
             $suffix = '/menus';
 
         $this->url = site_url($this->permalink_slug.$suffix);
-    }
-
-    public function getAddress()
-    {
-        $country = optional($this->country);
-
-        return array_merge(parent::getAddress(), [
-            'country' => $country->country_name,
-            'iso_code_2' => $country->iso_code_2,
-            'iso_code_3' => $country->iso_code_3,
-            'format' => $country->format,
-        ]);
     }
 
     public function hasGallery()

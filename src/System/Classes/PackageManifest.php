@@ -68,7 +68,7 @@ class PackageManifest extends BasePackageManifest
             $packages = $installed['packages'] ?? $installed;
         }
 
-        $this->manifest = [];
+        $this->manifest = null;
 
         $this->write(collect($packages)
             ->filter(function ($package) {

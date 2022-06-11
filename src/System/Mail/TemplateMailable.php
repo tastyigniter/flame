@@ -18,7 +18,7 @@ class TemplateMailable extends Mailable implements ShouldQueue
 
     protected $templateCode;
 
-    protected $rawContent;
+    protected $templateRawText;
 
     public static function create($templateCode)
     {
@@ -29,11 +29,11 @@ class TemplateMailable extends Mailable implements ShouldQueue
         return $instance;
     }
 
-    public static function createFromRaw($raw)
+    public static function createFromRaw($text)
     {
         $instance = new static;
 
-        $instance->rawContent = $raw;
+        $instance->templateRawText = $text;
 
         return $instance;
     }
@@ -61,16 +61,42 @@ class TemplateMailable extends Mailable implements ShouldQueue
         return $this;
     }
 
+    public function with($key, $value = null)
+    {
+        if (is_array($key)) {
+            $key = array_filter($key, function ($v) {
+                return !$v instanceof Model;
+            });
+        }
+
+        return parent::with($key, $value);
+    }
+
+    public function applyCallback(mixed $callback)
+    {
+        if (is_callable($callback)) {
+            $this->withSymfonyMessage($callback);
+        }
+        elseif (is_array($callback)) {
+            $this->to(...$callback);
+        }
+        elseif (!is_null($callback)) {
+            $this->to($callback);
+        }
+
+        return $this;
+    }
+
     protected function makeTemplate($manager)
     {
         if ($this->templateCode)
             return $manager->getTemplate($this->templateCode);
 
-        if (!$this->rawContent)
+        if (!$this->templateRawText)
             return null;
 
         $template = new MailTemplate();
-        $template->fillFromContent($this->rawContent);
+        $template->fillFromContent($this->templateRawText);
 
         return $template;
     }
@@ -85,16 +111,5 @@ class TemplateMailable extends Mailable implements ShouldQueue
         }
 
         return $data;
-    }
-
-    public function with($key, $value = null)
-    {
-        if (is_array($key)) {
-            $key = array_filter($key, function ($v) {
-                return !$v instanceof Model;
-            });
-        }
-
-        return parent::with($key, $value);
     }
 }

@@ -22,6 +22,6 @@ it('has alpha_dash rule for inputs', function () {
     expect('alpha_dash')->toBeIn(array_get((new UserRole)->rules(), 'code'));
 });
 
-it('has unique:user_roles rule for inputs', function () {
-    expect('unique:user_roles')->toBeIn(array_get((new UserRole)->rules(), 'name'));
+it('has unique:admin_user_roles rule for inputs', function () {
+    expect('unique:admin_user_roles')->toBeIn(array_get((new UserRole)->rules(), 'name'));
 });

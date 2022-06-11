@@ -6,9 +6,7 @@ use Igniter\Main\Classes\ThemeManager;
 use Igniter\Main\Template\Page;
 
 it('reads page settings from pages.yml', function () {
-    $manager = resolve(ThemeManager::class);
-    $theme = $manager->loadTheme($path = realpath(__DIR__.'/../../_fixtures/theme'));
-    $theme->boot();
+    $page = Page::load(resolve(ThemeManager::class)->getActiveTheme(), 'nested-page');
 
-    $page = Page::load($theme, 'components');
-})->skip();
+    expect($page->settings['title'])->toBe('Nested page');
+});

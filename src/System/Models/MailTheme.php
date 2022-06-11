@@ -4,8 +4,8 @@ namespace Igniter\System\Models;
 
 use Exception;
 use Igniter\Flame\Database\Model;
-use Igniter\Flame\Support\Facades\File;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File;
 
 /**
  * MailTheme Model Class
@@ -127,8 +127,6 @@ class MailTheme extends Model
 
     public static function compileCss()
     {
-        $basePath = app_path('system/views/_mail/themes');
-
-        return File::get($basePath.'/default.css');
+        return File::get(File::symbolizePath('igniter::views/system/_mail/themes/default.css'));
     }
 }

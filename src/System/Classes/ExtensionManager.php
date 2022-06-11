@@ -7,7 +7,6 @@ use Igniter\Flame\Exception\SystemException;
 use Igniter\Flame\Igniter;
 use Igniter\Flame\Support\Facades\File;
 use Igniter\System\Models\Extension;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\View;
 use ZipArchive;
@@ -55,9 +54,9 @@ class ExtensionManager
 
     protected static $directories = [];
 
-    public function initialize()
+    public function __construct(PackageManifest $packageManifest)
     {
-        $this->packageManifest = App::make(PackageManifest::class);
+        $this->packageManifest = $packageManifest;
         $this->loadInstalled();
         $this->loadExtensions();
         $this->loadDependencies();
@@ -341,12 +340,8 @@ class ExtensionManager
         if (!$path || !File::isDirectory($path))
             return false;
 
-        if (!($class = array_get($config, 'extensionClass')) || !class_exists($class)) {
-            require_once $path.'/Extension.php';
-
-            if (!class_exists($class))
-                return false;
-        }
+        if (!($class = array_get($config, 'extensionClass')) || !class_exists($class))
+            return false;
 
         $classObj = new $class(app());
 

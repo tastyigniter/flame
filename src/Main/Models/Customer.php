@@ -11,9 +11,6 @@ use Igniter\Flame\Auth\Models\User as AuthUserModel;
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Traits\Purgeable;
 use Igniter\System\Traits\SendsMailTemplate;
-use function array_except;
-use function array_only;
-use function now;
 
 /**
  * Customer Model Class
@@ -274,5 +271,21 @@ class Customer extends AuthUserModel
             'full_name' => $model->full_name,
             'email' => $model->email,
         ]);
+    }
+
+    public function register(array $attributes, $activate = false)
+    {
+        $model = new static;
+        $model->fill($attributes);
+        $model->save();
+
+        if ($activate) {
+            $model->completeActivation($model->getActivationCode());
+        }
+
+        // Prevents subsequent saves to this model object
+        $model->password = null;
+
+        return $model;
     }
 }

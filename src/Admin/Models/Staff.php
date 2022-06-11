@@ -47,7 +47,7 @@ class Staff extends Model
 
     public $relation = [
         'hasOne' => [
-            'user' => [\Igniter\Admin\Models\User::class, 'foreignKey' => 'staff_id', 'otherKey' => 'staff_id', 'delete' => TRUE],
+            'user' => [\Igniter\Admin\Models\User::class, 'foreignKey' => 'staff_id', 'otherKey' => 'staff_id', 'delete' => true],
         ],
         'hasMany' => [
             'assignable_logs' => [\Igniter\Admin\Models\AssignableLog::class, 'foreignKey' => 'assignee_id'],
@@ -57,7 +57,7 @@ class Staff extends Model
             'language' => [\Igniter\System\Models\Language::class],
         ],
         'belongsToMany' => [
-            'groups' => [\Igniter\Admin\Models\UserGroup::class, 'table' => 'users_groups'],
+            'groups' => [\Igniter\Admin\Models\UserGroup::class, 'table' => 'admin_users_groups'],
         ],
         'morphToMany' => [
             'locations' => [\Igniter\Admin\Models\Location::class, 'name' => 'locationable'],

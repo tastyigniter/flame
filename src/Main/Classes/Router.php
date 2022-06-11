@@ -74,13 +74,13 @@ class Router
      * @return \Igniter\Main\Template\Page|mixed Returns page object
      * or null if the page cannot be found.
      */
-    public function findPage($url, $parameters)
+    public function findPage($url, $parameters = [])
     {
         $apiResult = event('router.beforeRoute', [$url, $this, $parameters], true);
         if ($apiResult !== null)
             return $apiResult;
 
-        $fileName = array_get($parameters, '_file_');
+        $fileName = array_get($parameters, '_file_', $url);
 
         if (!strlen(File::extension($fileName)))
             $fileName .= '.blade.php';
@@ -174,7 +174,7 @@ class Router
     public function clearCache()
     {
         Cache::forget($this->getUrlMapCacheKey());
-        Cache::forget($this->getUrlListCacheKey());
+//        Cache::forget($this->getUrlListCacheKey());
     }
 
     /**

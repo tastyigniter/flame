@@ -2,28 +2,25 @@
 
 namespace Igniter\Flame\Cart;
 
+use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 
-class CartServiceProvider extends ServiceProvider
+class CartServiceProvider extends ServiceProvider implements DeferrableProvider
 {
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = true;
-
     public function register()
     {
         $this->app->singleton('cart', function ($app) {
             $this->app['events']->fire('cart.beforeRegister', [$this]);
 
-            $instance = $app->make(\Igniter\Flame\Cart\Cart::class);
+            $instance = new Cart($app['session'], $app['events']);
 
             $this->app['events']->fire('cart.afterRegister', [$instance, $this]);
 
             return $instance;
         });
+
+        AliasLoader::getInstance()->alias('Cart', \Igniter\Flame\Cart\Facades\Cart::class);
     }
 
     /**

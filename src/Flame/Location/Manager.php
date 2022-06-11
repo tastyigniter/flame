@@ -17,13 +17,13 @@ abstract class Manager
     protected $sessionKey = 'local_info';
 
     /**
-     * @var \Igniter\Flame\Location\Models\AbstractLocation
+     * @var \Igniter\Admin\Models\Location
      */
     protected $model;
 
     protected $defaultLocation;
 
-    protected $locationModel = \Igniter\Flame\Location\Models\AbstractLocation::class;
+    protected $locationModel = \Igniter\Admin\Models\Location::class;
 
     protected $loaded;
 
@@ -153,7 +153,7 @@ abstract class Manager
 
     /**
      * Creates a new instance of the location model
-     * @return \Igniter\Flame\Location\Models\AbstractLocation
+     * @return \Igniter\Admin\Models\Location
      */
     public function createLocationModel()
     {
@@ -191,7 +191,7 @@ abstract class Manager
      *
      * @param mixed $identifier
      *
-     * @return \Igniter\Flame\Location\Models\AbstractLocation|null
+     * @return \Igniter\Admin\Models\Location|null
      */
     public function getById($identifier)
     {

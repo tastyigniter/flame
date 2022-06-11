@@ -10,7 +10,6 @@ use Igniter\Admin\Models\UserRole;
 use Igniter\Flame\Igniter;
 use Igniter\Flame\Support\ConfigRewrite;
 use Igniter\Main\Models\CustomerGroup;
-use Igniter\System\Classes\ExtensionManager;
 use Igniter\System\Classes\UpdateManager;
 use Igniter\System\Database\Seeds\DatabaseSeeder;
 use Igniter\System\Helpers\SystemHelper;
@@ -19,8 +18,6 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Process\PhpExecutableFinder;
-use Symfony\Component\Process\Process;
 
 /**
  * Console command to install TastyIgniter.
@@ -64,8 +61,8 @@ class IgniterInstall extends Command
     {
         $this->alert('INSTALLATION');
 
-//        $this->callSilent('igniter:package-discover');
-//        $this->callSilent('vendor:publish', ['--tag' => 'igniter-assets', '--force' => true]);
+        $this->callSilent('igniter:package-discover');
+        $this->callSilent('vendor:publish', ['--tag' => 'igniter-assets', '--force' => true]);
 
         if (
             Igniter::hasDatabase() &&
@@ -79,8 +76,6 @@ class IgniterInstall extends Command
         $this->setSeederProperties();
 
         $this->rewriteEnvFile();
-
-        $this->installRecommendedPackages();
 
         $this->migrateDatabase();
 
@@ -245,52 +240,5 @@ class IgniterInstall extends Command
 
             copy(base_path().'/'.$old.'.'.$name, base_path().'/'.$new.'.'.$name);
         }
-    }
-
-    protected function installRecommendedPackages()
-    {
-        $this->requireComposerPackages(array_map(function ($package) {
-            return str_before($package, ':').':v4.x-dev';
-        }, [
-            'tastyigniter/ti-ext-cart:~2.0',
-            'tastyigniter/ti-ext-coupons:~1.0',
-            'tastyigniter/ti-ext-frontend:~1.0',
-            'tastyigniter/ti-ext-local:~2.0',
-            'tastyigniter/ti-ext-pages:~1.0',
-            'tastyigniter/ti-ext-payregister:~1.0',
-            'tastyigniter/ti-ext-reservation:~2.0',
-            'tastyigniter/ti-ext-user:~1.0',
-            'tastyigniter/ti-ext-api:~1.0',
-            'tastyigniter/ti-ext-automation:~1.0',
-            'tastyigniter/ti-ext-broadcast:~1.0',
-            'tastyigniter/ti-ext-socialite:~1.0',
-        ]));
-
-        app()->forgetInstance(ExtensionManager::class);
-        resolve(ExtensionManager::class)->registerExtensions();
-    }
-
-    protected function requireComposerPackages($packages)
-    {
-        $composer = $this->option('composer');
-
-        if ($composer !== 'global')
-            $command = [$this->phpBinary(), $composer, 'require'];
-
-        $command = array_merge(
-            $command ?? ['composer', 'require'],
-            is_array($packages) ? $packages : func_get_args()
-        );
-
-        (new Process($command, base_path(), ['COMPOSER_MEMORY_LIMIT' => '-1']))
-            ->setTimeout(null)
-            ->run(function ($type, $output) {
-                $this->output->write($output);
-            });
-    }
-
-    protected function phpBinary()
-    {
-        return (new PhpExecutableFinder())->find(false) ?: 'php';
     }
 }

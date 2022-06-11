@@ -18,7 +18,7 @@
         ) !!}
         <div
             id="{{ $this->getId('form-modal-fields') }}"
-            class="modal-body progress-indicator-container"
+            class="modal-body p-0 progress-indicator-container"
         >
             {!! $this->makePartial('statuseditor/fields', ['formWidget' => $formWidget]) !!}
         </div>

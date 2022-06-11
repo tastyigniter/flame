@@ -21,8 +21,8 @@
             class="tab-pane {{ (('#'.$tabs->section.'tab-'.$loop->iteration) == $activeTab) ? 'active' : '' }}"
             id="{{ $tabs->section.'tab-'.$loop->iteration }}"
         >
-            @if($name === 'lang:igniter::admin.locations.text_tab_options')
-                {!! $this->makePartial('locations/form_accordions', ['accordions' => $this->controller->getAccordionFields($fields)]) !!}
+            @if(ends_with($name, '.locations.text_tab_options'))
+                {!! $this->makePartial('locations/form/form_accordions', ['accordions' => $this->controller->getAccordionFields($fields)]) !!}
             @else
                 <div class="form-fields">
                     {!! $this->makePartial('form/form_fields', ['fields' => $fields]) !!}

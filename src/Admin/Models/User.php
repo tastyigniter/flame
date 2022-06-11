@@ -26,7 +26,7 @@ class User extends AuthUserModel
     /**
      * @var string The database table name
      */
-    protected $table = 'users';
+    protected $table = 'admin_users';
 
     protected $primaryKey = 'user_id';
 
@@ -60,7 +60,7 @@ class User extends AuthUserModel
             'language' => [\Igniter\System\Models\Language::class],
         ],
         'belongsToMany' => [
-            'groups' => [\Igniter\Admin\Models\UserGroup::class, 'table' => 'users_groups'],
+            'groups' => [\Igniter\Admin\Models\UserGroup::class, 'table' => 'admin_users_groups'],
         ],
         'morphToMany' => [
             'locations' => [\Igniter\Admin\Models\Location::class, 'name' => 'locationable'],
@@ -87,6 +87,11 @@ class User extends AuthUserModel
     public function getAvatarUrlAttribute()
     {
         return '//www.gravatar.com/avatar/'.md5(strtolower(trim($this->email))).'.png?d=mm';
+    }
+
+    public function getSalePermissionAttribute($value)
+    {
+        return $value ?: 1;
     }
 
     public static function getDropdownOptions()
@@ -321,5 +326,34 @@ class User extends AuthUserModel
     public function addGroups($groups = [])
     {
         return $this->groups()->sync($groups);
+    }
+
+    public function register(array $attributes, $activate = false)
+    {
+        $user = new static;
+        $user->name = array_get($attributes, 'name');
+        $user->email = array_get($attributes, 'email');
+        $user->username = array_get($attributes, 'username');
+        $user->password = array_get($attributes, 'password');
+        $user->language_id = array_get($attributes, 'language_id');
+        $user->user_role_id = array_get($attributes, 'user_role_id');
+        $user->super_user = array_get($attributes, 'super_user', false);
+        $user->status = array_get($attributes, 'status', true);
+        $user->save();
+
+        if ($activate) {
+            $user->completeActivation($user->getActivationCode());
+        }
+
+        // Prevents subsequent saves to this model object
+        $user->password = null;
+
+        if (array_key_exists('groups', $attributes))
+            $user->groups()->attach($attributes['groups']);
+
+        if (array_key_exists('locations', $attributes))
+            $user->locations()->attach($attributes['locations']);
+
+        return $user->reload();
     }
 }

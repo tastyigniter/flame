@@ -106,9 +106,7 @@ class Login extends Controller
                 'staff_name' => $user->name,
                 'reset_link' => admin_url('login/reset?code='.$user->reset_code),
             ];
-            Mail::queue('igniter.admin::_mail.password_reset_request', $data, function ($message) use ($user) {
-                $message->to($user->email, $user->name);
-            });
+            Mail::queueTemplate('igniter.admin::_mail.password_reset_request', $data, $user);
         }
 
         flash()->success(lang('igniter::admin.login.alert_email_sent'));
@@ -140,9 +138,7 @@ class Login extends Controller
             'staff_name' => $user->name,
         ];
 
-        Mail::queue('igniter.admin::_mail.password_reset', $data, function ($message) use ($user) {
-            $message->to($user->email, $user->name);
-        });
+        Mail::queueTemplate('igniter.admin::_mail.password_reset', $data, $user);
 
         flash()->success(lang('igniter::admin.login.alert_success_reset'));
 

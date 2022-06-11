@@ -37,11 +37,13 @@ class Igniter
      */
     protected static $hasDatabase;
 
-    protected static $migrationPaths = [
+    protected static $coreMigrationPaths = [
         'igniter.system' => __DIR__.'/../System/Database/Migrations',
         'igniter.admin' => __DIR__.'/../Admin/Database/Migrations',
         'igniter.main' => __DIR__.'/../Main/Database/Migrations',
     ];
+
+    protected static $migrationPaths = [];
 
     protected static $controllerPaths = [];
 
@@ -166,6 +168,11 @@ class Igniter
     public static function migrationPath()
     {
         return static::$migrationPaths;
+    }
+
+    public static function coreMigrationPath()
+    {
+        return static::$coreMigrationPaths;
     }
 
     public static function getSeedRecords($name)
