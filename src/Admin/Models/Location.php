@@ -76,7 +76,7 @@ class Location extends Model implements LocationInterface
         ],
     ];
 
-    protected $purgeable = ['_options', '_delivery_areas'];
+    protected $purgeable = ['options', 'delivery_areas'];
 
     public $permalinkable = [
         'permalink_slug' => [

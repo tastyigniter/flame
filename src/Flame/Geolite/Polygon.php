@@ -385,7 +385,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
     /**
      * {@inheritdoc}
      */
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return $this->coordinates->offsetExists($offset);
     }
@@ -393,7 +393,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
     /**
      * {@inheritdoc}
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->coordinates->offsetGet($offset);
     }
@@ -401,7 +401,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
     /**
      * {@inheritdoc}
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->coordinates->offsetSet($offset, $value);
         $this->bounds->setPolygon($this);
@@ -410,7 +410,7 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
     /**
      * {@inheritdoc}
      */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         $coordinates = $this->coordinates->offsetUnset($offset);
         $this->bounds->setPolygon($this);

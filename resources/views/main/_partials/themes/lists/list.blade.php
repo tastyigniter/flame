@@ -14,6 +14,4 @@
     {!! form_close() !!}
 
     {!! $this->makePartial('lists/list_pagination') !!}
-
-    {!! $this->makePartial('igniter.system::updates/recommended', ['itemType' => 'theme']) !!}
 </div>

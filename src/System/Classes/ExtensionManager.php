@@ -215,7 +215,7 @@ class ExtensionManager
         if (is_string($extension) && (!$extension = $this->findExtension($extension)))
             return false;
 
-        return $extension->listRequires();
+        return array_keys($extension->listRequires());
     }
 
     /**
@@ -456,9 +456,12 @@ class ExtensionManager
         }
 
         // Register controller path
-        if (File::isDirectory($controllerPath = $extensionPath.'/src/Http/Controllers') ||
-            File::isDirectory($controllerPath = $extensionPath.'/src/Controllers')) {
+        if (File::isDirectory($controllerPath = $extensionPath.'/src/Http/Controllers')) {
             Igniter::loadControllersFrom($controllerPath, $extensionNamespace.'Http\\Controllers');
+        }
+
+        if (File::isDirectory($controllerPath = $extensionPath.'/src/Controllers')) {
+            Igniter::loadControllersFrom($controllerPath, $extensionNamespace.'Controllers');
         }
 
         // Register views path

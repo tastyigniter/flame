@@ -167,7 +167,7 @@ class ErrorHandler
 
         // Route to the main error page.
         $controller = new MainController($theme);
-        $result = $controller->remap('/error');
+        $result = $controller->remap('/error', []);
 
         // Extract content from response object
         if ($result instanceof Response) {

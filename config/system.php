@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'carte_key' => env('IGNITER_CARTE_KEY'),
+    'carteKey' => env('IGNITER_CARTE_KEY'),
 
     /*
     |--------------------------------------------------------------------------

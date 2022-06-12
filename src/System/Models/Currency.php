@@ -2,13 +2,15 @@
 
 namespace Igniter\System\Models;
 
+use Igniter\Flame\Currency\Contracts\CurrencyInterface;
 use Igniter\Flame\Database\Factories\HasFactory;
+use Igniter\Flame\Database\Model;
 use Igniter\Flame\Exception\ValidationException;
 
 /**
  * Currency Model Class
  */
-class Currency extends \Igniter\Flame\Currency\Models\Currency
+class Currency extends Model implements CurrencyInterface
 {
     use HasFactory;
 

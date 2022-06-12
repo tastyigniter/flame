@@ -121,12 +121,10 @@ $config['form']['fields'] = [
         'type' => 'text',
         'span' => 'left',
     ],
-    'locations' => [
-        'label' => 'lang:igniter::admin.label_location',
-        'type' => 'relation',
+    'is_required' => [
+        'label' => 'lang:igniter::admin.menu_options.label_option_required',
+        'type' => 'switch',
         'span' => 'right',
-        'valueFrom' => 'locations',
-        'nameFrom' => 'location_name',
     ],
     'display_type' => [
         'label' => 'lang:igniter::admin.menu_options.label_display_type',
@@ -134,10 +132,12 @@ $config['form']['fields'] = [
         'default' => 'radio',
         'span' => 'left',
     ],
-    'is_required' => [
-        'label' => 'lang:igniter::admin.menu_options.label_option_required',
-        'type' => 'switch',
+    'locations' => [
+        'label' => 'lang:igniter::admin.label_location',
+        'type' => 'relation',
         'span' => 'right',
+        'valueFrom' => 'locations',
+        'nameFrom' => 'location_name',
     ],
     'min_selected' => [
         'label' => 'lang:igniter::admin.menu_options.label_min_selected',

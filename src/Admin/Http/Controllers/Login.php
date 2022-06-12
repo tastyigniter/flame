@@ -31,15 +31,6 @@ class Login extends Controller
 
     public function index()
     {
-        if (AdminAuth::isLogged())
-            return Admin::redirect('dashboard');
-
-        if ($handler = Admin::getAjaxHandler()) {
-            Admin::validateAjaxHandler($handler);
-
-            return $this->runHandler($handler);
-        }
-
         Template::setTitle(lang('igniter::admin.login.text_title'));
 
         return $this->makeView('igniter.admin::auth.login');
@@ -62,7 +53,21 @@ class Login extends Controller
 
         $this->vars['resetCode'] = input('code');
 
-        return $this->makeView('auth/reset');
+        return $this->makeView('igniter.admin::auth.reset');
+    }
+
+    public function callAction($method, $parameters)
+    {
+        if (AdminAuth::isLogged())
+            return Admin::redirect('dashboard');
+
+        if ($handler = Admin::getAjaxHandler()) {
+            Admin::validateAjaxHandler($handler);
+
+            return $this->runHandler($handler);
+        }
+
+        return $this->{$method}(...array_values($parameters));
     }
 
     public function onLogin()
@@ -80,26 +85,20 @@ class Login extends Controller
 
         session()->regenerate();
 
-        $redirectUrl = ($redirectUrl = input('redirect'))
+        return $this->createResponse(($redirectUrl = input('redirect'))
             ? Admin::redirect($redirectUrl)
-            : Admin::redirectIntended('dashboard');
-
-        return request()->ajax()
-            ? ['X_IGNITER_REDIRECT' => $redirectUrl->getTargetUrl()]
-            : $redirectUrl;
+            : Admin::redirectIntended('dashboard'));
     }
 
     public function onRequestResetPassword()
     {
-        $data = post();
-
-        $this->validate($data, [
+        $data = $this->validate(post(), [
             'email' => ['required', 'email:filter', 'max:96'],
         ], [], [
             'email' => lang('igniter::admin.label_email'),
         ]);
 
-        if ($user = User::whereEmail(post('email'))->first()) {
+        if ($user = User::whereEmail($data['email'])->first()) {
             if (!$user->resetPassword())
                 throw new ValidationException(['email' => lang('igniter::admin.login.alert_failed_reset')]);
             $data = [
@@ -111,14 +110,12 @@ class Login extends Controller
 
         flash()->success(lang('igniter::admin.login.alert_email_sent'));
 
-        return $this->redirect('login');
+        return $this->createResponse(Admin::redirect('login'));
     }
 
     public function onResetPassword()
     {
-        $data = post();
-
-        $this->validate($data, [
+        $data = $this->validate(post(), [
             'code' => ['required'],
             'password' => ['required', 'min:6', 'max:32', 'same:password_confirm'],
             'password_confirm' => ['required'],
@@ -131,17 +128,22 @@ class Login extends Controller
         $code = array_get($data, 'code');
         $user = User::whereResetCode($code)->first();
 
-        if (!$user || !$user->completeResetPassword($code, post('password')))
+        if (!$user || !$user->completeResetPassword($data['code'], $data['password']))
             throw new ValidationException(['password' => lang('igniter::admin.login.alert_failed_reset')]);
 
-        $data = [
+        Mail::queueTemplate('igniter.admin::_mail.password_reset', [
             'staff_name' => $user->name,
-        ];
-
-        Mail::queueTemplate('igniter.admin::_mail.password_reset', $data, $user);
+        ], $user);
 
         flash()->success(lang('igniter::admin.login.alert_success_reset'));
 
-        return $this->redirect('login');
+        return $this->createResponse(Admin::redirect('login'));
+    }
+
+    protected function createResponse($redirectResponse): array
+    {
+        return request()->ajax()
+            ? ['X_IGNITER_REDIRECT' => $redirectResponse->getTargetUrl()]
+            : $redirectResponse;
     }
 }

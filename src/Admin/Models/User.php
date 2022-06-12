@@ -210,6 +210,9 @@ class User extends AuthUserModel
 
         $staffPermissions = $this->getPermissions();
 
+        if (is_string($permissions) && str_contains($permissions, ','))
+            $permissions = explode(',', $permissions);
+
         if (!is_array($permissions))
             $permissions = [$permissions];
 

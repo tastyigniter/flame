@@ -211,7 +211,7 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
      * @param mixed $offset
      * @return bool true on success or false on failure.
      */
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return isset($this->ranges[$offset]);
     }
@@ -222,7 +222,7 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
      * @param mixed $offset
      * @return mixed Can return all value types.
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->ranges[$offset];
     }
@@ -234,7 +234,7 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
      * @param mixed $value
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         throw new WorkingHourException('Can not set ranges');
     }
@@ -245,7 +245,7 @@ class WorkingPeriod implements ArrayAccess, Countable, IteratorAggregate
      * @param mixed $offset
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->ranges[$offset]);
     }

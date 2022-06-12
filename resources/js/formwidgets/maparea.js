@@ -26,13 +26,12 @@
             handle: this.options.sortableHandle,
         }
 
-        if (this.$sortableContainer.get(0))
-            this.$sortable = Sortable.create(this.$sortableContainer.get(0), sortableOptions)
+        this.$sortable = Sortable.create(this.$sortableContainer.get(0), sortableOptions)
     }
 
     MapArea.prototype.onModalShown = function (event, $modalEl) {
         var $typeInput = $modalEl.find('[data-toggle="map-shape"]'),
-        $checkedTypeInput = $modalEl.find('[data-toggle="map-shape"]:checked')
+            $checkedTypeInput = $modalEl.find('[data-toggle="map-shape"]:checked')
 
         this.$mapView = $modalEl.find('[data-control="map-view"]')
 
@@ -85,7 +84,7 @@
     }
 
     MapArea.prototype.createShape = function (shapeId) {
-        var $areaContainer = this.$el.find('#' + shapeId),
+        var $areaContainer = this.$el.find('#'+shapeId),
             $areaShape = $areaContainer.find('[data-map-shape]'),
             shapeOptions = $areaShape.data()
 
@@ -121,7 +120,7 @@
         if (shape.options) {
             shape.options.default = type
             this.$mapView.mapView('hideShape', areaId).mapView('showShape', areaId, type)
-            window.setTimeout(function() {
+            window.setTimeout(function () {
                 this.$mapView.mapView('resize')
             }.bind(this), 200);
         }

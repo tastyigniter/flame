@@ -71,7 +71,7 @@ class TemplateCode extends Extendable implements ArrayAccess
      * @param $offset
      * @param $value
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->controller->vars[$offset] = $value;
     }
@@ -83,7 +83,7 @@ class TemplateCode extends Extendable implements ArrayAccess
      *
      * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return isset($this->controller->vars[$offset]);
     }
@@ -93,7 +93,7 @@ class TemplateCode extends Extendable implements ArrayAccess
      *
      * @param $offset
      */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->controller->vars[$offset]);
     }
@@ -105,7 +105,7 @@ class TemplateCode extends Extendable implements ArrayAccess
      *
      * @return null
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return isset($this->controller->vars[$offset]) ? $this->controller->vars[$offset] : null;
     }
@@ -136,7 +136,7 @@ class TemplateCode extends Extendable implements ArrayAccess
      * used as a helper for accessing controller variables/components easier
      * in the page code, eg. $this->foo instead of $this['foo']
      *
-     * @param  string $name
+     * @param string $name
      *
      * @return void
      */
@@ -160,8 +160,8 @@ class TemplateCode extends Extendable implements ArrayAccess
     /**
      * This will set a property on the Page object.
      *
-     * @param  string $name
-     * @param  mixed $value
+     * @param string $name
+     * @param mixed $value
      *
      * @return void
      */
@@ -173,7 +173,7 @@ class TemplateCode extends Extendable implements ArrayAccess
     /**
      * This will check if a property isset on the CMS Page object.
      *
-     * @param  string $name
+     * @param string $name
      *
      * @return bool
      */

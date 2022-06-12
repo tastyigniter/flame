@@ -34,6 +34,11 @@ class WorkingHour extends Model implements WorkingHourInterface
 
     protected $appends = ['day', 'open', 'close'];
 
+    public $attributes = [
+        'opening_time' => '00:00',
+        'closing_time' => '23:59',
+    ];
+
     public $fillable = ['location_id', 'weekday', 'opening_time', 'closing_time', 'status', 'type'];
 
     protected $casts = [
@@ -78,7 +83,7 @@ class WorkingHour extends Model implements WorkingHourInterface
     {
         $openDate = $this->getWeekDate();
 
-        $openDate->setTimeFromTimeString($this->attributes['opening_time']);
+        $openDate->setTimeFromTimeString($this->opening_time);
 
         return $openDate;
     }
@@ -87,7 +92,7 @@ class WorkingHour extends Model implements WorkingHourInterface
     {
         $closeDate = $this->getWeekDate();
 
-        $closeDate->setTimeFromTimeString($this->attributes['closing_time']);
+        $closeDate->setTimeFromTimeString($this->closing_time);
 
         if ($this->isPastMidnight())
             $closeDate->addDay();

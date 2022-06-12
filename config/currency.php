@@ -56,7 +56,7 @@ return [
     |
     */
 
-    'model' => \Igniter\Flame\Currency\Models\Currency::class,
+    'model' => \Igniter\System\Models\Currency::class,
 
     /*
     |--------------------------------------------------------------------------

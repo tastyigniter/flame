@@ -35,11 +35,10 @@ class IgniterPasswd extends Command
      */
     public function handle()
     {
-        $username = $this->argument('username')
-            ?? $this->ask('Username to reset');
+        $email = $this->argument('email')
+            ?? $this->ask('Admin email to reset');
 
-        $user = User::whereUsername($username)->orWhereEmail($username)->first();
-        if (!$user)
+        if (!$user = User::whereEmail($email)->first())
             throw new ApplicationException('The specified user does not exist.');
 
         if (is_null($password = $this->argument('password'))) {
@@ -62,7 +61,7 @@ class IgniterPasswd extends Command
     protected function getArguments()
     {
         return [
-            ['username', InputArgument::OPTIONAL, 'The username of the Backend user'],
+            ['username', InputArgument::OPTIONAL, 'The email of the Admin user o reset'],
             ['password', InputArgument::OPTIONAL, 'The new password'],
         ];
     }

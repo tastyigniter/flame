@@ -3,6 +3,7 @@
 namespace Igniter\System\Traits;
 
 use Illuminate\Support\Facades\Mail;
+use Symfony\Component\Mime\Address;
 
 trait SendsMailTemplate
 {
@@ -32,8 +33,7 @@ trait SendsMailTemplate
     {
         $recipients = [];
         foreach ($this->mailGetRecipients($recipientType) as $recipient) {
-            [$email, $name] = $recipient;
-            $recipients[] = ['name' => $name, 'email' => $email];
+            $recipients[] = new Address(...$recipient);
         }
 
         return $recipients;

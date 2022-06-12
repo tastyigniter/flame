@@ -5,6 +5,9 @@ namespace Igniter\Flame\Currency\Models;
 use Igniter\Flame\Currency\Contracts\CurrencyInterface;
 use Igniter\Flame\Database\Model;
 
+/**
+ * @deprecated
+ */
 abstract class Currency extends Model implements CurrencyInterface
 {
     /**

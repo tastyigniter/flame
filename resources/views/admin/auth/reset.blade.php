@@ -19,7 +19,7 @@
                             class="form-label"
                         >@lang('igniter::admin.label_email')</label>
                         <div class="">
-                            <input name="email" type="text" id="input-user" class="form-control"/>
+                            <input name="email" type="email" id="input-user" class="form-control"/>
                             {!! form_error('email', '<span class="text-danger">', '</span>') !!}
                         </div>
                     </div>
@@ -49,7 +49,7 @@
                 <div class="form-group">
                     <div class="pull-left">
                         <a
-                            class="btn btn-default"
+                            class="btn btn-outline-default"
                             href="{{ admin_url('login') }}"
                         >@lang('igniter::admin.login.text_back_to_login')</a>
                     </div>

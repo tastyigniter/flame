@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'model' => \Igniter\Flame\Cart\Models\Cart::class,
+    'model' => \Igniter\Cart\Models\Cart::class,
 
     /*
     |--------------------------------------------------------------------------

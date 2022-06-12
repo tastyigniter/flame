@@ -130,7 +130,7 @@ class MediaFinder extends BaseFormWidget
             return $media->getDiskPath();
 
         try {
-            return resolve(MediaLibrary::class)->getMediaRelativePath(trim($media, '/'));
+            return resolve(MediaLibrary::class)->getMediaRelativePath(trim((string)$media, '/'));
         }
         catch (SystemException $ex) {
             return $media;

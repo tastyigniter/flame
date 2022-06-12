@@ -32,6 +32,9 @@ trait HasAuthentication
 
     public function authorize($ability)
     {
+        if (is_array($ability))
+            $ability = implode(',', $ability);
+
         return app(Gate::class)->authorize($ability);
     }
 }
