@@ -242,6 +242,6 @@ trait CartConditionHelper
 
     protected function getSessionKey()
     {
-        return sprintf($this->sessionKey, $this->name);
+        return sprintf($this->sessionKey, $this->cartInstance, $this->name);
     }
 }
