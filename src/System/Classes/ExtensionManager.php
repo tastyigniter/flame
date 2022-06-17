@@ -778,17 +778,4 @@ class ExtensionManager
 
         return true;
     }
-
-    protected function mergeConfigFrom(string $namespace, string $path)
-    {
-        if (app()->configurationIsCached())
-            return;
-
-        foreach (File::glob($path.'/*.php') as $configPath) {
-            $configKey = sprintf('%s::%s', $namespace, array_get(pathinfo($configPath), 'filename'));
-            config()->set($configKey, array_merge(
-                require $configPath, config($configKey, [])
-            ));
-        }
-    }
 }

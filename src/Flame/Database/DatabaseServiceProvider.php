@@ -7,22 +7,9 @@ use Igniter\Flame\Database\Connectors\ConnectionFactory;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\DatabaseServiceProvider as BaseDatabaseServiceProvider;
 use Illuminate\Database\DatabaseTransactionsManager;
-use Illuminate\Support\Facades\Schema;
 
 class DatabaseServiceProvider extends BaseDatabaseServiceProvider
 {
-    /**
-     * Bootstrap the application events.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        parent::boot();
-
-        Schema::defaultStringLength(128);
-    }
-
     /**
      * Register the service provider.
      * @return void

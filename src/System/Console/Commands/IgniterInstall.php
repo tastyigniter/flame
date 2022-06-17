@@ -59,31 +59,31 @@ class IgniterInstall extends Command
      */
     public function handle()
     {
-        $this->alert('INSTALLATION');
-
         $this->callSilent('igniter:package-discover');
         $this->callSilent('vendor:publish', ['--tag' => 'igniter-assets', '--force' => true]);
 
-        if (
-            Igniter::hasDatabase() &&
-            !$this->confirm('Application appears to be installed already. Continue anyway?', false)
-        ) {
-            return;
+        // validate satis config in composer.json
+
+        if ($this->shouldRunSetup()) {
+            $this->alert('INSTALLATION');
+
+            $this->line('Enter a new value, or press ENTER for the default');
+
+            $this->setSeederProperties();
+
+            $this->rewriteEnvFile();
+
+            $this->migrateDatabase();
+
+            $this->createSuperUser();
+
+            $this->addSystemValues();
+
+            $this->alert('INSTALLATION COMPLETE');
         }
-
-        $this->line('Enter a new value, or press ENTER for the default');
-
-        $this->setSeederProperties();
-
-        $this->rewriteEnvFile();
-
-        $this->migrateDatabase();
-
-        $this->createSuperUser();
-
-        $this->addSystemValues();
-
-        $this->alert('INSTALLATION COMPLETE');
+        else {
+            $this->migrateDatabase();
+        }
     }
 
     /**
@@ -92,7 +92,7 @@ class IgniterInstall extends Command
     protected function getOptions()
     {
         return [
-            ['composer', null, InputOption::VALUE_REQUIRED, 'Absolute path to the Composer binary which should be used to install packages.', 'global'],
+            ['force', null, InputOption::VALUE_NONE, 'Force the operation to run when in production'],
         ];
     }
 
@@ -240,5 +240,17 @@ class IgniterInstall extends Command
 
             copy(base_path().'/'.$old.'.'.$name, base_path().'/'.$new.'.'.$name);
         }
+    }
+
+    protected function shouldRunSetup()
+    {
+        if (!Igniter::hasDatabase())
+            return true;
+
+        if ($this->option('force') &&
+            $this->confirm('Application appears to be installed already. Continue anyway?', false))
+            return true;
+
+        return false;
     }
 }
