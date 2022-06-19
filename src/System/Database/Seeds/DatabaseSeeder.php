@@ -20,6 +20,10 @@ class DatabaseSeeder extends Seeder
 
     public static $seedDemo = true;
 
+    public static $siteLanguage = 'en';
+
+    public static $siteTimezone = 'Europe/London';
+
     /**
      * Run the database seeds.
      * @return void
