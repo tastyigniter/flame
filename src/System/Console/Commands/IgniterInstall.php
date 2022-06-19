@@ -18,7 +18,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Input\InputOption;
-
+use DateTimeZone;
 /**
  * Console command to install TastyIgniter.
  * This sets up TastyIgniter for the first time. It will prompt the user for several
@@ -149,6 +149,15 @@ class IgniterInstall extends Command
         DatabaseSeeder::$siteName = $this->ask('Site Name', DatabaseSeeder::$siteName);
         DatabaseSeeder::$siteUrl = $this->ask('Site URL', Config::get('app.url'));
 
+        DatabaseSeeder::$siteLanguage = $this->choice('Site Language', app('translator.localization')->supportedLocales(), DatabaseSeeder::$siteLanguage);
+
+        $dateTimeZoneReflection = new ReflectionClass('DateTimeZone');
+        $region = $this->choice('Site Region for timezone', $dateTimeZoneReflection->getConstants(), null);
+        $availableTimezones = DateTimeZone::listIdentifiers(constant( "DateTimeZone::$region" ));
+        $flippedAvailableTimezone = array_flip($availableTimezones);
+        $flippedTimezone= $this->choice('Site Timezone', $flippedAvailableTimezone, $availableTimezones[DatabaseSeeder::$siteTimezone] ?? 0);
+        DatabaseSeeder::$siteTimezone = $flippedAvailableTimezone[$flippedTimezone];
+
         DatabaseSeeder::$seedDemo = $this->confirm('Install demo data?', DatabaseSeeder::$seedDemo);
     }
 
@@ -209,6 +218,8 @@ class IgniterInstall extends Command
         setting()->set('site_email', DatabaseSeeder::$siteEmail);
         setting()->set('sender_name', DatabaseSeeder::$siteName);
         setting()->set('sender_email', DatabaseSeeder::$siteEmail);
+        setting()->set('timezone', DatabaseSeeder::$siteTimezone);
+        setting()->set('default_language', DatabaseSeeder::$siteLanguage);
         setting()->set('customer_group_id', CustomerGroup::first()->customer_group_id);
         setting()->save();
 
