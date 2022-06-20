@@ -47,7 +47,9 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
     // Object properties
     //
 
-    protected $sessionKey = 'cart.conditions.%s';
+    protected $sessionKey = 'cart.%s.conditions.%s';
+
+    protected $cartInstance = 'default';
 
     /**
      * @var \Igniter\Flame\Cart\CartContent|\Igniter\Flame\Cart\CartItem
@@ -82,6 +84,7 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
         $this->name = array_get($config, 'name', $this->name);
         $this->priority = array_get($config, 'priority', $this->priority);
         $this->removeable = array_get($config, 'removeable', $this->removeable);
+        $this->cartInstance = array_get($config, 'cartInstance', $this->cartInstance);
 
         if ($metaData = array_get($config, 'metaData'))
             Session::put($this->getSessionKey(), $metaData);
