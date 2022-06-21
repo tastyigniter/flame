@@ -46,10 +46,18 @@ class Country
             )
         );
 
+        while (stripos($formattedAddress, '<br /><br />') !== false) {
+            $formattedAddress = str_replace('<br /><br />', '<br />', $formattedAddress);
+        }
+
+        if (substr($formattedAddress, -6) == '<br />') {
+            $formattedAddress = substr($formattedAddress, 0, -6);
+        }
+
         if (!$useLineBreaks)
             $formattedAddress = str_replace('<br />', ', ', $formattedAddress);
 
-        return $formattedAddress;
+        return trim($formattedAddress);
     }
 
     public function getCountryNameById($id = null)
