@@ -266,14 +266,14 @@ class SystemServiceProvider extends AppServiceProvider
         });
 
         $this->app->resolving('geocoder', function ($geocoder, $app) {
-            $app['config']->set('geocoder.default', setting('default_geocoder'));
+            $app['config']->set('igniter.geocoder.default', setting('default_geocoder'));
 
             $region = $app['country']->getCountryCodeById(setting('country_id'));
-            $app['config']->set('geocoder.providers.google.region', $region);
-            $app['config']->set('geocoder.providers.nominatim.region', $region);
+            $app['config']->set('igniter.geocoder.providers.google.region', $region);
+            $app['config']->set('igniter.geocoder.providers.nominatim.region', $region);
 
-            $app['config']->set('geocoder.providers.google.apiKey', setting('maps_api_key'));
-            $app['config']->set('geocoder.precision', setting('geocoder_boundary_precision', 8));
+            $app['config']->set('igniter.geocoder.providers.google.apiKey', setting('maps_api_key'));
+            $app['config']->set('igniter.geocoder.precision', setting('geocoder_boundary_precision', 8));
         });
 
         Event::listen(CommandStarting::class, function () {
