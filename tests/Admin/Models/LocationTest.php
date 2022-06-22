@@ -97,9 +97,9 @@ it('should filter locations by status', function () {
     $location2->location_status = false;
     $location2->save();
 
-    $locations = Location::query()->isEnabled();
+    $locations = Location::query()->isEnabled()->get();
 
-    $this->assertCount($locations, 1);
+    $this->assertCount(1, $locations);
 });
 
 it('should filter locations by offer delivery', function () {
@@ -114,9 +114,9 @@ it('should filter locations by offer delivery', function () {
     $locations = Location::query()->listFrontEnd([
         'hasDelivery' => true,
         'pageLimit' => null,
-    ]);
+    ])->get();
 
-    $this->assertCount($locations, 1);
+    $this->assertCount(1, $locations);
 });
 
 it('should filter locations by offer collection', function () {
@@ -131,9 +131,9 @@ it('should filter locations by offer collection', function () {
     $locations = Location::query()->listFrontEnd([
         'hasCollection' => true,
         'pageLimit' => null,
-    ]);
+    ])->get();
 
-    $this->assertCount($locations, 1);
+    $this->assertCount(1, $locations);
 });
 
 it('should sort locations alphabetically by name ascending', function () {
@@ -149,7 +149,7 @@ it('should sort locations alphabetically by name ascending', function () {
         'hasCollection' => true,
         'pageLimit' => null,
         'sort' => 'location_name asc',
-    ]);
+    ])->get();
 
     $this->assertSame($locations->first()->location_name, $location2->location_name);
 });
@@ -167,16 +167,33 @@ it('should sort locations alphabetically by name descending', function () {
         'hasCollection' => true,
         'pageLimit' => null,
         'sort' => 'location_name desc',
-    ]);
+    ])->get();
 
     $this->assertSame($locations->first()->location_name, $location1->location_name);
 });
 
-it('can be made default', function () {
+it('can be made default when enabled', function () {
     $location = Location::factory()->make();
+    $location->location_status = true;
     $location->save();
 
     $location->makeDefault();
 
     $this->assertSame(Location::getDefault()->getKey(), $location->getKey());
+});
+
+it('cant be made default when not enabled', function () {
+    try {
+
+        $location = Location::factory()->make();
+        $location->location_status = false;
+        $location->save();
+
+        $location->makeDefault();
+
+        $this->assertNotSame(Location::getDefault()->getKey(), $location->getKey());
+
+    } catch (\Exception $e) {
+        $this->assertFalse(false);
+    }
 });
