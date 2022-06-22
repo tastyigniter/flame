@@ -20,6 +20,7 @@ class LocationFactory extends Factory
             'options' => [
                 'auto_lat_lng' => FALSE,
             ],
+            'location_status' => $this->faker->boolean,
         ];
     }
 }

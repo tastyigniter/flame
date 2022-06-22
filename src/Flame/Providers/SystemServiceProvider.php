@@ -251,18 +251,18 @@ class SystemServiceProvider extends AppServiceProvider
     protected function setConfiguration()
     {
         Event::listen('currency.beforeRegister', function () {
-            app('config')->set('currency.default', setting('default_currency_code'));
-            app('config')->set('currency.converter', setting('currency_converter.api', 'openexchangerates'));
-            app('config')->set('currency.converters.openexchangerates.apiKey', setting('currency_converter.oer.apiKey'));
-            app('config')->set('currency.converters.fixerio.apiKey', setting('currency_converter.fixerio.apiKey'));
-            app('config')->set('currency.ratesCacheDuration', setting('currency_converter.refreshInterval'));
-            app('config')->set('currency.model', \Igniter\System\Models\Currency::class);
+            app('config')->set('igniter.currency.default', setting('default_currency_code'));
+            app('config')->set('igniter.currency.converter', setting('currency_converter.api', 'openexchangerates'));
+            app('config')->set('igniter.currency.converters.openexchangerates.apiKey', setting('currency_converter.oer.apiKey'));
+            app('config')->set('igniter.currency.converters.fixerio.apiKey', setting('currency_converter.fixerio.apiKey'));
+            app('config')->set('igniter.currency.ratesCacheDuration', setting('currency_converter.refreshInterval'));
+            app('config')->set('igniter.currency.model', \Igniter\System\Models\Currency::class);
         });
 
         $this->app->resolving('translator.localization', function ($localization, $app) {
-            $app['config']->set('localization.locale', setting('default_language', $app['config']['app.locale']));
-            $app['config']->set('localization.supportedLocales', setting('supported_languages', []) ?: ['en']);
-            $app['config']->set('localization.detectBrowserLocale', (bool)setting('detect_language', false));
+            $app['config']->set('igniter.localization.locale', setting('default_language', $app['config']['app.locale']));
+            $app['config']->set('igniter.localization.supportedLocales', setting('supported_languages', []) ?: ['en']);
+            $app['config']->set('igniter.localization.detectBrowserLocale', (bool)setting('detect_language', false));
         });
 
         $this->app->resolving('geocoder', function ($geocoder, $app) {
@@ -277,7 +277,7 @@ class SystemServiceProvider extends AppServiceProvider
         });
 
         Event::listen(CommandStarting::class, function () {
-            config()->set('system.activityRecordsTTL', (int)setting('activity_log_timeout', 60));
+            config()->set('igniter.system.activityRecordsTTL', (int)setting('activity_log_timeout', 60));
         });
     }
 
