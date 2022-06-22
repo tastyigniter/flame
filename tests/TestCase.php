@@ -4,6 +4,7 @@ namespace Tests;
 
 use Igniter\Flame\Igniter;
 use Igniter\Main\Classes\ThemeManager;
+use Illuminate\Support\Facades\Schema;
 
 abstract class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -30,6 +31,8 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
 
         ThemeManager::addDirectory(__DIR__.'/_fixtures/themes');
         $app['config']->set('igniter.system.defaultTheme', 'tests-theme');
+
+        Schema::defaultStringLength(191);
     }
 
     protected function defineDatabaseMigrations()
