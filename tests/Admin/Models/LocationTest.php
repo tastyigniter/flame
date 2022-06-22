@@ -3,7 +3,6 @@
 namespace Tests\Admin\Models;
 
 use Igniter\Admin\Models\Location;
-use Illuminate\Support\Arr;
 
 beforeEach(function () {
     Location::query()->delete();
@@ -58,14 +57,14 @@ it('should be able to get and set a location option', function () {
     $location = Location::factory()->make();
     $location->save();
 
-    $location->setOption('test_option', TRUE);
+    $location->setOption('test_option', true);
 
     $this->assertNotNull($location->getOption('test_option'));
 });
 
 it('should create a latitude and longitude for the location when requested and address data is provided', function () {
     $location = Location::factory()->make();
-    $location->setOption('auto_lat_lng', TRUE);
+    $location->setOption('auto_lat_lng', true);
     $location->location_address_1 = '53 Church Road';
     $location->location_city = 'London';
     $location->location_postcode = 'SE19 2TJ';
@@ -91,11 +90,11 @@ it('should fail to create a location with a duplicate slug', function () {
 
 it('should filter locations by status', function () {
     $location1 = Location::factory()->make();
-    $location1->location_status = TRUE;
+    $location1->location_status = true;
     $location1->save();
 
     $location2 = Location::factory()->make();
-    $location2->location_status = FALSE;
+    $location2->location_status = false;
     $location2->save();
 
     $locations = Location::query()->isEnabled();
@@ -106,14 +105,14 @@ it('should filter locations by status', function () {
 it('should filter locations by offer delivery', function () {
     $location1 = Location::factory()->make();
     $location1->save();
-    $location1->setOption('offer_delivery', TRUE);
+    $location1->setOption('offer_delivery', true);
 
     $location2 = Location::factory()->make();
     $location2->save();
-    $location2->setOption('offer_delivery', FALSE);
+    $location2->setOption('offer_delivery', false);
 
     $locations = Location::query()->listFrontEnd([
-        'hasDelivery' => TRUE,
+        'hasDelivery' => true,
         'pageLimit' => null,
     ]);
 
@@ -123,14 +122,14 @@ it('should filter locations by offer delivery', function () {
 it('should filter locations by offer collection', function () {
     $location1 = Location::factory()->make();
     $location1->save();
-    $location1->setOption('offer_collection', FALSE);
+    $location1->setOption('offer_collection', false);
 
     $location2 = Location::factory()->make();
     $location2->save();
-    $location2->setOption('offer_collection', TRUE);
+    $location2->setOption('offer_collection', true);
 
     $locations = Location::query()->listFrontEnd([
-        'hasCollection' => TRUE,
+        'hasCollection' => true,
         'pageLimit' => null,
     ]);
 
@@ -147,7 +146,7 @@ it('should sort locations alphabetically by name ascending', function () {
     $location2->save();
 
     $locations = Location::query()->listFrontEnd([
-        'hasCollection' => TRUE,
+        'hasCollection' => true,
         'pageLimit' => null,
         'sort' => 'location_name asc',
     ]);
@@ -165,7 +164,7 @@ it('should sort locations alphabetically by name descending', function () {
     $location2->save();
 
     $locations = Location::query()->listFrontEnd([
-        'hasCollection' => TRUE,
+        'hasCollection' => true,
         'pageLimit' => null,
         'sort' => 'location_name desc',
     ]);
