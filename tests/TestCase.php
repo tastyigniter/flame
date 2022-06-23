@@ -4,6 +4,7 @@ namespace Tests;
 
 use Igniter\Flame\Igniter;
 use Igniter\Main\Classes\ThemeManager;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 abstract class TestCase extends \Orchestra\Testbench\TestCase
@@ -40,6 +41,14 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
         $this->artisan('igniter:up')->run();
     }
 
+    protected function defineDatabaseSeeders()
+    {
+        $this->truncate();
+        $this->artisan('db:seed', [
+            '--class' => '\Igniter\System\Database\Seeds\DatabaseSeeder'
+        ])->run();
+    }
+
     protected function resolveApplicationConfiguration($app)
     {
         parent::resolveApplicationConfiguration($app);
@@ -51,5 +60,19 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
         foreach ($configs as $config) {
             $app['config']->set("igniter.$config", require(__DIR__."/../config/{$config}.php"));
         }
+    }
+
+    private function truncate()
+    {
+        Schema::disableForeignKeyConstraints();
+        $tableNames = Schema::getConnection()->getDoctrineSchemaManager()->listTableNames();
+        foreach ($tableNames as $name) {
+            //if you don't want to truncate migrations
+            if ($name == 'migrations') {
+                continue;
+            }
+            DB::table($name)->truncate();
+        }
+        Schema::enableForeignKeyConstraints();
     }
 }
