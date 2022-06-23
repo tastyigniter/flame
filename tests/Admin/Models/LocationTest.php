@@ -4,10 +4,6 @@ namespace Tests\Admin\Models;
 
 use Igniter\Admin\Models\Location;
 
-beforeEach(function () {
-    Location::query()->delete();
-});
-
 it('should fail to create a location when no name is provided', function () {
     try {
         $location = Location::factory()->make();
