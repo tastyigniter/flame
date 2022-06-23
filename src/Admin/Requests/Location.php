@@ -46,7 +46,7 @@ class Location extends FormRequest
             'location_lng' => ['sometimes', 'numeric'],
             'description' => ['max:3028'],
             'location_status' => ['boolean'],
-            'permalink_slug' => ['alpha_dash', 'max:255'],
+            'permalink_slug' => ['alpha_dash', 'max:255', 'unique:locations'],
             'options.gallery.title' => ['string', 'max:128'],
             'options.gallery.description' => ['string', 'max:255'],
             'delivery_areas' => ['array'],

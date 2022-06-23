@@ -135,7 +135,7 @@ class Geocoder extends Manager implements Contracts\GeocoderInterface
      */
     public function getDefaultDriver()
     {
-        return $this->container['config']['geocoder.default'] ?? 'nominatim';
+        return $this->container['config']['igniter.geocoder.default'] ?? 'nominatim';
     }
 
     protected function createProvider($name)
@@ -154,21 +154,21 @@ class Geocoder extends Manager implements Contracts\GeocoderInterface
 
     protected function createChainProvider()
     {
-        $providers = $this->container['config']['geocoder.providers'];
+        $providers = $this->container['config']['igniter.geocoder.providers'];
 
         return new Provider\ChainProvider($this, $providers);
     }
 
     protected function createNominatimProvider()
     {
-        $config = $this->container['config']['geocoder.providers.nominatim'];
+        $config = $this->container['config']['igniter.geocoder.providers.nominatim'];
 
         return new Provider\NominatimProvider(new Client, $config);
     }
 
     protected function createGoogleProvider()
     {
-        $config = $this->container['config']['geocoder.providers.google'];
+        $config = $this->container['config']['igniter.geocoder.providers.google'];
 
         return new Provider\GoogleProvider(new Client, $config);
     }

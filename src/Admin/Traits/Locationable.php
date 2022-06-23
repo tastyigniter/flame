@@ -5,6 +5,7 @@ namespace Igniter\Admin\Traits;
 use Igniter\Admin\Facades\AdminAuth;
 use Igniter\Admin\Facades\AdminLocation;
 use Igniter\Flame\Exception\ApplicationException;
+use Igniter\Flame\Igniter;
 
 trait Locationable
 {

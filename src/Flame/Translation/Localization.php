@@ -139,6 +139,6 @@ class Localization
 
     protected function getConfig(string $string)
     {
-        return $this->config['localization.'.$string];
+        return $this->config['igniter.localization.'.$string];
     }
 }
