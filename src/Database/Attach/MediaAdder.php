@@ -120,7 +120,7 @@ class MediaAdder
         if ($file instanceof UploadedFile) {
             $media->file_name = $file->getClientOriginalName();
             $media->mime_type = $file->getMimeType();
-            $media->size = $file->getClientSize();
+            $media->size = $file->getSize();
             $this->pathToFile = $file->getPath().DIRECTORY_SEPARATOR.$file->getFilename();
         }
 
