@@ -457,8 +457,10 @@ class WorkingSchedule
                 return true;
         }
 
-        if (!empty($this->exceptions))
-            return true;
+        foreach ($this->exceptions as $exception) {
+            if (!$exception->isEmpty())
+                return true;
+        }
 
         return false;
     }
