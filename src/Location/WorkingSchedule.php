@@ -333,7 +333,7 @@ class WorkingSchedule
         $datePeriod = $this->createPeriodForDays($dateTime);
 
         foreach ($datePeriod ?: [] as $date) {
-            $dateString = $date->toDateString();
+            $dateString = Carbon::instance($date)->toDateString();
 
             $periodTimeslot = $this->forDate($date)
                 ->timeslot($date, $interval, $leadTime)
@@ -484,7 +484,7 @@ class WorkingSchedule
 
     protected function isBetweenPeriodForDays($timeslot)
     {
-        return $timeslot->between(
+        return Carbon::instance($timeslot)->between(
             now()->startOfDay()->addDays($this->minDays),
             now()->endOfDay()->addDays($this->maxDays + 2)
         );
