@@ -486,6 +486,7 @@ class Location implements Contracts\LocationInterface
         $this->countryName = $data['countryName'];
         $this->countryCode = $data['countryCode'];
         $this->timezone = $data['timezone'];
+        $this->formattedAddress = $data['formattedAddress'];
     }
 
     /**
@@ -539,6 +540,7 @@ class Location implements Contracts\LocationInterface
             'countryName' => null,
             'countryCode' => null,
             'timezone' => null,
+            'formattedAddress' => null,
         ];
 
         return array_merge($defaults, $data);
