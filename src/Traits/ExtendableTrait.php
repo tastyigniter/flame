@@ -78,7 +78,7 @@ trait ExtendableTrait
             throw new Exception(sprintf('Class %s contains an invalid $implement value', get_class($this)));
         }
 
-        foreach ($uses as $use) {
+        foreach (array_unique($uses) as $use) {
             $useClass = $this->extensionNormalizeClassName($use);
 
             // Soft implement
