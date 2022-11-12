@@ -221,8 +221,17 @@ class Filesystem extends IlluminateFilesystem
         }
 
         $_path = substr($path, 1);
+        if (!is_array($this->pathSymbols[$firstChar]))
+            return $this->pathSymbols[$firstChar].$_path;
 
-        return $this->pathSymbols[$firstChar].$_path;
+        foreach ($this->pathSymbols[$firstChar] as $prefix) {
+            // For cases where we have a blade view path without the file extension,
+            // we can symbolize if the directory exists within a path symbol
+            if (file_exists($prefix.$_path) || file_exists($prefix.$_path.'.blade.php'))
+                return $prefix.$_path;
+        }
+
+        return $_path;
     }
 
     /**
@@ -238,6 +247,14 @@ class Filesystem extends IlluminateFilesystem
         }
 
         return false;
+    }
+
+    public function addPathSymbol($symbol, $path)
+    {
+        if (!is_array($this->pathSymbols[$symbol]))
+            $this->pathSymbols[$symbol] = [];
+
+        array_unshift($this->pathSymbols[$symbol], $path);
     }
 
     /**
