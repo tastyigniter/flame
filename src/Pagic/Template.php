@@ -120,7 +120,7 @@ class Template
         try {
             include $path;
         }
-        catch (Exception | Throwable $e) {
+        catch (Exception|Throwable $e) {
             $this->handleException($e, $obLevel);
         }
 
