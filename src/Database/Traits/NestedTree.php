@@ -69,6 +69,14 @@ trait NestedTree
         return $instance->setRelation('children', $relation);
     }
 
+    public static function fixBrokenTreeQuietly()
+    {
+        self::withoutEvents(function () {
+            if (self::isBroken())
+                self::fixTree();
+        });
+    }
+
     /**
      * {@inheritdoc}
      *
