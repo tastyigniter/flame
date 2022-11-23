@@ -51,6 +51,7 @@ return [
         'igniter',
         \Igniter\Admin\Http\Middleware\Authenticate::class,
         \Igniter\Admin\Http\Middleware\LogUserLastSeen::class,
+        \Igniter\Admin\Http\Middleware\PoweredBy::class,
     ],
 
     'coreNamespaces' => [

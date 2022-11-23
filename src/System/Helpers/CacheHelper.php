@@ -26,7 +26,7 @@ class CacheHelper
 
         self::clearCombiner();
 
-        self::clearMeta();
+        self::clearCompiled();
     }
 
     public static function clearView()

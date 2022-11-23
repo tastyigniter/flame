@@ -75,6 +75,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Send the Powered-By Header
+    |--------------------------------------------------------------------------
+    |
+    | Websites like builtwith.com use the X-Powered-By header to determine
+    | what technologies are used on a particular site. By default, we'll
+    | send this header, but you are absolutely allowed to disable it.
+    |
+    */
+
+    'sendPoweredByHeader' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Time to live for parsed Template Pages.
     |--------------------------------------------------------------------------
     |
