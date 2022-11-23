@@ -129,6 +129,11 @@ class AbstractLocation extends Model implements LocationInterface
         return (int)$this->getOption($orderType.'_cancellation_timeout', 0);
     }
 
+    public function getMinimumOrderTotal($orderType)
+    {
+        return $this->getOption($orderType.'_min_order_amount', 0);
+    }
+
     public function deliveryMinutes()
     {
         return (int)$this->getOption('delivery_lead_time', 15);
@@ -161,6 +166,13 @@ class AbstractLocation extends Model implements LocationInterface
         $orderType = $orderType ?: static::DELIVERY;
 
         return (int)$this->getOption("future_orders.{$orderType}_days", 0);
+    }
+
+    public function minimumFutureOrderDays($orderType = null)
+    {
+        $orderType = $orderType ?: static::DELIVERY;
+
+        return (int)$this->getOption("future_orders.min_{$orderType}_days", 0);
     }
 
     public function availableOrderTypes()
