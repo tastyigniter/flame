@@ -4,8 +4,8 @@ namespace Igniter\System\Http\Controllers;
 
 use Igniter\Admin\Facades\AdminMenu;
 use Igniter\Admin\Facades\Template;
-use Igniter\Flame\Support\Facades\File;
 use Igniter\Flame\Support\LogViewer;
+use Illuminate\Support\Facades\File;
 
 class SystemLogs extends \Igniter\Admin\Classes\AdminController
 {

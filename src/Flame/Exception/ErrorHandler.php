@@ -69,7 +69,7 @@ class ErrorHandler
          *         }
          *     });
          */
-        if (Event::fire('exception.beforeReport', [$e], true) === false)
+        if (Event::dispatch('exception.beforeReport', [$e], true) === false)
             return;
 
         if ($this->shouldntReport($e))
@@ -85,7 +85,7 @@ class ErrorHandler
          *         app('sentry')->captureException($exception);
          *     });
          */
-        Event::fire('exception.report', [$e]);
+        Event::dispatch('exception.report', [$e]);
     }
 
     /**
@@ -102,7 +102,7 @@ class ErrorHandler
 
         $statusCode = $this->getStatusCode($e);
 
-        if ($event = Event::fire('exception.beforeRender', [$e, $statusCode, $request], true)) {
+        if ($event = Event::dispatch('exception.beforeRender', [$e, $statusCode, $request], true)) {
             return Response::make($event, $statusCode);
         }
     }

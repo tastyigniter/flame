@@ -5,7 +5,7 @@ namespace Igniter\Flame\Location\Models;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Geolite\Contracts\CoordinatesInterface;
 use Igniter\Flame\Location\Contracts\LocationInterface;
-use Igniter\Flame\Location\OrderTypes;
+use Igniter\Local\Classes\OrderTypes;
 use Illuminate\Support\Facades\DB;
 
 /**

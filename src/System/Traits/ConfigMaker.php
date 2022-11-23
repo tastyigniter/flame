@@ -3,7 +3,7 @@
 namespace Igniter\System\Traits;
 
 use Igniter\Flame\Exception\SystemException;
-use Igniter\Flame\Support\Facades\File;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Lang;
 
 trait ConfigMaker
@@ -59,7 +59,6 @@ trait ConfigMaker
         }
         // Process config from file contents
         else {
-
             $configFile = $this->getConfigPath($configFile.$this->configFileExtension);
 
             if (!File::isFile($configFile)) {

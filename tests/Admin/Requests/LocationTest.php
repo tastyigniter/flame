@@ -41,7 +41,7 @@ it('has max characters rule for inputs', function () {
 
     expect('max:255')->toBeIn(array_get((new Location)->rules(), 'permalink_slug'));
 
-    expect('max:128')->toBeIn(array_get((new Location)->rules(), 'gallery.title'));
+    expect('max:128')->toBeIn(array_get((new Location)->rules(), 'options.gallery.title'));
 
-    expect('max:255')->toBeIn(array_get((new Location)->rules(), 'gallery.description'));
+    expect('max:255')->toBeIn(array_get((new Location)->rules(), 'options.gallery.description'));
 });

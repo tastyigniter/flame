@@ -2,7 +2,7 @@
 
 namespace Igniter\System\Classes;
 
-use Igniter\Flame\Support\Facades\File;
+use Illuminate\Support\Facades\File;
 
 /**
  * ComposerManager Class

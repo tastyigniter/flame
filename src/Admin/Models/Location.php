@@ -35,6 +35,8 @@ class Location extends Model implements LocationInterface
 
     const OPENING = 'opening';
 
+    const RESERVATION = 'reservation';
+
     const DELIVERY = 'delivery';
 
     const COLLECTION = 'collection';

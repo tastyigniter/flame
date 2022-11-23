@@ -3,7 +3,7 @@
 namespace Igniter\Admin\Traits;
 
 use Igniter\Flame\Geolite\Contracts\CoordinatesInterface;
-use Igniter\Flame\Location\OrderTypes;
+use Igniter\Local\Classes\OrderTypes;
 
 trait LocationHelpers
 {

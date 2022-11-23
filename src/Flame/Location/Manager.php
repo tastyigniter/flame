@@ -17,7 +17,7 @@ abstract class Manager
     protected $sessionKey = 'local_info';
 
     /**
-     * @var \Igniter\Admin\Models\Location
+     * @var \Igniter\Flame\Location\Contracts\LocationInterface
      */
     protected $model;
 
@@ -153,7 +153,7 @@ abstract class Manager
 
     /**
      * Creates a new instance of the location model
-     * @return \Igniter\Admin\Models\Location
+     * @return \Igniter\Flame\Location\Contracts\LocationInterface
      */
     public function createLocationModel()
     {
@@ -178,7 +178,7 @@ abstract class Manager
     /**
      * Extend the query used for finding the location.
      *
-     * @param \Igniter\Flame\Database\Builder $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
      *
      * @return void
      */
@@ -191,7 +191,7 @@ abstract class Manager
      *
      * @param mixed $identifier
      *
-     * @return \Igniter\Admin\Models\Location|null
+     * @return \Illuminate\Database\Eloquent\Model|\Igniter\Flame\Location\Contracts\LocationInterface|null
      */
     public function getById($identifier)
     {
@@ -206,7 +206,7 @@ abstract class Manager
      *
      * @param string $slug
      *
-     * @return \Igniter\Flame\Location\Contracts\LocationInterface|null
+     * @return \Illuminate\Database\Eloquent\Model|\Igniter\Flame\Location\Contracts\LocationInterface|null
      */
     public function getBySlug($slug)
     {

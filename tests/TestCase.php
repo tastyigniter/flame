@@ -42,7 +42,7 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
         parent::resolveApplicationConfiguration($app);
 
         $configs = [
-            'auth', 'cart', 'currency', 'geocoder', 'system',
+            'auth', 'currency', 'geocoder', 'system',
         ];
 
         foreach ($configs as $config) {

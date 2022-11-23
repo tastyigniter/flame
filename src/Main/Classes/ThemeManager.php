@@ -4,10 +4,10 @@ namespace Igniter\Main\Classes;
 
 use Igniter\Flame\Exception\SystemException;
 use Igniter\Flame\Igniter;
-use Igniter\Flame\Support\Facades\File;
 use Igniter\Main\Events\Theme\GetActiveTheme;
 use Igniter\System\Classes\PackageManifest;
 use Igniter\System\Libraries\Assets;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Lang;
 use ZipArchive;
 

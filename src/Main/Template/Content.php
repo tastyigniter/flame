@@ -3,7 +3,7 @@
 namespace Igniter\Main\Template;
 
 use Igniter\Flame\Mail\Markdown;
-use Igniter\Flame\Support\Facades\File;
+use Illuminate\Support\Facades\File;
 
 class Content extends Model
 {

@@ -2,9 +2,9 @@
 
 namespace Igniter\Flame\Pagic\Cache;
 
-use Igniter\Flame\Support\Facades\File;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\File;
 use RuntimeException;
 
 class FileSystem

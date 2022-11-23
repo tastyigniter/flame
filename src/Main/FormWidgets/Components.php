@@ -7,9 +7,9 @@ use Exception;
 use Igniter\Admin\Classes\BaseFormWidget;
 use Igniter\Admin\Traits\ValidatesForm;
 use Igniter\Flame\Exception\ApplicationException;
-use Igniter\Flame\Support\Facades\File;
 use Igniter\Main\Classes\ThemeManager;
 use Igniter\System\Classes\ComponentManager;
+use Illuminate\Support\Facades\File;
 
 /**
  * Components

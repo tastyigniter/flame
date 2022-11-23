@@ -8,7 +8,7 @@ use Igniter\Admin\Models\WorkingHour;
 use Igniter\Admin\Traits\ValidatesForm;
 use Igniter\Admin\Widgets\Form;
 use Igniter\Flame\Exception\ApplicationException;
-use Igniter\Flame\Location\OrderTypes;
+use Igniter\Local\Classes\OrderTypes;
 use Illuminate\Support\Facades\DB;
 
 class ScheduleEditor extends BaseFormWidget

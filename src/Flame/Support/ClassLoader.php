@@ -4,6 +4,7 @@ namespace Igniter\Flame\Support;
 
 use Exception;
 use Igniter\Flame\Filesystem\Filesystem;
+use Illuminate\Support\Str;
 use Throwable;
 
 /**
@@ -469,7 +470,7 @@ class ClassLoader
                     $this->manifest = [];
                 }
             }
-            catch (Exception|Throwable $ex) {
+            catch (Exception | Throwable $ex) {
                 $this->manifest = [];
             }
         }

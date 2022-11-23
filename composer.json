@@ -55,11 +55,10 @@
   },
   "autoload": {
     "files": [
-      "src/Flame/Support/Helpers/assets_helper.php",
-      "src/Flame/Support/Helpers/country_helper.php",
-      "src/Flame/Support/Helpers/support_helper.php",
-      "src/Flame/Support/Helpers/template_helper.php",
-      "src/Flame/Support/Helpers/theme_helper.php",
+      "src/Flame/Support/Helpers/assets.php",
+      "src/Flame/Support/Helpers/country.php",
+      "src/Flame/Support/Helpers/template.php",
+      "src/Flame/Support/Helpers/theme.php",
       "src/Flame/Support/Helpers/form.php",
       "src/Flame/Support/Helpers/helpers.php"
     ],

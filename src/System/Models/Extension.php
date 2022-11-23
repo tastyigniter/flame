@@ -5,10 +5,10 @@ namespace Igniter\System\Models;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Flame\Mail\Markdown;
-use Igniter\Flame\Support\Facades\File;
 use Igniter\Main\Classes\ThemeManager;
 use Igniter\System\Classes\ExtensionManager;
 use Igniter\System\Classes\PackageManifest;
+use Illuminate\Support\Facades\File;
 
 /**
  * Extension Model Class

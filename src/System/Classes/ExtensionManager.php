@@ -5,8 +5,8 @@ namespace Igniter\System\Classes;
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Flame\Exception\SystemException;
 use Igniter\Flame\Igniter;
-use Igniter\Flame\Support\Facades\File;
 use Igniter\System\Models\Extension;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\View;
 use ZipArchive;
@@ -429,7 +429,7 @@ class ExtensionManager
 
         // Register resources path symbol
         if (File::isDirectory($resourcesPath = $extensionPath.'/resources') ||
-            File::isDirectory($resourcesPath = $extensionPath.'/assets')) {
+            File::isDirectory($resourcesPath = $extensionPath)) {
             Igniter::loadResourcesFrom($resourcesPath, $extensionCode);
         }
 

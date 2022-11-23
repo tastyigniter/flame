@@ -4,8 +4,8 @@ namespace Igniter\Main\Template;
 
 use Igniter\Flame\Pagic\Contracts\TemplateSource;
 use Igniter\Flame\Support\Extendable;
-use Igniter\Flame\Support\Facades\File;
 use Igniter\System\Classes\BaseComponent;
+use Illuminate\Support\Facades\File;
 
 class ComponentPartial extends Extendable implements TemplateSource
 {

@@ -4,8 +4,8 @@ namespace Igniter\Admin\Classes;
 
 use Igniter\Admin\Http\Controllers\Login;
 use Igniter\Flame\Igniter;
-use Igniter\Flame\Support\Facades\File;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use ReflectionClass;
 

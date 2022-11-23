@@ -20,14 +20,11 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         \Igniter\Flame\Auth\AuthServiceProvider::class,
         \Igniter\Flame\Currency\CurrencyServiceProvider::class,
         \Igniter\Flame\Providers\ConsoleSupportServiceProvider::class,
-        \Igniter\Flame\Cart\CartServiceProvider::class,
         \Igniter\Flame\Database\DatabaseServiceProvider::class,
-        \Igniter\Flame\Events\EventServiceProvider::class,
         \Igniter\Flame\Filesystem\FilesystemServiceProvider::class,
         \Igniter\Flame\Flash\FlashServiceProvider::class,
         \Igniter\Flame\Geolite\GeoliteServiceProvider::class,
         \Igniter\Flame\Html\HtmlServiceProvider::class,
-        \Igniter\Flame\Location\LocationServiceProvider::class,
         \Igniter\Flame\Mail\MailServiceProvider::class,
         \Igniter\Flame\Providers\MacroServiceProvider::class,
         \Igniter\Flame\Pagic\PagicServiceProvider::class,
@@ -42,7 +39,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     ];
 
     protected $configFiles = [
-        'auth', 'cart', 'currency', 'geocoder', 'routes', 'system',
+        'auth', 'currency', 'geocoder', 'routes', 'system',
     ];
 
     public function register()
@@ -98,10 +95,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     protected function registerSingletons()
     {
-        $this->app->singleton('string', function () {
-            return new \Igniter\Flame\Support\Str;
-        });
-
         $this->app->singleton(PackageManifest::class, function () {
             return new PackageManifest(
                 new Filesystem,
@@ -129,14 +122,12 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $loader = AliasLoader::getInstance();
 
         foreach ([
-            'File' => \Igniter\Flame\Support\Facades\File::class,
             'Flash' => \Igniter\Flame\Flash\Facades\Flash::class,
             'Form' => \Igniter\Flame\Html\FormFacade::class,
             'Html' => \Igniter\Flame\Html\HtmlFacade::class,
             'Model' => \Igniter\Flame\Database\Model::class,
             'Parameter' => \Igniter\Flame\Setting\Facades\Parameter::class,
             'Setting' => \Igniter\Flame\Setting\Facades\Setting::class,
-            'Str' => \Igniter\Flame\Support\Str::class,
             'SystemException' => \Igniter\Flame\Exception\SystemException::class,
             'ApplicationException' => \Igniter\Flame\Exception\ApplicationException::class,
             'AjaxException' => \Igniter\Flame\Exception\AjaxException::class,

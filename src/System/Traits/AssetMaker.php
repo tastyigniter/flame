@@ -2,8 +2,8 @@
 
 namespace Igniter\System\Traits;
 
-use Igniter\Flame\Support\Facades\File;
 use Igniter\System\Facades\Assets;
+use Illuminate\Support\Facades\File;
 
 trait AssetMaker
 {

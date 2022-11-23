@@ -3,10 +3,10 @@
 namespace Igniter\Main\Template;
 
 use Igniter\Flame\Pagic\Contracts\TemplateSource;
-use Igniter\Flame\Support\Facades\File;
 use Igniter\Main\Classes\Theme;
 use Igniter\Main\Classes\ThemeManager;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\File;
 
 /**
  * @property \Igniter\Main\Classes\Theme theme The theme this model belongs to

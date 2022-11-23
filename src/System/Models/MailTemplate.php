@@ -5,9 +5,9 @@ namespace Igniter\System\Models;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Exception\SystemException;
 use Igniter\Flame\Mail\MailParser;
-use Igniter\Flame\Support\Facades\File;
 use Igniter\System\Classes\MailManager;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\View;
 
 /**

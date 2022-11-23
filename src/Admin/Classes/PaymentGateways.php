@@ -3,9 +3,9 @@
 namespace Igniter\Admin\Classes;
 
 use Igniter\Admin\Models\Payment;
-use Igniter\Flame\Support\Facades\File;
 use Igniter\Main\Classes\ThemeManager;
 use Igniter\System\Classes\ExtensionManager;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 
 /**

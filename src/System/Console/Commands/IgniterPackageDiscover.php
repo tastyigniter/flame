@@ -26,13 +26,14 @@ class IgniterPackageDiscover extends Command
      */
     public function handle(PackageManifest $manifest)
     {
+        $this->components->info('Discovering addons');
+
         $manifest->build();
 
-        foreach (array_keys($manifest->packages()) as $package) {
-            $this->line("Discovered Addon: <info>{$package}</info>");
-        }
-
-        $this->info('Addon manifest generated successfully.');
+        collect($manifest->packages())
+            ->keys()
+            ->each(fn($description) => $this->components->task($description))
+            ->whenNotEmpty(fn() => $this->newLine());
     }
 
     /**

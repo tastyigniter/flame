@@ -6,13 +6,13 @@ use Carbon\Carbon;
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Flame\Igniter;
 use Igniter\Flame\Mail\Markdown;
-use Igniter\Flame\Support\Facades\File;
 use Igniter\Main\Classes\ThemeManager;
 use Igniter\Main\Models\Theme;
 use Igniter\System\Models\Extension;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use ZipArchive;
 

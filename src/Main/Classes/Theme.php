@@ -5,7 +5,6 @@ namespace Igniter\Main\Classes;
 use Exception;
 use Igniter\Flame\Igniter;
 use Igniter\Flame\Pagic\Source\FileSource;
-use Igniter\Flame\Support\Facades\File;
 use Igniter\Main\Events\Theme\ExtendFormConfig;
 use Igniter\Main\Models\Theme as ThemeModel;
 use Igniter\Main\Template\Content as ContentTemplate;
@@ -13,6 +12,7 @@ use Igniter\Main\Template\Layout as LayoutTemplate;
 use Igniter\Main\Template\Page as PageTemplate;
 use Igniter\Main\Template\Partial as PartialTemplate;
 use Igniter\System\Helpers\SystemHelper;
+use Illuminate\Support\Facades\File;
 
 class Theme
 {

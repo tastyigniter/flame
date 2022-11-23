@@ -2,7 +2,7 @@
 
 namespace Igniter\Flame\Pagic;
 
-use Igniter\Flame\Support\Facades\File;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\View;
 use LogicException;
 

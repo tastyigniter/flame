@@ -2,8 +2,8 @@
 
 namespace Igniter\Flame\Providers;
 
-use Igniter\Flame\Support\Str;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 
 class UrlServiceProvider extends ServiceProvider
 {

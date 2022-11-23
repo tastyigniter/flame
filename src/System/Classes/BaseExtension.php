@@ -3,8 +3,8 @@
 namespace Igniter\System\Classes;
 
 use Igniter\Flame\Exception\SystemException;
-use Igniter\Flame\Support\Facades\File;
 use Igniter\System\Helpers\SystemHelper;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 
 /**

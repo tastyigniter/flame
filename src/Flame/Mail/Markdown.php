@@ -2,7 +2,7 @@
 
 namespace Igniter\Flame\Mail;
 
-use Igniter\Flame\Support\Facades\File;
+use Illuminate\Support\Facades\File;
 
 class Markdown extends \Illuminate\Mail\Markdown
 {

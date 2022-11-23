@@ -6,8 +6,8 @@ use Carbon\Carbon;
 use Exception;
 use Igniter\Admin\Classes\ScheduleItem;
 use Igniter\Admin\Events\Location\ScheduleCreated;
-use Igniter\Flame\Location\OrderTypes;
 use Igniter\Flame\Location\WorkingSchedule;
+use Igniter\Local\Classes\OrderTypes;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 

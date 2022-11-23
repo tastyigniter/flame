@@ -2,10 +2,10 @@
 
 namespace Igniter\Main\Classes;
 
-use Igniter\Flame\Support\Facades\File;
 use Igniter\Flame\Support\RouterHelper;
 use Igniter\Main\Template\Page as PageTemplate;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Lang;
 
 /**

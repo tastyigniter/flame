@@ -5,7 +5,6 @@ namespace Igniter\Main\Http\Controllers;
 use Exception;
 use Igniter\Admin\Facades\AdminMenu;
 use Igniter\Admin\Facades\Template;
-use Igniter\Flame\Support\Facades\File;
 use Igniter\Main\Classes\ThemeManager;
 use Igniter\Main\Models\Theme;
 use Igniter\System\Facades\Assets;
@@ -14,6 +13,7 @@ use Igniter\System\Libraries\Assets as AssetsManager;
 use Igniter\System\Traits\ManagesUpdates;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 
 class Themes extends \Igniter\Admin\Classes\AdminController

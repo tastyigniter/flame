@@ -3,7 +3,7 @@
 namespace Igniter\Flame\Exception;
 
 use Exception;
-use Igniter\Flame\Support\Facades\File;
+use Illuminate\Support\Facades\File;
 use Throwable;
 
 /**
