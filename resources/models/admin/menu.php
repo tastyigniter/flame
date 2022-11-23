@@ -1,4 +1,5 @@
 <?php
+
 $config['list']['filter'] = [
     'search' => [
         'prompt' => 'lang:igniter::admin.menus.text_filter_search',
@@ -94,7 +95,7 @@ $config['list']['columns'] = [
         'relation' => 'categories',
         'select' => 'name',
     ],
-    'locations' => [
+    'location_name' => [
         'label' => 'lang:igniter::admin.column_location',
         'type' => 'text',
         'relation' => 'locations',
@@ -262,6 +263,7 @@ $config['form']['tabs'] = [
             'tab' => 'lang:igniter::admin.menus.text_tab_menu_option',
             'type' => 'menuoptioneditor',
             'options' => [Igniter\Admin\Models\MenuOption::class, 'getRecordEditorOptions'],
+            'popupSize' => 'modal-xl',
             'form' => 'menuitemoption',
             'context' => ['edit', 'preview'],
         ],

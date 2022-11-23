@@ -1,4 +1,5 @@
 <?php
+
 $config['list']['filter'] = [
     'search' => [
         'prompt' => 'lang:igniter::admin.reservations.text_filter_search',
@@ -59,6 +60,7 @@ $config['list']['bulkActions'] = [
         'label' => 'lang:igniter::admin.button_delete',
         'class' => 'btn btn-light text-danger',
         'data-request-confirm' => 'lang:igniter::admin.alert_warning_confirm',
+        'permissions' => 'Admin.DeleteReservations',
     ],
 ];
 
@@ -119,6 +121,10 @@ $config['list']['columns'] = [
     'reserve_date' => [
         'label' => 'lang:igniter::admin.reservations.column_date',
         'type' => 'date',
+    ],
+    'comment' => [
+        'label' => 'lang:admin::lang.statuses.label_comment',
+        'invisible' => true,
     ],
 ];
 
@@ -185,6 +191,33 @@ $config['form']['fields'] = [
 $config['form']['tabs'] = [
     'defaultTab' => 'lang:igniter::admin.reservations.text_tab_general',
     'fields' => [
+        'guest_num' => [
+            'label' => 'lang:admin::lang.reservations.label_guest',
+            'type' => 'number',
+            'span' => 'left',
+            'cssClass' => 'flex-width',
+        ],
+        'duration' => [
+            'label' => 'lang:admin::lang.reservations.label_reservation_duration',
+            'type' => 'number',
+            'span' => 'left',
+            'cssClass' => 'flex-width',
+            'comment' => 'lang:admin::lang.reservations.help_reservation_duration',
+        ],
+        'reserve_date' => [
+            'label' => 'lang:admin::lang.reservations.label_reservation_date',
+            'type' => 'datepicker',
+            'mode' => 'date',
+            'span' => 'right',
+            'cssClass' => 'flex-width',
+        ],
+        'reserve_time' => [
+            'label' => 'lang:admin::lang.reservations.label_reservation_time',
+            'type' => 'datepicker',
+            'mode' => 'time',
+            'span' => 'right',
+            'cssClass' => 'flex-width',
+        ],
         'first_name' => [
             'label' => 'lang:igniter::admin.reservations.label_first_name',
             'type' => 'text',
@@ -205,20 +238,6 @@ $config['form']['tabs'] = [
             'type' => 'text',
             'span' => 'right',
         ],
-        'reserve_date' => [
-            'label' => 'lang:igniter::admin.reservations.label_reservation_date',
-            'type' => 'datepicker',
-            'mode' => 'date',
-            'span' => 'left',
-            'cssClass' => 'flex-width',
-        ],
-        'reserve_time' => [
-            'label' => 'lang:igniter::admin.reservations.label_reservation_time',
-            'type' => 'datepicker',
-            'mode' => 'time',
-            'span' => 'left',
-            'cssClass' => 'flex-width',
-        ],
         'location_id' => [
             'label' => 'lang:igniter::admin.reservations.text_tab_restaurant',
             'type' => 'relation',
@@ -226,12 +245,6 @@ $config['form']['tabs'] = [
             'nameFrom' => 'location_name',
             'span' => 'right',
             'placeholder' => 'lang:igniter::admin.text_please_select',
-        ],
-        'guest_num' => [
-            'label' => 'lang:igniter::admin.reservations.label_guest',
-            'type' => 'number',
-            'span' => 'left',
-            'cssClass' => 'flex-width',
         ],
         'tables' => [
             'label' => 'lang:igniter::admin.reservations.label_table_name',
@@ -241,16 +254,10 @@ $config['form']['tabs'] = [
             'span' => 'left',
             'cssClass' => 'flex-width',
         ],
-        'duration' => [
-            'label' => 'lang:igniter::admin.reservations.label_reservation_duration',
-            'type' => 'number',
-            'span' => 'right',
-            'comment' => 'lang:igniter::admin.reservations.help_reservation_duration',
-        ],
         'notify' => [
             'label' => 'lang:igniter::admin.reservations.label_send_confirmation',
             'type' => 'switch',
-            'span' => 'left',
+            'span' => 'right',
             'default' => 1,
         ],
         'comment' => [

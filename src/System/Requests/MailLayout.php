@@ -21,7 +21,7 @@ class MailLayout extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'between:2,32'],
-            'code' => ['required', 'alpha_dash'],
+            'code' => ['sometimes', 'required', 'regex:/^[a-z-_\.\:]+$/i', 'unique:mail_layouts'],
             'layout' => ['string'],
             'layout_css' => ['string'],
             'plain_layout' => ['string'],

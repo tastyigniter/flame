@@ -114,7 +114,7 @@ class User extends AuthUserModel
 
     public function scopeWhereNotSuperUser($query)
     {
-        $query->where('super_user', '!=', 1);
+        $query->where('super_user', '!=', 1)->orWhereNull('super_user');
     }
 
     public function scopeWhereIsSuperUser($query)

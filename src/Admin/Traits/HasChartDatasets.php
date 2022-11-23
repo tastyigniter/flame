@@ -71,7 +71,7 @@ trait HasChartDatasets
         $dateRanges = $this->getDatePeriod($start, $end);
         $this->locationApplyScope($query);
 
-        return $this->getPointsArray($dateRanges, $query->pluck('y', 'x'));
+        return $this->getPointsArray($dateRanges, $query->get());
     }
 
     protected function getDatePeriod($start, $end)
@@ -86,7 +86,7 @@ trait HasChartDatasets
     protected function getPointsArray($dateRanges, Collection $result)
     {
         $points = [];
-        $keyedResult = $result->keyBy('x');
+        $keyedResult = $result->pluck('y', 'x');
         foreach ($dateRanges as $date) {
             $x = $date->format('Y-m-d');
             $points[] = [

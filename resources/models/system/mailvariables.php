@@ -37,6 +37,7 @@ return [
         '{{ $invoice_number }}' => 'igniter::system.mail_variables.text_invoice_number',
         '{{ $invoice_date }}' => 'igniter::system.mail_variables.text_invoice_date',
         '{{ $order_comment }}' => 'igniter::system.mail_variables.text_order_comment',
+        '{{ $location_logo }}' => 'system::lang.mail_variables.text_location_logo',
         '{{ $location_name }}' => 'igniter::system.mail_variables.text_location_name',
         '{{ $location_email }}' => 'igniter::system.mail_variables.text_location_email',
         '{{ $location_telephone }}' => 'igniter::system.mail_variables.text_location_telephone',

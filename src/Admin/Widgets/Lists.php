@@ -408,6 +408,10 @@ class Lists extends BaseWidget
             $records = $model->get();
         }
 
+        if ($event = $this->fireSystemEvent('admin.list.extendRecords', [&$records])) {
+            $records = $event;
+        }
+
         return $this->records = $records;
     }
 
@@ -1205,7 +1209,7 @@ class Lists extends BaseWidget
     {
         $this->fireSystemEvent('admin.list.extendBulkActions');
 
-        $allBulkActions = $this->makeBulkActionButtons($this->bulkActions);
+        $allBulkActions = $this->makeBulkActionButtons($this->bulkActions ?? []);
         $bulkActions = [];
 
         foreach ($allBulkActions as $actionCode => $buttonObj) {

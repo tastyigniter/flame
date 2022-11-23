@@ -43,6 +43,8 @@ abstract class BaseComponent extends Extendable
      */
     public $extensionIcon;
 
+    protected $path;
+
     /**
      * @var string Specifies the component directory name.
      */

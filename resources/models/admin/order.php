@@ -1,4 +1,5 @@
 <?php
+
 $config['list']['filter'] = [
     'search' => [
         'prompt' => 'lang:igniter::admin.orders.text_filter_search',
@@ -63,6 +64,7 @@ $config['list']['bulkActions'] = [
         'label' => 'lang:igniter::admin.button_delete',
         'class' => 'btn btn-light text-danger',
         'data-request-confirm' => 'lang:igniter::admin.alert_warning_confirm',
+        'permissions' => 'Admin.DeleteOrders',
     ],
 ];
 

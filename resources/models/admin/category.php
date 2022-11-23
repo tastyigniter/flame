@@ -1,4 +1,5 @@
 <?php
+
 $config['list']['filter'] = [
     'search' => [
         'prompt' => 'lang:igniter::admin.categories.text_filter_search',
@@ -76,7 +77,7 @@ $config['list']['columns'] = [
         'relation' => 'parent_cat',
         'select' => 'name',
     ],
-    'locations' => [
+    'location_name' => [
         'label' => 'lang:igniter::admin.column_location',
         'type' => 'text',
         'relation' => 'locations',

@@ -170,7 +170,7 @@ class IgniterInstall extends Command
             return $answer;
         });
         DatabaseSeeder::$password = $this->output->ask('Admin Password', '123456', function ($answer) {
-            if (!is_string($answer) || strlen($answer) < 6) {
+            if (!is_string($answer) || strlen($answer) < 6 || strlen($answer) > 32) {
                 throw new \RuntimeException('Please specify the administrator password, at least 6 characters');
             }
 

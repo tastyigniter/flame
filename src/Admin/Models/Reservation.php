@@ -66,6 +66,7 @@ class Reservation extends Model
 
     public $relation = [
         'belongsTo' => [
+            'customer' => 'Admin\Models\Customers_model',
             'related_table' => [\Igniter\Admin\Models\Table::class, 'foreignKey' => 'table_id'],
             'location' => \Igniter\Admin\Models\Location::class,
         ],
@@ -101,6 +102,10 @@ class Reservation extends Model
 
         if (array_key_exists('tables', $this->attributes)) {
             $this->addReservationTables((array)$this->attributes['tables']);
+        }
+
+        if ($this->location->getOption('auto_allocate_table', 1) && !$this->tables()->count()) {
+            $this->addReservationTables($this->getNextBookableTable()->pluck('table_id')->all());
         }
     }
 
@@ -250,7 +255,9 @@ class Reservation extends Model
 
     public function getTableNameAttribute()
     {
-        return $this->tables ? implode(', ', $this->tables->pluck('table_name')->all()) : null;
+        return ($this->tables && $this->tables->isNotEmpty())
+            ? implode(', ', $this->tables->pluck('name')->all())
+            : '';
     }
 
     public function setDurationAttribute($value)
@@ -312,7 +319,7 @@ class Reservation extends Model
 
         return [
             'id' => $this->getKey(),
-            'title' => $this->customer_name,
+            'title' => $this->table_name.' ('.$this->guest_num.')',
             'start' => $this->reservation_datetime->toIso8601String(),
             'end' => $this->reservation_end_datetime->toIso8601String(),
             'allDay' => $this->isReservedAllDay(),
@@ -397,6 +404,34 @@ class Reservation extends Model
         $this->tables()->sync($tableIds);
     }
 
+    /**
+     * @return \Illuminate\Support\Collection|null
+     */
+    public function getNextBookableTable()
+    {
+        $tables = $this->location->tables->where('table_status', 1);
+
+        $reserved = static::findReservedTables($this->location, $this->reservation_datetime);
+
+        $tables = $tables->diff($reserved)->sortBy('priority');
+
+        $result = collect();
+        $unseatedGuests = $this->guest_num;
+        foreach ($tables as $table) {
+            if ($table->min_capacity <= $this->guest_num && $table->max_capacity >= $this->guest_num)
+                return collect([$table]);
+
+            if ($table->is_joinable && $unseatedGuests >= $table->min_capacity) {
+                $result->push($table);
+                $unseatedGuests -= $table->max_capacity;
+                if ($unseatedGuests <= 0)
+                    break;
+            }
+        }
+
+        return $unseatedGuests > 0 ? collect() : $result;
+    }
+
     //
     // Mail
     //
@@ -424,6 +459,21 @@ class Reservation extends Model
         return $recipients;
     }
 
+    public function mailGetReplyTo($type)
+    {
+        $replyTo = [];
+        if (in_array($type, (array)setting('order_email', []))) {
+            switch ($type) {
+                case 'location':
+                case 'admin':
+                    $replyTo = [$this->email, $this->customer_name];
+                    break;
+            }
+        }
+
+        return $replyTo;
+    }
+
     /**
      * Return the order data to build mail template
      *
@@ -437,8 +487,8 @@ class Reservation extends Model
         $data['reservation'] = $model;
         $data['reservation_number'] = $model->reservation_id;
         $data['reservation_id'] = $model->reservation_id;
-        $data['reservation_time'] = Carbon::createFromTimeString($model->reserve_time)->format(lang('igniter::system.php.time_format'));
-        $data['reservation_date'] = $model->reserve_date->format(lang('igniter::system.php.date_format_long'));
+        $data['reservation_time'] = Carbon::createFromTimeString($model->reserve_time)->isoFormat(lang('system::lang.moment.time_format'));
+        $data['reservation_date'] = $model->reserve_date->isoFormat(lang('system::lang.moment.date_format_long'));
         $data['reservation_guest_no'] = $model->guest_num;
         $data['first_name'] = $model->first_name;
         $data['last_name'] = $model->last_name;
@@ -447,6 +497,7 @@ class Reservation extends Model
         $data['reservation_comment'] = $model->comment;
 
         if ($model->location) {
+            $data['location_logo'] = $model->location->thumb;
             $data['location_name'] = $model->location->location_name;
             $data['location_email'] = $model->location->location_email;
             $data['location_telephone'] = $model->location->location_telephone;

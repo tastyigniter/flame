@@ -37,10 +37,11 @@ class MenuOption extends Model
 
     public $relation = [
         'hasMany' => [
-            'option_values' => [\Igniter\Admin\Models\MenuOptionValue::class, 'foreignKey' => 'option_id', 'delete' => TRUE],
-            'menu_option_values' => [\Igniter\Admin\Models\MenuItemOptionValue::class, 'foreignKey' => 'option_id', 'delete' => TRUE],
+            'option_values' => [\Igniter\Admin\Models\MenuOptionValue::class, 'foreignKey' => 'option_id', 'delete' => true],
+            'menu_option_values' => [\Igniter\Admin\Models\MenuItemOptionValue::class, 'foreignKey' => 'option_id', 'delete' => true],
         ],
         'morphToMany' => [
+            'allergens' => ['Admin\Models\Allergens_model', 'name' => 'allergenable'],
             'locations' => [\Igniter\Admin\Models\Location::class, 'name' => 'locationable'],
         ],
     ];
@@ -56,7 +57,7 @@ class MenuOption extends Model
         if (!is_null($ids = AdminLocation::getIdOrAll()))
             $query->whereHasLocation($ids);
 
-        return $query->dropdown('display_name');
+        return $query->orderBy('option_name')->dropdown('display_name');
     }
 
     public static function getDisplayTypeOptions()
@@ -86,6 +87,7 @@ class MenuOption extends Model
 
     protected function beforeDelete()
     {
+        $this->allergens()->detach();
         $this->locations()->detach();
     }
 

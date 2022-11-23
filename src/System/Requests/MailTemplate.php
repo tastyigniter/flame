@@ -11,7 +11,7 @@ class MailTemplate extends FormRequest
         return [
             'layout_id' => lang('igniter::system.mail_templates.label_layout'),
             'label' => lang('igniter::admin.label_description'),
-            'subject' => lang('igniter::system.mail_templates.label_code'),
+            'subject' => lang('igniter::system.mail_templates.label_subject'),
             'code' => lang('igniter::system.mail_templates.label_code'),
         ];
     }
@@ -20,7 +20,7 @@ class MailTemplate extends FormRequest
     {
         return [
             'layout_id' => ['integer'],
-            'code' => ['sometimes', 'required', 'min:2', 'max:32'],
+            'code' => ['sometimes', 'required', 'min:2', 'max:128', 'unique:mail_templates', 'regex:/^[a-z-_\.\:]+$/i'],
             'label' => ['required', 'string'],
             'subject' => ['required', 'string'],
             'body' => ['string'],

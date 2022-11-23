@@ -4,6 +4,7 @@ namespace Igniter\Admin\Traits;
 
 use Igniter\Admin\Facades\AdminAuth;
 use Igniter\Admin\Models\AssignableLog;
+use Igniter\Admin\Models\User;
 use Igniter\Admin\Models\UserGroup;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -63,23 +64,29 @@ trait Assignable
         return $this->updateAssignTo($group);
     }
 
-    public function updateAssignTo($group = null, $assignee = null)
+    public function updateAssignTo(UserGroup $group = null, User $assignee = null)
     {
         if (is_null($group))
             $group = $this->assignee_group;
 
-        $this->assignee_group()->associate($group);
+        if (is_null($group) && !is_null($assignee))
+            $group = $assignee->groups()->first();
+
+        $oldGroup = $this->assignee_group;
+        !is_null($group)
+            ? $this->assignee_group()->associate($group)
+            : $this->assignee_group()->dissociate();
 
         $oldAssignee = $this->assignee;
-        if (!is_null($assignee))
-            $this->assignee()->associate($assignee);
+        !is_null($assignee)
+            ? $this->assignee()->associate($assignee)
+            : $this->assignee()->dissociate();
 
-        $this->fireSystemEvent('admin.assignable.beforeAssignTo', [$group, $assignee, $oldAssignee]);
+        $this->fireSystemEvent('admin.assignable.beforeAssignTo', [$group, $assignee, $oldAssignee, $oldGroup]);
 
         $this->save();
 
-        if (!$log = AssignableLog::createLog($this))
-            return false;
+        $log = AssignableLog::createLog($this);
 
         $this->fireSystemEvent('admin.assignable.assigned', [$log]);
 

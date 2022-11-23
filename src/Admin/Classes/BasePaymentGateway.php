@@ -40,8 +40,8 @@ class BasePaymentGateway extends ModelAction
     {
         parent::__construct($model);
 
-        $calledClass = strtolower(class_basename(get_called_class()));
-        $this->configPath = dirname(File::fromClass(get_called_class())).'/'.$calledClass;
+        $reflector = new \ReflectionClass($calledClass = get_called_class());
+        $this->configPath = dirname($reflector->getFileName()).'/'.basename(File::normalizePath(strtolower($calledClass)));
 
         $formConfig = $this->loadConfig($this->defineFieldsConfig(), ['fields']);
         $this->configFields = array_get($formConfig, 'fields');

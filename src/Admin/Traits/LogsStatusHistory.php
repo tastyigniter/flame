@@ -14,7 +14,7 @@ trait LogsStatusHistory
         self::extend(function (self $model) {
             $model->relation['belongsTo']['status'] = [\Igniter\Admin\Models\Status::class];
             $model->relation['morphMany']['status_history'] = [
-                \Igniter\Admin\Models\StatusHistory::class, 'name' => 'object', 'delete' => TRUE,
+                \Igniter\Admin\Models\StatusHistory::class, 'name' => 'object', 'delete' => true,
             ];
 
             $model->appends[] = 'status_name';
@@ -49,7 +49,7 @@ trait LogsStatusHistory
         $this->status()->associate($status);
 
         if (!$history = StatusHistory::createHistory($status, $this, $statusData))
-            return FALSE;
+            return false;
 
         $this->save();
 
@@ -83,6 +83,13 @@ trait LogsStatusHistory
     public function scopeWhereHasStatusInHistory($query, $statusId)
     {
         return $query->whereHas('status_history', function ($q) use ($statusId) {
+            return $q->where('status_id', $statusId);
+        });
+    }
+
+    public function scopeDoesntHaveStatusInHistory($query, $statusId)
+    {
+        return $query->whereDoesntHave('status_history', function ($q) use ($statusId) {
             return $q->where('status_id', $statusId);
         });
     }

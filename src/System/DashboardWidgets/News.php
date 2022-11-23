@@ -15,7 +15,7 @@ class News extends BaseDashboardWidget
      */
     protected $defaultAlias = 'news';
 
-    public $newsRss = 'https://feeds.feedburner.com/Tastyigniter';
+    public $newsRss = 'https://tastyigniter.com/feed?ref=dashboard';
 
     public function render()
     {
@@ -33,7 +33,7 @@ class News extends BaseDashboardWidget
             ],
             'newsCount' => [
                 'label' => 'igniter::admin.dashboard.text_news_count',
-                'default' => 5,
+                'default' => 6,
                 'type' => 'select',
                 'options' => [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9, 10 => 10],
             ],

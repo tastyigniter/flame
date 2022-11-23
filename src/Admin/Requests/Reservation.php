@@ -31,6 +31,7 @@ class Reservation extends FormRequest
             'reserve_date' => ['required', 'valid_date'],
             'reserve_time' => ['required', 'valid_time'],
             'guest_num' => ['required', 'integer'],
+            'duration' => ['integer', 'min:1'],
         ];
     }
 }

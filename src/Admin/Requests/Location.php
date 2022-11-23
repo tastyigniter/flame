@@ -32,7 +32,7 @@ class Location extends FormRequest
     public function rules()
     {
         return [
-            'location_name' => ['required', 'string', 'between:2,32', 'unique:locations'],
+            'location_name' => ['required', 'string', 'between:2,32'],
             'location_email' => ['required', 'email:filter', 'max:96'],
             'location_telephone' => ['sometimes', 'string'],
             'location_address_1' => ['required', 'string', 'between:2,128'],

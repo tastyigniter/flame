@@ -7,6 +7,11 @@ use Symfony\Component\Mime\Address;
 
 trait SendsMailTemplate
 {
+    public function mailGetReplyTo()
+    {
+        return [];
+    }
+
     public function mailGetRecipients($type)
     {
         return [];

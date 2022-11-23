@@ -26,7 +26,7 @@ class Menu extends FormRequest
     public function rules()
     {
         return [
-            'menu_name' => ['required', 'string', 'between:2,255', 'unique:menus'],
+            'menu_name' => ['required', 'string', 'between:2,255'],
             'menu_description' => ['string', 'between:2,1028'],
             'menu_price' => ['required', 'numeric', 'min:0'],
             'categories.*' => ['sometimes', 'required', 'integer'],

@@ -218,7 +218,7 @@ class Form extends BaseWidget
      * Options:
      *  - useContainer: Wrap the result in a container, used by AJAX. Default: true
      *
-     * @param string|array $field The field name or definition
+     * @param string|\Igniter\Admin\Classes\FormField $field The field name or definition
      * @param array $options
      *
      * @return bool|string The rendered partial contents, or false if suppressing an exception

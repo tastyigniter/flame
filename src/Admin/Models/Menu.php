@@ -2,9 +2,9 @@
 
 namespace Igniter\Admin\Models;
 
+use Carbon\Carbon;
 use Igniter\Admin\Traits\Locationable;
 use Igniter\Admin\Traits\Stockable;
-use Carbon\Carbon;
 use Igniter\Flame\Database\Attach\HasMedia;
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Model;
@@ -48,10 +48,10 @@ class Menu extends Model
 
     public $relation = [
         'hasMany' => [
-            'menu_option_values' => [\Igniter\Admin\Models\MenuItemOptionValue::class, 'delete' => TRUE],
+            'menu_option_values' => [\Igniter\Admin\Models\MenuItemOptionValue::class, 'delete' => true],
         ],
         'hasOne' => [
-            'special' => [\Igniter\Admin\Models\MenuSpecial::class, 'delete' => TRUE],
+            'special' => [\Igniter\Admin\Models\MenuSpecial::class, 'delete' => true],
         ],
         'belongsToMany' => [
             'categories' => [\Igniter\Admin\Models\Category::class, 'table' => 'menu_categories'],
@@ -78,6 +78,16 @@ class Menu extends Model
             return $this->relations['menu_options'];
 
         return $this->relations['menu_options'] = $this->getOptions();
+    }
+
+    public function getMenuPriceFromAttribute()
+    {
+        if ($this->menu_price > 0)
+            return $this->menu_price;
+
+        return $this->menu_options->mapWithKeys(function ($option) {
+            return $option->menu_option_values->keyBy('menu_option_value_id');
+        })->min('price');
     }
 
     //
@@ -288,7 +298,7 @@ class Menu extends Model
     public function addMenuIngredients(array $ingredientIds = [])
     {
         if (!$this->exists)
-            return FALSE;
+            return false;
 
         $this->ingredients()->sync($ingredientIds);
     }
@@ -405,12 +415,12 @@ class Menu extends Model
         if (count($this->ingredients) > 0) {
             foreach ($this->ingredients as $ingredient) {
                 if (!$ingredient->status) {
-                    $isAvailable = FALSE;
+                    $isAvailable = false;
                 }
             }
         }
 
-        if (is_bool($eventResults = $this->fireSystemEvent('admin.menu.isAvailable', [$datetime, $isAvailable], TRUE)))
+        if (is_bool($eventResults = $this->fireSystemEvent('admin.menu.isAvailable', [$datetime, $isAvailable], true)))
             $isAvailable = $eventResults;
 
         return $isAvailable;

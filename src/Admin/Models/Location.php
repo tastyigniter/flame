@@ -66,6 +66,7 @@ class Location extends Model implements LocationInterface
 
     public $relation = [
         'hasMany' => [
+            'all_options' => ['Admin\Models\LocationOption', 'delete' => true],
             'working_hours' => [\Igniter\Admin\Models\WorkingHour::class, 'delete' => true],
             'delivery_areas' => [\Igniter\Admin\Models\LocationArea::class, 'delete' => true],
         ],
@@ -167,8 +168,6 @@ class Location extends Model implements LocationInterface
             'latitude' => null,
             'longitude' => null,
             'paginate' => true,
-            'hasDelivery' => null,
-            'hasCollection' => null,
         ], $options));
 
         if ($latitude && $longitude) {
@@ -204,12 +203,6 @@ class Location extends Model implements LocationInterface
 
         if (!is_null($enabled))
             $query->where('location_status', $enabled);
-
-        if (!is_null($hasDelivery))
-            $query->where('options->offer_delivery', $hasDelivery);
-
-        if (!is_null($hasCollection))
-            $query->where('options->offer_collection', $hasCollection);
 
         $this->fireEvent('model.extendListFrontEndQuery', [$query]);
 

@@ -288,6 +288,7 @@ return [
         'text_invoice_date' => 'Customer telephone address',
         'text_order_menus' => 'Array of order menu items',
         'text_order_comment' => 'Order comment',
+        'text_location_logo' => 'Location logo',
         'text_location_name' => 'Location name',
         'text_location_email' => 'Location email',
         'text_location_address' => 'Location address',
@@ -638,7 +639,7 @@ return [
         'text_update_ignored' => '%s update(s) ignored',
         'text_item_update_summary' => 'Update from version %s to <b>%s</b>',
 
-        'text_core_update' => '<i class="fa fa-exclamation-triangle fa-fw"></i>&nbsp;&nbsp;After the core has been updated, other updates will be available.',
+        'text_core_update' => '<i class="fa fa-exclamation-triangle fa-fw"></i>&nbsp;&nbsp;After the core update has been installed, all extension updates will be installed.',
 
         'progress_download' => '<i class="fa fa-cloud-download fa-fw"></i>&nbsp;&nbsp;&nbsp;Downloading %s&#8230;',
         'progress_extract' => '<i class="fa fa-file-archive-o fa-fw"></i>&nbsp;&nbsp;&nbsp;Extracting %s&#8230;',

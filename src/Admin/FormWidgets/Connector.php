@@ -70,6 +70,8 @@ class Connector extends BaseFormWidget
 
     public $popupSize;
 
+    public $hideNewButton = true;
+
     public function initialize()
     {
         $this->fillFromConfig([
@@ -85,6 +87,7 @@ class Connector extends BaseFormWidget
             'descriptionFrom',
             'partial',
             'popupSize',
+            'hideNewButton',
         ]);
 
         $fieldName = $this->formField->getName(false);
@@ -134,6 +137,7 @@ class Connector extends BaseFormWidget
         $this->vars['partial'] = $this->partial;
         $this->vars['descriptionFrom'] = $this->descriptionFrom;
         $this->vars['sortableInputName'] = $this->sortableInputName;
+        $this->vars['newRecordTitle'] = sprintf($this->newRecordTitle, lang($this->formName));
 
         $this->vars['emptyMessage'] = $this->emptyMessage;
         $this->vars['confirmMessage'] = $this->confirmMessage;
@@ -254,7 +258,7 @@ class Connector extends BaseFormWidget
         $widgetConfig['model'] = $model;
         $widgetConfig['alias'] = $this->alias.'FormConnector';
         $widgetConfig['arrayName'] = $this->formField->arrayName.'[connectorData]';
-        $widgetConfig['context'] = 'edit';
+        $widgetConfig['context'] = $model->exists ? 'edit' : 'create';
         $widget = $this->makeWidget(Form::class, $widgetConfig);
 
         $widget->bindToController();

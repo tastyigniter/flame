@@ -269,16 +269,18 @@ class Order extends Model
 
     public function markAsPaymentProcessed()
     {
-        // @deprecated namespaced event, remove before v5
-        event('admin.order.beforePaymentProcessed', [$this]);
-        BeforePaymentProcessed::dispatch($this);
+        if (!$this->processed) {
+            // @deprecated namespaced event, remove before v5
+            event('admin.order.beforePaymentProcessed', [$this]);
+            BeforePaymentProcessed::dispatch($this);
 
-        $this->processed = 1;
-        $this->save();
+            $this->processed = 1;
+            $this->save();
 
-        // @deprecated namespaced event, remove before v5
-        event('admin.order.paymentProcessed', [$this]);
-        PaymentProcessed::dispatch($this);
+            // @deprecated namespaced event, remove before v5
+            event('admin.order.paymentProcessed', [$this]);
+            PaymentProcessed::dispatch($this);
+        }
 
         return $this->processed;
     }
@@ -345,6 +347,21 @@ class Order extends Model
         return $recipients;
     }
 
+    public function mailGetReplyTo($type)
+    {
+        $replyTo = [];
+        if (in_array($type, (array)setting('order_email', []))) {
+            switch ($type) {
+                case 'location':
+                case 'admin':
+                    $replyTo = [$this->email, $this->customer_name];
+                    break;
+            }
+        }
+
+        return $replyTo;
+    }
+
     /**
      * Return the order data to build mail template
      *
@@ -366,17 +383,15 @@ class Order extends Model
         $data['order_comment'] = $model->comment;
 
         $data['order_type'] = $model->order_type_name;
-        $data['order_time'] = Carbon::createFromTimeString($model->order_time)->format(lang('igniter::system.php.time_format'));
-        $data['order_date'] = $model->order_date->format(lang('igniter::system.php.date_format'));
-        $data['order_added'] = $model->created_at->format(lang('igniter::system.php.date_time_format'));
+        $data['order_time'] = Carbon::createFromTimeString($model->order_time)->isoFormat(lang('system::lang.moment.time_format'));
+        $data['order_date'] = $model->order_date->isoFormat(lang('system::lang.moment.date_format'));
+        $data['order_added'] = $model->created_at->isoFormat(lang('system::lang.moment.date_time_format'));
 
         $data['invoice_id'] = $model->invoice_number;
         $data['invoice_number'] = $model->invoice_number;
-        $data['invoice_date'] = $model->invoice_date ? $model->invoice_date->format(lang('igniter::system.php.date_format')) : null;
+        $data['invoice_date'] = $model->invoice_date ? $model->invoice_date->isoFormat(lang('system::lang.moment.date_format')) : null;
 
-        $data['order_payment'] = ($model->payment_method)
-            ? $model->payment_method->name
-            : lang('igniter::admin.orders.text_no_payment');
+        $data['order_payment'] = $model->payment_method->name ?? lang('admin::lang.orders.text_no_payment');
 
         $data['order_menus'] = [];
         $menus = $model->getOrderMenusWithOptions();
@@ -389,7 +404,7 @@ class Order extends Model
                         .'&nbsp;'.lang('igniter::admin.text_times').'&nbsp;'
                         .$menuItemOption->order_option_name
                         .lang('igniter::admin.text_equals')
-                        .currency_format($menuItemOption->order_option_price);
+                        .currency_format($menuItemOption->quantity * $menuItemOption->order_option_price);
                 }
             }
 
@@ -418,6 +433,7 @@ class Order extends Model
             $data['order_address'] = format_address($model->address->toArray(), false);
 
         if ($model->location) {
+            $data['location_logo'] = $model->location->thumb;
             $data['location_name'] = $model->location->location_name;
             $data['location_email'] = $model->location->location_email;
             $data['location_telephone'] = $model->location->location_telephone;
