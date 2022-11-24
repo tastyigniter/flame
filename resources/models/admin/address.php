@@ -1,4 +1,5 @@
 <?php
+
 $config['form']['fields'] = [
     'address_id' => [
         'type' => 'hidden',

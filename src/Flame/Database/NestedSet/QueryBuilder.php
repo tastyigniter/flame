@@ -36,7 +36,7 @@ class QueryBuilder extends QueryBuilderBase
             : $this->model->newCollection();
 
         return new LengthAwarePaginator($results, $total, $perPage, $page, [
-            'path'     => Paginator::resolveCurrentPath(),
+            'path' => Paginator::resolveCurrentPath(),
             'pageName' => $pageName,
         ]);
     }

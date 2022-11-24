@@ -1,4 +1,5 @@
 <?php
+
 $config['list']['toolbar'] = [
     'buttons' => [
         'back' => [

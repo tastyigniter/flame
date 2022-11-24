@@ -82,7 +82,7 @@ class RouteRegistrar
 
                 return $result;
             })
-            ->filter(fn($class) => $this->isAdminPage($class));
+            ->filter(fn ($class) => $this->isAdminPage($class));
     }
 
     protected function isAdminPage($class)

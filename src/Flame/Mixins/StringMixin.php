@@ -97,5 +97,4 @@ class StringMixin
             return strlen($string) - strlen(ltrim($string, $symbol));
         };
     }
-
 }

@@ -48,12 +48,12 @@ class BladeExtension
 
     public function compilesEndMainAuth()
     {
-        return "<?php endif ?>";
+        return '<?php endif ?>';
     }
 
     public function compilesEndAdminAuth()
     {
-        return "<?php endif ?>";
+        return '<?php endif ?>';
     }
 
     public function compilesStyles($expression)

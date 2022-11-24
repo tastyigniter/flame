@@ -1,4 +1,5 @@
 <?php
+
 return [
     'site_title' => '%s - %s',
     'site_copyright' => '&copy; %s %s - ',

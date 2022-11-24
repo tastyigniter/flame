@@ -99,7 +99,7 @@ class Builder extends IlluminateQueryBuilder
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function get($columns = ['*'])
     {

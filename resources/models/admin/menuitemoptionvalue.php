@@ -1,4 +1,5 @@
 <?php
+
 $config['form']['fields'] = [
     'menu_option_value_id' => [
         'type' => 'hidden',

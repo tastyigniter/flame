@@ -4,7 +4,6 @@ namespace Igniter\Flame\Database\Factories;
 
 abstract class Factory extends \Illuminate\Database\Eloquent\Factories\Factory
 {
-
     /**
      * Get the factory name for the given model name.
      *

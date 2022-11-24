@@ -55,6 +55,7 @@ trait ValidatesForm
 
         if ($validator->fails()) {
             $this->flashValidationErrors($validator->errors());
+
             throw new ValidationException($validator);
         }
 

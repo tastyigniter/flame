@@ -6,5 +6,4 @@ use Igniter\Admin\Classes\BaseWidget;
 
 class TestWidget extends BaseWidget
 {
-
 }

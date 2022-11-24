@@ -23,6 +23,7 @@ use Traversable;
 class GlobAsset extends AssetCollection
 {
     private $globs;
+
     private $initialized;
 
     /**

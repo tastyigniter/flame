@@ -21,4 +21,3 @@ it('has rules for permalink slug input', function () {
 
     expect('max:255')->toBeIn($rules);
 });
-

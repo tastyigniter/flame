@@ -8,14 +8,23 @@ use Igniter\Flame\Geolite\Model\Location;
 class StringFormatter
 {
     const STREET_NUMBER = '%n';
+
     const STREET_NAME = '%S';
+
     const LOCALITY = '%L';
+
     const POSTAL_CODE = '%z';
+
     const SUB_LOCALITY = '%D';
+
     const ADMIN_LEVEL = '%A';
+
     const ADMIN_LEVEL_CODE = '%a';
+
     const COUNTRY_NAME = '%C';
+
     const COUNTRY_CODE = '%c';
+
     const TIMEZONE = '%T';
 
     /**

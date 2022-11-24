@@ -21,7 +21,7 @@ class ViewBag extends BaseComponent
     public function componentDetails()
     {
         return [
-            'name'        => 'viewBag',
+            'name' => 'viewBag',
             'description' => 'Stores custom template properties.',
         ];
     }
@@ -78,7 +78,7 @@ class ViewBag extends BaseComponent
         foreach ($this->properties as $name => $value) {
             $result[$name] = [
                 'title' => $name,
-                'type'  => 'text',
+                'type' => 'text',
             ];
         }
 

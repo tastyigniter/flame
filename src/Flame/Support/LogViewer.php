@@ -19,25 +19,25 @@ class LogViewer
     protected static $file;
 
     protected static $levelClasses = [
-        'debug'     => 'info',
-        'info'      => 'info',
-        'notice'    => 'info',
-        'warning'   => 'warning',
-        'error'     => 'danger',
-        'critical'  => 'danger',
-        'alert'     => 'danger',
+        'debug' => 'info',
+        'info' => 'info',
+        'notice' => 'info',
+        'warning' => 'warning',
+        'error' => 'danger',
+        'critical' => 'danger',
+        'alert' => 'danger',
         'emergency' => 'danger',
         'processed' => 'info',
     ];
 
     protected static $levelIcons = [
-        'debug'     => 'info',
-        'info'      => 'info',
-        'notice'    => 'info',
-        'warning'   => 'warning',
-        'error'     => 'warning',
-        'critical'  => 'warning',
-        'alert'     => 'warning',
+        'debug' => 'info',
+        'info' => 'info',
+        'notice' => 'info',
+        'warning' => 'warning',
+        'error' => 'warning',
+        'critical' => 'warning',
+        'alert' => 'warning',
         'emergency' => 'warning',
         'processed' => 'info',
     ];
@@ -145,13 +145,13 @@ class LogViewer
 
                         $log[] = [
                             'context' => $current[2],
-                            'level'   => strtoupper($level),
-                            'class'   => self::$levelClasses[$level],
-                            'icon'    => self::$levelIcons[$level],
-                            'date'    => $current[1],
-                            'text'    => $current[3],
+                            'level' => strtoupper($level),
+                            'class' => self::$levelClasses[$level],
+                            'icon' => self::$levelIcons[$level],
+                            'date' => $current[1],
+                            'text' => $current[3],
                             'summary' => isset($current[4]) ? $current[4] : null,
-                            'stack'   => preg_replace("/^\n*/", '', $logData[$i]),
+                            'stack' => preg_replace("/^\n*/", '', $logData[$i]),
                         ];
                     }
                 }

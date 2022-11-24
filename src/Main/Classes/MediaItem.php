@@ -9,10 +9,15 @@ use Illuminate\Support\Facades\File;
 class MediaItem
 {
     const TYPE_FILE = 'file';
+
     const TYPE_FOLDER = 'folder';
+
     const FILE_TYPE_IMAGE = 'image';
+
     const FILE_TYPE_DOCUMENT = 'document';
+
     const FILE_TYPE_VIDEO = 'video';
+
     const FILE_TYPE_AUDIO = 'audio';
 
     /**

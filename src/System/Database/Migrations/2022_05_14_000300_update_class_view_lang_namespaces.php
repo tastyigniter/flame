@@ -5,7 +5,8 @@ namespace Igniter\System\Database\Migrations;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up()
     {
         foreach (['mail_templates', 'mail_layouts', 'mail_partials'] as $table) {

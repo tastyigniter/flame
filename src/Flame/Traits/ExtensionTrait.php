@@ -25,7 +25,7 @@ trait ExtensionTrait
     public static $extendableStaticCalledClass = null;
 
     protected $extensionHidden = [
-        'fields'  => [],
+        'fields' => [],
         'methods' => ['extensionIsHiddenField', 'extensionIsHiddenField'],
     ];
 

@@ -28,7 +28,7 @@ return new class extends Migration
             $table->unique(['ingredient_id', 'ingredientable_id', 'ingredientable_type'], 'ingredientable_unique');
         });
 
-        DB::table('ingredients')->update(['is_allergen' => TRUE]);
+        DB::table('ingredients')->update(['is_allergen' => true]);
     }
 
     public function down()

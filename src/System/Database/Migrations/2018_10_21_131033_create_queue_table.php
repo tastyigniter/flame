@@ -7,7 +7,8 @@ use Illuminate\Database\Migrations\Migration;
 /**
  * Do not run to avoid conflicts with Laravel's queue table. Since v4
  */
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      *

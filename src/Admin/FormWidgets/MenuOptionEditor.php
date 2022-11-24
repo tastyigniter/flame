@@ -67,7 +67,7 @@ class MenuOptionEditor extends BaseFormWidget
         ]);
 
         if ($this->formField->disabled || $this->formField->readOnly) {
-            $this->previewMode = TRUE;
+            $this->previewMode = true;
         }
     }
 

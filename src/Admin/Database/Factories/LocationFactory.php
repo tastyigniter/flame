@@ -18,7 +18,7 @@ class LocationFactory extends Factory
             'location_lat' => $this->faker->latitude,
             'location_lng' => $this->faker->longitude,
             'options' => [
-                'auto_lat_lng' => FALSE,
+                'auto_lat_lng' => false,
             ],
         ];
     }

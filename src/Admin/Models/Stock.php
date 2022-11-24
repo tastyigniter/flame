@@ -14,11 +14,17 @@ class Stock extends Model
     use Locationable;
 
     public const STATE_NONE = 'none';
+
     public const STATE_IN_STOCK = 'in_stock';
+
     public const STATE_RECOUNT = 'recount';
+
     public const STATE_RESTOCK = 'restock';
+
     public const STATE_SOLD = 'sold';
+
     public const STATE_RETURNED = 'returned';
+
     public const STATE_WASTE = 'waste';
 
     /**

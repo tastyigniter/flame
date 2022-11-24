@@ -1,4 +1,5 @@
 <?php
+
 $config['list']['columns'] = [
     'created_at' => [
         'label' => 'lang:igniter::admin.column_date_added',

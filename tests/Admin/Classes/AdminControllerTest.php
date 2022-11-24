@@ -2,9 +2,9 @@
 
 namespace Tests\Admin\Classes;
 
-use Tests\Fixtures\Controllers\TestController;
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
+use Tests\Fixtures\Controllers\TestController;
 
 it('has defined paths to locate layouts', function () {
     $controller = resolve(TestController::class);

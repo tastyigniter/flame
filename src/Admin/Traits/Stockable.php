@@ -8,7 +8,7 @@ trait Stockable
     {
         self::extend(function (self $model) {
             $model->relation['morphMany']['stocks'] = [
-                \Igniter\Admin\Models\Stock::class, 'name' => 'stockable', 'delete' => TRUE,
+                \Igniter\Admin\Models\Stock::class, 'name' => 'stockable', 'delete' => true,
             ];
 
             $model->appends[] = 'stock_qty';

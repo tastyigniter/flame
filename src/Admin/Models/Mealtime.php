@@ -2,8 +2,8 @@
 
 namespace Igniter\Admin\Models;
 
-use Igniter\Admin\Traits\Locationable;
 use Carbon\Carbon;
+use Igniter\Admin\Traits\Locationable;
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Model;
 

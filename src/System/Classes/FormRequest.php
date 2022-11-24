@@ -17,7 +17,9 @@ class FormRequest extends BaseFormRequest
     use EventEmitter;
 
     protected const DATA_TYPE_FORM = 'form';
+
     protected const DATA_TYPE_POST = 'post';
+
     protected const DATA_TYPE_INPUT = 'input';
 
     protected $model;

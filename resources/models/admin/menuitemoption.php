@@ -1,4 +1,5 @@
 <?php
+
 $config['form']['fields'] = [
     'option_name' => [
         'label' => 'lang:igniter::admin.menu_options.label_option_name',
@@ -34,9 +35,9 @@ $config['form']['fields'] = [
     'menu_option_values' => [
         'type' => 'repeater',
         'form' => 'menuitemoptionvalue',
-        'sortable' => TRUE,
-        'showRemoveButton' => FALSE,
-        'showAddButton' => FALSE,
+        'sortable' => true,
+        'showRemoveButton' => false,
+        'showAddButton' => false,
     ],
 ];
 

@@ -394,6 +394,7 @@ class MainController extends Controller
         catch (ValidationException $ex) {
             $response['X_IGNITER_ERROR_FIELDS'] = $ex->getFields();
             $response['X_IGNITER_ERROR_MESSAGE'] = $ex->getMessage();
+
             throw new AjaxException($response);
         }
         catch (Exception $ex) {

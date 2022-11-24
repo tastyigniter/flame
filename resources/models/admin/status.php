@@ -1,4 +1,5 @@
 <?php
+
 $config['list']['filter'] = [
     'scopes' => [
         'type' => [

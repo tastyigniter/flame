@@ -110,6 +110,7 @@ class HubManager
     protected function getSecurityKey()
     {
         $carteKey = params('carte_key', '');
+
         try {
             $carteKey = decrypt($carteKey);
         }
@@ -148,6 +149,7 @@ class HubManager
         }
 
         $response = null;
+
         try {
             $response = @json_decode($result, true);
         }

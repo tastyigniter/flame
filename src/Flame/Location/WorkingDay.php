@@ -8,11 +8,17 @@ use Igniter\Flame\Location\Exceptions\WorkingHourException;
 class WorkingDay
 {
     const MONDAY = 'monday';
+
     const TUESDAY = 'tuesday';
+
     const WEDNESDAY = 'wednesday';
+
     const THURSDAY = 'thursday';
+
     const FRIDAY = 'friday';
+
     const SATURDAY = 'saturday';
+
     const SUNDAY = 'sunday';
 
     public static function days(): array
