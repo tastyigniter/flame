@@ -7,8 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up()
     {
         Schema::disableForeignKeyConstraints();
@@ -182,9 +181,9 @@ return new class extends Migration
                 ['statuses', 'status_id', 'nullOnDelete' => true],
             ],
             'user_preferences' => [
-                ['users', 'user_id', 'nullable' => false, 'cascadeOnDelete' => true],
+                ['admin_users', 'user_id', 'nullable' => false, 'cascadeOnDelete' => true],
             ],
-            'users' => [
+            'admin_users' => [
                 ['staffs', 'staff_id', 'nullable' => false, 'cascadeOnDelete' => true],
             ],
             'working_hours' => [
