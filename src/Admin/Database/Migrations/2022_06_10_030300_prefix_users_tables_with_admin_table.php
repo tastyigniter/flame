@@ -11,7 +11,6 @@ return new class extends Migration {
         Schema::rename('user_groups', 'admin_user_groups');
         Schema::rename('user_preferences', 'admin_user_preferences');
         Schema::rename('user_roles', 'admin_user_roles');
-        Schema::rename('users', 'admin_users');
         Schema::rename('users_groups', 'admin_users_groups');
     }
 

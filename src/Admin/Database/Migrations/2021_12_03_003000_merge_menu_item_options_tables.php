@@ -7,8 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     protected static $menuItemOptionsCache = [];
 
     public function up()
@@ -35,7 +34,7 @@ return new class extends Migration
         $this->updateOrderMenuOptionsOptionIdColumn();
 
         Schema::table('menu_item_option_values', function (Blueprint $table) {
-            $table->dropForeign(['menu_option_id']);
+            $table->dropForeignKeyIfExists('menu_option_id');
             $table->dropColumn('menu_option_id');
         });
 
@@ -65,7 +64,7 @@ return new class extends Migration
         $updatedOptions = [];
         DB::table('menu_item_options')->get()->each(function ($model) use (&$updatedOptions) {
             if (in_array($model->option_id, $updatedOptions))
-                return TRUE;
+                return true;
 
             DB::table('menu_options')
                 ->where('option_id', $model->option_id)

@@ -33,7 +33,7 @@ return new class extends Migration {
                 $keys = (array)$options[1];
                 $foreignKey = $keys[0];
 
-                $table->dropForeignKeyIfExists([$foreignKey]);
+                $table->dropForeignKeyIfExists($foreignKey);
                 $table->dropIndexIfExists(sprintf('%s%s_%s_foreign', DB::getTablePrefix(), $tableName, $foreignKey));
             });
         }

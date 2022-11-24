@@ -107,8 +107,9 @@ class Igniter
     public static function hasDatabase()
     {
         try {
+            $schema = resolve('db.connection')->getSchemaBuilder();
             $hasDatabase = is_null(static::$hasDatabase)
-                ? resolve('db.connection')->getSchemaBuilder()->hasTable('settings')
+                ? ($schema->hasTable('settings') && $schema->hasTable('extension_settings'))
                 : static::$hasDatabase;
         }
         catch (\Exception) {

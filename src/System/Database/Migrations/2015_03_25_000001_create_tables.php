@@ -18,8 +18,7 @@ use Illuminate\Support\Facades\Schema;
  *  staffs, staff_groups, statuses, status_history, tables, uri_routes,
  *  users, working_hours
  */
-return new class extends Migration
-{
+return new class extends Migration {
     public function up()
     {
         foreach (get_class_methods(__CLASS__) as $method) {
@@ -669,7 +668,7 @@ return new class extends Migration
         };
     }
 
-    protected function _create_users()
+    protected function _create_admin_users()
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';

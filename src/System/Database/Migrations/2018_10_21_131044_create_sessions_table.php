@@ -3,11 +3,11 @@
 namespace Igniter\System\Database\Migrations;
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+/**
+ * Do not run to avoid conflicts with Laravel's session table. Since v4
+ */
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -15,11 +15,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->unique();
-            $table->text('payload')->nullable();
-            $table->integer('last_activity')->nullable();
-        });
+//        Schema::create('sessions', function (Blueprint $table) {
+//            $table->string('id')->unique();
+//            $table->text('payload')->nullable();
+//            $table->integer('last_activity')->nullable();
+//        });
     }
 
     /**
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sessions');
+//        Schema::dropIfExists('sessions');
     }
 };

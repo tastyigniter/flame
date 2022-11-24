@@ -6,8 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up()
     {
         foreach ([
@@ -41,7 +40,7 @@ return new class extends Migration
             'statuses' => 'status_id',
             'tables' => 'table_id',
             'user_preferences' => 'id',
-            'users' => 'user_id',
+            'admin_users' => 'user_id',
         ] as $table => $key) {
             Schema::table($table, function (Blueprint $table) use ($key) {
                 $table->unsignedBigInteger($key, true)->change();

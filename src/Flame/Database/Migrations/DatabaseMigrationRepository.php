@@ -25,8 +25,8 @@ class DatabaseMigrationRepository extends BaseDatabaseMigrationRepository
      * Log that a migration was run.
      * Overrides the parent method and allows insertion of group data
      *
-     * @param  string $file
-     * @param  int $batch
+     * @param string $file
+     * @param int $batch
      *
      * @return void
      */
@@ -59,7 +59,7 @@ class DatabaseMigrationRepository extends BaseDatabaseMigrationRepository
             // migrations have actually run for the application. We'll create the
             // table to hold the migration file's path as well as the batch ID.
             $table->increments('id');
-            $table->string('group');
+            $table->string('group')->nullable();
             $table->string('migration');
             $table->integer('batch');
         });
@@ -69,6 +69,10 @@ class DatabaseMigrationRepository extends BaseDatabaseMigrationRepository
     {
         if ($this->getConnection()->table($this->table)->where('group', 'igniter.admin')->exists())
             return;
+
+        $this->getConnection()->getSchemaBuilder()->table($this->table, function (Blueprint $table) {
+            $table->string('group')->nullable()->change();
+        });
 
         $this->getConnection()
             ->table($this->table)
@@ -106,7 +110,7 @@ class DatabaseMigrationRepository extends BaseDatabaseMigrationRepository
     /**
      * Remove a migration from the log.
      *
-     * @param  object $migration
+     * @param object $migration
      *
      * @return void
      */
@@ -131,7 +135,7 @@ class DatabaseMigrationRepository extends BaseDatabaseMigrationRepository
     /**
      * Set the module or extension the migration belongs to.
      *
-     * @param  string $name
+     * @param string $name
      *
      * @return void
      */

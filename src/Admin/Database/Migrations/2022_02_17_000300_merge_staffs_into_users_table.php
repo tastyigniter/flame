@@ -10,7 +10,10 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
+        if (Schema::hasColumn('users', 'reset_code'))
+            Schema::rename('users', 'admin_users');
+
+        Schema::table('admin_users', function (Blueprint $table) {
             $table->string('name');
             $table->string('email')->unique();
             $table->unsignedBigInteger('user_role_id')->nullable();
@@ -24,8 +27,8 @@ return new class extends Migration {
         $this->updateStaffIdValueToUserIdOnStaffsGroups();
 
         Schema::table('staffs_groups', function (Blueprint $table) {
-            $table->dropForeign(['staff_id']);
-            $table->dropForeign(['staff_group_id']);
+            $table->dropForeignKeyIfExists('staff_id');
+            $table->dropForeignKeyIfExists('staff_group_id');
 
             $table->renameColumn('staff_id', 'user_id');
             $table->renameColumn('staff_group_id', 'user_group_id');
@@ -47,7 +50,7 @@ return new class extends Migration {
         $this->replaceLocationableTypeStaffsWithUsers();
 
         Schema::table('assignable_logs', function (Blueprint $table) {
-            $table->dropForeign(['assignee_id']);
+            $table->dropForeignKeyIfExists('assignee_id');
         });
 
         $this->updateAssigneeIdValueToUserIdOnAssignableLogs();
@@ -55,19 +58,19 @@ return new class extends Migration {
         $this->updateAssigneeIdValueToUserIdOnOrders();
 
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropForeign(['assignee_id']);
+            $table->dropForeignKeyIfExists('assignee_id');
         });
 
         $this->updateAssigneeIdValueToUserIdOnReservations();
 
         Schema::table('reservations', function (Blueprint $table) {
-            $table->dropForeign(['assignee_id']);
+            $table->dropForeignKeyIfExists('assignee_id');
         });
 
         $this->updateStaffIdValueToUserIdOnStatusHistory();
 
         Schema::table('status_history', function (Blueprint $table) {
-            $table->dropForeign(['staff_id']);
+            $table->dropForeignKeyIfExists('staff_id');
             $table->renameColumn('staff_id', 'user_id');
         });
 
@@ -77,8 +80,8 @@ return new class extends Migration {
             $table->renameColumn('staff_id', 'user_id');
         });
 
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['staff_id']);
+        Schema::table('admin_users', function (Blueprint $table) {
+            $table->dropForeignKeyIfExists('staff_id');
             $table->dropColumn('staff_id');
         });
 
@@ -89,7 +92,7 @@ return new class extends Migration {
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('admin_users');
         Schema::dropIfExists('user_groups');
         Schema::dropIfExists('user_roles');
         Schema::dropIfExists('users_groups');
@@ -103,8 +106,8 @@ return new class extends Migration {
             ->where('locationable_type', 'staffs')
             ->get()
             ->each(function ($model) {
-                if (!$user = DB::table('users')->where('staff_id', $model->locationable_id)->first())
-                    return TRUE;
+                if (!$user = DB::table('admin_users')->where('staff_id', $model->locationable_id)->first())
+                    return true;
 
                 DB::table('locationables')->insert([
                     'location_id' => $model->location_id,
@@ -122,8 +125,8 @@ return new class extends Migration {
             ->whereNotNull('assignee_id')
             ->get()
             ->each(function ($model) {
-                if (!$user = DB::table('users')->where('staff_id', $model->assignee_id)->first())
-                    return TRUE;
+                if (!$user = DB::table('admin_users')->where('staff_id', $model->assignee_id)->first())
+                    return true;
 
                 DB::table('assignable_logs')
                     ->where('id', $model->id)
@@ -139,8 +142,8 @@ return new class extends Migration {
             ->whereNotNull('assignee_id')
             ->get()
             ->each(function ($model) {
-                if (!$user = DB::table('users')->where('staff_id', $model->assignee_id)->first())
-                    return TRUE;
+                if (!$user = DB::table('admin_users')->where('staff_id', $model->assignee_id)->first())
+                    return true;
 
                 DB::table('orders')
                     ->where('order_id', $model->order_id)
@@ -156,8 +159,8 @@ return new class extends Migration {
             ->whereNotNull('assignee_id')
             ->get()
             ->each(function ($model) {
-                if (!$user = DB::table('users')->where('staff_id', $model->assignee_id)->first())
-                    return TRUE;
+                if (!$user = DB::table('admin_users')->where('staff_id', $model->assignee_id)->first())
+                    return true;
 
                 DB::table('reservations')
                     ->where('reservation_id', $model->reservation_id)
@@ -173,8 +176,8 @@ return new class extends Migration {
             ->whereNotNull('staff_id')
             ->get()
             ->each(function ($model) {
-                if (!$user = DB::table('users')->where('staff_id', $model->staff_id)->first())
-                    return TRUE;
+                if (!$user = DB::table('admin_users')->where('staff_id', $model->staff_id)->first())
+                    return true;
 
                 DB::table('status_history')
                     ->where('status_history_id', $model->status_history_id)
@@ -190,8 +193,8 @@ return new class extends Migration {
             ->whereNotNull('staff_id')
             ->get()
             ->each(function ($model) {
-                if (!$user = DB::table('users')->where('staff_id', $model->staff_id)->first())
-                    return TRUE;
+                if (!$user = DB::table('admin_users')->where('staff_id', $model->staff_id)->first())
+                    return true;
 
                 DB::table('stock_history')
                     ->where('id', $model->id)
@@ -207,8 +210,8 @@ return new class extends Migration {
             ->whereNotNull('staff_id')
             ->get()
             ->each(function ($model) {
-                if (!$user = DB::table('users')->where('staff_id', $model->staff_id)->first())
-                    return TRUE;
+                if (!$user = DB::table('admin_users')->where('staff_id', $model->staff_id)->first())
+                    return true;
 
                 DB::table('staffs_groups')
                     ->where('staff_id', $model->staff_id)
@@ -221,11 +224,11 @@ return new class extends Migration {
 
     protected function copyValuesFromStaffsToUsers(): void
     {
-        DB::table('users')->get()->each(function ($model) {
+        DB::table('admin_users')->get()->each(function ($model) {
             if (!$staff = DB::table('staffs')->where('staff_id', $model->staff_id)->first())
-                return TRUE;
+                return true;
 
-            DB::table('users')->where('user_id', $model->user_id)->update([
+            DB::table('admin_users')->where('user_id', $model->user_id)->update([
                 'name' => $staff->staff_name,
                 'email' => $staff->staff_email,
                 'user_role_id' => $staff->staff_role_id,

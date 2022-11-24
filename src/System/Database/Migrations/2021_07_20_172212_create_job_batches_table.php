@@ -3,11 +3,11 @@
 namespace Igniter\System\Database\Migrations;
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+/**
+ * Do not run to avoid conflicts with Laravel's job_batches table. Since v4
+ */
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -15,18 +15,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('job_batches', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->string('name');
-            $table->integer('total_jobs');
-            $table->integer('pending_jobs');
-            $table->integer('failed_jobs');
-            $table->text('failed_job_ids');
-            $table->mediumText('options')->nullable();
-            $table->integer('cancelled_at')->nullable();
-            $table->integer('created_at');
-            $table->integer('finished_at')->nullable();
-        });
+//        Schema::create('job_batches', function (Blueprint $table) {
+//            $table->string('id')->primary();
+//            $table->string('name');
+//            $table->integer('total_jobs');
+//            $table->integer('pending_jobs');
+//            $table->integer('failed_jobs');
+//            $table->text('failed_job_ids');
+//            $table->mediumText('options')->nullable();
+//            $table->integer('cancelled_at')->nullable();
+//            $table->integer('created_at');
+//            $table->integer('finished_at')->nullable();
+//        });
     }
 
     /**
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('job_batches');
+//        Schema::dropIfExists('job_batches');
     }
 };

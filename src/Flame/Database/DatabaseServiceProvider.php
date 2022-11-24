@@ -7,6 +7,7 @@ use Igniter\Flame\Database\Connectors\ConnectionFactory;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\DatabaseServiceProvider as BaseDatabaseServiceProvider;
 use Illuminate\Database\DatabaseTransactionsManager;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseServiceProvider extends BaseDatabaseServiceProvider
 {
@@ -21,6 +22,13 @@ class DatabaseServiceProvider extends BaseDatabaseServiceProvider
         parent::register();
 
         $this->registerDoctrineTypes();
+    }
+
+    public function boot()
+    {
+        parent::boot();
+
+        Schema::defaultStringLength(128);
     }
 
     /**

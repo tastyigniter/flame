@@ -12,8 +12,7 @@ use Illuminate\Support\Facades\Schema;
  * remember_token, is_activated, date_activated, last_login)  to both tables
  * Add super_user column to users table
  */
-return new class extends Migration
-{
+return new class extends Migration {
     public function up()
     {
         Schema::table('customers', function (Blueprint $table) {
@@ -28,17 +27,19 @@ return new class extends Migration
             $table->dateTime('last_login')->nullable();
         });
 
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('salt', 9)->nullable()->change();
-            $table->string('password')->change();
-            $table->boolean('super_user')->nullable();
-            $table->string('reset_code')->nullable();
-            $table->dateTime('reset_time')->nullable();
-            $table->string('activation_code')->nullable();
-            $table->string('remember_token')->nullable();
-            $table->boolean('is_activated')->nullable();
-            $table->dateTime('date_activated')->nullable();
-            $table->dateTime('last_login')->nullable();
+        rescue(function () {
+            Schema::table('admin_users', function (Blueprint $table) {
+                $table->string('salt', 9)->nullable()->change();
+                $table->string('password')->change();
+                $table->boolean('super_user')->nullable();
+                $table->string('reset_code')->nullable();
+                $table->dateTime('reset_time')->nullable();
+                $table->string('activation_code')->nullable();
+                $table->string('remember_token')->nullable();
+                $table->boolean('is_activated')->nullable();
+                $table->dateTime('date_activated')->nullable();
+                $table->dateTime('last_login')->nullable();
+            });
         });
     }
 

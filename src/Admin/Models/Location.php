@@ -66,7 +66,7 @@ class Location extends Model implements LocationInterface
 
     public $relation = [
         'hasMany' => [
-            'all_options' => ['Admin\Models\LocationOption', 'delete' => true],
+            'all_options' => [\Igniter\Admin\Models\LocationOption::class, 'delete' => true],
             'working_hours' => [\Igniter\Admin\Models\WorkingHour::class, 'delete' => true],
             'delivery_areas' => [\Igniter\Admin\Models\LocationArea::class, 'delete' => true],
         ],
