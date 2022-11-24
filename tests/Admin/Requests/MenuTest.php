@@ -7,7 +7,6 @@ use Igniter\Admin\Requests\Menu;
 it('has rules for menu_name', function () {
     expect('required')->toBeIn(array_get((new Menu)->rules(), 'menu_name'));
     expect('between:2,255')->toBeIn(array_get((new Menu)->rules(), 'menu_name'));
-    expect('unique:menus')->toBeIn(array_get((new Menu)->rules(), 'menu_name'));
 });
 
 it('has rules for menu_price', function () {

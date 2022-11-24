@@ -24,7 +24,6 @@ it('has required rule for inputs', function () {
 
 it('has rules for table_name input', function () {
     expect('between:2,255')->toBeIn(array_get((new Table)->rules(), 'table_name'));
-    expect('unique:tables')->toBeIn(array_get((new Table)->rules(), 'table_name'));
 });
 
 it('has min character rule for min_capacity and max_capacity input', function () {

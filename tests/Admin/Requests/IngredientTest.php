@@ -10,8 +10,6 @@ it('has rules for name input', function () {
     expect('required')->toBeIn($rules);
 
     expect('between:2,128')->toBeIn($rules);
-
-    expect('unique:ingredients')->toBeIn($rules);
 });
 
 it('has rules for description input', function () {
