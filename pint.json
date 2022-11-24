@@ -15,7 +15,13 @@
     "Laravel/laravel_phpdoc_alignment": false,
     "no_trailing_comma_in_singleline": false,
     "blank_line_before_statement": {
-      "statements": ["declare", "return", "throw", "try"]
-    }
+      "statements": [
+        "declare",
+        "return",
+        "throw",
+        "try"
+      ]
+    },
+    "single_blank_line_at_eof": false
   }
 }

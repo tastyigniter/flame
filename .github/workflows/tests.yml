@@ -53,24 +53,15 @@ jobs:
       - name: Install composer dependencies
         run: composer install --no-interaction --prefer-dist --no-progress --no-scripts
 
-      - name: Reset TastyIgniter library
-        run: |
-          git reset --hard HEAD
-          rm -rf ./vendor/tastyigniter/flame
-          wget https://github.com/tastyigniter/flame/archive/develop.zip -O ./vendor/tastyigniter/develop.zip
-          unzip ./vendor/tastyigniter/develop.zip -d ./vendor/tastyigniter
-          mv ./vendor/tastyigniter/flame-develop ./vendor/tastyigniter/flame
-          composer dump-autoload
-
       - name: Run composer post-update scripts
         run: |
           php artisan key:generate --force
-          php artisan igniter:install --no-interaction
-          php artisan igniter:util set version
           php artisan package:discover
+          php artisan igniter:package:discover
+          php artisan igniter:install --no-interaction
 
       - name: Run Pest Test Suite
-        run: composer test
+        run: vendor/bin/pest
 
     env:
       DB_PORT: 3306
