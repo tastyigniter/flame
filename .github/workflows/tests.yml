@@ -10,12 +10,10 @@ on:
 
 jobs:
   PestTests:
-    #    runs-on: ${{ matrix.os }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       max-parallel: 6
       matrix:
-        #        os: [ubuntu-latest, windows-latest]
         php: ['8.0', '8.1']
         db: ['mysql:5.7', 'mysql:8.0', 'mariadb:10.6']
         include:
@@ -52,13 +50,6 @@ jobs:
 
       - name: Install composer dependencies
         run: composer install --no-interaction --prefer-dist --no-progress --no-scripts
-
-      - name: Run composer post-update scripts
-        run: |
-          php artisan key:generate --force
-          php artisan package:discover
-          php artisan igniter:package:discover
-          php artisan igniter:install --no-interaction
 
       - name: Run Pest Test Suite
         run: vendor/bin/pest
