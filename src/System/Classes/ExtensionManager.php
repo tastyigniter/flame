@@ -771,7 +771,12 @@ class ExtensionManager
             resolve(UpdateManager::class)->purgeExtension($code);
 
         // Remove extensions files from filesystem
-        $this->removeExtension($code);
+        if ($package = array_get($this->packageManifest->extensionConfig($code), 'package_name')) {
+            resolve(ComposerManager::class)->remove([$package]);
+        }
+        else {
+            $this->removeExtension($code);
+        }
 
         // remove extension from installed.json meta file
         $this->updateInstalledExtensions($code, null);

@@ -11,6 +11,7 @@ use Igniter\Main\Events\Theme\Activated;
 use Igniter\Main\Template\Layout;
 use Igniter\System\Classes\ComponentManager;
 use Igniter\System\Classes\ExtensionManager;
+use Igniter\System\Classes\PackageManifest;
 
 /**
  * Theme Model Class
@@ -256,6 +257,7 @@ class Theme extends Model
     public static function syncAll()
     {
         $installedThemes = [];
+        $manifest = resolve(PackageManifest::class);
         $themeManager = resolve(ThemeManager::class);
         foreach ($themeManager->paths() as $code => $path) {
             if (!($themeObj = $themeManager->findTheme($code))) continue;
@@ -268,7 +270,7 @@ class Theme extends Model
             $theme = self::firstOrNew(['code' => $name]);
             $theme->name = $themeObj->label ?? title_case($code);
             $theme->code = $name;
-            $theme->version = $theme->version ?? '0.1.0';
+            $theme->version = $manifest->getVersion($theme->code) ?? $theme->version;
             $theme->description = $themeObj->description ?? '';
             $theme->save();
 
@@ -334,9 +336,7 @@ class Theme extends Model
             $themeModel->delete();
         }
 
-        $filesDeleted = resolve(ThemeManager::class)->removeTheme($themeCode);
-
-        return $filesDeleted;
+        return resolve(ThemeManager::class)->removeTheme($themeCode);
     }
 
     public static function generateUniqueCode($code, $suffix = null)

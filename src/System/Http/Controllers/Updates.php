@@ -6,6 +6,7 @@ use Exception;
 use Igniter\Admin\Facades\AdminMenu;
 use Igniter\Admin\Facades\Template;
 use Igniter\Main\Models\Theme;
+use Igniter\System\Classes\ComposerManager;
 use Igniter\System\Classes\UpdateManager;
 use Igniter\System\Models\Extension;
 use Igniter\System\Traits\ManagesUpdates;
@@ -31,6 +32,8 @@ class Updates extends \Igniter\Admin\Classes\AdminController
     {
         Extension::syncAll();
         Theme::syncAll();
+
+        resolve(ComposerManager::class)->loadRepositoryAndAuthConfig();
 
         $pageTitle = lang('igniter::system.updates.text_title');
         Template::setTitle($pageTitle);

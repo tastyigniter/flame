@@ -481,6 +481,8 @@ class UpdateManager
             params()->set('carte_info', $info);
 
         params()->save();
+
+        resolve(ComposerManager::class)->addAuthCredentials(null, array_get($info, 'email', ''), $key);
     }
 
     //

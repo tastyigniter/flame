@@ -2,6 +2,7 @@
 
 namespace Igniter\System\Console\Commands;
 
+use Igniter\System\Classes\ComposerManager;
 use Igniter\System\Classes\ExtensionManager;
 use Igniter\System\Classes\UpdateManager;
 use Illuminate\Console\Command;
@@ -25,8 +26,8 @@ class ExtensionInstall extends Command
     public function handle()
     {
         $extensionName = $this->argument('name');
-        $manager = resolve(UpdateManager::class);
-        $manager->setLogsOutput($this->output);
+        $manager = resolve(UpdateManager::class)->setLogsOutput($this->output);
+        $composerManager = resolve(ComposerManager::class)->setLogsOutput($this->output);
 
         $response = $manager->requestApplyItems([[
             'name' => $extensionName,
@@ -38,20 +39,12 @@ class ExtensionInstall extends Command
             return $this->output->writeln(sprintf('<info>Extension %s not found</info>', $extensionName));
 
         $code = array_get($extensionDetails, 'code');
-        $hash = array_get($extensionDetails, 'hash');
+        $package = array_get($extensionDetails, 'package');
         $version = array_get($extensionDetails, 'version');
 
-        $this->output->writeln(sprintf('<info>Downloading extension: %s</info>', $code));
-        $manager->downloadFile($code, $hash, [
-            'name' => $code,
-            'type' => 'extension',
-            'ver' => $version,
-        ]);
-
-        $this->output->writeln(sprintf('<info>Extracting extension %s files</info>', $code));
-        $manager->extractFile($code, extension_path('/'));
-
         $this->output->writeln(sprintf('<info>Installing %s extension</info>', $code));
+        $composerManager->require([$package.':'.$version]);
+
         resolve(ExtensionManager::class)->loadExtensions();
         resolve(ExtensionManager::class)->installExtension($code, $version);
     }

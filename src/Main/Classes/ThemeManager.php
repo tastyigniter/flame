@@ -5,6 +5,7 @@ namespace Igniter\Main\Classes;
 use Igniter\Flame\Exception\SystemException;
 use Igniter\Flame\Igniter;
 use Igniter\Main\Events\Theme\GetActiveTheme;
+use Igniter\System\Classes\ComposerManager;
 use Igniter\System\Classes\PackageManifest;
 use Igniter\System\Libraries\Assets;
 use Illuminate\Support\Facades\File;
@@ -584,12 +585,16 @@ class ThemeManager
     public function removeTheme($themeCode)
     {
         $themePath = $this->findPath($themeCode);
-
-        if (!is_dir($themePath) || !str_starts_with($themePath, Igniter::themesPath()))
+        if (!is_dir($themePath))
             return false;
 
         // Delete the specified admin and main language folder.
-        File::deleteDirectory($themePath);
+        if ($package = array_get($this->packageManifest->themeConfig($themeCode), 'package_name')) {
+            resolve(ComposerManager::class)->remove([$package]);
+        }
+        else {
+            File::deleteDirectory($themePath);
+        }
 
         return true;
     }

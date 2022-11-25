@@ -3,7 +3,6 @@
 namespace Igniter\System\Console\Commands;
 
 use Igniter\System\Classes\ExtensionManager;
-use Igniter\System\Classes\UpdateManager;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -45,9 +44,6 @@ class ExtensionRemove extends Command
             ))) {
             return;
         }
-
-        $manager = resolve(UpdateManager::class);
-        $manager->setLogsOutput($this->output);
 
         $extensionManager->deleteExtension($extensionName);
         $this->output->writeln(sprintf('<info>Deleted extension: %s</info>', $extensionName));

@@ -3,6 +3,7 @@
 namespace Igniter\System\Console\Commands;
 
 use Igniter\Main\Classes\ThemeManager;
+use Igniter\System\Classes\ComposerManager;
 use Igniter\System\Classes\UpdateManager;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -25,7 +26,8 @@ class ThemeInstall extends Command
     public function handle()
     {
         $themeName = $this->argument('name');
-        $manager = resolve(UpdateManager::class);
+        $manager = resolve(UpdateManager::class)->setLogsOutput($this->output);
+        $composerManager = resolve(ComposerManager::class)->setLogsOutput($this->output);
 
         $response = $manager->requestApplyItems([[
             'name' => $themeName,
@@ -37,20 +39,12 @@ class ThemeInstall extends Command
             return $this->output->writeln(sprintf('<info>Theme %s not found</info>', $themeName));
 
         $code = array_get($themeDetails, 'code');
-        $hash = array_get($themeDetails, 'hash');
+        $package = array_get($themeDetails, 'package');
         $version = array_get($themeDetails, 'version');
 
-        $this->output->writeln(sprintf('<info>Downloading theme: %s</info>', $code));
-        $manager->downloadFile($code, $hash, [
-            'name' => $code,
-            'type' => 'theme',
-            'ver' => $version,
-        ]);
-
-        $this->output->writeln(sprintf('<info>Extracting theme %s files</info>', $code));
-        $manager->extractFile($code, theme_path('/'));
-
         $this->output->writeln(sprintf('<info>Installing %s theme</info>', $code));
+        $composerManager->require([$package.':'.$version]);
+
         resolve(ThemeManager::class)->loadThemes();
         resolve(ThemeManager::class)->installTheme($code, $version);
     }
