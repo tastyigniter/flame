@@ -317,9 +317,9 @@ class ComposerManager
             $application->setAutoExit(false);
             $application->setCatchExceptions(false);
             $exitCode = $application->run(new ArrayInput([
-                    'command' => $action,
-                    'packages' => $packages,
-                ] + $options), $output);
+                'command' => $action,
+                'packages' => $packages,
+            ] + $options), $output);
 
             rewind($stream);
             $this->log(stream_get_contents($stream));
