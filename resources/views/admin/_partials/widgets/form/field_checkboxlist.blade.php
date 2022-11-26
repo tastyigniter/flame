@@ -65,7 +65,7 @@
                                 name="{{ $field->getName() }}[]"
                                 value="{{ $value }}"
                                 {!! in_array($value, $checkedValues) ? 'checked="checked"' : '' !!}
-                                {!! $field->getAttributes() !!}>
+                                {!! $field->getAttributes() !!}
                             />
 
                             <label class="form-check-label" for="{{ $checkboxId }}">

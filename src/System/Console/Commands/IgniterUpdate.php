@@ -51,9 +51,7 @@ class IgniterUpdate extends Command
         $coreUpdate = optional($updatesCollection->pull('core'))->first();
         $coreVersion = array_get($coreUpdate, 'version');
 
-        $this->output->writeln('<info>Updating application dependencies...</info>');
-        $composerManager->require(['composer/composer']);
-
+        $this->output->writeln('<info>Updating core dependencies...</info>');
         $composerManager->requireCore($coreVersion);
 
         $packages = $updatesCollection->flatten(1)->map(function ($addon) {

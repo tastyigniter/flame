@@ -3,7 +3,6 @@
 namespace Igniter\System\Models;
 
 use Igniter\Flame\Database\Model;
-use Igniter\Flame\Exception\SystemException;
 use Igniter\Flame\Mail\MailParser;
 use Igniter\System\Classes\MailManager;
 use Illuminate\Support\Facades\Event;
@@ -92,9 +91,6 @@ class MailTemplate extends Model
                 $result += $templateData;
             }
         }
-
-        if (!$result)
-            throw new SystemException('No dummy data found for: '.$this->code);
 
         return $result;
     }

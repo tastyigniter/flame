@@ -216,7 +216,7 @@ class ListController extends ControllerAction
         // Prep the optional toolbar widget
         if (isset($this->controller->widgets['toolbar']) && (isset($listConfig['toolbar']) || isset($modelConfig['toolbar']))) {
             $this->toolbarWidget[$alias] = clone $this->controller->widgets['toolbar'];
-            if ($this->toolbarWidget[$alias] instanceof \Admin\Widgets\Toolbar)
+            if ($this->toolbarWidget[$alias] instanceof \Igniter\Admin\Widgets\Toolbar)
                 $this->toolbarWidget[$alias]->reInitialize($listConfig['toolbar'] ?? $modelConfig['toolbar']);
         }
 

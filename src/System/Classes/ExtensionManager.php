@@ -563,9 +563,9 @@ class ExtensionManager
     {
         $classNames = [];
 
-        foreach ($this->packageManifest->extensions() as $extension) {
-            $namespace = normalize_class_name(array_get($extension, 'namespace'));
-            $classNames[$namespace] = array_get($extension, 'path');
+        foreach ($this->paths as $namespace => $path) {
+            $namespace = str_replace('.', '\\', $namespace);
+            $classNames[$namespace] = $path;
         }
 
         return $classNames;

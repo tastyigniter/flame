@@ -489,6 +489,9 @@ class UpdateManager
     //
     //
 
+    /**
+     * @deprecated Use composer instead, remove in v5
+     */
     public function downloadFile($fileCode, $fileHash, $params = [])
     {
         $filePath = $this->getFilePath($fileCode);
@@ -499,6 +502,9 @@ class UpdateManager
         return $this->getHubManager()->downloadFile($filePath, $fileHash, $params);
     }
 
+    /**
+     * @deprecated Use composer instead, remove in v5
+     */
     public function extractCore($fileCode)
     {
         ini_set('max_execution_time', 3600);
@@ -515,6 +521,9 @@ class UpdateManager
         return $result;
     }
 
+    /**
+     * @deprecated Use composer instead, remove in v5
+     */
     public function extractFile($fileCode, $extractTo = null)
     {
         $filePath = $this->getFilePath($fileCode);
@@ -539,6 +548,9 @@ class UpdateManager
         throw new ApplicationException('Failed to extract '.$fileCode.' archive file');
     }
 
+    /**
+     * @deprecated Use composer instead, remove in v5
+     */
     public function getFilePath($fileCode)
     {
         $fileName = md5($fileCode).'.zip';

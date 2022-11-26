@@ -62,28 +62,28 @@ class IgniterInstall extends Command
         $this->callSilent('igniter:package-discover');
         $this->callSilent('vendor:publish', ['--tag' => 'igniter-assets', '--force' => true]);
 
-        // validate satis config in composer.json
+        if ($this->option('force') &&
+            $this->confirm('Application appears to be installed already. Continue anyway?', false))
+            return;
 
-        if ($this->shouldRunSetup()) {
-            $this->alert('INSTALLATION');
+        if ($this->shouldSkipSetup())
+            return false;
 
-            $this->line('Enter a new value, or press ENTER for the default');
+        $this->alert('INSTALLATION');
 
-            $this->setSeederProperties();
+        $this->line('Enter a new value, or press ENTER for the default');
 
-            $this->rewriteEnvFile();
+        $this->setSeederProperties();
 
-            $this->migrateDatabase();
+        $this->rewriteEnvFile();
 
-            $this->createSuperUser();
+        $this->migrateDatabase();
 
-            $this->addSystemValues();
+        $this->createSuperUser();
 
-            $this->alert('INSTALLATION COMPLETE');
-        }
-        else {
-            $this->migrateDatabase();
-        }
+        $this->addSystemValues();
+
+        $this->alert('INSTALLATION COMPLETE');
     }
 
     /**
@@ -242,15 +242,14 @@ class IgniterInstall extends Command
         }
     }
 
-    protected function shouldRunSetup()
+    protected function shouldSkipSetup()
     {
-        if (!Igniter::hasDatabase())
-            return true;
-
-        if ($this->option('force') &&
-            $this->confirm('Application appears to be installed already. Continue anyway?', false))
-            return true;
-
-        return false;
+        if (
+            Igniter::hasDatabase()
+            && !$this->option('force')
+            && !$this->confirm('Application appears to be installed already. Continue anyway?', false)
+        ) {
+            return false;
+        }
     }
 }

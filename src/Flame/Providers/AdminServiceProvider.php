@@ -139,6 +139,7 @@ class AdminServiceProvider extends AppServiceProvider
                     'staff_name' => 'Staff name',
                     'reset_link' => admin_url('login/reset?code='),
                 ],
+                default => [],
             };
         });
     }
