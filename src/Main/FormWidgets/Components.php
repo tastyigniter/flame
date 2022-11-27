@@ -341,10 +341,14 @@ class Components extends BaseFormWidget
         $activeTheme = $this->model->getTheme();
         $themePartialPath = sprintf('%s/%s/%s/', $activeTheme->name, '_partials', $componentObj->alias);
 
+        $componentPath = $componentObj->getPath();
+        if (File::isPathSymbol($componentPath))
+            $componentPath = File::symbolizePath($componentPath);
+
         $formField->comment(sprintf(lang('igniter::system.themes.help_override_partial'), $themePartialPath));
 
-        $formField->options(function () use ($componentObj) {
-            return collect(File::glob($componentObj->getPath().'/*.blade.php'))
+        $formField->options(function () use ($componentPath) {
+            return collect(File::glob($componentPath.'/*.blade.php'))
                 ->mapWithKeys(function ($path) {
                     return [File::basename($path) => str_before(File::basename($path), '.blade.php')];
                 });
@@ -358,7 +362,11 @@ class Components extends BaseFormWidget
         $activeTheme = $this->model->getTheme();
         $themePartialPath = sprintf('%s/%s/%s', $activeTheme->path, '_partials', $componentObj->alias);
 
-        if (!File::exists($componentObj->getPath().'/'.$fileName))
+        $componentPath = $componentObj->getPath();
+        if (File::isPathSymbol($componentPath))
+            $componentPath = File::symbolizePath($componentPath);
+
+        if (!File::exists($componentPath.'/'.$fileName))
             throw new ApplicationException('The selected component partial does not exist in the component directory');
 
         if (File::exists($themePartialPath.'/'.$fileName))
@@ -367,6 +375,6 @@ class Components extends BaseFormWidget
         if (!File::exists($themePartialPath))
             File::makeDirectory($themePartialPath, 077, true);
 
-        File::copy($componentObj->getPath().'/'.$fileName, $themePartialPath.'/'.$fileName);
+        File::copy($componentPath.'/'.$fileName, $themePartialPath.'/'.$fileName);
     }
 }
