@@ -98,13 +98,12 @@ $config['form']['tabs'] = [
         'html' => [
             'tab' => 'igniter::system.mail_templates.label_body',
             'type' => 'codeeditor',
+            'mode' => 'application/x-httpd-php',
         ],
         'text' => [
             'tab' => 'igniter::system.mail_templates.label_plain',
-            'type' => 'textarea',
-            'attributes' => [
-                'rows' => 10,
-            ],
+            'type' => 'codeeditor',
+            'mode' => 'application/x-httpd-php',
         ],
     ],
 ];

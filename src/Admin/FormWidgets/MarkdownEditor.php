@@ -59,7 +59,7 @@ class MarkdownEditor extends BaseFormWidget
     public function loadAssets()
     {
         $this->addJs('js/vendor.editor.js', 'vendor-editor-js');
-        $this->addCss('igniter::formwidgets.markdowneditor', 'markdowneditor-css');
+        $this->addCss('markdowneditor.css', 'markdowneditor-css');
         $this->addJs('markdowneditor.js', 'markdowneditor-js');
     }
 

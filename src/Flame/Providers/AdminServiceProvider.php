@@ -303,6 +303,11 @@ class AdminServiceProvider extends AppServiceProvider
                         'target' => '_blank',
                     ],
                 ],
+                'locations' => [
+                    'type' => 'partial',
+                    'path' => 'locations/picker',
+                    'options' => ['Igniter\Admin\Classes\UserPanel', 'listLocations'],
+                ],
                 'activity' => [
                     'label' => 'lang:igniter::admin.text_activity_title',
                     'icon' => 'fa-bell',
@@ -322,16 +327,12 @@ class AdminServiceProvider extends AppServiceProvider
                     ],
                 ],
                 'settings' => [
-                    'type' => 'partial',
-                    'path' => 'settings_menu',
-                    'badgeCount' => [\Igniter\System\Models\Settings::class, 'updatesCount'],
-                    'options' => [\Igniter\System\Models\Settings::class, 'listMenuSettingItems'],
-                    'permission' => 'Site.Settings',
-                ],
-                'locations' => [
-                    'type' => 'partial',
-                    'path' => 'locations/picker',
-                    'options' => ['Igniter\Admin\Classes\UserPanel', 'listLocations'],
+                    'icon' => 'fa-gear',
+                    'attributes' => [
+                        'class' => 'nav-link front-end',
+                        'title' => 'lang:igniter::admin.side_menu.setting',
+                        'href' => admin_url('settings'),
+                    ],
                 ],
                 'user' => [
                     'type' => 'partial',

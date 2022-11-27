@@ -3,6 +3,9 @@
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
 }
+.editor-toolbar button {
+  width: auto;
+}
 .editor-toolbar button.active,
 .editor-toolbar button:hover {
   border-color: var(--bs-gray-300);
