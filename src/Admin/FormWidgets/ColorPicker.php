@@ -81,7 +81,6 @@ class ColorPicker extends BaseFormWidget
 
     public function loadAssets()
     {
-        $this->addCss('colorpicker.css', 'colorpicker-css');
         $this->addJs('colorpicker.js', 'colorpicker-js');
     }
 

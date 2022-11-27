@@ -31,7 +31,6 @@ mix.js(`${src}/js/app.js`, `${dist}/js`);
 
 mix.combine([
     'node_modules/animate.css/animate.compat.css',
-    'node_modules/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css',
     'node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
     'node_modules/bootstrap-multiselect/dist/css/bootstrap-multiselect.css',
     'node_modules/bootstrap-table/dist/bootstrap-table.min.css',
@@ -49,7 +48,6 @@ mix.combine([
 ], `${dist}/css/vendor.css`)
 
 mix.combine([
-    'node_modules/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js',
     'node_modules/bootstrap-multiselect/dist/js/bootstrap-multiselect.js',
     'node_modules/bootstrap-table/dist/bootstrap-table.min.js',
     'node_modules/bootstrap-treeview/dist/bootstrap-treeview.min.js',
