@@ -24,7 +24,7 @@
                 </div>
 
                 <div id="{{ $this->getId('item-list') }}" class="media-list-container">
-                    @if ($this->getSetting('uploads'))
+                    @if ($this->getSetting('enable_uploads'))
                         {!! $this->makePartial('mediamanager/uploader') !!}
                     @endif
 

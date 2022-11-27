@@ -5,55 +5,53 @@
 <script type="text/template" data-media-single-selection-template>
     <div class="sidebar-preview-placeholder-container">
         <div class="sidebar-preview-toolbar">
-            <div class="btn-group btn-group-sm">
-                <button
-                    type="button"
-                    class="btn btn-outline-default"
-                    title="@lang('igniter::main.media_manager.button_cancel')"
-                    data-media-control="cancel-selection">
-                    <i class="fa fa-times text-danger"></i>
-                </button>
+            <button
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                title="@lang('igniter::main.media_manager.button_cancel')"
+                data-media-control="cancel-selection">
+                <i class="fa fa-times"></i>
+            </button>
 
-                <button
-                    type="button"
-                    class="btn btn-outline-default"
-                    title="@lang('igniter::main.media_manager.button_rename')"
-                    data-media-control="rename-item"
-                    data-swal-title="@lang('igniter::main.media_manager.text_file_name')"
-                    {{ !$this->getSetting('rename') ? 'disabled' : '' }}>
-                    <i class="fa fa-pencil"></i>
-                </button>
+            <button
+                type="button"
+                class="btn btn-sm btn-outline-default"
+                title="@lang('igniter::main.media_manager.button_rename')"
+                data-media-control="rename-item"
+                data-swal-title="@lang('igniter::main.media_manager.text_file_name')"
+                {{ !$this->getSetting('enable_rename') ? 'disabled' : '' }}>
+                <i class="fa fa-pencil"></i>
+            </button>
 
-                <button
-                    type="button"
-                    class="btn btn-outline-default"
-                    title="@lang('igniter::main.media_manager.button_move')"
-                    data-media-control="move-item"
-                    data-swal-title="@lang('igniter::main.media_manager.text_move_destination_folder')"
-                    {{ !$this->getSetting('move') ? 'disabled' : '' }}>
-                    <i class="fa fa-folder-open"></i>
-                </button>
+            <button
+                type="button"
+                class="btn btn-sm btn-outline-default"
+                title="@lang('igniter::main.media_manager.button_move')"
+                data-media-control="move-item"
+                data-swal-title="@lang('igniter::main.media_manager.text_move_destination_folder')"
+                {{ !$this->getSetting('enable_move') ? 'disabled' : '' }}>
+                <i class="fa fa-folder-open"></i>
+            </button>
 
-                <button
-                    type="button"
-                    class="btn btn-outline-default"
-                    title="@lang('igniter::main.media_manager.button_copy')"
-                    data-media-control="copy-item"
-                    data-swal-title="@lang('igniter::main.media_manager.text_copy_destination_folder')"
-                    {{ !$this->getSetting('copy') ? 'disabled' : '' }}>
-                    <i class="fa fa-clipboard"></i>
-                </button>
+            <button
+                type="button"
+                class="btn btn-sm btn-outline-default"
+                title="@lang('igniter::main.media_manager.button_copy')"
+                data-media-control="copy-item"
+                data-swal-title="@lang('igniter::main.media_manager.text_copy_destination_folder')"
+                {{ !$this->getSetting('enable_copy') ? 'disabled' : '' }}>
+                <i class="fa fa-clipboard"></i>
+            </button>
 
-                <button
-                    type="button"
-                    class="btn btn-outline-danger"
-                    title="@lang('igniter::main.media_manager.button_delete')"
-                    data-media-control="delete-item"
-                    data-swal-confirm="@lang('igniter::admin.alert_warning_confirm')"
-                    {{ !$this->getSetting('delete') ? 'disabled' : '' }}>
-                    <i class="fa fa-trash"></i>
-                </button>
-            </div>
+            <button
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                title="@lang('igniter::main.media_manager.button_delete')"
+                data-media-control="delete-item"
+                data-swal-confirm="@lang('igniter::admin.alert_warning_confirm')"
+                {{ !$this->getSetting('enable_delete') ? 'disabled' : '' }}>
+                <i class="fa fa-trash"></i>
+            </button>
         </div>
         <div class="sidebar-preview-placeholder">
             <div data-media-preview-placeholder></div>
@@ -84,42 +82,40 @@
 <script type="text/template" data-media-multi-selection-template>
     <div class="sidebar-preview-placeholder-container">
         <div class="sidebar-preview-toolbar">
-            <div class="btn-group btn-group-sm">
-                <button
-                    type="button"
-                    class="btn btn-outline-default"
-                    title="@lang('igniter::main.media_manager.button_cancel')"
-                    data-media-control="cancel-selection">
-                    <i class="fa fa-times text-danger"></i>
-                </button>
+            <button
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                title="@lang('igniter::main.media_manager.button_cancel')"
+                data-media-control="cancel-selection">
+                <i class="fa fa-times"></i>
+            </button>
 
-                <button
-                    type="button"
-                    class="btn btn-outline-default"
-                    title="@lang('igniter::main.media_manager.button_move')"
-                    data-media-control="move-item"
-                    {{ !$this->getSetting('move') ? 'disabled' : '' }}>
-                    <i class="fa fa-folder-open"></i>
-                </button>
+            <button
+                type="button"
+                class="btn btn-sm btn-outline-default"
+                title="@lang('igniter::main.media_manager.button_move')"
+                data-media-control="move-item"
+                {{ !$this->getSetting('enable_move') ? 'disabled' : '' }}>
+                <i class="fa fa-folder-open"></i>
+            </button>
 
-                <button
-                    type="button"
-                    class="btn btn-outline-default"
-                    title="@lang('igniter::main.media_manager.button_copy')"
-                    data-media-control="copy-item"
-                    {{ !$this->getSetting('copy') ? 'disabled' : '' }}>
-                    <i class="fa fa-clipboard"></i>
-                </button>
+            <button
+                type="button"
+                class="btn btn-sm btn-outline-default"
+                title="@lang('igniter::main.media_manager.button_copy')"
+                data-media-control="copy-item"
+                {{ !$this->getSetting('enable_copy') ? 'disabled' : '' }}>
+                <i class="fa fa-clipboard"></i>
+            </button>
 
-                <button
-                    type="button"
-                    class="btn btn-outline-danger"
-                    title="@lang('igniter::main.media_manager.button_delete')"
-                    data-media-control="delete-item"
-                    {{ !$this->getSetting('delete') ? 'disabled' : '' }}>
-                    <i class="fa fa-trash"></i>
-                </button>
-            </div>
+            <button
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                title="@lang('igniter::main.media_manager.button_delete')"
+                data-media-control="delete-item"
+                {{ !$this->getSetting('enable_delete') ? 'disabled' : '' }}>
+                <i class="fa fa-trash"></i>
+            </button>
         </div>
         <div class="sidebar-preview-placeholder">
             <i class="fa fa-clone fa-4x"></i>

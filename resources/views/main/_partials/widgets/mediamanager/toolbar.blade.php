@@ -25,7 +25,7 @@
             </div>
 
             <div class="btn-group">
-                @if ($this->getSetting('uploads'))
+                @if ($this->getSetting('enable_uploads'))
                     <button
                         type="button" class="btn btn-primary"
                         data-media-control="upload">
@@ -36,7 +36,7 @@
             </div>
 
             <div class="btn-group">
-                @if ($this->getSetting('new_folder'))
+                @if ($this->getSetting('enable_new_folder'))
                     <button
                         class="btn btn-default"
                         title="@lang('igniter::main.media_manager.text_new_folder')"
@@ -44,14 +44,14 @@
                         data-swal-title="@lang('igniter::main.media_manager.text_folder_name')"
                     ><i class="fa fa-folder"></i></button>
                 @endif
-                @if ($this->getSetting('rename'))
+                @if ($this->getSetting('enable_rename'))
                     <button
                         class="btn btn-default" title="@lang('igniter::main.media_manager.text_rename_folder')"
                         data-media-control="rename-folder"
                         data-swal-title="@lang('igniter::main.media_manager.text_folder_name')"
                     ><i class="fa fa-pencil"></i></button>
                 @endif
-                @if ($this->getSetting('delete'))
+                @if ($this->getSetting('enable_delete'))
                     <button
                         class="btn btn-danger"
                         title="@lang('igniter::main.media_manager.text_delete_folder')"
@@ -82,13 +82,6 @@
                     {!! $this->makePartial('mediamanager/sorting', ['sortBy', $sortBy]) !!}
                 </div>
 
-                @unless($isPopup)
-                    <a
-                        class="btn btn-default btn-options mr-2"
-                        href="{{ admin_url('settings/edit/media') }}">
-                        <i class="fa fa-gear"></i>
-                    </a>
-                @endunless
                 {!! $this->makePartial('mediamanager/search') !!}
             </div>
         </div>

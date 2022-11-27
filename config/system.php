@@ -125,13 +125,20 @@ return [
         'media' => [
             'disk' => 'media',
             'folder' => 'uploads',
-            'path' => '/public/assets/media/uploads',
+            'path' => '/media/uploads',
+            'max_upload_size' => 1500,
+            'enable_uploads' => true,
+            'enable_new_folder' => true,
+            'enable_rename' => true,
+            'enable_move' => true,
+            'enable_copy' => true,
+            'enable_delete' => true,
         ],
 
         'attachment' => [
             'disk' => 'media',
             'folder' => 'attachments',
-            'path' => '/public/assets/media/attachments',
+            'path' => '/media/attachments',
         ],
     ],
 

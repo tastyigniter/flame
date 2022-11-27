@@ -18,7 +18,6 @@ use Igniter\Main\Classes\ThemeManager;
 use Igniter\Main\Template\Page;
 use Igniter\System\Classes\ComponentManager;
 use Igniter\System\Libraries\Assets;
-use Igniter\System\Models\Settings;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
@@ -64,7 +63,6 @@ class MainServiceProvider extends AppServiceProvider
         else {
             $this->registerFormWidgets();
             $this->registerPermissions();
-            $this->registerSystemSettings();
         }
     }
 
@@ -189,24 +187,6 @@ class MainServiceProvider extends AppServiceProvider
                 ],
                 'Site.Themes' => [
                     'label' => 'igniter::main.permissions.themes', 'group' => 'igniter::main.permissions.name',
-                ],
-            ]);
-        });
-    }
-
-    protected function registerSystemSettings()
-    {
-        Settings::registerCallback(function (Settings $manager) {
-            $manager->registerSettingItems('core', [
-                'media' => [
-                    'label' => 'igniter::main.settings.text_tab_media_manager',
-                    'description' => 'igniter::main.settings.text_tab_desc_media_manager',
-                    'icon' => 'fa fa-image',
-                    'priority' => 5,
-                    'permission' => ['Site.Settings'],
-                    'url' => admin_url('settings/edit/media'),
-                    'form' => 'igniter::models/main/mediasettings',
-                    'request' => \Igniter\Main\Requests\MediaSettings::class,
                 ],
             ]);
         });

@@ -34,19 +34,18 @@ class MediaLibrary
 
     public function initialize()
     {
-        $config = setting('image_manager', []);
+        $this->config = Config::get('igniter.system.assets.media', []);
 
-        $this->storageFolder = $this->validatePath(Config::get('igniter.system.assets.media.folder', 'data'));
-        $this->storagePath = rtrim(Config::get('igniter.system.assets.media.path', '/assets/images/data'), '/');
+        $this->storageFolder = $this->validatePath($this->getConfig('folder', 'uploads'));
+        $this->storagePath = rtrim($this->getConfig('path', '/media/uploads'), '/');
 
         if (!starts_with($this->storagePath, ['//', 'http://', 'https://'])) {
             $this->storagePath = asset($this->storagePath);
         }
 
-        $this->ignoreNames = Config::get('igniter.system.assets.media.ignore', []);
-        $this->ignorePatterns = Config::get('igniter.system.assets.media.ignorePatterns', ['^\..*']);
+        $this->ignoreNames = $this->getConfig('ignore', []);
+        $this->ignorePatterns = $this->getConfig('ignorePatterns', ['^\..*']);
         $this->storageFolderNameLength = strlen($this->storageFolder);
-        $this->config = $config;
     }
 
     public function listFolderContents($fullPath, $methodName, $recursive = false)
@@ -59,7 +58,7 @@ class MediaLibrary
         }
 
         $cacheSuffix = $recursive ? 'recursive' : 'single';
-        $cachedKey = "{$cacheSuffix}.{$methodName}.{$fullPath}";
+        $cachedKey = "$cacheSuffix.$methodName.$fullPath";
 
         if (array_has($cached, $cachedKey)) {
             $folderContents = array_get($cached, $cachedKey);
@@ -71,7 +70,7 @@ class MediaLibrary
             Cache::put(
                 self::$cacheKey,
                 base64_encode(serialize($cached)),
-                Config::get('igniter.system.assets.media.ttl', now()->addMinutes(10))
+                $this->getConfig('ttl', now()->addMinutes(10))
             );
         }
 
@@ -398,13 +397,11 @@ class MediaLibrary
                         return -1;
 
                     return $a->lastModified < $b->lastModified ? 1 : 0;
-                    break;
                 case 'size':
                     if ($a->size > $b->size)
                         return -1;
 
                     return $a->size < $b->size ? 1 : 0;
-                    break;
             }
         });
 
@@ -444,7 +441,7 @@ class MediaLibrary
 
     protected function getThumbDirectory()
     {
-        return $this->validatePath(Config::get('igniter.system.assets.media.thumbFolder', 'public')).'/';
+        return $this->validatePath($this->getConfig('thumbFolder', 'public')).'/';
     }
 
     protected function getStorageDisk()
@@ -453,7 +450,7 @@ class MediaLibrary
             return $this->storageDisk;
 
         return $this->storageDisk = Storage::disk(
-            Config::get('igniter.system.assets.media.disk', 'local')
+            $this->getConfig('disk', 'local')
         );
     }
 

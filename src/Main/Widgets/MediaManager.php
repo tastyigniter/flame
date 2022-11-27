@@ -83,7 +83,7 @@ class MediaManager extends BaseWidget
         $this->vars['isPopup'] = $this->popupLoaded;
         $this->vars['selectMode'] = $this->selectMode;
         $this->vars['selectItem'] = $this->selectItem;
-        $this->vars['maxUploadSize'] = round($this->getSetting('max_size', 380) / 1024, 2);
+        $this->vars['maxUploadSize'] = round($this->getSetting('max_upload_size', 1500) / 1024, 2);
         $this->vars['allowedExtensions'] = $this->getMediaLibrary()->getAllowedExtensions();
         $this->vars['chooseButton'] = $this->chooseButton;
         $this->vars['chooseButtonText'] = $this->chooseButtonText;
@@ -192,7 +192,7 @@ class MediaManager extends BaseWidget
     {
         $mediaLibrary = $this->getMediaLibrary();
 
-        if (!$this->getSetting('new_folder'))
+        if (!$this->getSetting('enable_new_folder'))
             throw new ApplicationException(lang('igniter::main.media_manager.alert_new_folder_disabled'));
 
         if (!$path = $mediaLibrary->validatePath(post('path')))
@@ -230,7 +230,7 @@ class MediaManager extends BaseWidget
         $mediaLibrary = $this->getMediaLibrary();
 
         try {
-            if (!$this->getSetting('rename'))
+            if (!$this->getSetting('enable_rename'))
                 throw new ApplicationException(lang('igniter::main.media_manager.alert_rename_disabled'));
 
             if (!$path = $mediaLibrary->validatePath(post('path')))
@@ -270,7 +270,7 @@ class MediaManager extends BaseWidget
     {
         $mediaLibrary = $this->getMediaLibrary();
 
-        if (!$this->getSetting('rename'))
+        if (!$this->getSetting('enable_rename'))
             throw new ApplicationException(lang('igniter::main.media_manager.alert_rename_disabled'));
 
         if (!$path = $mediaLibrary->validatePath(post('path')))
@@ -312,7 +312,7 @@ class MediaManager extends BaseWidget
     {
         $mediaLibrary = $this->getMediaLibrary();
 
-        if (!$this->getSetting('delete'))
+        if (!$this->getSetting('enable_delete'))
             throw new ApplicationException(lang('igniter::main.media_manager.alert_delete_disabled'));
 
         if (!$path = $mediaLibrary->validatePath(post('path')))
@@ -338,7 +338,7 @@ class MediaManager extends BaseWidget
     {
         $mediaLibrary = $this->getMediaLibrary();
 
-        if (!$this->getSetting('delete')) {
+        if (!$this->getSetting('enable_delete')) {
             $json['alert'] = lang('igniter::main.media_manager.alert_delete_disabled');
         }
 
@@ -374,7 +374,7 @@ class MediaManager extends BaseWidget
     {
         $mediaLibrary = $this->getMediaLibrary();
 
-        if (!$this->getSetting('move'))
+        if (!$this->getSetting('enable_move'))
             throw new ApplicationException(lang('igniter::main.media_manager.alert_move_disabled'));
 
         if (!$source = $mediaLibrary->validatePath(post('path')))
@@ -411,7 +411,7 @@ class MediaManager extends BaseWidget
     {
         $mediaLibrary = $this->getMediaLibrary();
 
-        if (!$this->getSetting('copy'))
+        if (!$this->getSetting('enable_copy'))
             throw new ApplicationException(lang('igniter::main.media_manager.alert_copy_disabled'));
 
         if (!$source = $mediaLibrary->validatePath(post('path')))
@@ -570,6 +570,9 @@ class MediaManager extends BaseWidget
         $mediaLibrary = $this->getMediaLibrary();
 
         try {
+            if (!$this->getSetting('enable_uploads'))
+                throw new ApplicationException(lang('igniter::main.media_manager.alert_upload_disabled'));
+
             if (!$this->controller->getUser()->hasPermission('Admin.MediaManager'))
                 throw new ApplicationException(sprintf(lang('igniter::main.media_manager.alert_permission'), 'upload'));
 
