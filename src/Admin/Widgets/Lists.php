@@ -219,7 +219,9 @@ class Lists extends BaseWidget
     {
         $this->prepareVars();
 
-        return $this->getController()->refresh();
+        return [
+            '~#'.$this->getId('list-form') => $this->makePartial('lists/list'),
+        ];
     }
 
     /**
