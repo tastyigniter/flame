@@ -6,7 +6,6 @@ use Igniter\Admin\Classes\PermissionManager;
 use Igniter\Flame\Flash\FlashBag;
 use Igniter\Flame\Igniter;
 use Igniter\Flame\Setting\Facades\Setting;
-use Igniter\Flame\Translation\Drivers\Database;
 use Igniter\System\Classes;
 use Igniter\System\Console;
 use Igniter\System\Exception\ErrorHandler;
@@ -71,7 +70,6 @@ class SystemServiceProvider extends AppServiceProvider
         $this->updateTimezone();
         $this->setConfiguration();
         $this->extendValidator();
-        $this->addTranslationDriver();
         $this->defineQueryMacro();
     }
 
@@ -239,13 +237,6 @@ class SystemServiceProvider extends AppServiceProvider
 
             return 1;
         });
-    }
-
-    protected function addTranslationDriver()
-    {
-        if (Igniter::hasDatabase()) {
-            $this->app['translation.loader']->addDriver(Database::class);
-        }
     }
 
     protected function setConfiguration()

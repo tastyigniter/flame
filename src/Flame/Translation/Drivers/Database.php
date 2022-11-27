@@ -2,6 +2,7 @@
 
 namespace Igniter\Flame\Translation\Drivers;
 
+use Igniter\Flame\Igniter;
 use Igniter\Flame\Translation\Contracts\Driver;
 use Igniter\Flame\Translation\Models\Translation;
 
@@ -16,6 +17,8 @@ class Database implements Driver
      */
     public function load($locale, $group, $namespace = null)
     {
-        return Translation::getCached($locale, $group, $namespace);
+        return Igniter::hasDatabase()
+            ? Translation::getCached($locale, $group, $namespace)
+            : [];
     }
 }

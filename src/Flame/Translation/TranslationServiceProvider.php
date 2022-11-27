@@ -2,6 +2,8 @@
 
 namespace Igniter\Flame\Translation;
 
+use Igniter\Flame\Translation\Drivers\Database;
+
 class TranslationServiceProvider extends \Illuminate\Translation\TranslationServiceProvider
 {
     public function register()
@@ -15,6 +17,8 @@ class TranslationServiceProvider extends \Illuminate\Translation\TranslationServ
             // locale as well as the fallback locale. So, we'll grab the application
             // configuration so we can easily get both of these values from there.
             $locale = $app['config']['app.locale'];
+
+            $loader->addDriver(Database::class);
 
             $trans = new Translator($loader, $locale);
 
