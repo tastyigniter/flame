@@ -7,6 +7,7 @@ use Igniter\Main\Models\Theme;
 use Igniter\System\Classes\PackageManifest;
 use Igniter\System\Classes\UpdateManager;
 use Igniter\System\Facades\Assets;
+use Igniter\System\Helpers\CacheHelper;
 use Igniter\System\Helpers\SystemHelper;
 use Igniter\System\Models\Extension;
 use Illuminate\Console\Command;
@@ -66,6 +67,7 @@ class IgniterUtil extends Command
             ['admin', null, InputOption::VALUE_NONE, 'Compile admin registered bundles.'],
             ['minify', null, InputOption::VALUE_REQUIRED, 'Whether to minify the assets or not, default is 1.'],
             ['carteKey', null, InputOption::VALUE_REQUIRED, 'Specify a carteKey for set carte.'],
+            ['theme', null, InputOption::VALUE_REQUIRED, 'Specify a theme code to set as default.'],
             ['extensions', null, InputOption::VALUE_NONE, 'Set the version number of all extensions to the latest available.'],
         ];
     }
@@ -165,6 +167,22 @@ class IgniterUtil extends Command
         SystemHelper::replaceInEnv('IGNITER_CARTE_KEY=', 'IGNITER_CARTE_KEY='.$carteKey);
 
         resolve(UpdateManager::class)->applySiteDetail($carteKey);
+    }
+
+    protected function utilSetTheme()
+    {
+        $themeName = $this->option('theme');
+        if (!strlen($themeName)) {
+            $this->error('No theme defined, use --theme=<code> to set a theme');
+
+            return;
+        }
+
+        if ($theme = Theme::activateTheme($themeName)) {
+            CacheHelper::clearView();
+
+            $this->output->writeln('Theme ['.$theme->name.'] set as default ');
+        }
     }
 
     protected function setItemsVersion()
