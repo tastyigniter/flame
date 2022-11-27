@@ -141,6 +141,16 @@ class Extensions extends \Igniter\Admin\Classes\AdminController
         }
     }
 
+    public function index_onLoadReadme($context = null)
+    {
+        if (!$recordId = trim(post('recordId')))
+            throw new ApplicationException(lang('igniter::admin.alert_error_try_again'));
+
+        return $this->makePartial('extensions/extension_readme', [
+            'record' => Extension::find($recordId),
+        ]);
+    }
+
     public function index_onInstall($context = null)
     {
         if (!$extensionCode = trim(post('code')))
@@ -159,7 +169,7 @@ class Extensions extends \Igniter\Admin\Classes\AdminController
             flash()->danger(lang('igniter::admin.alert_error_try_again'));
         }
 
-        return $this->refreshList('list');
+        return $this->redirectBack();
     }
 
     public function index_onUninstall($context = null)
@@ -178,7 +188,7 @@ class Extensions extends \Igniter\Admin\Classes\AdminController
             flash()->danger(lang('igniter::admin.alert_error_try_again'));
         }
 
-        return $this->refreshList('list');
+        return $this->redirectBack();
     }
 
     public function edit_onSave($action, $vendor = null, $extension = null, $context = null)

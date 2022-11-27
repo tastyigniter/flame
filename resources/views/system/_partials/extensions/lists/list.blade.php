@@ -1,6 +1,6 @@
 {!! form_open(current_url(),
     [
-        'id' => 'list-form',
+        'id' => $this->getId('list-form'),
         'role' => 'form',
         'method' => 'POST',
     ]

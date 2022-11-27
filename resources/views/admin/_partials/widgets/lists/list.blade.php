@@ -1,5 +1,5 @@
 {!! form_open([
-    'id' => 'list-form',
+    'id' => $this->getId('list-form'),
     'role' => 'form',
     'method' => 'POST',
 ]) !!}
@@ -12,13 +12,13 @@
         id="{{ $this->getId('table') }}"
         class="table table-hover mb-0 border-bottom"
     >
-        <thead>
+        <thead id="{{ $this->getId('table-head') }}">
         @if ($showCheckboxes)
             {!! $this->makePartial('lists/list_actions') !!}
         @endif
         {!! $this->makePartial('lists/list_head') !!}
         </thead>
-        <tbody>
+        <tbody id="{{ $this->getId('table-body') }}">
         @if(count($records))
             {!! $this->makePartial('lists/list_body') !!}
         @else

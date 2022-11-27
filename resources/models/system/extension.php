@@ -46,7 +46,6 @@ $config['list']['columns'] = [
         'attributes' => [
             'class' => 'btn btn-outline-success mr-3',
             'data-request' => 'onInstall',
-            'data-request-form' => '#list-form',
             'data-request-data' => 'code:\'{name}\'',
         ],
     ],
@@ -56,7 +55,6 @@ $config['list']['columns'] = [
         'attributes' => [
             'class' => 'btn btn-outline-default mr-3',
             'data-request' => 'onUninstall',
-            'data-request-form' => '#list-form',
             'data-request-data' => 'code:\'{name}\'',
         ],
     ],

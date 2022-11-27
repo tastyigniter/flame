@@ -2,8 +2,9 @@
     <div
         class="flex-grow-1"
         @if($record->class && strlen($record->readme))
-        data-bs-toggle="modal"
-        data-bs-target="#extension-modal-{{ $record->extension_id }}"
+        data-toggle="record-editor"
+        data-handler="onLoadReadme"
+        data-record-id="{{ $record->extension_id }}"
         role="button"
         @endif
     >
@@ -18,25 +19,3 @@
         {{ $record->meta['author'] ?? '' }}
     </div>
 </div>
-@if($record->class && strlen($record->readme))
-    <div
-        id="extension-modal-{{ $record->extension_id }}"
-        class="modal fade"
-        tabindex="-1"
-        role="dialog"
-    >
-        <div class="modal-dialog modal-dialog-scrollable modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">{{ $record->title }}</h4>
-                    @isset($record->meta['homepage'])
-                        <a href="{{ $record->meta['homepage']}}"><i class="fa fa-external-link fa-2x"></i></a>
-                    @endisset
-                </div>
-                <div class="modal-body bg-light markdown">
-                    {!! $record->readme !!}
-                </div>
-            </div>
-        </div>
-    </div>
-@endif
