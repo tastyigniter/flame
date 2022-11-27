@@ -392,10 +392,6 @@
     MediaManager.prototype.showDialog = function (options) {
 
         Swal.fire($.extend({}, MediaManager.DIALOG_DEFAULTS, options));
-
-        // $(this.dialogElement).one('shown.bs.modal', function () {
-        //     $(this).find('input, select').focus()
-        // })
     }
 
     //
@@ -429,7 +425,7 @@
     MediaManager.prototype.createFolder = function (event) {
         this.showDialog({
             input: 'text',
-            title: $(event.currentTarget).data('swal-title'),
+            text: $(event.currentTarget).data('swal-title'),
             preConfirm: $.proxy(this.onCreateFolderSubmit, this)
         })
     }
@@ -442,7 +438,7 @@
 
         this.showDialog({
             input: 'text',
-            title: $(event.currentTarget).data('swal-title'),
+            text: $(event.currentTarget).data('swal-title'),
             preConfirm: $.proxy(this.onRenameFolderSubmit, this)
         })
     }
@@ -472,7 +468,7 @@
 
         this.showDialog({
             input: 'text',
-            title: $(event.currentTarget).data('swal-title'),
+            text: $(event.currentTarget).data('swal-title'),
             preConfirm: $.proxy(this.onRenameFileSubmit, this)
         })
     }
@@ -487,7 +483,7 @@
         this.showDialog({
             input: 'select',
             inputOptions: JSON.parse(this.$folderTreeElement.find('.folder-tree')[0].getAttribute('data-folders')),
-            title: $(event.currentTarget).data('swal-title'),
+            text: $(event.currentTarget).data('swal-title'),
             preConfirm: $.proxy(this.onMoveFilesSubmit, this)
         })
     }
@@ -502,7 +498,7 @@
         this.showDialog({
             input: 'select',
             inputOptions: JSON.parse(this.$folderTreeElement.find('.folder-tree')[0].getAttribute('data-folders')),
-            title: $(event.currentTarget).data('swal-title'),
+            text: $(event.currentTarget).data('swal-title'),
             preConfirm: $.proxy(this.onCopyFilesSubmit, this)
         })
     }
