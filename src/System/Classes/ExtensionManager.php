@@ -450,12 +450,12 @@ class ExtensionManager
 
         $extension->register();
 
-        // Register controller path
+        // Register controller path using v3 directory structure
         if (File::isDirectory($controllerPath = $extensionPath.'/controllers')) {
             Igniter::loadControllersFrom($controllerPath, $extensionNamespace.'Controllers');
         }
 
-        // Register controller path
+        // Register controller path using v4 directory structure
         if (File::isDirectory($controllerPath = $extensionPath.'/src/Http/Controllers')) {
             Igniter::loadControllersFrom($controllerPath, $extensionNamespace.'Http\\Controllers');
         }

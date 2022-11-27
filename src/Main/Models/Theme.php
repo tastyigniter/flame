@@ -20,6 +20,11 @@ class Theme extends Model
 {
     use Purgeable;
 
+    const ICON_MIMETYPES = [
+        'png' => 'image/png',
+        'svg' => 'image/svg+xml',
+    ];
+
     /**
      * @var array data cached array
      */
@@ -139,7 +144,7 @@ class Theme extends Model
 
     public function getScreenshotAttribute()
     {
-        return $this->getTheme()->screenshot;
+        return $this->getTheme()->getScreenshotData();
     }
 
     public function setAttribute($key, $value)

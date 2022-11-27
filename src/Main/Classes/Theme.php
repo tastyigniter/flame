@@ -3,6 +3,7 @@
 namespace Igniter\Main\Classes;
 
 use Exception;
+use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Flame\Igniter;
 use Igniter\Flame\Pagic\Source\FileSource;
 use Igniter\Main\Events\Theme\ExtendFormConfig;
@@ -87,6 +88,8 @@ class Theme
      * @var array Cached theme configuration.
      */
     protected $configCache;
+
+    protected $screenshotData;
 
     protected static $allowedTemplateModels = [
         '_layouts' => LayoutTemplate::class,
@@ -189,15 +192,35 @@ class Theme
     public function screenshot($name)
     {
         foreach ($this->getFindInPaths() as $findInPath => $publicPath) {
-            foreach (['.svg', '.png', '.jpg'] as $extension) {
-                if (File::isFile($findInPath.'/'.$name.$extension)) {
-                    $this->screenshot = $publicPath.'/'.$name.$extension;
+            foreach (ThemeModel::ICON_MIMETYPES as $extension => $mimeType) {
+                if (File::isFile($findInPath.'/'.$name.'.'.$extension)) {
+                    $this->screenshot = $findInPath.'/'.$name.'.'.$extension;
                     break 2;
                 }
             }
         }
 
         return $this;
+    }
+
+    public function getScreenshotData()
+    {
+        if (!is_null($this->screenshotData))
+            return $this->screenshotData;
+
+        $screenshotData = '';
+        if (file_exists($file = $this->screenshot)) {
+            $extension = pathinfo($file, PATHINFO_EXTENSION);
+            if (!array_key_exists($extension, ThemeModel::ICON_MIMETYPES))
+                throw new ApplicationException('Invalid theme icon file type in: '.$this->name.'. Only SVG and PNG images are supported');
+
+            $mimeType = ThemeModel::ICON_MIMETYPES[$extension];
+            $data = base64_encode(file_get_contents($file));
+
+            $screenshotData = "data:{$mimeType};base64,{$data}";
+        }
+
+        return $this->screenshotData = $screenshotData;
     }
 
     public function isActive()

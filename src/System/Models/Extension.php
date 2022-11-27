@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\File;
 class Extension extends Model
 {
     const ICON_MIMETYPES = [
+        'png' => 'image/png',
         'svg' => 'image/svg+xml',
     ];
 
@@ -96,7 +97,7 @@ class Extension extends Model
             if (file_exists($file = resolve(ExtensionManager::class)->path($this->name, $image))) {
                 $extension = pathinfo($file, PATHINFO_EXTENSION);
                 if (!array_key_exists($extension, self::ICON_MIMETYPES))
-                    throw new ApplicationException('Invalid extension icon file type in: '.$this->name.'. Only SVG images are supported');
+                    throw new ApplicationException('Invalid extension icon file type in: '.$this->name.'. Only SVG and PNG images are supported');
 
                 $mimeType = self::ICON_MIMETYPES[$extension];
                 $data = base64_encode(file_get_contents($file));

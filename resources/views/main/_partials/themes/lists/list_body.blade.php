@@ -13,11 +13,13 @@
                         data-bs-target="#theme-preview-{{ $theme->code }}"
                         data-img-src="{{ URL::asset($theme->screenshot) }}"
                         style="width:200px;">
+                        @if (strlen($theme->screenshot))
                         <img
                             class="img-responsive img-rounded"
                             alt=""
-                            src="{{ URL::asset($theme->screenshot) }}"
+                            src="{{ $theme->screenshot }}"
                         />
+                        @endif
                     </a>
                     <div class="media-body">
                         <span class="h5 media-heading">{{ $theme->name }}</span>&nbsp;&nbsp;

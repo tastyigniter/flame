@@ -383,6 +383,16 @@ class Model extends Extendable implements ArrayAccess, Arrayable, Jsonable, Json
     }
 
     /**
+     * Get the value of the model's primary key.
+     *
+     * @return mixed
+     */
+    public function getKey()
+    {
+        return $this->getAttribute('fileName');
+    }
+
+    /**
      * Returns the directory name corresponding to the object type.
      * For pages the directory name is "_pages", for layouts - "_layouts", etc.
      * @return string
