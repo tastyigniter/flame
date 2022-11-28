@@ -3,6 +3,7 @@
 namespace Igniter\Flame\Router;
 
 use Igniter\Flame\Igniter;
+use Igniter\Flame\Mixins\Router;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -15,6 +16,11 @@ class RoutingServiceProvider extends ServiceProvider
         Igniter::loadControllersFrom(igniter_path('src/System/Http/Controllers'), 'Igniter\\System\\Http\\Controllers');
 
         $this->registerMiddlewareGroups();
+    }
+
+    public function boot()
+    {
+        Route::mixin(new Router);
     }
 
     protected function registerMiddlewareGroups()

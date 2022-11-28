@@ -33,7 +33,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         \Igniter\Flame\Setting\SettingServiceProvider::class,
         \Igniter\Flame\Translation\TranslationServiceProvider::class,
         \Igniter\Flame\Providers\UrlServiceProvider::class,
-        \Igniter\Flame\Validation\ValidationServiceProvider::class,
 
         \Igniter\Flame\Providers\SystemServiceProvider::class,
     ];

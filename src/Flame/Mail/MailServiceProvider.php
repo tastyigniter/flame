@@ -2,6 +2,8 @@
 
 namespace Igniter\Flame\Mail;
 
+use Igniter\Flame\Mixins\Mail as MailMixin;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\ServiceProvider;
 
 class MailServiceProvider extends ServiceProvider
@@ -14,6 +16,8 @@ class MailServiceProvider extends ServiceProvider
 
         $this->callAfterResolving('mail.manager', function ($manager, $app) {
             $this->app['events']->dispatch('mailer.register', [$this, $manager]);
+
+            Mail::mixin(new MailMixin);
         });
     }
 }
