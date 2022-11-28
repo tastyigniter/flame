@@ -38,7 +38,7 @@ return [
     |
     */
 
-    'defaultTheme' => 'demo',
+    'defaultTheme' => 'tastyigniter-orange',
 
     /*
     |--------------------------------------------------------------------------

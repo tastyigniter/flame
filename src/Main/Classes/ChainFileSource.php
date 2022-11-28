@@ -113,7 +113,7 @@ class ChainFileSource extends AbstractSource implements SourceInterface
      * @param string $extension
      * @return string
      */
-    protected function makeFilePath(string $dirName, string $fileName, string $extension)
+    protected function makeFilePath(string $dirName, ?string $fileName, string $extension)
     {
         return $dirName.'/'.$fileName.'.'.$extension;
     }
@@ -153,8 +153,8 @@ class ChainFileSource extends AbstractSource implements SourceInterface
     /**
      * Returns all sources.
      *
-     * @param  string $dirName
-     * @param  array $options
+     * @param string $dirName
+     * @param array $options
      *
      * @return array
      */
@@ -175,10 +175,10 @@ class ChainFileSource extends AbstractSource implements SourceInterface
     /**
      * Creates a new source.
      *
-     * @param  string $dirName
-     * @param  string $fileName
-     * @param  string $extension
-     * @param  string $content
+     * @param string $dirName
+     * @param string $fileName
+     * @param string $extension
+     * @param string $content
      *
      * @return bool
      */
@@ -195,10 +195,10 @@ class ChainFileSource extends AbstractSource implements SourceInterface
     /**
      * Updates an existing source.
      *
-     * @param  string $dirName
-     * @param  string $fileName
-     * @param  string $extension
-     * @param  string $content
+     * @param string $dirName
+     * @param string $fileName
+     * @param string $extension
+     * @param string $content
      * @param string $oldFileName
      * @param string $oldExtension
      *
@@ -235,9 +235,9 @@ class ChainFileSource extends AbstractSource implements SourceInterface
     /**
      * Run a delete statement against the source.
      *
-     * @param  string $dirName
-     * @param  string $fileName
-     * @param  string $extension
+     * @param string $dirName
+     * @param string $fileName
+     * @param string $extension
      *
      * @return int
      */
@@ -253,9 +253,9 @@ class ChainFileSource extends AbstractSource implements SourceInterface
     /**
      * Return the last modified date of an object
      *
-     * @param  string $dirName
-     * @param  string $fileName
-     * @param  string $extension
+     * @param string $dirName
+     * @param string $fileName
+     * @param string $extension
      *
      * @return int
      */
@@ -269,7 +269,7 @@ class ChainFileSource extends AbstractSource implements SourceInterface
     /**
      * Generate a cache key unique to this source.
      *
-     * @param  string $name
+     * @param string $name
      *
      * @return string
      */

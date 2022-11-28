@@ -89,6 +89,10 @@ class Theme
      */
     protected $configCache;
 
+    protected $customData;
+
+    protected $formConfigCache;
+
     protected $screenshotData;
 
     protected static $allowedTemplateModels = [
@@ -271,13 +275,16 @@ class Theme
 
     public function getFormConfig()
     {
+        if (!is_null($this->formConfigCache))
+            return $this->formConfigCache;
+
         $config = $this->getConfigValue('form', []);
 
         // @deprecated namespaced event, remove before v5
         event('main.theme.extendFormConfig', [$this->getName(), &$config]);
         event($event = new ExtendFormConfig($this->getName(), $config));
 
-        return $event->config;
+        return $this->formConfigCache = $event->config;
     }
 
     public function getConfigValue($name, $default = null)
