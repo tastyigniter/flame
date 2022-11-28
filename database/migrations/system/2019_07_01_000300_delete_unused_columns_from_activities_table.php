@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Schema;
 /**
  * customer_id can be NULL on addresses table
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up()
     {
         Schema::table('activities', function (Blueprint $table) {

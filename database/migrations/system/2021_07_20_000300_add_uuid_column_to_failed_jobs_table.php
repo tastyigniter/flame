@@ -5,7 +5,8 @@ use Illuminate\Database\Migrations\Migration;
 /**
  * Do not run to avoid conflicts with Laravel's queue table.
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up()
     {
 //        if (!Schema::hasTable('failed_jobs'))

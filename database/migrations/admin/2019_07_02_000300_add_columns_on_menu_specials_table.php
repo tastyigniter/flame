@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Add validity columns on menus_specials table
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up()
     {
         Schema::table('menus_specials', function (Blueprint $table) {

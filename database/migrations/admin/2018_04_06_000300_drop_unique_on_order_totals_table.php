@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Drop primary key order_id and add unique keys
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up()
     {
         Schema::table('order_totals', function (Blueprint $table) {

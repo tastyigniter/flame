@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Add color column on location_areas table
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up()
     {
         Schema::table('location_areas', function (Blueprint $table) {

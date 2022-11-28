@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Schema;
  * remember_token, is_activated, date_activated, last_login)  to both tables
  * Add super_user column to users table
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up()
     {
         Schema::table('customers', function (Blueprint $table) {

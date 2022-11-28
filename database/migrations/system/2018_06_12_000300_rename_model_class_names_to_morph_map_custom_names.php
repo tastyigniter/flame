@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Schema;
  * Rename existing model class_names in all tables
  * with morph map custom names.
  */
-return new class extends Migration {
+return new class extends Migration
+{
     protected $morphMap;
 
     public function up()

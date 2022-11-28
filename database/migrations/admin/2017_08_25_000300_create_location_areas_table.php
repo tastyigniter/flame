@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Create location_areas table
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up()
     {
         Schema::create('location_areas', function (Blueprint $table) {

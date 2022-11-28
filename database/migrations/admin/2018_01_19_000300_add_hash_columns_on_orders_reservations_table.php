@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Add hash column on orders and reservations table
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {

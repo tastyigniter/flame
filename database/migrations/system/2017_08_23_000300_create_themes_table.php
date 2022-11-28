@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Create themes table
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up()
     {
         Schema::create('themes', function (Blueprint $table) {

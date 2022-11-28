@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Create menu_categories table
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up()
     {
         Schema::create('menu_categories', function (Blueprint $table) {
