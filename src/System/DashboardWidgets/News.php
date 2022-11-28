@@ -42,7 +42,29 @@ class News extends BaseDashboardWidget
 
     protected function prepareVars()
     {
-        $this->vars['newsRss'] = $this->createRssDocument();
+        $this->vars['newsFeed'] = $this->loadFeedItems();
+    }
+
+    public function loadFeedItems()
+    {
+        $dom = $this->createRssDocument();
+        if (!$dom || !$dom->load($this->newsRss))
+            return [];
+
+        $newsFeed = [];
+        foreach ($dom->getElementsByTagName('entry') as $content) {
+            $newsFeed[] = [
+                'title' => $content->getElementsByTagName('title')->item(0)->nodeValue,
+                'description' => $content->getElementsByTagName('summary')->item(0)->nodeValue,
+                'link' => $content->getElementsByTagName('link')->item(0)->getAttribute('href'),
+                'date' => $content->getElementsByTagName('updated')->item(0)->nodeValue,
+            ];
+        }
+
+        $newsCount = $this->property('newsCount');
+        $count = (($count = count($newsFeed)) < $newsCount) ? $count : $newsCount;
+
+        return array_slice($newsFeed, 0, $count);
     }
 
     public function createRssDocument()
