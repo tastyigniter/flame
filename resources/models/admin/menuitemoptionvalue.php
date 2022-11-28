@@ -7,12 +7,11 @@ $config['form']['fields'] = [
     'priority' => [
         'type' => 'hidden',
     ],
-    'option_value[value]' => [
+    'option_value_id' => [
         'label' => 'lang:igniter::admin.menu_options.label_option_value',
-        'type' => 'text',
-        'disabled' => true,
+        'type' => 'select',
     ],
-    'price' => [
+    'new_price' => [
         'label' => 'lang:igniter::admin.menu_options.label_new_price',
         'type' => 'currency',
     ],

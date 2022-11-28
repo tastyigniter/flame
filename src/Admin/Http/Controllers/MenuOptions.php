@@ -56,4 +56,11 @@ class MenuOptions extends \Igniter\Admin\Classes\AdminController
 
         AdminMenu::setContext('menus', 'restaurant');
     }
+
+    public function edit($context = null, $recordId = null)
+    {
+        $this->addJs('formwidgets/recordeditor.modal.js', 'recordeditor-modal-js');
+
+        $this->asExtension('FormController')->edit($context, $recordId);
+    }
 }

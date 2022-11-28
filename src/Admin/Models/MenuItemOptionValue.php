@@ -40,13 +40,13 @@ class MenuItemOptionValue extends Model
     public $relation = [
         'belongsTo' => [
             'menu' => [\Igniter\Admin\Models\Menu::class],
-            'option' => [\Igniter\Admin\Models\MenuOption::class],
             'option_value' => [\Igniter\Admin\Models\MenuOptionValue::class],
+            'menu_option' => [\Igniter\Admin\Models\MenuItemOption::class],
         ],
     ];
 
     public $rules = [
-        ['option_id', 'igniter::admin.menu_options.label_option_value_id', 'required|integer'],
+        ['menu_option_id', 'igniter::admin.menu_options.label_option_value_id', 'required|integer'],
         ['option_value_id', 'igniter::admin.menu_options.label_option_value', 'required|integer'],
         ['new_price', 'igniter::admin.menu_options.label_option_price', 'numeric|min:0'],
     ];
@@ -68,9 +68,9 @@ class MenuItemOptionValue extends Model
         return $result;
     }
 
-    public function getNameAttribute()
+    public function getNameAttribute($value = null)
     {
-        return $this->option_value ? $this->option_value->value : null;
+        return $value ?: $this->option_value->value ?? null;
     }
 
     public function getPriceAttribute()

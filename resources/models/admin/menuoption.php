@@ -60,20 +60,6 @@ $config['list']['columns'] = [
             return $value ? ucwords($value) : '--';
         },
     ],
-    'is_required' => [
-        'label' => 'lang:igniter::admin.menu_options.label_option_required',
-        'type' => 'switch',
-        'onText' => 'igniter::admin.text_yes',
-        'offText' => 'igniter::admin.text_no',
-    ],
-    'min_selected' => [
-        'label' => 'lang:igniter::admin.menu_options.label_min_selected',
-        'type' => 'number',
-    ],
-    'max_selected' => [
-        'label' => 'lang:igniter::admin.menu_options.label_max_selected',
-        'type' => 'number',
-    ],
     'location_name' => [
         'label' => 'lang:igniter::admin.column_location',
         'type' => 'text',
@@ -122,37 +108,27 @@ $config['form']['fields'] = [
         'type' => 'text',
         'span' => 'left',
     ],
-    'is_required' => [
-        'label' => 'lang:igniter::admin.menu_options.label_option_required',
-        'type' => 'switch',
-        'span' => 'right',
-    ],
     'display_type' => [
         'label' => 'lang:igniter::admin.menu_options.label_display_type',
         'type' => 'radiotoggle',
         'default' => 'radio',
-        'span' => 'left',
+        'span' => 'right',
     ],
     'locations' => [
         'label' => 'lang:igniter::admin.label_location',
         'type' => 'relation',
-        'span' => 'right',
+        'span' => 'left',
         'valueFrom' => 'locations',
         'nameFrom' => 'location_name',
     ],
-    'min_selected' => [
-        'label' => 'lang:igniter::admin.menu_options.label_min_selected',
-        'type' => 'number',
-        'span' => 'left',
-        'default' => 0,
-        'comment' => 'lang:igniter::admin.menu_options.help_min_selected',
-    ],
-    'max_selected' => [
-        'label' => 'lang:igniter::admin.menu_options.label_max_selected',
-        'type' => 'number',
+    'update_related_menu_item' => [
+        'label' => 'lang:igniter::admin.menu_options.label_update_related_menu_item',
+        'type' => 'switch',
         'span' => 'right',
-        'default' => 0,
-        'comment' => 'lang:igniter::admin.menu_options.help_max_selected',
+        'default' => false,
+        'context' => ['edit'],
+        'on' => 'lang:igniter::admin.text_yes',
+        'off' => 'lang:igniter::admin.text_no',
     ],
     'option_values' => [
         'label' => 'lang:igniter::admin.menu_options.text_tab_values',

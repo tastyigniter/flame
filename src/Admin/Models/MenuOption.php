@@ -32,16 +32,23 @@ class MenuOption extends Model
     protected $casts = [
         'option_id' => 'integer',
         'priority' => 'integer',
-        'is_required' => 'boolean',
     ];
 
     public $relation = [
         'hasMany' => [
+            'menu_options' => [\Igniter\Admin\Models\MenuItemOption::class, 'foreignKey' => 'option_id', 'delete' => true],
             'option_values' => [\Igniter\Admin\Models\MenuOptionValue::class, 'foreignKey' => 'option_id', 'delete' => true],
-            'menu_option_values' => [\Igniter\Admin\Models\MenuItemOptionValue::class, 'foreignKey' => 'option_id', 'delete' => true],
+        ],
+        'hasManyThrough' => [
+            'menu_option_values' => [
+                \Igniter\Admin\Models\MenuItemOptionValue::class,
+                'through' => \Igniter\Admin\Models\MenuItemOption::class,
+                'throughKey' => 'menu_option_id',
+                'foreignKey' => 'option_id',
+            ],
         ],
         'morphToMany' => [
-            'allergens' => ['Admin\Models\Allergens_model', 'name' => 'allergenable'],
+            'allergens' => [\Igniter\Admin\Models\Ingredient::class, 'name' => 'allergenable'],
             'locations' => [\Igniter\Admin\Models\Location::class, 'name' => 'locationable'],
         ],
     ];
@@ -94,11 +101,6 @@ class MenuOption extends Model
     //
     // Helpers
     //
-
-    public function isRequired()
-    {
-        return $this->is_required;
-    }
 
     /**
      * Return all option values by option_id

@@ -122,22 +122,22 @@ class MenuOptionEditor extends BaseFormWidget
 
     public function onAssignRecord()
     {
-        $menuOptionId = post('optionId');
-        if (!$menuOption = MenuOption::find($menuOptionId))
+        if (!$menuOptionIds = array_filter(post('optionId', [])))
             throw new ApplicationException(lang('igniter::admin.menu_options.alert_menu_option_not_attached'));
 
-        if ($this->model->menu_option_values()->where('option_id', $menuOptionId)->exists())
-            throw new ApplicationException(lang('igniter::admin.menu_options.alert_menu_option_already_attached'));
+        MenuOption::whereIn('option_id', $menuOptionIds)->get()->each(function ($menuOption) {
+            $menuItemOption = $this->model->menu_options()->create(['option_id' => $menuOption->option_id]);
 
-        $menuOption->option_values()->get()->each(function ($model) {
-            $this->model->menu_option_values()->create([
-                'option_id' => $model->option_id,
-                'option_value_id' => $model->option_value_id,
-                'priority' => $model->priority,
-            ]);
+            $menuOption->option_values()->get()->each(function ($model) use ($menuItemOption) {
+                $menuItemOption->menu_option_values()->create([
+                    'menu_option_id' => $menuItemOption->menu_option_id,
+                    'option_value_id' => $model->option_value_id,
+                    'new_price' => $model->price,
+                ]);
+            });
         });
 
-        flash()->success(sprintf(lang('igniter::admin.alert_success'), 'Menu item option assigned'))->now();
+        flash()->success(sprintf(lang('igniter::admin.alert_success'), lang('igniter::admin.menu_options.alert_menu_option_assigned')))->now();
 
         return $this->reload();
     }
@@ -149,9 +149,7 @@ class MenuOptionEditor extends BaseFormWidget
         if (!strlen($recordId = post('recordId')))
             throw new ApplicationException(lang('igniter::admin.form.missing_id'));
 
-        $model = $this->getLoadValue()->firstWhere('option_id', $recordId);
-
-        if (!$model)
+        if (!$model = $this->getLoadValue()->firstWhere('menu_option_id', $recordId))
             throw new Exception(sprintf(lang('igniter::admin.form.not_found'), $recordId));
 
         return $this->makePartial('recordeditor/form', [
@@ -166,14 +164,17 @@ class MenuOptionEditor extends BaseFormWidget
         if (!strlen($recordId = post('recordId')))
             throw new ApplicationException(lang('igniter::admin.form.missing_id'));
 
-        $model = $this->getLoadValue()->firstWhere('option_id', $recordId);
+        if (!$model = $this->getLoadValue()->firstWhere('menu_option_id', $recordId))
+            throw new Exception(sprintf(lang('igniter::admin.form.not_found'), $recordId));
 
         $form = $this->makeItemFormWidget($model, 'edit');
 
-        $saveData = $this->prepareSaveData($model, $form->getSaveData());
+        $modelsToSave = $this->prepareModelsToSave($model, $form->getSaveData());
 
-        DB::transaction(function () use ($saveData) {
-            $this->model->addMenuOptionValues($saveData);
+        DB::transaction(function () use ($modelsToSave) {
+            foreach ($modelsToSave as $modelToSave) {
+                $modelToSave->saveOrFail();
+            }
         });
 
         flash()->success(sprintf(lang('igniter::admin.alert_success'), 'Item updated'))->now();
@@ -217,19 +218,5 @@ class MenuOptionEditor extends BaseFormWidget
         $widget->previewMode = $this->previewMode;
 
         return $widget;
-    }
-
-    protected function prepareSaveData($model, $saveData)
-    {
-        $optionValues = collect(array_get($saveData, 'menu_option_values'))
-            ->map(function ($optionValue) {
-                $optionValue['new_price'] = $optionValue['price'];
-                unset($optionValue['price']);
-
-                return $optionValue;
-            })
-            ->all();
-
-        return [$model->getKey() => $optionValues];
     }
 }

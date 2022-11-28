@@ -17,9 +17,9 @@
     }
 
     MenuOptionEditor.prototype.init = function () {
-        this.$el.on('click', '[data-control="assign-item"]', $.proxy(this.onAssignItem, this))
-        this.$el.on('click', '[data-control="load-item"]', $.proxy(this.onLoadItem, this))
-        this.$el.on('click', '[data-control="delete-item"]', $.proxy(this.onDeleteItem, this))
+        this.$el.on('click', '[data-editor-control="assign-item"]', $.proxy(this.onAssignItem, this))
+        this.$el.on('click', '[data-editor-control="load-item"]', $.proxy(this.onLoadItem, this))
+        this.$el.on('click', '[data-editor-control="delete-item"]', $.proxy(this.onDeleteItem, this))
     }
 
     MenuOptionEditor.prototype.unbind = function () {
@@ -35,7 +35,7 @@
             $button = $(event.currentTarget)
 
         $.request(handler, {
-            data: {optionId: $('[data-control="choose-item"]').val()},
+            data: {optionId: $('[data-editor-control="choose-item"]').val()},
         })
     }
 

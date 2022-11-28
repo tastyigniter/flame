@@ -1,12 +1,12 @@
 <div
-    class="input-group" data-toggle="modal"
-    data-target="#{{ $this->getId('form-modal') }}"
+    class="input-group"
 >
     <select
         id="{{ $this->getId('picker') }}"
         class="form-control me-1"
         data-control="selectlist"
         data-editor-control="choose-item"
+        multiple="multiple"
         {!! ($this->previewMode) ? 'disabled="disabled"' : '' !!}
     >
         <option value="0">@lang($pickerPlaceholder)</option>

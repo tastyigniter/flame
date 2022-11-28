@@ -3,8 +3,8 @@
 namespace Igniter\Admin\Traits;
 
 use Igniter\Admin\Models\Menu;
+use Igniter\Admin\Models\MenuItemOption;
 use Igniter\Admin\Models\MenuItemOptionValue;
-use Igniter\Admin\Models\MenuOption;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 
@@ -82,22 +82,23 @@ trait ManagesOrderItems
     {
         $orderMenuOptions = $this->getOrderMenuOptions();
 
-        $menuOptionsIds = $orderMenuOptions->collapse()->pluck('option_id')->unique();
+        $menuItemOptionsIds = $orderMenuOptions->collapse()->pluck('order_menu_option_id')->unique();
 
-        $menuOptions = MenuOption::whereIn('option_id', $menuOptionsIds)->get()
-            ->keyBy('option_id');
+        $menuItemOptions = MenuItemOption::with('option')
+            ->whereIn('menu_option_id', $menuItemOptionsIds)
+            ->get()->keyBy('menu_option_id');
 
-        return $this->getOrderMenus()->map(function ($menu) use ($orderMenuOptions, $menuOptions) {
+        return $this->getOrderMenus()->map(function ($menu) use ($orderMenuOptions, $menuItemOptions) {
             unset($menu->option_values);
-            $orderMenuOptionValues = $orderMenuOptions->get($menu->order_menu_id) ?: [];
+            $menuOptions = $orderMenuOptions->get($menu->order_menu_id) ?: [];
 
-            $menu->menu_options = collect($orderMenuOptionValues)
-                ->map(function ($orderMenuOptionValue) use ($menuOptions) {
-                    $orderMenuOptionValue->order_option_category = optional($menuOptions->get(
-                        $orderMenuOptionValue->option_id
+            $menu->menu_options = collect($menuOptions)
+                ->map(function ($menuOption) use ($menuItemOptions) {
+                    $menuOption->order_option_category = optional($menuItemOptions->get(
+                        $menuOption->order_menu_option_id
                     ))->option_name;
 
-                    return $orderMenuOptionValue;
+                    return $menuOption;
                 });
 
             return $menu;
@@ -118,8 +119,6 @@ trait ManagesOrderItems
      * Add cart menu items to order by order_id
      *
      * @param array $content
-     *
-     * @return float
      */
     public function addOrderMenus(array $content)
     {
@@ -172,7 +171,7 @@ trait ManagesOrderItems
                     'order_menu_id' => $orderMenuId,
                     'order_id' => $orderId,
                     'menu_id' => $menuId,
-                    'option_id' => $option->id,
+                    'order_menu_option_id' => $option->id,
                     'menu_option_value_id' => $value->id,
                     'order_option_name' => $value->name,
                     'order_option_price' => $value->price,

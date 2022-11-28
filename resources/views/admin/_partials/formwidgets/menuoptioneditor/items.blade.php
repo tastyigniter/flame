@@ -8,7 +8,7 @@
             <div class="d-flex w-100 justify-content-between">
                 <div
                     class="flex-fill"
-                    data-control="load-item"
+                    data-editor-control="load-item"
                     data-item-id="{{ $fieldItem->getKey() }}"
                     role="button"
                 >
@@ -19,7 +19,7 @@
                         <a
                             class="close text-danger"
                             aria-label="Remove"
-                            data-control="delete-item"
+                            data-editor-control="delete-item"
                             data-item-id="{{ $fieldItem->getKey() }}"
                             data-item-selector="#{{ $this->getId('item-'.$loop->iteration) }}"
                             data-confirm-message="@lang($confirmMessage)"
