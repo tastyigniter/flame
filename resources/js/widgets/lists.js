@@ -1,32 +1,19 @@
 // List Filter State Toggle
 // Uses user cookie value to show/hide list filter bar
 $(function () {
-    var $listFilterButton = $('[data-toggle="list-filter"]'),
-        $listFilterTarget = $($listFilterButton.data('target')),
-        listFilterStoreName = $listFilterTarget.data('storeName'),
-        displayFilterPanel = Cookies.get(listFilterStoreName)
+    var $listFilterButton = $('[data-toggle="list-filter"]')
 
     $listFilterButton.on('click', function () {
-        var $button = $(this)
+        var $button = $(this),
+            $listFilterTarget = $button.closest('form').parent().prev('.list-filter'),
+            listFilterStoreName = $listFilterTarget.data('storeName')
 
-        $listFilterTarget.slideToggle(function () {
-            $button.toggleClass('active')
-            if (!listFilterStoreName || !listFilterStoreName.length)
-                return
+        if (!listFilterStoreName || !listFilterStoreName.length)
+            return
 
-            Cookies.set(listFilterStoreName, $listFilterTarget.is(':visible') ? 1 : 0)
-        })
-    })
-
-    if (displayFilterPanel > 0) {
-        $listFilterButton.addClass('active')
-    }
-})
-
-// Submit list filter form on select change
-$(function () {
-    $(document).on('change', '.filter-scope select, .filter-scope input[type="checkbox"]', function (event) {
-        $(event.currentTarget).closest('form').submit()
+        $button.toggleClass('active')
+        $listFilterTarget.find('[data-bs-toggle="dropdown"]').click()
+        Cookies.set(listFilterStoreName, $listFilterTarget.is(':visible') ? 1 : 0)
     })
 })
 

@@ -28,8 +28,8 @@
                         data-request="{{ $this->getEventHandler('onSort') }}"
                         data-request-form="#list-form"
                         data-request-data="sort_by: '{{ $column->columnName }}'">
+                        <i class="fa fa-sort-{{ ($sortColumn == $column->columnName) ? strtoupper($sortDirection).' active' : 'ASC' }}"></i>&nbsp;
                         {{ $this->getHeaderValue($column) }}
-                        <i class="fa fa-sort-{{ ($sortColumn == $column->columnName) ? strtoupper($sortDirection).' active' : 'ASC' }}"></i>
                     </a>
                 </th>
             @else
@@ -49,7 +49,6 @@
                     class="btn btn-outline-default btn-sm border-none"
                     title="@lang('igniter::admin.button_filter')"
                     data-toggle="list-filter"
-                    data-target=".list-filter"
                 ><i class="fa fa-filter"></i></button>
             </th>
         @endif

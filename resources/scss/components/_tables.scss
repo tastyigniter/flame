@@ -5,16 +5,11 @@
 
   .sort-col {
     cursor: pointer;
-    display: block;
-    position: relative;
     color: $table-hover-color;
     text-decoration: none;
 
     .fa {
-      visibility: hidden;
-      position: absolute;
-      right: 1px;
-      top: 6px;
+      color: var(--bs-gray-500);
     }
 
     &:hover,
@@ -25,17 +20,15 @@
     &:hover .fa,
     &:hover,
     .active {
-      visibility: visible;
+      color: $body-color;
     }
 
-    .fa-sort-ASC:before,
-    &:hover .fa-sort-DESC:before {
-      @extend .fa-sort-amount-asc
+    .fa-sort-ASC:before {
+      @extend .fa-arrow-down
     }
 
-    .fa-sort-DESC:before,
-    &:hover .fa-sort-ASC:before {
-      @extend .fa-sort-amount-desc
+    .fa-sort-DESC:before {
+      @extend .fa-arrow-up
     }
   }
 

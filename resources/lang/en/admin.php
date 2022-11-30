@@ -4,6 +4,7 @@ return [
     'site_title_separator' => ' - ',
     'text_edit' => 'Edit',
     'text_filter' => 'Filter',
+    'text_apply' => 'Apply',
     'text_clear' => 'Clear',
     'text_search' => 'Search',
     'text_enabled' => 'Enabled',
