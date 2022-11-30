@@ -33,7 +33,7 @@ class DatePicker extends BaseFormWidget
      */
     public $endDate = null;
 
-    public $dateFormat = 'd-m-Y';
+    public $dateFormat = 'Y-m-d';
 
     public $timeFormat = 'H:i';
 
@@ -75,19 +75,16 @@ class DatePicker extends BaseFormWidget
         $mode = $this->getConfig('mode', 'date');
         if ($mode == 'time') {
             $this->addCss('clockpicker.css', 'clockpicker-css');
-            $this->addJs('clockpicker.js', 'clockpicker-js');
         }
 
         if ($mode == 'date') {
             if (setting('default_language') != 'en')
                 $this->addJs('js/locales/datepicker/bootstrap-datepicker.'.strtolower(str_replace('_', '-', setting('default_language'))).'.min.js', 'bootstrap-datepicker-js');
             $this->addCss('datepicker.css', 'datepicker-css');
-            $this->addJs('datepicker.js', 'datepicker-js');
         }
 
         if ($mode == 'datetime') {
             $this->addCss('datepicker.css', 'datepicker-css');
-            $this->addJs('datepicker.js', 'datepicker-js');
         }
     }
 

@@ -220,7 +220,7 @@ class Lists extends BaseWidget
         $this->prepareVars();
 
         return [
-            '~#'.$this->getId('list-form') => $this->makePartial('lists/list'),
+            '#'.$this->getId('table-body') => $this->makePartial('lists/list_body'),
         ];
     }
 

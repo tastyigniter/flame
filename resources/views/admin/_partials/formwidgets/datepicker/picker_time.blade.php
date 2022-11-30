@@ -3,12 +3,13 @@
     data-control="clockpicker"
     data-autoclose="true">
     <input
-        type="text"
+        type="time"
         name="{{ $field->getName() }}"
         id="{{ $this->getId('time') }}"
-        class="form-control"
+        class="form-control timepicker-input"
         autocomplete="off"
-        value="{{ $value ? $value->format($timeFormat) : null }}"
+        value="{{ $value ? $value->format('H:i') : null }}"
+        pattern="[0-9]{2}:[0-9]{2}"
         {!! $field->getAttributes() !!}
         @if($this->previewMode) readonly="readonly" @endif
     />

@@ -1,24 +1,18 @@
 <div class="input-group">
     <input
-        type="text"
+        type="date"
         id="{{ $this->getId('date') }}"
-        class="form-control"
+        class="form-control datepicker-input"
+        name="{{ $field->getName() }}"
+        value="{{ $value ? $value->format('Y-m-d') : null }}"
+        data-control="datepicker"
+        data-datepicker-value
+        @if($startDate) min="{{ $startDate }}" @endif
+        @if($endDate) max="{{ $endDate }}" @endif
         autocomplete="off"
-        value="{{ $value ? $value->format($dateFormat) : null }}"
+        pattern="\d{4}-\d{2}-\d{2}"
         {!! $field->getAttributes() !!}
         {!! $this->previewMode ? 'readonly="readonly"' : '' !!}
-        data-control="datepicker"
-        @if($startDate) data-start-date="{{ $startDate }}" @endif
-        @if($endDate) data-end-date="{{ $endDate }}" @endif
-        @if($datesDisabled) data-dates-disabled="{{ $datesDisabled }}" @endif
-        data-format="{{ $datePickerFormat }}"
-        data-language={{ setting('default_language') }}
-    />
-    <input
-        type="hidden"
-        name="{{ $field->getName() }}"
-        value="{{ $value ? $value->format($dateFormat) : null }}"
-        data-datepicker-value
     />
     <span class="input-group-text"><i class="fa fa-calendar-o"></i></span>
 </div>

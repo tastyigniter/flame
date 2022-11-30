@@ -1,26 +1,18 @@
 <div class="input-group">
     <input
-        type="text"
+        type="datetime-local"
         id="{{ $this->getId('datetime') }}"
-        class="form-control"
-        autocomplete="off"
-        value="{{ $value ? $value->format($formatAlias) : null }}"
+        class="form-control datepicker-input"
+        name="{{ $field->getName() }}"
+        value="{{ $value ? $value->format('Y-m-d\TH:i') : null }}"
+        data-control="datepicker"
+        data-datepicker-value
+        @if($startDate) min="{{ $startDate }}" @endif
+        @if($endDate) max="{{ $endDate }}" @endif
+        pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
         {!! $field->getAttributes() !!}
         @if($this->previewMode) readonly="readonly" @endif
-        data-control="datepicker"
-        data-toggle="datetimepicker"
-        data-target="#{{ $this->getId('datetime') }}"
-        data-mode="{{ $this->mode }}"
-        @if($startDate) data-start-date="{{ $startDate }}" @endif
-        @if($endDate) data-end-date="{{ $endDate }}" @endif
-        @if($datesDisabled) data-dates-disabled="{{ $datesDisabled }}" @endif
-        data-format="{{ $datePickerFormat }}"
-    />
-    <input
-        type="hidden"
-        name="{{ $field->getName() }}"
-        value="{{ $value ? $value->format('Y-m-d H:i:s') : null }}"
-        data-datepicker-value
+        autocomplete="off"
     />
     <span class="input-group-text"><i class="fa fa-calendar-o"></i></span>
 </div>

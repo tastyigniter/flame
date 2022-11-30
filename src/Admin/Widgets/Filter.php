@@ -64,7 +64,9 @@ class Filter extends BaseWidget
     public function loadAssets()
     {
         $this->addJs('js/vendor.datetime.js', 'vendor-datetime-js');
+        $this->addJs('widgets/daterangepicker.js', 'daterangepicker-js');
         $this->addJs('widgets/selectlist.js', 'selectlist-js');
+        $this->addCss('formwidgets/datepicker.css', 'datepicker-css');
         $this->addCss('widgets/selectlist.css', 'selectlist-css');
     }
 
@@ -135,7 +137,7 @@ class Filter extends BaseWidget
         $this->defineFilterScopes();
 
         if (!$scopes = post($this->alias))
-            return;
+            return [];
 
         foreach ($scopes as $scope => $value) {
             $scope = $this->getScope($scope);
@@ -178,23 +180,23 @@ class Filter extends BaseWidget
         if ($result && is_array($result)) {
             [$redirect] = $result;
 
-            return ($redirect instanceof RedirectResponse) ? $redirect : $result;
+            return ($redirect instanceof RedirectResponse) ? $redirect : array_collapse($result);
         }
     }
 
     public function onClear()
     {
-        $this->defineFilterScopes();
-
         $this->resetSession();
-        $this->searchWidget->resetSession();
+        $this->searchWidget?->resetSession();
+
+        $this->defineFilterScopes();
 
         $params = func_get_args();
         $result = $this->fireEvent('filter.submit', [$params]);
         if ($result && is_array($result)) {
             [$redirect] = $result;
 
-            return ($redirect instanceof RedirectResponse) ? $redirect : $result;
+            return ($redirect instanceof RedirectResponse) ? $redirect : array_collapse($result);
         }
     }
 

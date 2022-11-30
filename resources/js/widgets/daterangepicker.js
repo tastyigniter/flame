@@ -10,7 +10,7 @@
     // FIELD CHART CONTROL CLASS DEFINITION
     // ============================
 
-    var DatePickerControl = function (element, options) {
+    var DateRangePickerControl = function (element, options) {
         this.options = options
         this.$el = $(element)
 
@@ -18,7 +18,7 @@
         this.initPicker();
     }
 
-    DatePickerControl.DEFAULTS = {
+    DateRangePickerControl.DEFAULTS = {
         opens: 'right',
         autoUpdateInput: false,
         singleDatePicker: true,
@@ -30,7 +30,7 @@
         }
     }
 
-    DatePickerControl.prototype.initPicker = function () {
+    DateRangePickerControl.prototype.initPicker = function () {
         var options = this.options,
             $el = this.$el.find('[data-datepicker-trigger]')
 
@@ -56,7 +56,7 @@
         $el.on('showCalendar.daterangepicker', $.proxy(this.onShowCalendar, this));
     }
 
-    DatePickerControl.prototype.onDateSelected = function (start, end, label, initialize) {
+    DateRangePickerControl.prototype.onDateSelected = function (start, end, label, initialize) {
         var format = this.options.timePicker ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'
 
         if (!this.options.singleDatePicker) {
@@ -69,7 +69,7 @@
         if (!initialize) this.$el.closest('form').submit();
     }
 
-    DatePickerControl.prototype.onShowCalendar = function (event, daterangepicker) {
+    DateRangePickerControl.prototype.onShowCalendar = function (event, daterangepicker) {
         var valueChanged = false;
 
         if (! daterangepicker.startDate.isValid()) {
@@ -87,23 +87,23 @@
         }
     }
 
-    DatePickerControl.prototype.unbind = function () {
-        this.$el.datePickerControl('destroy')
-        this.$el.removeData('ti.datePickerControl')
+    DateRangePickerControl.prototype.unbind = function () {
+        this.$el.dateRangePickerControl('destroy')
+        this.$el.removeData('ti.dateRangePickerControl')
     }
 
-    // FIELD DATEPICKER CONTROL PLUGIN DEFINITION
+    // FIELD DATE RANGE PICKER CONTROL PLUGIN DEFINITION
     // ============================
 
-    var old = $.fn.datePickerControl
+    var old = $.fn.dateRangePickerControl
 
-    $.fn.datePickerControl = function (option) {
+    $.fn.dateRangePickerControl = function (option) {
         var args = Array.prototype.slice.call(arguments, 1), result
         this.each(function () {
             var $this = $(this)
-            var data = $this.data('ti.datePickerControl')
-            var options = $.extend({}, DatePickerControl.DEFAULTS, $this.data(), typeof option === 'object' && option)
-            if (!data) $this.data('ti.datePickerControl', (data = new DatePickerControl(this, options)))
+            var data = $this.data('ti.dateRangePickerControl')
+            var options = $.extend({}, DateRangePickerControl.DEFAULTS, $this.data(), typeof option === 'object' && option)
+            if (!data) $this.data('ti.dateRangePickerControl', (data = new DateRangePickerControl(this, options)))
             if (typeof option === 'string') result = data[option].apply(data, args)
             if (typeof result !== 'undefined') return false
         })
@@ -111,20 +111,20 @@
         return result ? result : this
     }
 
-    $.fn.datePickerControl.Constructor = DatePickerControl
+    $.fn.dateRangePickerControl.Constructor = DateRangePickerControl
 
-    // FIELD DATEPICKER CONTROL NO CONFLICT
+    // FIELD DATE RANGE PICKER CONTROL NO CONFLICT
     // =================
 
-    $.fn.datePickerControl.noConflict = function () {
-        $.fn.datePickerControl = old
+    $.fn.dateRangePickerControl.noConflict = function () {
+        $.fn.dateRangePickerControl = old
         return this
     }
 
-    // FIELD DATEPICKER CONTROL DATA-API
+    // FIELD DATE RANGE PICKER CONTROL DATA-API
     // ===============
 
     $(document).render(function () {
-        $('[data-control="datepicker"]').datePickerControl()
+        $('[data-control="daterangepicker"]').dateRangePickerControl()
     })
 }(window.jQuery)

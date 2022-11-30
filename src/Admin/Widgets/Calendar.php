@@ -49,7 +49,6 @@ class Calendar extends BaseWidget
     {
         $this->addJs('js/vendor.datetime.js', 'vendor-datetime-js');
         $this->addCss('formwidgets/datepicker.css', 'datepicker-css');
-        $this->addJs('formwidgets/datepicker.js', 'datepicker-js');
 
         $this->addJs('vendor/mustache.min.js', 'mustache-js');
 

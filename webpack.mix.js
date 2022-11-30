@@ -31,24 +31,19 @@ mix.js(`${src}/js/app.js`, `${dist}/js`);
 
 mix.combine([
     'node_modules/animate.css/animate.compat.css',
-    'node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
-    'node_modules/bootstrap-multiselect/dist/css/bootstrap-multiselect.css',
     'node_modules/bootstrap-table/dist/bootstrap-table.min.css',
     'node_modules/bootstrap-treeview/dist/bootstrap-treeview.min.css',
     'node_modules/codemirror/lib/codemirror.css',
     'node_modules/codemirror/theme/material.css',
-    'node_modules/clockpicker/dist/bootstrap-clockpicker.min.css',
     'node_modules/daterangepicker/daterangepicker.css',
     'node_modules/dropzone/dist/dropzone.css',
     'node_modules/easymde/dist/easymde.min.css',
     'node_modules/fullcalendar/main.min.css',
     'node_modules/summernote/dist/summernote-bs5.min.css',
-    'node_modules/tempusdominus-bootstrap-4/build/css/tempusdominus-bootstrap-4.min.css',
     `${src}/js/vendor/timesheet/timesheet.css`,
 ], `${dist}/css/vendor.css`)
 
 mix.combine([
-    'node_modules/bootstrap-multiselect/dist/js/bootstrap-multiselect.js',
     'node_modules/bootstrap-table/dist/bootstrap-table.min.js',
     'node_modules/bootstrap-treeview/dist/bootstrap-treeview.min.js',
     'node_modules/dropzone/dist/dropzone-min.js',
@@ -64,11 +59,8 @@ mix.combine([
 ], `${dist}/js/vendor.chart.js`)
 
 mix.combine([
-    'node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
-    'node_modules/clockpicker/dist/bootstrap-clockpicker.min.js',
     'node_modules/daterangepicker/daterangepicker.js',
     'node_modules/fullcalendar/main.min.js',
-    'node_modules/tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4.min.js',
     `${src}/js/vendor/timesheet/timesheet.js`,
 ], `${dist}/js/vendor.datetime.js`)
 

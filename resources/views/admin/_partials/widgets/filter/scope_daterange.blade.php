@@ -1,6 +1,6 @@
 <div
     class="filter-scope daterange form-group"
-    data-control="datepicker"
+    data-control="daterangepicker"
     data-single-date-picker="false"
     data-opens="{{ array_get($scope->config, 'pickerPosition', 'left') }}"
     data-time-picker="{{ ($showTimePicker = array_get($scope->config, 'showTimePicker', FALSE)) ? 'true' : 'false' }}"
