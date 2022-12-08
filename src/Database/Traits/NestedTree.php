@@ -72,8 +72,7 @@ trait NestedTree
     public static function fixBrokenTreeQuietly()
     {
         self::withoutEvents(function () {
-            if (self::isBroken())
-                self::fixTree();
+            self::fixTree();
         });
     }
 
