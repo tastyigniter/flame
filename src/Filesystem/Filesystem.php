@@ -252,7 +252,7 @@ class Filesystem extends IlluminateFilesystem
     public function addPathSymbol($symbol, $path)
     {
         if (!is_array($this->pathSymbols[$symbol]))
-            $this->pathSymbols[$symbol] = [];
+            $this->pathSymbols[$symbol] = [$this->pathSymbols[$symbol]];
 
         array_unshift($this->pathSymbols[$symbol], $path);
     }
