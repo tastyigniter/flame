@@ -189,7 +189,7 @@ class AbstractLocation extends Model implements LocationInterface
         $distance->setTo($this->getCoordinates());
         $distance->in($this->getDistanceUnit());
 
-        return $distance->haversine();
+        return app('geocoder')->distance($distance);
     }
 
     /**

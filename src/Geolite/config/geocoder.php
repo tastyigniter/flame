@@ -31,6 +31,7 @@ return [
             'endpoints' => [
                 'geocode' => 'https://maps.googleapis.com/maps/api/geocode/json?address=%s',
                 'reverse' => 'https://maps.googleapis.com/maps/api/geocode/json?latlng=%F,%F',
+                'distance' => 'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=%F,%F&origins=%F,%F',
             ],
             'locale' => 'en-GB',
             'region' => 'GB',
@@ -40,6 +41,7 @@ return [
             'endpoints' => [
                 'geocode' => 'https://nominatim.openstreetmap.org/search?q=%s&format=json&addressdetails=1&limit=%d',
                 'reverse' => 'https://nominatim.openstreetmap.org/reverse?format=json&lat=%F&lon=%F&addressdetails=1&zoom=%d',
+                'distance' => 'https://routing.openstreetmap.de/routed-%s/route/v1/driving/%F,%F;%F,%F',
             ],
             'locale' => 'en-GB',
             'region' => 'GB',

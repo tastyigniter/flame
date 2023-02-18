@@ -3,6 +3,7 @@
 namespace Igniter\Flame\Geolite\Contracts;
 
 use GuzzleHttp\Client;
+use Igniter\Flame\Geolite\Model\Distance;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
@@ -46,6 +47,8 @@ abstract class AbstractProvider
      * @return \Illuminate\Support\Collection
      */
     abstract public function reverseQuery(GeoQueryInterface $query): Collection;
+
+    abstract public function distance(DistanceInterface $distance): ?Distance;
 
     /**
      * @return \GuzzleHttp\Client

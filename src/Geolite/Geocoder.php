@@ -4,93 +4,35 @@ namespace Igniter\Flame\Geolite;
 
 use GuzzleHttp\Client;
 use Igniter\Flame\Geolite\Contracts\AbstractProvider;
+use Igniter\Flame\Geolite\Contracts\DistanceInterface;
 use Igniter\Flame\Geolite\Contracts\GeoQueryInterface;
 use Illuminate\Support\Manager;
 use InvalidArgumentException;
 
 class Geocoder extends Manager implements Contracts\GeocoderInterface
 {
-    /**
-     * @var int
-     */
-    protected $limit;
-
-    /**
-     * @var string
-     */
-    protected $locale;
-
-    /**
-     * @param mixed $limit
-     * @return Geocoder
-     */
-    public function limit($limit)
-    {
-        $this->limit = $limit;
-
-        return $this;
-    }
-
-    /**
-     * @param string $locale
-     * @return Geocoder
-     */
-    public function locale($locale)
-    {
-        $this->locale = $locale;
-
-        return $this;
-    }
-
     public function geocode($address)
     {
-        $query = GeoQuery::create($address);
-
-        if ($this->limit)
-            $query = $query->withLimit($this->limit);
-
-        if ($this->locale)
-            $query = $query->withLocale($this->locale);
-
-        return $this->geocodeQuery($query);
+        return $this->geocodeQuery(GeoQuery::create($address));
     }
 
     public function reverse(float $latitude, float $longitude)
     {
-        $query = GeoQuery::fromCoordinates($latitude, $longitude);
+        return $this->reverseQuery(GeoQuery::fromCoordinates($latitude, $longitude));
+    }
 
-        if ($this->limit)
-            $query = $query->withLimit($this->limit);
-
-        if ($this->locale)
-            $query = $query->withLocale($this->locale);
-
-        return $this->reverseQuery($query);
+    public function distance(DistanceInterface $distance)
+    {
+        return $this->driver()->distance($distance);
     }
 
     public function geocodeQuery(GeoQueryInterface $query)
     {
-        $limit = $query->getLimit();
-        if (!$limit && $this->limit)
-            $query = $query->withLimit($this->limit);
-
-        $locale = $query->getLocale();
-        if (!$locale && $this->locale)
-            $query = $query->withLocale($this->locale);
-
         return $this->driver()->geocodeQuery($query);
     }
 
     public function reverseQuery(GeoQueryInterface $query)
     {
-        $limit = $query->getLimit();
-        if (!$limit && $this->limit)
-            $query = $query->withLimit($this->limit);
-
-        $locale = $query->getLocale();
-        if (!$locale && $this->locale)
-            $query = $query->withLocale($this->locale);
-
         return $this->driver()->reverseQuery($query);
     }
 

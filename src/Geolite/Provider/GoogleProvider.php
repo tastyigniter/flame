@@ -4,6 +4,7 @@ namespace Igniter\Flame\Geolite\Provider;
 
 use GuzzleHttp\Client as HttpClient;
 use Igniter\Flame\Geolite\Contracts\AbstractProvider;
+use Igniter\Flame\Geolite\Contracts\DistanceInterface;
 use Igniter\Flame\Geolite\Contracts\GeoQueryInterface;
 use Igniter\Flame\Geolite\Exception\GeoliteException;
 use Igniter\Flame\Geolite\Model;
@@ -40,7 +41,7 @@ class GoogleProvider extends AbstractProvider
         try {
             $result = $this->cacheCallback($url, function () use ($query, $url) {
                 return $this->hydrateResponse(
-                    $this->requestUrl($url, $query),
+                    $this->requestGeocodingUrl($url, $query),
                     $query->getLimit()
                 );
             });
@@ -69,7 +70,7 @@ class GoogleProvider extends AbstractProvider
         try {
             $result = $this->cacheCallback($url, function () use ($query, $url) {
                 return $this->hydrateResponse(
-                    $this->requestUrl($url, $query),
+                    $this->requestGeocodingUrl($url, $query),
                     $query->getLimit()
                 );
             });
@@ -77,7 +78,7 @@ class GoogleProvider extends AbstractProvider
         catch (Throwable $e) {
             $coordinates = $query->getCoordinates();
             $this->log(sprintf(
-                'Provider "%s" could not reverse coordinates: "%f %f".',
+                'Provider "%s" could not reverse coordinates: "%F %F".',
                 $this->getName(), $coordinates->getLatitude(), $coordinates->getLongitude()
             ));
         }
@@ -85,22 +86,29 @@ class GoogleProvider extends AbstractProvider
         return new Collection($result);
     }
 
-    protected function requestUrl($url, GeoQueryInterface $query)
+    public function distance(DistanceInterface $distance): ?Model\Distance
     {
-        if ($locale = $query->getLocale())
-            $url = sprintf('%s&language=%s', $url, $locale);
+        $endpoint = array_get($this->config, 'endpoints.distance');
+        $url = $this->prependDistanceQuery($distance, sprintf($endpoint,
+            $distance->getFrom()->getLongitude(),
+            $distance->getFrom()->getLatitude(),
+            $distance->getTo()->getLongitude(),
+            $distance->getTo()->getLatitude()
+        ));
 
-        if ($region = $query->getData('region', array_get($this->config, 'region')))
-            $url = sprintf('%s&region=%s', $url, $region);
+        try {
+            return $this->cacheCallback($url, function () use ($distance, $url) {
+                $response = $this->requestDistanceUrl($url, $distance);
 
-        if ($apiKey = array_get($this->config, 'apiKey'))
-            $url = sprintf('%s&key=%s', $url, $apiKey);
-
-        $response = $this->getHttpClient()->get($url, [
-            'timeout' => $query->getData('timeout', 15),
-        ]);
-
-        return $this->parseResponse($response);
+                return new Model\Distance(
+                    array_get($response, 'rows.0.elements.0.distance', 0),
+                    array_get($response, 'rows.0.elements.0.duration', 0)
+                );
+            });
+        }
+        catch (Throwable $e) {
+            $this->log(sprintf('Provider "%s" could not calculate distance.', $this->getName()));
+        }
     }
 
     protected function hydrateResponse($response, int $limit)
@@ -129,6 +137,36 @@ class GoogleProvider extends AbstractProvider
         }
 
         return $result;
+    }
+
+    protected function requestGeocodingUrl($url, GeoQueryInterface $query)
+    {
+        if ($locale = $query->getLocale())
+            $url = sprintf('%s&language=%s', $url, $locale);
+
+        if ($region = $query->getData('region', array_get($this->config, 'region')))
+            $url = sprintf('%s&region=%s', $url, $region);
+
+        if ($apiKey = array_get($this->config, 'apiKey'))
+            $url = sprintf('%s&key=%s', $url, $apiKey);
+
+        $response = $this->getHttpClient()->get($url, [
+            'timeout' => $query->getData('timeout', 15),
+        ]);
+
+        return $this->parseResponse($response);
+    }
+
+    protected function requestDistanceUrl($url, DistanceInterface $query)
+    {
+        if ($apiKey = array_get($this->config, 'apiKey'))
+            $url = sprintf('%s&key=%s', $url, $apiKey);
+
+        $response = $this->getHttpClient()->get($url, [
+            'timeout' => $query->getData('timeout', 15),
+        ]);
+
+        return $this->parseResponse($response);
     }
 
     //
@@ -200,6 +238,32 @@ class GoogleProvider extends AbstractProvider
 
         if ($resultType = $query->getData('result_type'))
             $url .= '&result_type='.urlencode($resultType);
+
+        return $url;
+    }
+
+    protected function prependDistanceQuery(DistanceInterface $distance, string $url): string
+    {
+        if ($mode = $distance->getData('mode'))
+            $url .= '&mode='.urlencode($mode);
+
+        if ($region = $distance->getData('region', array_get($this->config, 'region')))
+            $url .= '&region='.urlencode($region);
+
+        if ($language = $distance->getData('language', array_get($this->config, 'locale')))
+            $url .= '&language='.urlencode($language);
+
+        if ($units = $distance->getUnit())
+            $url .= '&units='.urlencode($units);
+
+        if ($avoid = $distance->getData('avoid'))
+            $url .= '&avoid='.urlencode($avoid);
+
+        if ($departureTime = $distance->getData('departure_time'))
+            $url .= '&departure_time='.urlencode($departureTime);
+
+        if ($arrivalTime = $distance->getData('arrival_time'))
+            $url .= '&arrival_time='.urlencode($arrivalTime);
 
         return $url;
     }

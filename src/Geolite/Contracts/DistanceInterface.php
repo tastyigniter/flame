@@ -45,5 +45,28 @@ interface DistanceInterface
      */
     public function in($unit);
 
+    /**
+     * Get the user unit
+     *
+     * @return string
+     */
+    public function getUnit();
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     *
+     * @return DistanceInterface
+     */
+    public function withData(string $name, $value);
+
+    /**
+     * @param string $name
+     * @param mixed|null $default
+     *
+     * @return mixed
+     */
+    public function getData(string $name, $default = null);
+
     public function haversine();
 }

@@ -4,6 +4,7 @@ namespace Igniter\Flame\Geolite\Provider;
 
 use GuzzleHttp\Client as HttpClient;
 use Igniter\Flame\Geolite\Contracts\AbstractProvider;
+use Igniter\Flame\Geolite\Contracts\DistanceInterface;
 use Igniter\Flame\Geolite\Contracts\GeoQueryInterface;
 use Igniter\Flame\Geolite\Exception\GeoliteException;
 use Igniter\Flame\Geolite\Model;
@@ -104,6 +105,34 @@ class NominatimProvider extends AbstractProvider
         }
 
         return new Collection($result);
+    }
+
+    public function distance(DistanceInterface $distance): ?Model\Distance
+    {
+        $endpoint = array_get($this->config, 'endpoints.distance');
+        $url = sprintf($endpoint,
+            $distance->getData('mode', 'car'),
+            $distance->getFrom()->getLongitude(),
+            $distance->getFrom()->getLatitude(),
+            $distance->getTo()->getLongitude(),
+            $distance->getTo()->getLatitude()
+        );
+
+        try {
+            $url .= '?overview=false';
+
+            return $this->cacheCallback($url, function () use ($distance, $url) {
+                $response = $this->requestDistanceUrl($url, $distance);
+
+                return new Model\Distance(
+                    array_get($response, 'routes.0.distance', 0),
+                    array_get($response, 'routes.0.duration', 0)
+                );
+            });
+        }
+        catch (Throwable $e) {
+            $this->log(sprintf('Provider "%s" could not calculate distance.', $this->getName()));
+        }
     }
 
     protected function requestUrl($url, GeoQueryInterface $query)
@@ -219,5 +248,22 @@ class NominatimProvider extends AbstractProvider
 
         $countryCode = $location->address->country_code ?? null;
         $address->setCountryCode($countryCode ? strtoupper($countryCode) : null);
+    }
+
+    protected function requestDistanceUrl($url, DistanceInterface $distance)
+    {
+        if ($apiKey = array_get($this->config, 'apiKey'))
+            $url = sprintf('%s&key=%s', $url, $apiKey);
+
+        $options['User-Agent'] = $distance->getData('userAgent', request()->userAgent());
+        $options['Referer'] = $distance->getData('referer', request()->get('referer'));
+        $options['timeout'] = $distance->getData('timeout', 15);
+
+        if (empty($options['User-Agent']))
+            throw new GeoliteException('The User-Agent must be set to use the Nominatim provider.');
+
+        $response = $this->getHttpClient()->get($url, $options);
+
+        return $this->parseResponse($response);
     }
 }

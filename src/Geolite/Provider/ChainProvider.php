@@ -3,7 +3,9 @@
 namespace Igniter\Flame\Geolite\Provider;
 
 use Igniter\Flame\Geolite\Contracts;
+use Igniter\Flame\Geolite\Contracts\DistanceInterface;
 use Igniter\Flame\Geolite\Contracts\GeoQueryInterface;
+use Igniter\Flame\Geolite\Model\Distance;
 use Illuminate\Support\Collection;
 
 class ChainProvider extends Contracts\AbstractProvider
@@ -55,6 +57,17 @@ class ChainProvider extends Contracts\AbstractProvider
         }
 
         return new Collection;
+    }
+
+    public function distance(DistanceInterface $distance): Distance
+    {
+        foreach ($this->providers as $name => $config) {
+            $result = $this->geocoder->makeProvider($name)->distance($distance);
+            if (!is_null($result))
+                return $result;
+        }
+
+        return 0;
     }
 
     public function addProvider($name, array $config = [])

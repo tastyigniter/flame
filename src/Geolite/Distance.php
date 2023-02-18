@@ -29,6 +29,11 @@ class Distance implements Contracts\DistanceInterface
     protected $unit;
 
     /**
+     * @var array
+     */
+    protected $data = [];
+
+    /**
      * {@inheritdoc}
      */
     public function setFrom(Contracts\CoordinatesInterface $from)
@@ -72,6 +77,39 @@ class Distance implements Contracts\DistanceInterface
         $this->unit = $unit;
 
         return $this;
+    }
+
+    public function getUnit()
+    {
+        return $this->unit;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     *
+     * @return self
+     */
+    public function withData(string $name, $value)
+    {
+        $this->data[$name] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed|null $default
+     *
+     * @return mixed
+     */
+    public function getData(string $name, $default = null)
+    {
+        if (!array_key_exists($name, $this->data)) {
+            return $default;
+        }
+
+        return $this->data[$name];
     }
 
     /**
