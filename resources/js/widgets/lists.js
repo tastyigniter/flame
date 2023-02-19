@@ -6,13 +6,15 @@ $(function () {
     $listFilterButton.on('click', function () {
         var $button = $(this),
             $listFilterTarget = $button.closest('form').parent().prev('.list-filter'),
-            listFilterStoreName = $listFilterTarget.data('storeName')
+            listFilterStoreName = $listFilterTarget.data('storeName'),
+            $dropdownButton = $listFilterTarget.find('[data-bs-toggle="dropdown"]')
 
         if (!listFilterStoreName || !listFilterStoreName.length)
             return
 
         $button.toggleClass('active')
-        $listFilterTarget.find('[data-bs-toggle="dropdown"]').click()
+        $dropdownButton.attr('data-bs-offset', "-50,"+Math.abs($button.closest('thead').offset().top-$('#toolbar').height()-$('.navbar-top').height()))
+        $dropdownButton.click()
         Cookies.set(listFilterStoreName, $listFilterTarget.is(':visible') ? 1 : 0)
     })
 })

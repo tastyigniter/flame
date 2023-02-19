@@ -21,7 +21,7 @@ return [
             'country_id' => [
                 'label' => 'lang:igniter::system.settings.label_country',
                 'tab' => 'lang:igniter::system.settings.text_tab_restaurant',
-                'type' => 'select',
+                'type' => 'selectlist',
                 'options' => ['Igniter\System\Models\Country', 'getDropdownOptions'],
             ],
             'language' => [
@@ -32,7 +32,7 @@ return [
             'default_language' => [
                 'label' => 'lang:igniter::system.settings.label_site_language',
                 'tab' => 'lang:igniter::system.settings.text_tab_site',
-                'type' => 'select',
+                'type' => 'selectlist',
                 'default' => 'en',
                 'span' => 'left',
                 'options' => ['Igniter\System\Models\Language', 'getDropdownOptions'],
@@ -56,7 +56,7 @@ return [
                 'span' => 'left',
                 'type' => 'select',
                 'default' => 'GBP',
-                'options' => ['Igniter\System\Models\Currencyl', 'getDropdownOptions'],
+                'options' => [\Igniter\System\Models\Currency::class, 'getDropdownOptions'],
                 'placeholder' => 'lang:igniter::admin.text_please_select',
                 'comment' => 'lang:igniter::system.settings.help_site_currency',
             ],
@@ -66,7 +66,7 @@ return [
                 'span' => 'right',
                 'type' => 'select',
                 'default' => 'openexchangerates',
-                'options' => ['Igniter\System\Models\Currenciey', 'getConverterDropdownOptions'],
+                'options' => [\Igniter\System\Models\Currency::class, 'getConverterDropdownOptions'],
             ],
             'currency_converter[oer][apiKey]' => [
                 'label' => 'lang:igniter::system.settings.label_currency_converter_oer_api_key',
@@ -114,7 +114,7 @@ return [
             'timezone' => [
                 'label' => 'lang:igniter::system.settings.label_timezone',
                 'tab' => 'lang:igniter::system.settings.text_tab_site',
-                'type' => 'select',
+                'type' => 'selectlist',
                 'options' => 'listTimezones',
                 'comment' => 'lang:igniter::system.settings.help_timezone',
                 'placeholder' => 'lang:igniter::admin.text_please_select',

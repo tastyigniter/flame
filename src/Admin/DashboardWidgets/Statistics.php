@@ -59,51 +59,51 @@ class Statistics extends BaseDashboardWidget
         return [
             'sale' => [
                 'label' => 'lang:igniter::admin.dashboard.text_total_sale',
-                'icon' => ' bg-success text-white fa fa-line-chart',
+                'icon' => ' text-success fa fa-4x fa-line-chart',
             ],
             'lost_sale' => [
                 'label' => 'lang:igniter::admin.dashboard.text_total_lost_sale',
-                'icon' => ' bg-danger text-white fa fa-line-chart fa-rotate-180',
+                'icon' => ' text-danger fa fa-4x fa-line-chart',
             ],
             'cash_payment' => [
                 'label' => 'lang:igniter::admin.dashboard.text_total_cash_payment',
-                'icon' => ' bg-warning text-white fa fa-money-bill',
+                'icon' => ' text-warning fa fa-4x fa-money-bill',
             ],
             'customer' => [
                 'label' => 'lang:igniter::admin.dashboard.text_total_customer',
-                'icon' => ' bg-info text-white fa fa-users',
+                'icon' => ' text-info fa fa-4x fa-users',
             ],
             'order' => [
                 'label' => 'lang:igniter::admin.dashboard.text_total_order',
-                'icon' => ' bg-success text-white fa fa-shopping-cart',
+                'icon' => ' text-success fa fa-4x fa-shopping-cart',
             ],
             'delivery_order' => [
                 'label' => 'lang:igniter::admin.dashboard.text_total_delivery_order',
-                'icon' => ' bg-primary text-white fa fa-truck',
+                'icon' => ' text-primary fa fa-4x fa-truck',
             ],
             'collection_order' => [
                 'label' => 'lang:igniter::admin.dashboard.text_total_collection_order',
-                'icon' => ' bg-info text-white fa fa-shopping-bag',
+                'icon' => ' text-info fa fa-4x fa-shopping-bag',
             ],
             'completed_order' => [
                 'label' => 'lang:igniter::admin.dashboard.text_total_completed_order',
-                'icon' => ' bg-success text-white fa fa-receipt',
+                'icon' => ' text-success fa fa-4x fa-receipt',
             ],
             'reserved_table' => [
                 'label' => 'lang:igniter::admin.dashboard.text_total_reserved_table',
-                'icon' => ' bg-primary text-white fa fa-table',
+                'icon' => ' text-primary fa fa-4x fa-table',
             ],
             'reserved_guest' => [
                 'label' => 'lang:igniter::admin.dashboard.text_total_reserved_guest',
-                'icon' => ' bg-primary text-white fa fa-table',
+                'icon' => ' text-primary fa fa-4x fa-table',
             ],
             'reservation' => [
                 'label' => 'lang:igniter::admin.dashboard.text_total_reservation',
-                'icon' => ' bg-success text-white fa fa-table',
+                'icon' => ' text-success fa fa-4x fa-table',
             ],
             'completed_reservation' => [
                 'label' => 'lang:igniter::admin.dashboard.text_total_completed_reservation',
-                'icon' => ' bg-success text-white fa fa-table',
+                'icon' => ' text-success fa fa-4x fa-table',
             ],
         ];
     }
@@ -127,7 +127,7 @@ class Statistics extends BaseDashboardWidget
 
     public function getContextIcon($context)
     {
-        return array_get(array_get($this->listContext(), $context, []), 'icon', 'fa fa-bar-chart-o');
+        return array_get(array_get($this->listContext(), $context, []), 'icon', 'fa fa-4x fa-bar-chart-o');
     }
 
     public function loadAssets()

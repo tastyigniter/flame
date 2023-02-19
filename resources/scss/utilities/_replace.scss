@@ -63,9 +63,6 @@
 .pagination > li > a {
   @extend .page-link;
 }
-.item {
-  @extend .carousel-item;
-}
 .pull-right, .float-right {
   @extend .float-end;
 }

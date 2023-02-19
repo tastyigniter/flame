@@ -8,7 +8,7 @@
         <label class="form-label">@lang('igniter::admin.dashboard.label_widget')</label>
         <select class="form-select" name="className">
             <option value="">@lang('igniter::admin.dashboard.text_select_widget')</option>
-            @foreach($this->widgets as $className => $widgetInfo)
+            @foreach($widgets as $className => $widgetInfo)
                 <option
                     value="{{ $className }}"
                 >{{ isset($widgetInfo['label']) ? lang($widgetInfo['label']) : $className }}</option>
