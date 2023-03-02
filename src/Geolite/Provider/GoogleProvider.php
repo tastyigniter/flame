@@ -108,6 +108,8 @@ class GoogleProvider extends AbstractProvider
         }
         catch (Throwable $e) {
             $this->log(sprintf('Provider "%s" could not calculate distance.', $this->getName()));
+
+            return null;
         }
     }
 

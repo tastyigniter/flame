@@ -59,7 +59,7 @@ class ChainProvider extends Contracts\AbstractProvider
         return new Collection;
     }
 
-    public function distance(DistanceInterface $distance): Distance
+    public function distance(DistanceInterface $distance): ?Distance
     {
         foreach ($this->providers as $name => $config) {
             $result = $this->geocoder->makeProvider($name)->distance($distance);
@@ -67,7 +67,7 @@ class ChainProvider extends Contracts\AbstractProvider
                 return $result;
         }
 
-        return 0;
+        return null;
     }
 
     public function addProvider($name, array $config = [])

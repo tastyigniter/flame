@@ -113,7 +113,6 @@ abstract class AbstractProvider
         if (!$lifetime = $this->getCacheLifetime())
             return $closure();
 
-        $lifetime = $this->getCacheLifetime();
         $cacheKey = $this->getCacheKey().'@'.md5($cacheKey);
 
         return $this->getCacheDriver()->remember($cacheKey, $lifetime, $closure);
@@ -131,6 +130,7 @@ abstract class AbstractProvider
     public function log($message)
     {
         $this->logs[] = $message;
+        logger()->error($message);
 
         return $this;
     }

@@ -125,13 +125,15 @@ class NominatimProvider extends AbstractProvider
                 $response = $this->requestDistanceUrl($url, $distance);
 
                 return new Model\Distance(
-                    array_get($response, 'routes.0.distance', 0),
-                    array_get($response, 'routes.0.duration', 0)
+                    $response->routes[0]->distance ?? 0,
+                    $response->routes[0]->duration ?? 0,
                 );
             });
         }
         catch (Throwable $e) {
             $this->log(sprintf('Provider "%s" could not calculate distance.', $this->getName()));
+
+            return null;
         }
     }
 
@@ -157,6 +159,9 @@ class NominatimProvider extends AbstractProvider
 
     protected function hydrateResponse($response)
     {
+        if (!is_array($response))
+            $response = [$response];
+
         $result = [];
         foreach ($response as $location) {
             $address = new Model\Location($this->getName());
@@ -203,14 +208,14 @@ class NominatimProvider extends AbstractProvider
                 'Daily quota exceeded. Message: %s', $json->error_message ?? 'empty error message'
             ));
 
-        if ($statusCode >= 300) {
+        if ($statusCode >= 300 || isset($json->code, $json->message)) {
             throw new GeoliteException(sprintf(
                 'The geocoder server returned [%s] an invalid response for query. Message: %s.',
-                $statusCode, $json->error_message ?? 'empty error message'
+                $statusCode, $json->error_message ?? $json->message ?? 'empty error message'
             ));
         }
 
-        return is_array($json) ? $json : [$json];
+        return $json;
     }
 
     protected function parseCoordinates(Model\Location $address, $location)
