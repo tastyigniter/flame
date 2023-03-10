@@ -99,8 +99,8 @@ class NominatimProvider extends AbstractProvider
         catch (Throwable $e) {
             $coordinates = $query->getCoordinates();
             $this->log(sprintf(
-                'Provider "%s" could not reverse coordinates: "%f %f".',
-                $this->getName(), $coordinates->getLatitude(), $coordinates->getLongitude()
+                'Provider "%s" could not reverse coordinates "%F %F": %s',
+                $this->getName(), $coordinates->getLatitude(), $coordinates->getLongitude(), $e->getMessage()
             ));
         }
 
@@ -131,7 +131,7 @@ class NominatimProvider extends AbstractProvider
             });
         }
         catch (Throwable $e) {
-            $this->log(sprintf('Provider "%s" could not calculate distance.', $this->getName()));
+            $this->log(sprintf('Provider "%s" could not calculate distance: %s', $this->getName(), $e->getMessage()));
 
             return null;
         }

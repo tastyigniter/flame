@@ -48,7 +48,7 @@ class GoogleProvider extends AbstractProvider
         }
         catch (Throwable $ex) {
             $this->log(sprintf(
-                'Provider "%s" could not geocode address, "%s".',
+                'Provider "%s" could not geocode address: "%s".',
                 $this->getName(), $ex->getMessage()
             ));
         }
@@ -78,8 +78,8 @@ class GoogleProvider extends AbstractProvider
         catch (Throwable $e) {
             $coordinates = $query->getCoordinates();
             $this->log(sprintf(
-                'Provider "%s" could not reverse coordinates: "%F %F".',
-                $this->getName(), $coordinates->getLatitude(), $coordinates->getLongitude()
+                'Provider "%s" could not reverse coordinates "%F %F": %s',
+                $this->getName(), $coordinates->getLatitude(), $coordinates->getLongitude(), $e->getMessage()
             ));
         }
 
@@ -90,10 +90,10 @@ class GoogleProvider extends AbstractProvider
     {
         $endpoint = array_get($this->config, 'endpoints.distance');
         $url = $this->prependDistanceQuery($distance, sprintf($endpoint,
-            $distance->getFrom()->getLongitude(),
             $distance->getFrom()->getLatitude(),
-            $distance->getTo()->getLongitude(),
-            $distance->getTo()->getLatitude()
+            $distance->getFrom()->getLongitude(),
+            $distance->getTo()->getLatitude(),
+            $distance->getTo()->getLongitude()
         ));
 
         try {
@@ -101,13 +101,13 @@ class GoogleProvider extends AbstractProvider
                 $response = $this->requestDistanceUrl($url, $distance);
 
                 return new Model\Distance(
-                    array_get($response, 'rows.0.elements.0.distance', 0),
-                    array_get($response, 'rows.0.elements.0.duration', 0)
+                    $response->rows[0]->elements[0]->distance->value,
+                    $response->rows[0]->elements[0]->duration->value
                 );
             });
         }
         catch (Throwable $e) {
-            $this->log(sprintf('Provider "%s" could not calculate distance.', $this->getName()));
+            $this->log(sprintf('Provider "%s" could not calculate distance: %s', $this->getName(), $e->getMessage()));
 
             return null;
         }
@@ -156,7 +156,11 @@ class GoogleProvider extends AbstractProvider
             'timeout' => $query->getData('timeout', 15),
         ]);
 
-        return $this->parseResponse($response);
+        $json = $this->parseResponse($response);
+        if (!isset($json->results) || !count($json->results))
+            throw new GeoliteException('The geocoder server returned an empty response');
+
+        return $json;
     }
 
     protected function requestDistanceUrl($url, DistanceInterface $query)
@@ -168,7 +172,11 @@ class GoogleProvider extends AbstractProvider
             'timeout' => $query->getData('timeout', 15),
         ]);
 
-        return $this->parseResponse($response);
+        $json = $this->parseResponse($response);
+        if (!isset($json->rows) || !count($json->rows))
+            throw new GeoliteException('The geocoder server returned an empty response');
+
+        return $json;
     }
 
     //
@@ -207,10 +215,8 @@ class GoogleProvider extends AbstractProvider
             ));
         }
 
-        if (!isset($json->results)
-            || !count($json->results)
-            || $json->status !== 'OK'
-        ) throw new GeoliteException($json->error_message ?? 'empty error message');
+        if ($json->status !== 'OK')
+            throw new GeoliteException($json->error_message ?? 'empty error message');
 
         return $json;
     }
