@@ -15,6 +15,6 @@ class JSScopeFilter implements FilterInterface
 
     public function filterDump(AssetInterface $asset)
     {
-        $asset->setContent("(function() {\n".$asset->getContent()."\n})();");
+        $asset->setContent("try {\n".$asset->getContent()."\n} catch (e) { console.error('Error in file ".$asset->getSourcePath().":', e); }\n");
     }
 }
