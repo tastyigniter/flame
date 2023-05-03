@@ -56,16 +56,4 @@ interface PolygonInterface
      * @return bool
      */
     public function pointInPolygon(CoordinatesInterface $coordinate);
-
-    /**
-     * @param \Igniter\Flame\Geolite\Contracts\CoordinatesInterface $coordinate
-     * @return bool
-     */
-    public function pointOnBoundary(CoordinatesInterface $coordinate);
-
-    /**
-     * @param \Igniter\Flame\Geolite\Contracts\CoordinatesInterface $coordinate
-     * @return bool
-     */
-    public function pointOnVertex(CoordinatesInterface $coordinate);
 }

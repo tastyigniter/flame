@@ -183,42 +183,108 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
         if ($this->isEmpty())
             return false;
 
+        if (!$this->bounds->pointInBounds($coordinate))
+            return false;
+
         if ($this->pointOnVertex($coordinate))
             return true;
 
-        if ($this->pointIsInside($coordinate))
+        if ($this->pointOnBoundary($coordinate))
             return true;
 
-        return $this->pointOnBoundary($coordinate);
+        return $this->pointIsInside($coordinate);
     }
 
     /**
      * @param Contracts\CoordinatesInterface $coordinate
      * @return bool
      */
-    public function pointOnBoundary(Contracts\CoordinatesInterface $coordinate)
+    protected function pointOnBoundary(Contracts\CoordinatesInterface $coordinate)
     {
+        $precision = $coordinate->getPrecision();
         $total = $this->count();
-        for ($i = 0; $i < $total; $i++) {
-            $j = ($i + 1) % $total;
-            $currentVertex = $this->get($i);
-            $nextVertex = $this->get($j);
+        for ($i = 1; $i <= $total; $i++) {
+            $previousVertex = $this->get($i - 1);
+            $currentVertex = $this->get($i) ?? $this->get(0);
 
-            if (
-                $currentVertex->getLatitude() == $nextVertex->getLatitude()
-                && $currentVertex->getLatitude() == $coordinate->getLatitude()
-                && ($coordinate->getLongitude() >= min($currentVertex->getLongitude(), $nextVertex->getLongitude()))
-                && ($coordinate->getLongitude() <= max($currentVertex->getLongitude(), $nextVertex->getLongitude()))
+            // Check if coordinate is on a horizontal boundary
+            if (bccomp(
+                    $previousVertex->formatLatitude(),
+                    $currentVertex->formatLatitude(),
+                    $precision
+                ) === 0
+                && bccomp(
+                    $previousVertex->formatLatitude(),
+                    $coordinate->formatLatitude(),
+                    $precision
+                ) === 0
+                && bccomp(
+                    $coordinate->formatLongitude(),
+                    min($previousVertex->formatLongitude(), $currentVertex->formatLongitude()),
+                    $precision
+                ) === 1
+                && bccomp(
+                    $coordinate->formatLongitude(),
+                    max($previousVertex->formatLongitude(), $currentVertex->formatLongitude()),
+                    $precision
+                ) === -1
+            ) {
+                return true;
+            }
+
+            // Check if coordinate is on a vertical boundary
+            if (bccomp(
+                    $previousVertex->formatLongitude(),
+                    $currentVertex->formatLongitude(),
+                    $precision
+                ) === 0
+                && bccomp(
+                    $previousVertex->formatLongitude(),
+                    $coordinate->formatLongitude(),
+                    $precision
+                ) === 0
+                && bccomp(
+                    $coordinate->formatLatitude(),
+                    min($previousVertex->formatLatitude(), $currentVertex->formatLatitude()),
+                    $precision
+                ) >= 0
+                && bccomp(
+                    $coordinate->formatLatitude(),
+                    max($previousVertex->formatLatitude(), $currentVertex->formatLatitude()),
+                    $precision
+                ) <= 0
             ) {
                 return true;
             }
 
             if (
-                ($currentVertex->getLongitude() > $coordinate->getLongitude()) != ($nextVertex->getLongitude() > $coordinate->getLongitude())
-                && $coordinate->getLatitude() < ($nextVertex->getLatitude() - $currentVertex->getLatitude())
-                * ($coordinate->getLongitude() - $currentVertex->getLongitude())
-                / ($nextVertex->getLongitude() - $currentVertex->getLongitude())
-                + $currentVertex->getLatitude()
+                bccomp(
+                    number_format(($coordinate->formatLatitude() - $previousVertex->formatLatitude())
+                        * ($currentVertex->formatLongitude() - $previousVertex->formatLongitude()), $precision),
+                    number_format(($coordinate->formatLongitude() - $previousVertex->formatLongitude())
+                        * ($currentVertex->formatLatitude() - $previousVertex->formatLatitude()), $precision),
+                    $precision
+                ) === 0
+                && bccomp(
+                    $coordinate->formatLongitude(),
+                    min($previousVertex->formatLongitude(), $currentVertex->formatLongitude()),
+                    $precision
+                ) >= 0
+                && bccomp(
+                    $coordinate->formatLongitude(),
+                    max($previousVertex->formatLongitude(), $currentVertex->formatLongitude()),
+                    $precision
+                ) <= 0
+                && bccomp(
+                    $coordinate->formatLatitude(),
+                    min($previousVertex->formatLatitude(), $currentVertex->formatLatitude()),
+                    $precision
+                ) >= 0
+                && bccomp(
+                    $coordinate->formatLatitude(),
+                    max($previousVertex->formatLatitude(), $currentVertex->formatLatitude()),
+                    $precision
+                ) <= 0
             ) {
                 return true;
             }
@@ -231,18 +297,19 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
      * @param Contracts\CoordinatesInterface $coordinate
      * @return bool
      */
-    public function pointOnVertex(Contracts\CoordinatesInterface $coordinate)
+    protected function pointOnVertex(Contracts\CoordinatesInterface $coordinate)
     {
+        $precision = $coordinate->getPrecision();
         foreach ($this->coordinates as $vertexCoordinate) {
             if (bccomp(
-                    $vertexCoordinate->getLatitude(),
-                    $coordinate->getLatitude(),
-                    $this->getPrecision()
+                    $vertexCoordinate->formatLatitude(),
+                    $coordinate->formatLatitude(),
+                    $precision
                 ) === 0 &&
                 bccomp(
-                    $vertexCoordinate->getLongitude(),
-                    $coordinate->getLongitude(),
-                    $this->getPrecision()
+                    $vertexCoordinate->formatLongitude(),
+                    $coordinate->formatLongitude(),
+                    $precision
                 ) === 0
             ) {
                 return true;
@@ -254,31 +321,33 @@ class Polygon implements PolygonInterface, \Countable, \IteratorAggregate, \Arra
 
     protected function pointIsInside(Contracts\CoordinatesInterface $coordinate): bool
     {
-        $inside = false;
+        $precision = $coordinate->getPrecision();
         $total = $this->count();
-        for ($i = 0; $i < $total; $i++) {
-            $j = ($i + 1) % $total;
-            $currentVertex = $this->get($i);
-            $nextVertex = $this->get($j);
+        $intersections = 0;
+        for ($i = 1; $i < $total; $i++) {
+            $previousVertex = $this->get($i - 1);
+            $nextVertex = $this->get($i);
 
-            if ((
-                    $currentVertex->getLongitude() < $coordinate->getLongitude()
-                    && $nextVertex->getLongitude() >= $coordinate->getLongitude()
-                    || $nextVertex->getLongitude() < $coordinate->getLongitude()
-                    && $currentVertex->getLongitude() >= $coordinate->getLongitude()
-                ) && (
-                    $currentVertex->getLatitude()
-                    + ($coordinate->getLongitude() - $currentVertex->getLongitude())
-                    / ($nextVertex->getLongitude() - $currentVertex->getLongitude())
-                    * ($nextVertex->getLatitude() - $currentVertex->getLatitude())
-                    < $coordinate->getLatitude()
-                )
+            if (
+                bccomp(
+                    $previousVertex->getLatitude(), $coordinate->getLatitude(), $precision
+                ) != bccomp(
+                    $nextVertex->getLatitude(), $coordinate->getLatitude(), $precision
+                ) && bccomp(
+                    $coordinate->getLongitude(),
+                    number_format(($nextVertex->getLongitude() - $previousVertex->getLongitude())
+                        * ($coordinate->getLatitude() - $previousVertex->getLatitude())
+                        / ($nextVertex->getLatitude() - $previousVertex->getLatitude())
+                        + $previousVertex->getLongitude(), $precision
+                    ),
+                    $precision
+                ) > 0
             ) {
-                $inside = !$inside;
+                $intersections++;
             }
         }
 
-        return $inside;
+        return ($intersections % 2) != 0;
     }
 
     //

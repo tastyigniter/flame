@@ -23,6 +23,8 @@ class Coordinates implements CoordinatesInterface
      */
     protected $ellipsoid;
 
+    protected $precision = 8;
+
     /**
      * @param float $latitude
      * @param float $longitude
@@ -33,6 +35,7 @@ class Coordinates implements CoordinatesInterface
         $this->latitude = $this->normalizeLatitude($latitude);
         $this->longitude = $this->normalizeLongitude($longitude);
         $this->ellipsoid = $ellipsoid ?: Ellipsoid::createFromName(Ellipsoid::WGS84);
+        $this->precision = config('geocoder.precision', 8);
     }
 
     /**
@@ -84,6 +87,26 @@ class Coordinates implements CoordinatesInterface
     public function getLongitude()
     {
         return $this->longitude;
+    }
+
+    /**
+     * Returns the latitude.
+     *
+     * @return float
+     */
+    public function formatLatitude()
+    {
+        return number_format($this->latitude, $this->precision);
+    }
+
+    /**
+     * Returns the longitude.
+     *
+     * @return float
+     */
+    public function formatLongitude()
+    {
+        return number_format($this->longitude, $this->precision);
     }
 
     /**
