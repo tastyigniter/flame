@@ -90,10 +90,10 @@ class GoogleProvider extends AbstractProvider
     {
         $endpoint = array_get($this->config, 'endpoints.distance');
         $url = $this->prependDistanceQuery($distance, sprintf($endpoint,
-            $distance->getFrom()->getLatitude(),
-            $distance->getFrom()->getLongitude(),
             $distance->getTo()->getLatitude(),
-            $distance->getTo()->getLongitude()
+            $distance->getTo()->getLongitude(),
+            $distance->getFrom()->getLatitude(),
+            $distance->getFrom()->getLongitude()
         ));
 
         try {
