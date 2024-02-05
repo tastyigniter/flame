@@ -60,7 +60,7 @@ class Bounds implements Contracts\BoundsInterface
     }
 
     /**
-     * @param  float $north
+     * @param float $north
      * @return $this
      */
     public function setNorth($north)
@@ -71,7 +71,7 @@ class Bounds implements Contracts\BoundsInterface
     }
 
     /**
-     * @param  float $east
+     * @param float $east
      * @return $this
      */
     public function setEast($east)
@@ -82,7 +82,7 @@ class Bounds implements Contracts\BoundsInterface
     }
 
     /**
-     * @param  float $south
+     * @param float $south
      * @return $this
      */
     public function setSouth($south)
@@ -93,7 +93,7 @@ class Bounds implements Contracts\BoundsInterface
     }
 
     /**
-     * @param  float $west
+     * @param float $west
      * @return $this
      */
     public function setWest($west)
@@ -144,6 +144,26 @@ class Bounds implements Contracts\BoundsInterface
     }
 
     /**
+     * Returns the south west coordinates.
+     *
+     * @return Coordinates
+     */
+    public function getSouthWest(): Coordinates
+    {
+        return new Coordinates($this->south, $this->west);
+    }
+
+    /**
+     * Returns the north east coordinates.
+     *
+     * @return Coordinates
+     */
+    public function getNorthEast(): Coordinates
+    {
+        return new Coordinates($this->north, $this->east);
+    }
+
+    /**
      * @return int
      */
     public function getPrecision()
@@ -152,7 +172,7 @@ class Bounds implements Contracts\BoundsInterface
     }
 
     /**
-     * @param  int $precision
+     * @param int $precision
      * @return $this
      */
     public function setPrecision($precision)
@@ -163,7 +183,7 @@ class Bounds implements Contracts\BoundsInterface
     }
 
     /**
-     * @param  Contracts\CoordinatesInterface $coordinate
+     * @param Contracts\CoordinatesInterface $coordinate
      * @return bool
      */
     public function pointInBounds(Contracts\CoordinatesInterface $coordinate)
@@ -200,7 +220,7 @@ class Bounds implements Contracts\BoundsInterface
     }
 
     /**
-     * @param  Contracts\BoundsInterface $bounds
+     * @param Contracts\BoundsInterface $bounds
      * @return Contracts\BoundsInterface
      */
     public function merge(Contracts\BoundsInterface $bounds)
@@ -243,8 +263,7 @@ class Bounds implements Contracts\BoundsInterface
             $this->setSouth($latitude);
             $this->setEast($longitude);
             $this->setWest($longitude);
-        }
-        else {
+        } else {
             if (bccomp($latitude, $this->getSouth(), $this->getPrecision()) === -1)
                 $this->setSouth($latitude);
 
