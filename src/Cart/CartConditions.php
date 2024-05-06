@@ -6,13 +6,14 @@ use Illuminate\Support\Collection;
 
 class CartConditions extends Collection
 {
-    public function apply(CartContent $content)
+    public function apply(CartContent $content, string $type = null)
     {
         return $this
             ->sorted()
-            ->reduce(function ($total, CartCondition $condition) use ($content) {
-                return $condition->withTarget($content)->apply($total);
+            ->reduce(function ($total, CartCondition $condition) use ($content, $type) {
+                return $condition->withTarget($content)->apply($total, $type) ;
             }, $content->subtotal());
+
     }
 
     public function applied()

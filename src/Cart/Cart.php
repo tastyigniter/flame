@@ -259,7 +259,7 @@ class Cart
      */
     public function total()
     {
-        return $this->conditions()->apply($this->getContent());
+        return $this->conditions()->apply($this->getContent(), "total");
     }
 
     /**

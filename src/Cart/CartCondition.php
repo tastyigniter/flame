@@ -2,12 +2,12 @@
 
 namespace Igniter\Flame\Cart;
 
-use Igniter\Flame\Cart\Helpers\CartConditionHelper;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Support\Jsonable;
+use Serializable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Session;
-use Serializable;
+use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Contracts\Support\Arrayable;
+use Igniter\Flame\Cart\Helpers\CartConditionHelper;
 
 /**
  * CartCondition class
@@ -113,13 +113,31 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
      *
      * @return float|string
      */
-    public function apply($subTotal)
+    public function apply($subTotal, string $type = null)
     {
-        if ($this->beforeApply() === false)
+        if ($this->beforeApply() === false){
             return $subTotal;
+        }
 
-        if ($this->validate($this->getRules()))
-            $subTotal = $this->calculate($subTotal);
+        if ($this->validate($this->getRules())){
+            if($this->getModel() && $this->getModel()->appliesOnMenuItems()) {
+                $validContent = $this->getValidTarget();
+                $subTotal = $this->calculate($validContent->subtotal());
+
+                if ($type === "total")  {
+                    $validItemIds = $this->getApplicableItems($this->getModel())->toArray();
+
+                    $notValidContent = $this->target->filter(function($content) use ($validItemIds) {
+                        return !in_array($content->id, $validItemIds);
+                    });
+
+                    $subTotal = $subTotal + $notValidContent->subtotal();
+                }
+            }
+            else {
+                $subTotal = $this->calculate($subTotal);
+            }
+        }
 
         $this->afterApply();
 
@@ -155,6 +173,10 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
      * Called before condition is loaded into cart session
      */
     public function onLoad()
+    {
+    }
+
+    public function getModel()
     {
     }
 
@@ -215,6 +237,10 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
         $this->target = $target;
 
         return $this;
+    }
+
+    public function getTarget(){
+        return $this->target;
     }
 
     public function setCartContent($cartContent)
