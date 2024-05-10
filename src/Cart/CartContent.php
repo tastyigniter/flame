@@ -14,7 +14,7 @@ class CartContent extends Collection
     public function subtotal()
     {
         return $this->sum(function (CartItem $cartItem) {
-            return $cartItem->subtotal();
+            return $cartItem->subtotalWithoutConditions();
         });
     }
 

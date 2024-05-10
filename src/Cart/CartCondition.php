@@ -239,10 +239,6 @@ abstract class CartCondition implements Arrayable, Jsonable, Serializable
         return $this;
     }
 
-    public function getTarget(){
-        return $this->target;
-    }
-
     public function setCartContent($cartContent)
     {
         traceLog('CartCondition::setCartContent() is deprecated. See CartCondition::withTarget()');
