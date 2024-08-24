@@ -443,7 +443,7 @@ class Cart
      */
     protected function getApplicableItemCondition($condition, $cartItem)
     {
-        if (!in_array(ActsAsItemable::class, class_uses($condition)))
+        if (!in_array(ActsAsItemable::class, class_uses_recursive($condition)))
             return null;
 
         if (!$condition::isApplicableTo($cartItem))
