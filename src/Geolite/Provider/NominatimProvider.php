@@ -145,12 +145,17 @@ class NominatimProvider extends AbstractProvider
         if ($region = $query->getData('countrycodes', array_get($this->config, 'region')))
             $url = sprintf('%s&countrycodes=%s', $url, $region);
 
-        $options['User-Agent'] = $query->getData('userAgent', request()->userAgent());
-        $options['Referer'] = $query->getData('referer', request()->get('referer'));
-        $options['timeout'] = $query->getData('timeout', 15);
+        $options = [
+            'headers' => [
+                'User-Agent' => $query->getData('userAgent', request()->userAgent()),
+                'Referer' => $query->getData('referer', request()->get('referer')),
+            ],
+            'timeout' => $query->getData('timeout', 15),
+        ];
 
-        if (empty($options['User-Agent']))
+        if (empty($options['headers']['User-Agent'])) {
             throw new GeoliteException('The User-Agent must be set to use the Nominatim provider.');
+        }
 
         $response = $this->getHttpClient()->get($url, $options);
 
@@ -260,12 +265,17 @@ class NominatimProvider extends AbstractProvider
         if ($apiKey = array_get($this->config, 'apiKey'))
             $url = sprintf('%s&key=%s', $url, $apiKey);
 
-        $options['User-Agent'] = $distance->getData('userAgent', request()->userAgent());
-        $options['Referer'] = $distance->getData('referer', request()->get('referer'));
-        $options['timeout'] = $distance->getData('timeout', 15);
+        $options = [
+            'headers' => [
+                'User-Agent' => $query->getData('userAgent', request()->userAgent()),
+                'Referer' => $query->getData('referer', request()->get('referer')),
+            ],
+            'timeout' => $query->getData('timeout', 15),
+        ];
 
-        if (empty($options['User-Agent']))
+        if (empty($options['headers']['User-Agent'])) {
             throw new GeoliteException('The User-Agent must be set to use the Nominatim provider.');
+        }
 
         $response = $this->getHttpClient()->get($url, $options);
 
